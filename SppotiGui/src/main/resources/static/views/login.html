@@ -1,0 +1,53 @@
+<head>
+
+    <style>
+        input.ng-empty {
+            background-color: white;
+        }
+
+        input.ng-invalid {
+            background-color: pink;
+        }
+
+        input.ng-valid {
+            background-color: white;
+        }
+
+    </style>
+
+</head>
+<div class="container" ng-controller="AuthController as ctrl" ng-init="ctrl.getToken()">
+    <div class="card card-container">
+        <p id="profile-name" class="profile-name-card"></p>
+        <form class="form-signin" ng-submit="ctrl.submit()" name="loginForm">
+            <!--message d'erreur pour les mails invalides-->
+            <div role="alert" ng-show="loginForm.username.$invalid">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                l'adresse mail est invalide
+            </div>
+            <input ng-model="ctrl.user.username" type="text" name="username" id="inputEmail" class="form-control fa fa-user right"
+                   placeholder="Email, pseudo, téléphone" required autofocus>
+            <div role="alert" ng-show="loginForm.userPassword.$invalid">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="sr-only">Error:</span>
+                mot de passe est invalide
+            </div>
+            <input ng-model="ctrl.user.password" type="password" id="inputPassword" name="userPassword"
+                   class="form-control fa fa-key right" ng-minlength="5" ng-maxlength="20" placeholder="mot de passe " required>
+
+            <div id="remember" class="checkbox">
+
+                <div ng-bind="ctrl.loginFailure"></div>
+                <label>
+                    <input type="checkbox" value="remember-me"> se souvenir de moi
+                </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">se connecter</button>
+        </form><!-- /form -->
+        <a href="#" class="forgot-password">
+            mot de passe oublié ?
+        </a>
+        <div
+    </div><!-- /card-container -->
+</div>
