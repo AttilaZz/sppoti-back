@@ -3,6 +3,7 @@ package com.fr.repositoriesImpl;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.EntityManagerFactory;
 import javax.transaction.Transactional;
 
 import org.hibernate.Criteria;
@@ -25,10 +26,19 @@ public abstract class GenericDaoImpl<E, id extends Serializable> implements Gene
 
     // public abstract void initializeEntityClass();
 
-    protected SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+//    @Autowired
+//    public void setSessionFactory(SessionFactory sessionFactory) {
+//        this.sessionFactory = sessionFactory;
+//    }
+
+    @Autowired
+    public void setSessionFactory(EntityManagerFactory factory) {
+        if (factory.unwrap(SessionFactory.class) == null) {
+            throw new NullPointerException("factory is not a hibernate factory");
+        }
+        this.sessionFactory = factory.unwrap(SessionFactory.class);
     }
 
     public GenericDaoImpl() {
@@ -36,7 +46,6 @@ public abstract class GenericDaoImpl<E, id extends Serializable> implements Gene
 
     protected Session getSession() {
         return sessionFactory.getCurrentSession();
-
     }
 
     @Override

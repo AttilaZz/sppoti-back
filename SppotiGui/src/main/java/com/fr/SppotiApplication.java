@@ -26,11 +26,10 @@ public class SppotiApplication {
         SpringApplication.run(SppotiApplication.class, args);
     }
 
-
-    @Bean
+    /*@Bean
     public SessionFactory sessionFactory(HibernateEntityManagerFactory hemf) {
         return hemf.getSessionFactory();
-    }
+    }*/
 
     /*@Bean
     public DispatcherServlet dispatcherServlet() {

@@ -9,13 +9,13 @@ import com.fr.pojos.Users;
 @Service
 public interface AbstractControllerService {
 
-	public List<String> getUserRole();
+    List<String> getUserRole();
 
-	public String getAuthenticationUsername();
+    String getAuthenticationUsername();
 
-	public Users getUserFromUsernameType(String loginUser);
+    Users getUserFromUsernameType(String loginUser);
 
-	public Users getUserById(Long id);
+    Users getUserById(Long id);
 
-	int getUserLoginType(String username);
+    int getUserLoginType(String username);
 }
