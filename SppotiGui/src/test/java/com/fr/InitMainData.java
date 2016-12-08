@@ -2,29 +2,22 @@ package com.fr; /**
  * Created by djenanewail on 12/8/16.
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.RepositoriesService.ProfileDaoService;
 import com.fr.RepositoriesService.SportDaoService;
-import com.fr.configApp.AppWebSocketConfig;
 import com.fr.entities.Sport;
 import com.fr.entities.UserRoles;
 import com.fr.models.SportList;
 import com.fr.models.UserRoleType;
-import com.fr.security.SecurityConfiguration;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
