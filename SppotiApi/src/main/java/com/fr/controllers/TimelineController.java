@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fr.aop.TraceAuthentification;
 import com.fr.controllers.service.ActuControllerService;
-import com.fr.pojos.Post;
+import com.fr.entities.Post;
 
 /**
  * Created by: Wail DJENANE on Jun 21, 2016

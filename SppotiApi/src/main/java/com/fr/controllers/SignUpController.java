@@ -26,9 +26,9 @@ import com.fr.controllers.serviceImpl.SignUpServiceImpl;
 import com.fr.models.JsonPostRequest;
 import com.fr.models.SignUpRequest;
 import com.fr.models.UserRoleType;
-import com.fr.pojos.Sport;
-import com.fr.pojos.UserRoles;
-import com.fr.pojos.Users;
+import com.fr.entities.Sport;
+import com.fr.entities.UserRoles;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE On June 01, 2016
@@ -186,7 +186,7 @@ public class SignUpController {
 
 	}
 
-	@RequestMapping(value = "/allSports", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/sport/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Sport>> getAllSports() {
 
 		List<Sport> allSports = signUpService.getAllSports();

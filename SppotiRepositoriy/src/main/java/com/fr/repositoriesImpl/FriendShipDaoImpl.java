@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.fr.RepositoriesService.FriendShipDaoService;
 import com.fr.RepositoriesService.UserDaoService;
-import com.fr.pojos.FriendShip;
+import com.fr.entities.FriendShip;
 
 /**
  * Created by: Wail DJENANE on Jul 3, 2016

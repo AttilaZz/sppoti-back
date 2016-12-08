@@ -11,7 +11,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Repository;
 
-import com.fr.pojos.PersistentLogin;
+import com.fr.entities.PersistentLogin;
 
 /**
  * Created by: Wail DJENANE on Aug 16, 2016

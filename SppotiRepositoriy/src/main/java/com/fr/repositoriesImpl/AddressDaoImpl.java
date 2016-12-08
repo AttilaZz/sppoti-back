@@ -8,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import com.fr.RepositoriesService.AddressDaoService;
-import com.fr.pojos.Address;
+import com.fr.entities.Address;
 
 /**
  * Created by: Wail DJENANE on Jul 3, 2016

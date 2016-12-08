@@ -8,8 +8,8 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.pojos.Address;
-import com.fr.pojos.Sppoti;
+import com.fr.entities.Address;
+import com.fr.entities.Sppoti;
 
 /**
  * Created by: Wail DJENANE on Aug 7, 2016

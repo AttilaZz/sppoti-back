@@ -3,7 +3,7 @@ package com.fr.repositoriesImpl;
 import org.springframework.stereotype.Component;
 
 import com.fr.RepositoriesService.GameDaoService;
-import com.fr.pojos.Sppoti;
+import com.fr.entities.Sppoti;
 
 /**
  * Created by: Wail DJENANE on Jul 3, 2016

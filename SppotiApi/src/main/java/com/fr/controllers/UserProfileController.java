@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.aop.TraceAuthentification;
 import com.fr.controllers.service.UserControllerService;
 import com.fr.models.*;
-import com.fr.pojos.Users;
+import com.fr.entities.Users;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

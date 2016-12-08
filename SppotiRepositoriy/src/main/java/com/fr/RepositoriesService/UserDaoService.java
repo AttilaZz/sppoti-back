@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.Resources;
-import com.fr.pojos.Sport;
-import com.fr.pojos.Users;
+import com.fr.entities.Resources;
+import com.fr.entities.Sport;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016

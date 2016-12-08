@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.Messages;
+import com.fr.entities.Messages;
 
 /**
  * Created by: Wail DJENANE on Jun 25, 2016

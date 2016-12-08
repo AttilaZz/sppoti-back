@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.Users;
+import com.fr.entities.Users;
 
 @Service
 public interface AbstractControllerService {

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.fr.RepositoriesService.LikeDaoService;
 import com.fr.RepositoriesService.UserDaoService;
-import com.fr.pojos.LikeContent;
+import com.fr.entities.LikeContent;
 
 /**
  * Created by: Wail DJENANE on Aug 15, 2016

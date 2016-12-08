@@ -1,6 +1,6 @@
 package com.fr.RepositoriesService;
 
-import com.fr.pojos.Users;
+import com.fr.entities.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fr.RepositoriesService.NotificationDaoService;
-import com.fr.pojos.Notifications;
+import com.fr.entities.Notifications;
 
 /**
  * Created by: Wail DJENANE on Nov 10, 2016

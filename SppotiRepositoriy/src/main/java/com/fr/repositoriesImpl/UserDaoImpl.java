@@ -18,9 +18,9 @@ import org.springframework.stereotype.Repository;
 
 import com.fr.RepositoriesService.ResourceDaoService;
 import com.fr.RepositoriesService.UserDaoService;
-import com.fr.pojos.Resources;
-import com.fr.pojos.Sport;
-import com.fr.pojos.Users;
+import com.fr.entities.Resources;
+import com.fr.entities.Sport;
+import com.fr.entities.Users;
 
 /**
  * @author Wail DJENANE

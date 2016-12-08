@@ -2,7 +2,7 @@ package com.fr.RepositoriesService;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.UserRoles;
+import com.fr.entities.UserRoles;
 
 /**
  * Created by: Wail DJENANE on May 29, 2016

@@ -1,4 +1,4 @@
-package com.fr.pojos;
+package com.fr.entities;
 
 import java.io.Serializable;
 import java.util.Date;

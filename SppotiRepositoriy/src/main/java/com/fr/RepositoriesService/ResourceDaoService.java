@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.Resources;
+import com.fr.entities.Resources;
 
 /**
  * Created by: Wail DJENANE on Oct 5, 2016

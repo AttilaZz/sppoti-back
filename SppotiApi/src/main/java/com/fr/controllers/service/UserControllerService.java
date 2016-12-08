@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import com.fr.models.HeaderData;
 import com.fr.models.Notification;
 import com.fr.models.PostResponse;
-import com.fr.pojos.FriendShip;
-import com.fr.pojos.Users;
+import com.fr.entities.FriendShip;
+import com.fr.entities.Users;
 
 @Service
 public interface UserControllerService extends AbstractControllerService {

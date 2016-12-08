@@ -10,8 +10,8 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 
 import com.fr.controllers.service.ActuControllerService;
-import com.fr.pojos.Post;
-import com.fr.pojos.Sport;
+import com.fr.entities.Post;
+import com.fr.entities.Sport;
 
 /**
  * Created by: Wail DJENANE on Jun 21, 2016

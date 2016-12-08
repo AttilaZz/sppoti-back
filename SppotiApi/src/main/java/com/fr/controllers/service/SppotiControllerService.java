@@ -7,10 +7,10 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.Address;
-import com.fr.pojos.Sppoti;
-import com.fr.pojos.Sport;
-import com.fr.pojos.Users;
+import com.fr.entities.Address;
+import com.fr.entities.Sppoti;
+import com.fr.entities.Sport;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016

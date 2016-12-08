@@ -26,9 +26,9 @@ import com.fr.exceptions.EmptyArgumentException;
 import com.fr.models.JsonPostRequest;
 import com.fr.models.SppotiResponse;
 import com.fr.models.SppotiRequest;
-import com.fr.pojos.Address;
-import com.fr.pojos.Sppoti;
-import com.fr.pojos.Users;
+import com.fr.entities.Address;
+import com.fr.entities.Sppoti;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016

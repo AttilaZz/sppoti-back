@@ -5,7 +5,7 @@ package com.fr.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.pojos.Address;
+import com.fr.entities.Address;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016

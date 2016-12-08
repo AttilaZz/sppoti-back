@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.gson.annotations.SerializedName;
-import com.fr.pojos.Address;
+import com.fr.entities.Address;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016

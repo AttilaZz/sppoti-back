@@ -8,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import com.fr.RepositoriesService.EditContentDaoService;
-import com.fr.pojos.EditHistory;
+import com.fr.entities.EditHistory;
 
 /**
  * Created by: Wail DJENANE on Aug 20, 2016

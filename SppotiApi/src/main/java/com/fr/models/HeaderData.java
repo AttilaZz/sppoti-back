@@ -5,7 +5,7 @@ package com.fr.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.pojos.FriendShip;
+import com.fr.entities.FriendShip;
 
 import java.util.List;
 

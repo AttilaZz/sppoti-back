@@ -8,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import com.fr.RepositoriesService.MessageDaoService;
-import com.fr.pojos.Messages;
+import com.fr.entities.Messages;
 
 /**
  * Created by: Wail DJENANE on Jun 16, 2016

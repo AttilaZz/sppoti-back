@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 
 import com.fr.controllers.service.SignUpService;
 import com.fr.models.SignUpRequest;
-import com.fr.pojos.Sport;
-import com.fr.pojos.UserRoles;
-import com.fr.pojos.Users;
+import com.fr.entities.Sport;
+import com.fr.entities.UserRoles;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE On June 01, 2016

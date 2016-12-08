@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.FriendShip;
+import com.fr.entities.FriendShip;
 
 /**
  * Created by: Wail DJENANE on Jul 3, 2016

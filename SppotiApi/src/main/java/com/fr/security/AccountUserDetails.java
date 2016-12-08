@@ -1,8 +1,8 @@
 package com.fr.security;
 
 import com.fr.aop.TraceAuthentification;
-import com.fr.pojos.UserRoles;
-import com.fr.pojos.Users;
+import com.fr.entities.UserRoles;
+import com.fr.entities.Users;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

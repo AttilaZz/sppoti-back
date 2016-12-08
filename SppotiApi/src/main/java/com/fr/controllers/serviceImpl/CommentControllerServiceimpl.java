@@ -12,10 +12,10 @@ import com.fr.controllers.service.CommentControllerService;
 import com.fr.models.CommentModel;
 import com.fr.models.ContentEditedResponse;
 import com.fr.models.HeaderData;
-import com.fr.pojos.Comment;
-import com.fr.pojos.EditHistory;
-import com.fr.pojos.LikeContent;
-import com.fr.pojos.Post;
+import com.fr.entities.Comment;
+import com.fr.entities.EditHistory;
+import com.fr.entities.LikeContent;
+import com.fr.entities.Post;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016

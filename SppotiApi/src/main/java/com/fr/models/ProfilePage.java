@@ -8,9 +8,9 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.pojos.Address;
-import com.fr.pojos.Messages;
-import com.fr.pojos.Sport;
+import com.fr.entities.Address;
+import com.fr.entities.Messages;
+import com.fr.entities.Sport;
 
 /**
  * Created by: Wail DJENANE on Jun 11, 2016

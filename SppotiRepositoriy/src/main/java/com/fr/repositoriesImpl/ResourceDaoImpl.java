@@ -8,7 +8,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Component;
 
 import com.fr.RepositoriesService.ResourceDaoService;
-import com.fr.pojos.Resources;
+import com.fr.entities.Resources;
 
 /**
  * Created by: Wail DJENANE on Oct 5, 2016

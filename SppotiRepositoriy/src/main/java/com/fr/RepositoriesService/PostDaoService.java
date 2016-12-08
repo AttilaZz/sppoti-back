@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.Post;
+import com.fr.entities.Post;
 
 /**
  * Created by: Wail DJENANE on Jun 4, 2016

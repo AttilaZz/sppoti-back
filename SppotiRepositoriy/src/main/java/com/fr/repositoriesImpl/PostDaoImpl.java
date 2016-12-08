@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.fr.RepositoriesService.PostDaoService;
-import com.fr.pojos.Post;
+import com.fr.entities.Post;
 
 /**
  * Created by: Wail DJENANE on Jun 4, 2016

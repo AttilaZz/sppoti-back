@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.Notifications;
+import com.fr.entities.Notifications;
 
 /**
  * Created by: Wail DJENANE on Nov 10, 2016

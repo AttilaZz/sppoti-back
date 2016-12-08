@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.Comment;
+import com.fr.entities.Comment;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016

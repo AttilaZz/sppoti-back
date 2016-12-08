@@ -1,4 +1,4 @@
-package com.fr.pojos;
+package com.fr.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

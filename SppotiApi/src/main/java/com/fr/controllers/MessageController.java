@@ -23,8 +23,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fr.aop.TraceAuthentification;
 import com.fr.controllers.service.MessageControllerService;
 import com.fr.models.MessageRequest;
-import com.fr.pojos.Messages;
-import com.fr.pojos.Users;
+import com.fr.entities.Messages;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE on Jun 25, 2016

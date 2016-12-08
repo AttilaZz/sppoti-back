@@ -26,11 +26,11 @@ import com.fr.models.CommentModel;
 import com.fr.models.ContentEditedResponse;
 import com.fr.models.HeaderData;
 import com.fr.models.JsonPostRequest;
-import com.fr.pojos.Comment;
-import com.fr.pojos.EditHistory;
-import com.fr.pojos.LikeContent;
-import com.fr.pojos.Post;
-import com.fr.pojos.Users;
+import com.fr.entities.Comment;
+import com.fr.entities.EditHistory;
+import com.fr.entities.LikeContent;
+import com.fr.entities.Post;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016

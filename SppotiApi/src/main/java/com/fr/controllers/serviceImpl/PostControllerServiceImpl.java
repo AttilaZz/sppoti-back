@@ -16,15 +16,15 @@ import com.fr.controllers.service.PostControllerService;
 import com.fr.models.ContentEditedResponse;
 import com.fr.models.HeaderData;
 import com.fr.models.PostResponse;
-import com.fr.pojos.Address;
-import com.fr.pojos.Comment;
-import com.fr.pojos.EditHistory;
-import com.fr.pojos.LikeContent;
-import com.fr.pojos.Notifications;
-import com.fr.pojos.Post;
-import com.fr.pojos.Sport;
-import com.fr.pojos.Sppoti;
-import com.fr.pojos.Users;
+import com.fr.entities.Address;
+import com.fr.entities.Comment;
+import com.fr.entities.EditHistory;
+import com.fr.entities.LikeContent;
+import com.fr.entities.Notifications;
+import com.fr.entities.Post;
+import com.fr.entities.Sport;
+import com.fr.entities.Sppoti;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016

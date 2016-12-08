@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.LikeContent;
+import com.fr.entities.LikeContent;
 
 /**
  * Created by: Wail DJENANE on Aug 15, 2016

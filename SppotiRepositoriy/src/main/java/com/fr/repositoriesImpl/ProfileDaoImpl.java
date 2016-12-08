@@ -6,7 +6,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.fr.RepositoriesService.ProfileDaoService;
-import com.fr.pojos.UserRoles;
+import com.fr.entities.UserRoles;
 
 /**
  * Created by: Wail DJENANE on May 29, 2016

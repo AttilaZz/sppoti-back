@@ -11,15 +11,15 @@ import com.fr.enums.RessourceType;
 import com.fr.models.HeaderData;
 import com.fr.models.Notification;
 import com.fr.models.PostResponse;
-import com.fr.pojos.Address;
-import com.fr.pojos.Comment;
-import com.fr.pojos.EditHistory;
-import com.fr.pojos.FriendShip;
-import com.fr.pojos.Notifications;
-import com.fr.pojos.Post;
-import com.fr.pojos.Resources;
-import com.fr.pojos.Sppoti;
-import com.fr.pojos.Users;
+import com.fr.entities.Address;
+import com.fr.entities.Comment;
+import com.fr.entities.EditHistory;
+import com.fr.entities.FriendShip;
+import com.fr.entities.Notifications;
+import com.fr.entities.Post;
+import com.fr.entities.Resources;
+import com.fr.entities.Sppoti;
+import com.fr.entities.Users;
 
 @Component("userControllerService")
 public class UserControllerServiceImpl extends AbstractControllerServiceImpl implements UserControllerService {

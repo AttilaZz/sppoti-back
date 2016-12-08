@@ -5,8 +5,8 @@ package com.fr.controllers.service;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.FriendShip;
-import com.fr.pojos.Users;
+import com.fr.entities.FriendShip;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE on Jul 3, 2016

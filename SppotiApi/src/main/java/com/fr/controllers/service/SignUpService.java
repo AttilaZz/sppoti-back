@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.fr.models.SignUpRequest;
-import com.fr.pojos.UserRoles;
-import com.fr.pojos.Sport;
-import com.fr.pojos.Users;
+import com.fr.entities.UserRoles;
+import com.fr.entities.Sport;
+import com.fr.entities.Users;
 
 @Service
 public interface SignUpService {

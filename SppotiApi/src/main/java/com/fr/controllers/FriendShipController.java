@@ -22,8 +22,8 @@ import com.google.gson.Gson;
 import com.fr.controllers.service.FriendControllerService;
 import com.fr.models.FriendRequest;
 import com.fr.models.JsonPostRequest;
-import com.fr.pojos.FriendShip;
-import com.fr.pojos.Users;
+import com.fr.entities.FriendShip;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE on Jul 3, 2016

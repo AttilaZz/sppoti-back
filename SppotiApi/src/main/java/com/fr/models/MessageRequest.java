@@ -7,8 +7,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.pojos.Messages;
-import com.fr.pojos.Users;
+import com.fr.entities.Messages;
+import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE on Jun 25, 2016

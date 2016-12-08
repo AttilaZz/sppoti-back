@@ -7,7 +7,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import com.fr.RepositoriesService.SportDaoService;
-import com.fr.pojos.Sport;
+import com.fr.entities.Sport;
 
 /**
  * Created by: Wail DJENANE on May 29, 2016

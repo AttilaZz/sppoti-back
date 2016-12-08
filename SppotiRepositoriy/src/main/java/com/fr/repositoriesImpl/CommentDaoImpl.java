@@ -1,7 +1,7 @@
 package com.fr.repositoriesImpl;
 
 import com.fr.RepositoriesService.CommentDaoService;
-import com.fr.pojos.Comment;
+import com.fr.entities.Comment;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;

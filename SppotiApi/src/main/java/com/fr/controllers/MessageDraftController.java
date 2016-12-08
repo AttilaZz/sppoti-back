@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fr.aop.TraceAuthentification;
 import com.fr.controllers.service.MessageControllerService;
-import com.fr.pojos.Messages;
+import com.fr.entities.Messages;
 
 /**
  * Created by: Wail DJENANE on Jun 25, 2016

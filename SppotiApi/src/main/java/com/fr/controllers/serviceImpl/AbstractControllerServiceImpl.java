@@ -6,7 +6,7 @@ import com.fr.controllers.service.AbstractControllerService;
 import com.fr.mail.ApplicationMailer;
 import com.fr.models.CommentModel;
 import com.fr.models.ContentEditedResponse;
-import com.fr.pojos.*;
+import com.fr.entities.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.fr.pojos.EditHistory;
+import com.fr.entities.EditHistory;
 
 /**
  * Created by: Wail DJENANE on Aug 20, 2016
