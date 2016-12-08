@@ -1,4 +1,4 @@
-package com.spooti.models;
+package com.fr.models;
 
 /**
  * Created by: Wail DJENANE on Aug 18, 2016

@@ -33,7 +33,6 @@ import com.fr.pojos.Users;
 /**
  * Created by: Wail DJENANE On June 01, 2016
  */
-@CrossOrigin
 @RestController
 @RequestMapping(value = "/inscription")
 public class SignUpController {
