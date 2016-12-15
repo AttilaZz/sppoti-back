@@ -65,7 +65,7 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
-        Users it addusers = userRepository.getById(accountUserDetails.getId());
+        Users users = userRepository.getById(accountUserDetails.getId());
 
         Gson gson = new Gson();
         response.getWriter().write(gson.toJson(users.getUsername()));
