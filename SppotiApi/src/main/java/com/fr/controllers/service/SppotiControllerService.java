@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.controllers.service;
 
@@ -19,28 +19,28 @@ import com.fr.entities.Users;
 @Service
 public interface SppotiControllerService extends AbstractControllerService {
 
-	void verifyAllDataBeforeSaving(String titre, Long sportId, String description, String date, Long[] teamPeopleId,
+    void verifyAllDataBeforeSaving(String titre, Long sportId, String description, String date, Long[] teamPeopleId,
                                    Address spotAddress, int membersCount, int type, String tags) throws Exception;
 
-	Sport getSportGame();
+    Sport getSportGame();
 
-	void setSportGame(Sport sportGame);
+    void setSportGame(Sport sportGame);
 
-	Address getAddressGame();
+    Address getAddressGame();
 
-	void setAddressGame(Address addressGame);
+    void setAddressGame(Address addressGame);
 
-	Set<Users> getTeamGame();
+    Set<Users> getTeamGame();
 
-	void setTeamGame(Set<Users> teamGame);
+    void setTeamGame(Set<Users> teamGame);
 
-	String getTitre();
+    String getTitre();
 
-	void setTitre(String titre);
+    void setTitre(String titre);
 
-	String getDescription();
+    String getDescription();
 
-	void setDescription(String description);
+    void setDescription(String description);
 
-	boolean saveSpoot(Sppoti spotToSave);
+    boolean saveSpoot(Sppoti spotToSave);
 }

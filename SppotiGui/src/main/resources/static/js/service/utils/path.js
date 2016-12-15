@@ -7,5 +7,5 @@ App.constant('Paths', {
     applicationRootAddress: "http://localhost:8080",
     loginAddress: "/login",
     logoutAddress: "/logout",
-    adminAddress:"/admin"
+    adminAddress: "/admin"
 });

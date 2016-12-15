@@ -4,26 +4,26 @@ package com.fr.models;
  * Created by: Wail DJENANE on Aug 18, 2016
  */
 public enum SportList {
-	
-	FOOTBALL("Football"),
+
+    FOOTBALL("Football"),
     TENNIS("Tennis"),
     BASKETBALL("Basketball"),
     BOX("Box"),
     Rugby("Rugby"),
     HANDBALL("Handball"),
     VOLEYBALL("Voleyball"),
-	NATATION("Natation"),
-	GOLF("Golf"),
-	JUDO("Judo"),
-	JOGGING("Jogging");
-     
+    NATATION("Natation"),
+    GOLF("Golf"),
+    JUDO("Judo"),
+    JOGGING("Jogging");
+
     String sportType;
-     
-    private SportList(String sportName){
+
+    SportList(String sportName) {
         this.sportType = sportName;
     }
-     
-    public String getSportType(){
+
+    public String getSportType() {
         return sportType;
     }
 }

@@ -18,17 +18,17 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class EntryPointUnAthorisedHandler implements AuthenticationEntryPoint {
 
-	@Override
-	public void commence(HttpServletRequest arg0, HttpServletResponse arg1, AuthenticationException arg2)
-			throws IOException, ServletException {
+    @Override
+    public void commence(HttpServletRequest arg0, HttpServletResponse arg1, AuthenticationException arg2)
+            throws IOException, ServletException {
 
-		arg1.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
-		arg1.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
-		arg1.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
-		arg1.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
-		arg1.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
+        arg1.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
+        arg1.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
+        arg1.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
+        arg1.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
+        arg1.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
 
-		arg1.sendError(HttpServletResponse.SC_FORBIDDEN, "Acces Denied");
-	}
+        arg1.sendError(HttpServletResponse.SC_FORBIDDEN, "Acces Denied");
+    }
 
 }

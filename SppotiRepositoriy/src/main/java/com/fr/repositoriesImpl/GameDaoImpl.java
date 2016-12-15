@@ -11,7 +11,7 @@ import com.fr.entities.Sppoti;
 @Component
 public class GameDaoImpl extends GenericDaoImpl<Sppoti, Integer> implements GameDaoService {
 
-	public GameDaoImpl() {
-		this.entityClass = Sppoti.class;
-	}
+    public GameDaoImpl() {
+        this.entityClass = Sppoti.class;
+    }
 }

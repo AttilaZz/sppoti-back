@@ -6,9 +6,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.RepositoriesService.ProfileDaoService;
 import com.fr.RepositoriesService.SportDaoService;
 import com.fr.entities.Sport;
-import com.fr.entities.UserRoles;
+import com.fr.entities.Roles;
 import com.fr.models.SportList;
 import com.fr.models.UserRoleType;
+import com.fr.repositories.RoleRepository;
+import com.fr.repositories.SportRepository;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,10 +27,10 @@ import java.util.List;
 public class InitMainData {
 
     @Autowired
-    private SportDaoService sportDaoService;
+    private SportRepository sportRepository;
 
     @Autowired
-    private ProfileDaoService profileDaoService;
+    private RoleRepository roleRepository;
 
     private static Logger logger = Logger.getLogger(InitMainData.class);
 
@@ -38,7 +40,7 @@ public class InitMainData {
     @Test
     public void insertSports() throws JsonProcessingException {
 
-        List<Sport> databaseSportList = sportDaoService.getAll();
+        List<Sport> databaseSportList = sportRepository.findAll();
         if (!databaseSportList.isEmpty() || databaseSportList.size() != sportListSize) {
             // clear list
 
@@ -85,15 +87,21 @@ public class InitMainData {
             boolean isSaved = false;
 
             logger.info("New sports size " + newSports.size());
+
             for (int i = 0; i < newSports.size(); i++) {
                 /*
                  * Save all new sports
 				 */
-                if (sportDaoService.saveOrUpdate(newSports.get(i))) {
+                try {
+                    sportRepository.save(newSports.get(i));
+
                     isSaved = true;
-                } else {
+
+                } catch (Exception e) {
                     isSaved = false;
+
                 }
+
             }
 
             if (isSaved)
@@ -111,26 +119,26 @@ public class InitMainData {
     @Test
     public void insertRoles() throws JsonProcessingException {
 
-        List<UserRoles> databaseProfileList = profileDaoService.getAll();
+        List<Roles> databaseProfileList = roleRepository.findAll();
         if (!databaseProfileList.isEmpty() || databaseProfileList.size() != roleListSize) {
             // clear list
 
-            List<UserRoles> newRoles = new ArrayList<>();
+            List<Roles> newRoles = new ArrayList<>();
             UserRoleType[] uroleList = UserRoleType.values().clone();
 
 			/*
-			 * loop the database to detect the new sports if no sports has been
+             * loop the database to detect the new sports if no sports has been
 			 * found in db, insert all
 			 */
             if (databaseProfileList.size() > 0) {
-				/*
+                /*
 				 * check new one
 				 */
                 for (int i = 0; i < roleListSize; i++) {
                     boolean exist = false;
                     String definedRole = uroleList[i].getUserProfileType();
 
-                    for (UserRoles sport : databaseProfileList) {
+                    for (Roles sport : databaseProfileList) {
 
                         if (sport.getName().equals(definedRole)) {
                             exist = true;
@@ -139,7 +147,7 @@ public class InitMainData {
 
                     }
                     if (!exist) {
-                        UserRoles s = new UserRoles(definedRole);
+                        Roles s = new Roles(definedRole);
                         newRoles.add(s);
                     }
                 }
@@ -150,7 +158,7 @@ public class InitMainData {
 				 */
                 for (int i = 0; i < roleListSize; i++) {
                     String definedUserRole = uroleList[i].getUserProfileType();
-                    UserRoles ur = new UserRoles(definedUserRole);
+                    Roles ur = new Roles(definedUserRole);
                     newRoles.add(ur);
                 }
             }
@@ -162,10 +170,14 @@ public class InitMainData {
 				/*
 				 * Save all new sports
 				 */
-                if (profileDaoService.saveOrUpdate(newRoles.get(i))) {
+                try {
+                    roleRepository.save(newRoles.get(i));
                     isSaved = true;
-                } else {
+
+                } catch (Exception e) {
+
                     isSaved = false;
+
                 }
             }
 

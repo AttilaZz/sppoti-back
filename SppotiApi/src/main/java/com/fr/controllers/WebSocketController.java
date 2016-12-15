@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.controllers;
 
@@ -21,51 +21,52 @@ import com.fr.models.demo.Result;
 
 @Controller
 public class WebSocketController {
-	@MessageMapping("/add")
-	@SendTo("/topic/showResult")
-	public Result addNum(CalcInput input) throws Exception {
-		Thread.sleep(1000);
-		Result result = new Result(input.getNum1() + "+" + input.getNum2() + "=" + (input.getNum1() + input.getNum2()));
-		return result;
-	}
 
-	@MessageMapping("/trade")
-	@SendToUser("/queue/position-updates")
-	public Result executeTrade(Message input, Principal principal) throws InterruptedException {
-		// ...
-		Thread.sleep(1000);
-		Result result = new Result(input.getValue());
-		System.out.println("PRINT RECEIVED: " + input.getValue());
-		return result;
-	}
+    @MessageMapping("/add")
+    @SendTo("/topic/showResult")
+    public Result addNum(CalcInput input) throws Exception {
+        Thread.sleep(1000);
+        Result result = new Result(input.getNum1() + "+" + input.getNum2() + "=" + (input.getNum1() + input.getNum2()));
+        return result;
+    }
 
-	// @MessageExceptionHandler
-	// @SendToUser(destinations = "/queue/errors", broadcast = false)
-	// public ApplicationError handleException(MyBusinessException exception) {
-	// // ...
-	// return appError;
-	// }
+    @MessageMapping("/trade")
+    @SendToUser("/queue/position-updates")
+    public Result executeTrade(Message input, Principal principal) throws InterruptedException {
+        // ...
+        Thread.sleep(1000);
+        Result result = new Result(input.getValue());
+        System.out.println("PRINT RECEIVED: " + input.getValue());
+        return result;
+    }
 
-	@RequestMapping("/start")
-	public String start() {
-		return "start";
-	}
+    // @MessageExceptionHandler
+    // @SendToUser(destinations = "/queue/errors", broadcast = false)
+    // public ApplicationError handleException(MyBusinessException exception) {
+    // // ...
+    // return appError;
+    // }
 
-	@MessageMapping("/search")
-	@SendToUser // <- maps to "/user/queue/search"
-	public String search(@Payload String xxx) {
-		return "TEST1234";
-	}
+    @RequestMapping("/start")
+    public String start() {
+        return "start";
+    }
 
-	/* Inner Class for Messaging */
-	private static class Message {
+    @MessageMapping("/search")
+    @SendToUser // <- maps to "/user/queue/search"
+    public String search(@Payload String xxx) {
+        return "TEST1234";
+    }
 
-		private String message;
+    /* Inner Class for Messaging */
+    private static class Message {
 
-		public String getValue() {
-			return message;
-		}
+        private String message;
 
-	}
+        public String getValue() {
+            return message;
+        }
+
+    }
 
 }

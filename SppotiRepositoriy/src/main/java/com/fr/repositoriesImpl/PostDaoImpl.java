@@ -18,89 +18,88 @@ import com.fr.entities.Post;
  */
 
 @Repository("postDao")
-@Transactional
 public class PostDaoImpl extends GenericDaoImpl<Post, Integer> implements PostDaoService {
 
-	@Value("${key.postsPerPage}")
-	private String postsPageSize;
+    @Value("${key.postsPerPage}")
+    private String postsPageSize;
 
-	public PostDaoImpl() {
-		this.entityClass = Post.class;
-	}
+    public PostDaoImpl() {
+        this.entityClass = Post.class;
+    }
 
-	private int validatePerPageInjection() {
-		int perPage = 0;
-		try {
-			perPage = Integer.parseInt(postsPageSize);
+    private int validatePerPageInjection() {
+        int perPage = 0;
+        try {
+            perPage = Integer.parseInt(postsPageSize);
 
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			perPage = 0;
-		}
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            perPage = 0;
+        }
 
-		return perPage;
-	}
+        return perPage;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Post> getPostsFromLastPage(Long userId, int page) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Post> getPostsFromLastPage(Long userId, int page) {
 
-		int debut = page * validatePerPageInjection();
+        int debut = page * validatePerPageInjection();
 
-		Criteria cr = getSession().createCriteria(entityClass, "post");
+        Criteria cr = getSession().createCriteria(entityClass, "post");
 
-		cr.add(Restrictions.eq("post.user.id", userId));
+        cr.add(Restrictions.eq("post.user.id", userId));
 
-		cr.setFirstResult(debut).setMaxResults(validatePerPageInjection()).addOrder(Order.desc("post.datetimeCreated"));
+        cr.setFirstResult(debut).setMaxResults(validatePerPageInjection()).addOrder(Order.desc("post.datetimeCreated"));
 
-		return cr.list();
+        return cr.list();
 
-	}
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Post> getPostsFromSubscribedUserSports(Long[] sportsId, int buttomMarker) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Post> getPostsFromSubscribedUserSports(Long[] sportsId, int buttomMarker) {
 
-		int debut = buttomMarker * validatePerPageInjection();
-		return getSession().createCriteria(entityClass, "post").add(Restrictions.in("post.sport.id", sportsId))
-				// .add(Restrictions.eq("post.userPost.id", userId))
-				.setFirstResult(debut).setMaxResults(validatePerPageInjection())
-				.addOrder(Order.desc("post.datetimeCreated"))
-				// .add( Restrictions.disjunction()
-				// .add( Restrictions.isNull("age") )
-				// .add( Restrictions.eq("age", new Integer(0) ) )
-				// .add( Restrictions.eq("age", new Integer(1) ) )
-				// .add( Restrictions.eq("age", new Integer(2) ) )
-				// )
-				.list();
-	}
+        int debut = buttomMarker * validatePerPageInjection();
+        return getSession().createCriteria(entityClass, "post").add(Restrictions.in("post.sport.id", sportsId))
+                // .add(Restrictions.eq("post.userPost.id", userId))
+                .setFirstResult(debut).setMaxResults(validatePerPageInjection())
+                .addOrder(Order.desc("post.datetimeCreated"))
+                // .add( Restrictions.disjunction()
+                // .add( Restrictions.isNull("age") )
+                // .add( Restrictions.eq("age", new Integer(0) ) )
+                // .add( Restrictions.eq("age", new Integer(1) ) )
+                // .add( Restrictions.eq("age", new Integer(2) ) )
+                // )
+                .list();
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Post> getPhotoGalleryPostsFromLastMajId(Long userId, int buttomMarker) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Post> getPhotoGalleryPostsFromLastMajId(Long userId, int buttomMarker) {
 
-		int debut = buttomMarker * validatePerPageInjection();
+        int debut = buttomMarker * validatePerPageInjection();
 
-		Criteria cr = getSession().createCriteria(entityClass, "post").add(Restrictions.eq("post.user.id", userId))
-				.add(Restrictions.isNotNull("post.album")).setFirstResult(debut)
-				.setMaxResults(validatePerPageInjection()).addOrder(Order.desc("post.datetimeCreated"));
+        Criteria cr = getSession().createCriteria(entityClass, "post").add(Restrictions.eq("post.user.id", userId))
+                .add(Restrictions.isNotNull("post.album")).setFirstResult(debut)
+                .setMaxResults(validatePerPageInjection()).addOrder(Order.desc("post.datetimeCreated"));
 
-		return cr.list();
+        return cr.list();
 
-	}
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Post> getVideoGalleryPostsFromLastMajId(Long userId, int buttomMarker) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Post> getVideoGalleryPostsFromLastMajId(Long userId, int buttomMarker) {
 
-		int debut = buttomMarker * validatePerPageInjection();
+        int debut = buttomMarker * validatePerPageInjection();
 
-		Criteria cr = getSession().createCriteria(entityClass, "post").add(Restrictions.eq("post.userPost.id", userId))
-				.add(Restrictions.isNotNull("post.videoLink")).setFirstResult(debut)
-				.setMaxResults(validatePerPageInjection()).addOrder(Order.desc("post.datetimeCreated"));
+        Criteria cr = getSession().createCriteria(entityClass, "post").add(Restrictions.eq("post.userPost.id", userId))
+                .add(Restrictions.isNotNull("post.videoLink")).setFirstResult(debut)
+                .setMaxResults(validatePerPageInjection()).addOrder(Order.desc("post.datetimeCreated"));
 
-		return cr.list();
+        return cr.list();
 
-	}
+    }
 
 }

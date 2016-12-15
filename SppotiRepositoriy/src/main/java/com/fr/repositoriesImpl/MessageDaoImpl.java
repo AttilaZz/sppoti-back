@@ -16,37 +16,37 @@ import com.fr.entities.Messages;
 @Component
 public class MessageDaoImpl extends GenericDaoImpl<Messages, Integer> implements MessageDaoService {
 
-	private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 10;
 
-	public MessageDaoImpl() {
-		this.entityClass = Messages.class;
-	}
+    public MessageDaoImpl() {
+        this.entityClass = Messages.class;
+    }
 
-	@Override
-	public Messages getMessageById(Long id) {
-		return getEntityByID(id);
-	}
+    @Override
+    public Messages getMessageById(Long id) {
+        return getEntityByID(id);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Messages> getAllSentMessagesByUserId(Long userId, int buttomMarker) {
-		int debut = buttomMarker * PAGE_SIZE;
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Messages> getAllSentMessagesByUserId(Long userId, int buttomMarker) {
+        int debut = buttomMarker * PAGE_SIZE;
 
-		Criteria cr = getSession().createCriteria(entityClass, "msg").add(Restrictions.eq("userMessage.id", userId))
-				.setFirstResult(debut).setMaxResults(PAGE_SIZE).addOrder(Order.desc("datetime"));
+        Criteria cr = getSession().createCriteria(entityClass, "msg").add(Restrictions.eq("userMessage.id", userId))
+                .setFirstResult(debut).setMaxResults(PAGE_SIZE).addOrder(Order.desc("datetime"));
 
-		return cr.list();
-	}
+        return cr.list();
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Messages> getAllReceivedtMessagesByUserId(Long userId, int buttomMarker) {
-		int debut = buttomMarker * PAGE_SIZE;
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Messages> getAllReceivedtMessagesByUserId(Long userId, int buttomMarker) {
+        int debut = buttomMarker * PAGE_SIZE;
 
-		Criteria cr = getSession().createCriteria(entityClass, "msg").add(Restrictions.eq("receiver_id", userId))
-				.setFirstResult(debut).setMaxResults(PAGE_SIZE).addOrder(Order.desc("datetime"));
+        Criteria cr = getSession().createCriteria(entityClass, "msg").add(Restrictions.eq("receiver_id", userId))
+                .setFirstResult(debut).setMaxResults(PAGE_SIZE).addOrder(Order.desc("datetime"));
 
-		return cr.list();
-	}
+        return cr.list();
+    }
 
 }

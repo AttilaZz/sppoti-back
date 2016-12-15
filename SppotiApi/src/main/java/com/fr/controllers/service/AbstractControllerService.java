@@ -15,7 +15,8 @@ public interface AbstractControllerService {
 
     Users getUserFromUsernameType(String loginUser);
 
+    int getUserLoginType(String username);
+
     Users getUserById(Long id);
 
-    int getUserLoginType(String username);
 }

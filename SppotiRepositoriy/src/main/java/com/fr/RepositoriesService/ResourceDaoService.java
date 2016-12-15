@@ -13,16 +13,16 @@ import com.fr.entities.Resources;
 @Service
 public interface ResourceDaoService extends GenericDaoService<Resources, Integer> {
 
-	/**
-	 * @param userId
-	 * @return
-	 */
-	List<Resources> getLastUserAvatar(Long userId);
+    /**
+     * @param userId
+     * @return
+     */
+    List<Resources> getLastUserAvatar(Long userId);
 
-	/**
-	 * @param userId
-	 * @return
-	 */
-	List<Resources> getLastUserCover(Long userId);
+    /**
+     * @param userId
+     * @return
+     */
+    List<Resources> getLastUserCover(Long userId);
 
 }

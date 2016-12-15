@@ -26,7 +26,8 @@
                 <span class="sr-only">Error:</span>
                 l'adresse mail est invalide
             </div>
-            <input ng-model="ctrl.user.username" type="text" name="username" id="inputEmail" class="form-control fa fa-user right"
+            <input ng-model="ctrl.user.username" type="text" name="username" id="inputEmail"
+                   class="form-control fa fa-user right"
                    placeholder="Email, pseudo, téléphone" required autofocus>
             <div role="alert" ng-show="loginForm.userPassword.$invalid">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -34,7 +35,8 @@
                 mot de passe est invalide
             </div>
             <input ng-model="ctrl.user.password" type="password" id="inputPassword" name="userPassword"
-                   class="form-control fa fa-key right" ng-minlength="5" ng-maxlength="20" placeholder="mot de passe " required>
+                   class="form-control fa fa-key right" ng-minlength="5" ng-maxlength="20" placeholder="mot de passe "
+                   required>
 
             <div id="remember" class="checkbox">
 
@@ -48,6 +50,6 @@
         <a href="#" class="forgot-password">
             mot de passe oublié ?
         </a>
-        </div>
-    </div><!-- /card-container -->
+    </div>
+</div><!-- /card-container -->
 </div>

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.models;
 
@@ -17,68 +17,68 @@ import com.fr.entities.Users;
 @JsonInclude(Include.NON_EMPTY)
 public class SppotiResponse {
 
-	private Users userSpooti;
-	private String titre;
-	private Sport sportId;
-	private String description;
-	private String date;
-	private List<Users> teamPeopleId;
-	private Address spotAddress;
+    private Users userSpooti;
+    private String titre;
+    private Sport sportId;
+    private String description;
+    private String date;
+    private List<Users> teamPeopleId;
+    private Address spotAddress;
 
-	public String getTitre() {
-		return titre;
-	}
+    public String getTitre() {
+        return titre;
+    }
 
-	public void setTitre(String titre) {
-		this.titre = titre;
-	}
+    public void setTitre(String titre) {
+        this.titre = titre;
+    }
 
-	public Sport getSportId() {
-		return sportId;
-	}
+    public Sport getSportId() {
+        return sportId;
+    }
 
-	public void setSportId(Sport sportId) {
-		this.sportId = sportId;
-	}
+    public void setSportId(Sport sportId) {
+        this.sportId = sportId;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getDate() {
-		return date;
-	}
+    public String getDate() {
+        return date;
+    }
 
-	public void setDate(String date) {
-		this.date = date;
-	}
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-	public List<Users> getTeamPeopleId() {
-		return teamPeopleId;
-	}
+    public List<Users> getTeamPeopleId() {
+        return teamPeopleId;
+    }
 
-	public void setTeamPeopleId(List<Users> teamPeopleId) {
-		this.teamPeopleId = teamPeopleId;
-	}
+    public void setTeamPeopleId(List<Users> teamPeopleId) {
+        this.teamPeopleId = teamPeopleId;
+    }
 
-	public Address getSpotAddress() {
-		return spotAddress;
-	}
+    public Address getSpotAddress() {
+        return spotAddress;
+    }
 
-	public void setSpotAddress(Address spotAddress) {
-		this.spotAddress = spotAddress;
-	}
+    public void setSpotAddress(Address spotAddress) {
+        this.spotAddress = spotAddress;
+    }
 
-	public Users getUserSpooti() {
-		return userSpooti;
-	}
+    public Users getUserSpooti() {
+        return userSpooti;
+    }
 
-	public void setUserSpooti(Users userSpooti) {
-		this.userSpooti = userSpooti;
-	}
+    public void setUserSpooti(Users userSpooti) {
+        this.userSpooti = userSpooti;
+    }
 
 }

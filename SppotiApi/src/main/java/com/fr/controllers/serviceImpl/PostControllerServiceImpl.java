@@ -1,30 +1,24 @@
 /**
- * 
+ *
  */
 package com.fr.controllers.serviceImpl;
 
-import java.io.Serializable;
+import com.fr.controllers.service.PostControllerService;
+import com.fr.entities.*;
+import com.fr.models.ContentEditedResponse;
+import com.fr.models.HeaderData;
+import com.fr.models.PostResponse;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
-
-import com.fr.controllers.service.PostControllerService;
-import com.fr.models.ContentEditedResponse;
-import com.fr.models.HeaderData;
-import com.fr.models.PostResponse;
-import com.fr.entities.Address;
-import com.fr.entities.Comment;
-import com.fr.entities.EditHistory;
-import com.fr.entities.LikeContent;
-import com.fr.entities.Notifications;
-import com.fr.entities.Post;
-import com.fr.entities.Sport;
-import com.fr.entities.Sppoti;
-import com.fr.entities.Users;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
@@ -33,272 +27,360 @@ import com.fr.entities.Users;
 @Component
 public class PostControllerServiceImpl extends AbstractControllerServiceImpl implements PostControllerService {
 
-	@Override
-	public Serializable savePost(Post post) {
-		return postDaoService.save(post);
+    @Value("${key.likesPerPage}")
+    private int like_size;
 
-	}
+    @Override
+    public Post savePost(Post post) {
+        return postRepository.save(post);
 
-	private static Logger LOGGER = Logger.getLogger(PostControllerServiceImpl.class);
+    }
 
-	/*
-	 * The post update method is used to update the location (address) of the
-	 * post and the content. This two jobs are separated, not at the same time.
-	 * 
-	 * That's why we check if the address is not null before persisting the new
-	 * content
-	 */
-	@Override
-	public boolean updatePost(EditHistory postEditRow, Address postEditAddress) {
-		if (postEditAddress != null) {
-			return addressDaoService.saveOrUpdate(postEditAddress);
-		}
+    private static Logger LOGGER = Logger.getLogger(PostControllerServiceImpl.class);
 
-		return editContentDaoService.saveOrUpdate(postEditRow);
+    /*
+     * The post update method is used to update the location (address) of the
+     * post and the content. This two jobs are separated, not at the same time.
+     *
+     * That's why we check if the address is not null before persisting the new
+     * content
+     */
+    @Override
+    public boolean updatePost(EditHistory postEditRow, Address postEditAddress) {
+        if (postEditAddress != null) {
 
-	}
+            try {
+                addressRepository.save(postEditAddress);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        } else {
+            try {
+                editHistoryRepository.save(postEditRow);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
 
-	@Override
-	public boolean deletePost(Post p) {
-		return postDaoService.delete(p);
-	}
+        return true;
+    }
 
-	@Override
-	public Post findPost(Long id) {
+    @Override
+    public boolean deletePost(Post p) {
 
-		return postDaoService.getEntityByID(id);
-	}
+        try {
+            p.setDeleted(true);
+            postRepository.save(p);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
-	@Override
-	public Sport getSportToUse(Long id) {
+    }
 
-		return sportDaoService.getEntityByID(id);
-	}
+    @Override
+    public Post findPost(Long id) {
+        if (postRepository.getById(id).isEmpty()) return null;
+        return postRepository.getById(id).get(0);
+    }
 
-	@Override
-	public Sppoti getGameById(Long id) {
+    @Override
+    public Sport getSportToUse(Long id) {
 
-		return sppotiDaoService.getEntityByID(id);
-	}
+        return sportRepository.getById(id);
+    }
 
-	@Override
-	public boolean likePost(LikeContent likeToSave) {
-		return likeDaoService.saveOrUpdate(likeToSave);
-	}
+    @Override
+    public Sppoti getGameById(Long id) {
 
-	@Override
-	public boolean unLikePost(Long posttId, Long userId) {
-		return likeDaoService.unLikePost(posttId, userId);
-	}
+        return sppotiDaoService.getEntityByID(id);
+    }
 
-	@Override
-	public boolean isPostAlreadyLikedByUser(Long postId, Long userId) {
-		return likeDaoService.isPostAlreadyLiked(postId, userId);
-	}
+    @Override
+    public boolean likePost(LikeContent likeToSave) {
+        try {
+            likeRepository.save(likeToSave);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-	@Override
-	public List<PostResponse> getPhotoGallery(Long userId, int buttomMarker) {
-		return fillPostResponseFromDbPost(buttomMarker, userId, 1, null);
+    @Override
+    public boolean unLikePost(Post post) {
+        try {
+            LikeContent likeContent = likeRepository.getByPostId(post.getId());
+            likeDaoService.delete(likeContent);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
-	}
+    }
 
-	@Override
-	public List<PostResponse> getVideoGallery(Long userId, int buttomMarker) {
-		return fillPostResponseFromDbPost(buttomMarker, userId, 2, null);
-	}
+    @Override
+    public boolean isPostAlreadyLikedByUser(Long postId, Long userId) {
 
-	private List<PostResponse> fillPostResponseFromDbPost(int bottomMajId, Long userId, int operationType,
-			Long postId) {
-		List<Post> dbContent = null;
+        return likeRepository.getByUserIdAndPostId(userId, postId) != null;
 
-		switch (operationType) {
-		case 1:
-			dbContent = postDaoService.getPhotoGalleryPostsFromLastMajId(userId, bottomMajId);
+    }
 
-			break;
-		case 2:
-			dbContent = postDaoService.getVideoGalleryPostsFromLastMajId(userId, bottomMajId);
+    @Override
+    public List<PostResponse> getPhotoGallery(Long userId, int buttomMarker) {
+        return fillPostResponseFromDbPost(buttomMarker, userId, 1, null);
 
-			break;
-		case 3:
-			Post p = new Post();
-			p.setId(postId);
-			dbContent = new ArrayList<Post>();
-			dbContent.add(postDaoService.getEntityByID(postId));
+    }
 
-			break;
-		default:
-			break;
-		}
+    @Override
+    public List<PostResponse> getVideoGallery(Long userId, int buttomMarker) {
+        return fillPostResponseFromDbPost(buttomMarker, userId, 2, null);
+    }
 
-		List<PostResponse> mContentResponse = new ArrayList<PostResponse>();
+    private List<PostResponse> fillPostResponseFromDbPost(int bottomMajId, Long userId, int operationType,
+                                                          Post post_param) {
+        List<Post> dbContent = new ArrayList<>();
 
-		for (Post post : dbContent) {
+        switch (operationType) {
+            case 1:
+                dbContent = postDaoService.getPhotoGalleryPostsFromLastMajId(userId, bottomMajId);
 
-			PostResponse pres = new PostResponse();
+                break;
+            case 2:
+                dbContent = postDaoService.getVideoGalleryPostsFromLastMajId(userId, bottomMajId);
 
-			if (post.getId() != null)
-				pres.setId(post.getId());
+                break;
+            case 3:
+                dbContent.add(post_param);
 
-			if (post.getContent() != null)
-				pres.setContent(post.getContent());
+                break;
+            default:
+                break;
+        }
 
-			if (post.getDatetimeCreated() != null)
-				pres.setDatetimeCreated(post.getDatetimeCreated());
+        List<PostResponse> mContentResponse = new ArrayList<>();
 
-			if (post.getAlbum() != null)
-				pres.setImageLink(post.getAlbum());
+        for (Post post : dbContent) {
 
-			if (post.getVideoLink() != null)
-				pres.setVideoLink(post.getVideoLink());
+            PostResponse pres = new PostResponse();
 
-			if (post.getGame() != null)
-				pres.setGame(post.getGame());
+            if (post.getId() != null)
+                pres.setId(post.getId());
 
-			if (post.getSport() != null && post.getSport().getId() != null) {
-				pres.setSportId(post.getSport().getId());
-			}
+            if (post.getContent() != null)
+                pres.setContent(post.getContent());
 
-			// Access here if details message is requested - otherwise no need
-			// to show comments
-			if (operationType == 3) {
-				List<Comment> commentsList = new ArrayList<>();
-				if (post.getComments() != null) {
-					commentsList.clear();
-					commentsList = commentDaoService.getCommentsFromLastMajId(postId, 0);
-					pres.setPostComments(fillCommentModelList(commentsList, userId));
-				}
-			}
+            if (post.getDatetimeCreated() != null)
+                pres.setDatetimeCreated(post.getDatetimeCreated());
 
-			int nbLike = post.getLikes().size();
-			if (post.getLikes() != null) {
-				pres.setLikeCount(nbLike);
-			}
 
-			boolean isPostLikedByMe = isContentLikedByUser(post, userId);
-			pres.setLikedByUser(isPostLikedByMe);
+            pres.setMyPost(userId.equals(post.getUser().getId()));
 
-			pres.setCommentsCount(commentDaoService.getCommentCount(post.getId()));
-			mContentResponse.add(pres);
-		}
 
-		return mContentResponse;
+            if (post.getAlbum() != null)
+                pres.setImageLink(post.getAlbum());
 
-	}
+            if (post.getVideoLink() != null)
+                pres.setVideoLink(post.getVideoLink());
 
-	@Override
-	public PostResponse fillPostToSend(Long postId) {
+            if (post.getGame() != null)
+                pres.setGame(post.getGame());
 
-		return fillPostResponseFromDbPost(0, null, 3, postId).get(0);
+            if (post.getSport() != null && post.getSport().getId() != null) {
+                pres.setSportId(post.getSport().getId());
+            }
 
-	}
+            // check if content has been modified or not
+            List<EditHistory> editHistory = editHistoryRepository.getByPostIdOrderByIdDesc(post.getId());
 
-	@Override
-	public List<ContentEditedResponse> getAllPostHistory(Long id, int page) {
-		List<EditHistory> dsHistoryList = editContentDaoService.getAllPostHistory(id, page);
-		return fillEditContentResponse(dsHistoryList);
-	}
+            if (!editHistory.isEmpty()) {
 
-	@Override
-	public List<HeaderData> getLikersList(Long id, int page) {
-		List<LikeContent> likersData = likeDaoService.getPostLikers(id, page);
+                // modification detected
+                pres.setEdited(true);
 
-		List<HeaderData> likers = new ArrayList<>();
+                EditHistory ec = editHistory.get(0);
 
-		if (!likersData.isEmpty()) {
-			for (LikeContent row : likersData) {
-				// get liker data
-				HeaderData u = new HeaderData();
-				u.setAvatar(userDaoService.getLastAvatar(row.getUser().getId()).get(0).getUrl());
-				u.setFirstName(row.getUser().getFirstName());
-				u.setLastName(row.getUser().getLastName());
-				// u.setCover(userDao.getLastCover(row.getUser().getId(),
-				// coverType));
-				u.setUsername(row.getUser().getUsername());
+                pres.setDatetimeCreated(ec.getDatetimeEdited());
+                if (ec.getText() != null) {
+                    pres.setContent(ec.getText());
+                }
 
-				likers.add(u);
-			}
-		}
+                if (ec.getSport() != null) {
+                    Long spId = ec.getSport().getId();
+                    pres.setSportId(spId);
+                }
 
-		return likers;
-	}
+            } else {
+                // post has not been edited - set initial params
 
-	@Override
-	public List<EditHistory> getLastModification(Long postId) {
-		return editContentDaoService.getLastEditedPost(postId);
-	}
+                if (post.getContent() != null) {
+                    pres.setContent(post.getContent());
+                }
 
-	@Override
-	public Sport getSportById(Long sport_id) {
-		return sportDaoService.getEntityByID(sport_id);
-	}
+                if (post.getSport() != null && post.getSport().getId() != null) {
+                    pres.setSportId(post.getSport().getId());
+                }
 
-	@Override
-	public boolean editPostVisibility(Long id, int visibility) {
+                pres.setDatetimeCreated(post.getDatetimeCreated());
+            }
 
-		Post p = postDaoService.getEntityByID(id);
-		p.setVisibility(visibility);
+            // Access here if details message is requested - otherwise no need
+            // to show comments
+            if (operationType == 3) {
+                List<Comment> commentsList = new ArrayList<>();
+                if (post.getComments() != null) {
+                    commentsList.clear();
+                    //commentsList = commentDaoService.getCommentsFromLastMajId(post_param.getId(), 0);
+                    pres.setPostComments(fillCommentModelList(commentsList, userId));
+                }
+            }
 
-		return postDaoService.update(p);
-	}
+            int nbLike = post.getLikes().size();
+            if (post.getLikes() != null) {
+                pres.setLikeCount(nbLike);
+            }
 
-	@Override
-	public boolean addNotification(Long userId, Long postId, String content) {
+            boolean isPostLikedByMe = isContentLikedByUser(post, userId);
+            pres.setLikedByUser(isPostLikedByMe);
 
-		Users connectedUser = userDaoService.getEntityByID(userId);
-		Post concernedePostTag = postDaoService.getEntityByID(postId);
-		/**
-		 * All words starting with DOLLAR, followed by Letter or accented Letter
-		 * and finishing with Letter, Number or Accented letter
-		 */
-		String patternString1 = "(\\@+)([a-z|A-Z|\\p{javaLetter}][a-z\\d|A-Z\\d|\\p{javaLetter}]*)";
+            //pres.setCommentsCount(commentDaoService.getCommentCount(post.getId()));
+            mContentResponse.add(pres);
+        }
 
-		Pattern pattern = Pattern.compile(patternString1);
-		Matcher matcher = pattern.matcher(content);
+        return mContentResponse;
 
-		// clean tags from dollar
-		List<String> tags = new ArrayList<>();
-		while (matcher.find()) {
-			System.out.println(matcher.group());
-			String s = matcher.group().trim();
-			s = s.replaceAll("[@]", "");
-			tags.add(s);
-		}
+    }
+
+    @Override
+    public PostResponse fillPostToSend(Post post, Long userId) {
+
+        return fillPostResponseFromDbPost(0, userId, 3, post).get(0);
+
+    }
+
+    @Override
+    public List<ContentEditedResponse> getAllPostHistory(Long id, int page) {
+        List<EditHistory> dsHistoryList = editContentDaoService.getAllPostHistory(id, page);
+        return fillEditContentResponse(dsHistoryList);
+    }
+
+    @Override
+    public List<HeaderData> getLikersList(Long id, int page) {
+
+        int debut = page * like_size;
+
+
+        Pageable pageable1 = new PageRequest(page, like_size);
+
+        List<LikeContent> likersData = likeRepository.getByPostIdOrderByDatetimeCreated(id, pageable1);
+
+        List<HeaderData> likers = new ArrayList<>();
+
+        if (!likersData.isEmpty()) {
+            for (LikeContent row : likersData) {
+                // get liker data
+                HeaderData u = new HeaderData();
+                u.setAvatar(userDaoService.getLastAvatar(row.getUser().getId()).get(0).getUrl());
+                u.setFirstName(row.getUser().getFirstName());
+                u.setLastName(row.getUser().getLastName());
+                // u.setCover(userDao.getLastCover(row.getUser().getId(),
+                // coverType));
+                u.setUsername(row.getUser().getUsername());
+
+                likers.add(u);
+            }
+        }
+
+        return likers;
+    }
+
+    @Override
+    public List<EditHistory> getLastModification(Long postId) {
+//        return editContentDaoService.getLastEditedPost(postId);
+        return editHistoryRepository.getByPostIdOrderByIdDesc(postId);
+    }
+
+    @Override
+    public Sport getSportById(Long sport_id) {
+        return sportDaoService.getEntityByID(sport_id);
+    }
+
+    @Override
+    public boolean editPostVisibility(Long id, int visibility) {
+
+        Post p = postDaoService.getEntityByID(id);
+        p.setVisibility(visibility);
+
+        return postDaoService.update(p);
+    }
+
+    @Override
+    public boolean addNotification(Long userId, Long postId, String content) {
+
+        Users connectedUser = userRepository.getById(userId);
+        Post concernedePostTag = postRepository.getOne(postId);
+
+        /**
+         * All words starting with DOLLAR, followed by Letter or accented Letter
+         * and finishing with Letter, Number or Accented letter
+         */
+        String patternString1 = "(\\@+)([a-z|A-Z|\\p{javaLetter}][a-z\\d|A-Z\\d|\\p{javaLetter}]*)";
+
+        Pattern pattern = Pattern.compile(patternString1);
+        Matcher matcher = pattern.matcher(content);
+
+        // clean tags from dollar
+        List<String> tags = new ArrayList<>();
+        while (matcher.find()) {
+            System.out.println(matcher.group());
+            String s = matcher.group().trim();
+            s = s.replaceAll("[@]", "");
+            tags.add(s);
+        }
 
 		/*
-		 * process each tag
+         * process each tag
 		 */
 
-		for (String username : tags) {
-			Users userToNotify;
-			try {
-				userToNotify = userDaoService.getUserFromloginUsername(username, 1);
-			} catch (Exception e) {
-				LOGGER.info("POST-ADD: Username tag" + username + " is not valid !");
-				return false;
-			}
-			if (userToNotify != null) {
+        for (String username : tags) {
+            Users userToNotify;
+            try {
+                userToNotify = userRepository.getByUsername(username);
+            } catch (Exception e) {
+                LOGGER.info("POST-ADD: Username tag" + username + " is not valid !");
+                return false;
+            }
+            if (userToNotify != null) {
 
-				Notifications notif = new Notifications();
-				notif.setTag(true);
-				notif.setContentShared(false);
-				notif.setViewed(false);
-				notif.setWhoSentNotification(connectedUser);
-				notif.setNotifiedUserId(userToNotify.getId());
-				notif.setPostTag(concernedePostTag);
+                Notifications notif = new Notifications();
+                notif.setTag(true);
+                notif.setContentShared(false);
+                notif.setViewed(false);
+                notif.setNotifSender(connectedUser);
+                notif.setNotifiedUserId(userToNotify.getId());
+                notif.setPostTag(concernedePostTag);
 
-				try {
-					notificationDaoService.save(notif);
-				} catch (Exception e) {
-					return false;
-				}
+                try {
+                    notificationRepository.save(notif);
+                } catch (Exception e) {
+                    return false;
+                }
 
-				LOGGER.info(notif.toString());
-			} else
-				continue;
-		}
+                LOGGER.info(notif.toString());
+            } else
+                continue;
+        }
 
-		return true;
-	}
+        return true;
+    }
+
+    @Override
+    public List<Post> finAllPosts() {
+        return postRepository.findAll();
+    }
 
 }

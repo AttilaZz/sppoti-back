@@ -17,7 +17,6 @@ import com.fr.entities.PersistentLogin;
  * Created by: Wail DJENANE on Aug 16, 2016
  */
 @Repository("tokenRepositoryDao")
-@Transactional
 public class HibernateTokenRepositoryImpl extends GenericDaoImpl<PersistentLogin, String>
         implements PersistentTokenRepository {
 

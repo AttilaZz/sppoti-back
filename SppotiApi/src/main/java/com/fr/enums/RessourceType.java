@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.enums;
 
@@ -8,20 +8,20 @@ package com.fr.enums;
  */
 public enum RessourceType {
 
-	AVATAR(0), COVER(1);
-	
-	private int type;
+    AVATAR(0), COVER(1);
 
-	private RessourceType(int type) {
-		this.type = type;
-	}
-	
-	public int getResourceType(){
-		return this.type;
-	}
+    private int type;
 
-	public String getName() {
-		return this.name();
-	}
-	
+    private RessourceType(int type) {
+        this.type = type;
+    }
+
+    public int getResourceType() {
+        return this.type;
+    }
+
+    public String getName() {
+        return this.name();
+    }
+
 }

@@ -20,21 +20,21 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class AuthFailure extends SimpleUrlAuthenticationFailureHandler {
 
-	private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
+    private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
-	@Override
-	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException exception) throws IOException, ServletException {
+    @Override
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+                                        AuthenticationException exception) throws IOException, ServletException {
 
-		LOGGER.info("Failed to log user :-(");
+        LOGGER.info("Failed to log user :-(");
 
-		response.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
-		response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
-		response.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
-		response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
-		response.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
+        response.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
+        response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
+        response.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
+        response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
+        response.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
 
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-	}
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    }
 
 }

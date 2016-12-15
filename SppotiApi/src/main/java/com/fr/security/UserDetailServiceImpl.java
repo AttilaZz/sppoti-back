@@ -2,6 +2,7 @@ package com.fr.security;
 
 import com.fr.aop.TraceControllers;
 import com.fr.controllers.serviceImpl.AbstractControllerServiceImpl;
+import com.fr.entities.Person;
 import com.fr.entities.Users;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.userdetails.UserDetails;

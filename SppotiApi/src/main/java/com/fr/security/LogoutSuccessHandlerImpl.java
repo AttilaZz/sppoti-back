@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.security;
 
@@ -22,28 +22,28 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
 
-	@Override
-	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-			throws IOException, ServletException {
+    @Override
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+            throws IOException, ServletException {
 
-		response.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
-		response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
-		response.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
-		response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
-		response.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
+        response.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
+        response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
+        response.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
+        response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
+        response.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
 
-		if (authentication != null) {
-			System.out.println(authentication.getName());
-			// new SecurityContextLogoutHandler().logout( request, response,
-			// authentication);
-		}
-		/*
+        if (authentication != null) {
+            System.out.println(authentication.getName());
+            // new SecurityContextLogoutHandler().logout( request, response,
+            // authentication);
+        }
+        /*
 		 * perform other required operation
 		 */
-		// String URL = request.getContextPath() + "/app";
-		response.setStatus(HttpStatus.OK.value());
-		// response.sendRedirect(URL);
+        // String URL = request.getContextPath() + "/app";
+        response.setStatus(HttpStatus.OK.value());
+        // response.sendRedirect(URL);
 
-	}
+    }
 
 }

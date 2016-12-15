@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.filter;
 
@@ -8,30 +8,30 @@ package com.fr.filter;
  */
 public enum CustomHttpStatus {
 
-	FAILED_TO_SAVED(40, "Save Failed"),
-	NOT_VALID_ENTITY_ID(41, "Entity ID is not valid");
+    FAILED_TO_SAVED(40, "Save Failed"),
+    NOT_VALID_ENTITY_ID(41, "Entity ID is not valid");
 
-	private final int value;
+    private final int value;
 
-	private final String reasonPhrase;
+    private final String reasonPhrase;
 
-	private CustomHttpStatus(int value, String reasonPhrase) {
-		this.value = value;
-		this.reasonPhrase = reasonPhrase;
-	}
+    private CustomHttpStatus(int value, String reasonPhrase) {
+        this.value = value;
+        this.reasonPhrase = reasonPhrase;
+    }
 
-	/**
-	 * Return the integer value of this status code.
-	 */
-	public int value() {
-		return this.value;
-	}
+    /**
+     * Return the integer value of this status code.
+     */
+    public int value() {
+        return this.value;
+    }
 
-	/**
-	 * Return the reason phrase of this status code.
-	 */
-	public String getReasonPhrase() {
-		return reasonPhrase;
-	}
+    /**
+     * Return the reason phrase of this status code.
+     */
+    public String getReasonPhrase() {
+        return reasonPhrase;
+    }
 
 }

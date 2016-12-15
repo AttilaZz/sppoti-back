@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.controllers;
 
@@ -29,31 +29,31 @@ import com.fr.entities.Post;
 @RequestMapping("/actu")
 public class TimelineController {
 
-	@Autowired
-	private ActuControllerService actuControllerService;
+    @Autowired
+    private ActuControllerService actuControllerService;
 
-	private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
+    private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
-	private static final String ATT_USER_ID = "USER_ID";
+    private static final String ATT_USER_ID = "USER_ID";
 
-	@RequestMapping(value = "/allUserActu/{pageId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<Post>> getAllUserFeeds(@PathVariable("pageId") int pageId, HttpServletRequest request) {
+    @RequestMapping(value = "/allUserActu/{pageId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Post>> getAllUserFeeds(@PathVariable("pageId") int pageId, HttpServletRequest request) {
 
-		Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-		LOGGER.info("Connected user: " + userId);
+        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        LOGGER.info("Connected user: " + userId);
 
-		if (pageId < 0) {
-			LOGGER.info("Page number is invalid !!");
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-		List<Post> data = actuControllerService.getAllUserFriendPosts(userId, pageId);
+        if (pageId < 0) {
+            LOGGER.info("Page number is invalid !!");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<Post> data = actuControllerService.getAllUserFriendPosts(userId, pageId);
 
-		if (data.isEmpty()) {
-			LOGGER.info("No data to return !!");
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
-		return new ResponseEntity<List<Post>>(data, HttpStatus.OK);
+        if (data.isEmpty()) {
+            LOGGER.info("No data to return !!");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<List<Post>>(data, HttpStatus.OK);
 
-	}
+    }
 
 }

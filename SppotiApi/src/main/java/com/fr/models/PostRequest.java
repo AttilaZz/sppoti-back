@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.models;
 
@@ -15,114 +15,114 @@ import com.fr.entities.Address;
 @JsonInclude(Include.NON_ABSENT)
 public class PostRequest {
 
-	private Long sportId;
+    private Long sportId;
 
-	private Long gameId;
+    private Long gameId;
 
-	private Data content;
+    private Data content;
 
-	private Address address;
+    private Address address;
 
-	private String avatar;
+    private String avatar;
 
-	private String cover;
+    private String cover;
 
-	private int visibility;
+    private int visibility;
 
-	public int getVisibility() {
-		return visibility;
-	}
+    public int getVisibility() {
+        return visibility;
+    }
 
-	public void setVisibility(int visibility) {
-		this.visibility = visibility;
-	}
+    public void setVisibility(int visibility) {
+        this.visibility = visibility;
+    }
 
-	public String getAvatar() {
-		return avatar;
-	}
+    public String getAvatar() {
+        return avatar;
+    }
 
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 
-	public Long getGameId() {
-		return gameId;
-	}
+    public Long getGameId() {
+        return gameId;
+    }
 
-	public void setGameId(Long gameId) {
-		this.gameId = gameId;
-	}
+    public void setGameId(Long gameId) {
+        this.gameId = gameId;
+    }
 
-	public Long getSportId() {
-		return sportId;
-	}
+    public Long getSportId() {
+        return sportId;
+    }
 
-	public void setSportId(Long sportId) {
-		this.sportId = sportId;
-	}
+    public void setSportId(Long sportId) {
+        this.sportId = sportId;
+    }
 
-	public Data getContent() {
-		return content;
-	}
+    public Data getContent() {
+        return content;
+    }
 
-	public void setContent(Data content) {
-		this.content = content;
-	}
+    public void setContent(Data content) {
+        this.content = content;
+    }
 
-	public Address getAddress() {
-		return address;
-	}
+    public Address getAddress() {
+        return address;
+    }
 
-	public void setAddress(Address address) {
-		this.address = address;
-	}
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
-	public String getNewAvatar() {
-		return avatar;
-	}
+    public String getNewAvatar() {
+        return avatar;
+    }
 
-	public void setNewAvatar(String newAvatar) {
-		this.avatar = newAvatar;
-	}
+    public void setNewAvatar(String newAvatar) {
+        this.avatar = newAvatar;
+    }
 
-	public String getCover() {
-		return cover;
-	}
+    public String getCover() {
+        return cover;
+    }
 
-	public void setCover(String cover) {
-		this.cover = cover;
-	}
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
 
-	public class Data {
-		@SerializedName("text")
-		@JsonProperty("text")
-		private String content;
-		private String[] imageLink;
-		private String videoLink;
+    public class Data {
+        @SerializedName("text")
+        @JsonProperty("text")
+        private String content;
+        private String[] imageLink;
+        private String videoLink;
 
-		public String getContent() {
-			return content;
-		}
+        public String getContent() {
+            return content;
+        }
 
-		public void setContent(String content) {
-			this.content = content;
-		}
+        public void setContent(String content) {
+            this.content = content;
+        }
 
-		public String[] getImageLink() {
-			return imageLink;
-		}
+        public String[] getImageLink() {
+            return imageLink;
+        }
 
-		public void setImageLink(String[] imageLink) {
-			this.imageLink = imageLink;
-		}
+        public void setImageLink(String[] imageLink) {
+            this.imageLink = imageLink;
+        }
 
-		public String getVideoLink() {
-			return videoLink;
-		}
+        public String getVideoLink() {
+            return videoLink;
+        }
 
-		public void setVideoLink(String videoLink) {
-			this.videoLink = videoLink;
-		}
+        public void setVideoLink(String videoLink) {
+            this.videoLink = videoLink;
+        }
 
-	}
+    }
 }

@@ -12,11 +12,11 @@ import com.fr.entities.Address;
 @Service
 public interface AddressDaoService extends GenericDaoService<Address, Integer> {
 
-	/**
-	 * @param id
-	 * @return
-	 */
-	List<Address> getLastPostAddress(Long id);
+    /**
+     * @param id
+     * @return
+     */
+    List<Address> getLastPostAddress(Long id);
 
 
 }

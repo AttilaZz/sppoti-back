@@ -12,24 +12,24 @@ import com.fr.entities.Comment;
 @Service
 public interface CommentDaoService extends GenericDaoService<Comment, Integer> {
 
-	/**
-	 * @param postId
-	 * @param buttomMarker
-	 * @return
-	 */
-	List<Comment> getCommentsFromLastMajId(Long postId, int buttomMarker);
+    /**
+     * @param postId
+     * @param buttomMarker
+     * @return
+     */
+    List<Comment> getCommentsFromLastMajId(Long postId, int buttomMarker);
 
-	/**
-	 * @param postId
-	 * @return
-	 */
-	List<Comment> getLastPostComment(Long postId);
+    /**
+     * @param postId
+     * @return
+     */
+    List<Comment> getLastPostComment(Long postId);
 
-	/**
-	 * @param postId
-	 * @return
-	 */
-	Long getCommentCount(Long postId);
+    /**
+     * @param postId
+     * @return
+     */
+    Long getCommentCount(Long postId);
 
 
 }

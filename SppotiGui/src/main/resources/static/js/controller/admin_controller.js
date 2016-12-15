@@ -7,5 +7,4 @@
 App.controller('AdminController', ['$location', '$scope', function ($location, $scope) {
 
 
-
 }]);

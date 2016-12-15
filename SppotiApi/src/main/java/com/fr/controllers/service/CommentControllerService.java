@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.controllers.service;
 
@@ -21,26 +21,26 @@ import com.fr.entities.Post;
 @Service
 public interface CommentControllerService extends AbstractControllerService {
 
-	boolean saveComment(Comment newComment);
+    boolean saveComment(Comment newComment);
 
-	boolean deleteComment(Comment comment);
+    boolean deleteComment(Comment comment);
 
-	public Comment findComment(Long id);
+    public Comment findComment(Long id);
 
-	public Post findPostById(Long id);
+    public Post findPostById(Long id);
 
-	boolean updateComment(EditHistory commentEditRow);
+    boolean updateComment(EditHistory commentEditRow);
 
-	boolean likeComment(LikeContent likeToSave);
+    boolean likeComment(LikeContent likeToSave);
 
-	boolean unLikeComment(Long id, Long userId);
+    boolean unLikeComment(Long id, Long userId);
 
-	boolean isCommentAlreadyLikedByUser(Long id, Long userId);
+    boolean isCommentAlreadyLikedByUser(Long id, Long userId);
 
-	public List<CommentModel> getPostCommentsFromLastId(Long postId, int bottomMajId, Long userId);
+    public List<CommentModel> getPostCommentsFromLastId(Long postId, int bottomMajId, Long userId);
 
-	public List<ContentEditedResponse> getAllPostHistory(Long id, int page);
+    public List<ContentEditedResponse> getAllPostHistory(Long id, int page);
 
-	List<HeaderData> getLikersList(Long id, int page);
+    List<HeaderData> getLikersList(Long id, int page);
 
 }

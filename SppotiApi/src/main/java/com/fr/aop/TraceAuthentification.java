@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.aop;
 
@@ -16,33 +16,33 @@ import org.springframework.stereotype.Component;
 @Component
 public class TraceAuthentification {
 
-    private static Logger LOGGER = Logger.getLogger( TraceAuthentification.class );
+    private static Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
     // @Around( "execution(*
     // com.dz.security.UserDetailServiceImpl.loadUserByUsername(..))" )
-    public Object afficherTrace( final ProceedingJoinPoint joinpoint )
+    public Object afficherTrace(final ProceedingJoinPoint joinpoint)
             throws Throwable {
         String nomMethode = joinpoint.getTarget().getClass().getSimpleName() + "."
                 + joinpoint.getSignature().getName();
         final Object[] args = joinpoint.getArgs();
         final StringBuffer sb = new StringBuffer();
 
-        sb.append( joinpoint.getSignature().toString() );
-        sb.append( " avec les parametres : (" );
-        for ( int i = 0; i < args.length; i++ ) {
-            sb.append( args[i] );
-            if ( i < args.length - 1 ) {
-                sb.append( ", " );
+        sb.append(joinpoint.getSignature().toString());
+        sb.append(" avec les parametres : (");
+        for (int i = 0; i < args.length; i++) {
+            sb.append(args[i]);
+            if (i < args.length - 1) {
+                sb.append(", ");
             }
         }
-        sb.append( ")" );
+        sb.append(")");
 
-        LOGGER.info( "Debut methode : " + sb );
+        LOGGER.info("Debut methode : " + sb);
         Object obj = null;
         try {
             obj = joinpoint.proceed();
         } finally {
-            LOGGER.info( "Fin methode :  " + nomMethode + " retour=" + obj );
+            LOGGER.info("Fin methode :  " + nomMethode + " retour=" + obj);
         }
         return obj;
     }

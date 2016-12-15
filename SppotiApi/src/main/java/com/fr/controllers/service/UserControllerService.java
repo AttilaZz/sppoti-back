@@ -1,44 +1,36 @@
 package com.fr.controllers.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
+import com.fr.entities.Users;
 import com.fr.models.HeaderData;
 import com.fr.models.Notification;
 import com.fr.models.PostResponse;
-import com.fr.entities.FriendShip;
-import com.fr.entities.Users;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface UserControllerService extends AbstractControllerService {
 
-	public Users getAllUserData();
+    Users getAllUserData();
 
-	public Long getConnectedUserId();
+    Long getConnectedUserId();
 
-	public Users getUserWithAllDataById(Long userId);
+    Users getUserWithAllDataById(Long userId);
 
-	public List<FriendShip> getPendingFriendList(Long userId, int page);
+    HeaderData getHeaderData(Long userId);
 
-	public List<FriendShip> getConfirmedFriendList(Long userId, int page);
+    boolean editProfilePicture(String newAvatar, Long oldAvatarId, Long userId);
 
-	public HeaderData getHeaderData(Long userId);
+    boolean editCoverPicture(String newCover, Long oldCoverId, int coverExtension, Long userId);
 
-	public boolean editProfilePicture(String newAvatar, Long oldAvatarId, Long userId);
+    Users getUserByUsername(String username);
 
-	boolean editCoverPicture(String newCover, Long oldCoverId, int coverExtension, Long userId);
+    HeaderData getTopHeaderData(Long userId);
 
-	public Users getUserByUsername(String username);
+    List<PostResponse> getPostsFromLastPage(Long loggedUserId, Long targetProfileId, int page);
 
-	public HeaderData getTopHeaderData(Long userId);
+    List<HeaderData> getUserFromPrefix(String userPrefix, int page);
 
-	public List<PostResponse> getPostsFromLastPage(Long loggedUserId, Long targetProfileId, int page);
-
-	public List<HeaderData> getUserFromPrefix(String userPrefix, int page);
-
-	public List<Notification> getUnseenNotifications(Long userId, int page);
-
-	public List<HeaderData> getFriendFromPrefix(Long userId, String friendPrefix, int page);
+    List<Notification> getUnseenNotifications(Long userId, int page);
 
 }

@@ -4,6 +4,6 @@
 
 'use strict';
 
-App.service('AdminService', ['$http','$scope', function ($http, $scope) {
+App.service('AdminService', ['$http', '$scope', function ($http, $scope) {
 
 }]);

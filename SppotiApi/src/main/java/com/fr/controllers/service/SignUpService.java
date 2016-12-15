@@ -1,36 +1,30 @@
 package com.fr.controllers.service;
 
-import java.util.List;
-
+import com.fr.entities.Person;
+import com.fr.entities.Sport;
+import com.fr.entities.Roles;
+import com.fr.entities.Users;
+import com.fr.exceptions.ConflictEmailException;
+import com.fr.exceptions.ConflictPhoneException;
+import com.fr.exceptions.ConflictUsernameException;
+import com.fr.models.SignUpRequest;
 import org.springframework.stereotype.Service;
 
-import com.fr.models.SignUpRequest;
-import com.fr.entities.UserRoles;
-import com.fr.entities.Sport;
-import com.fr.entities.Users;
+import java.util.List;
 
 @Service
 public interface SignUpService {
 
-	public boolean isEmailContentValid(String email);
+    void saveNewUser(Users user) throws Exception;
 
-	public boolean isEmailFormValid(String email);
+    Roles getProfileEntity(String profileType);
 
-	public boolean isUsernameValid(String username);
+    Sport getSportById(Long id);
 
-	public boolean isEmailConfirmed(String email);
+    boolean isReceivedDataNotEmpty(SignUpRequest user);
 
-	public boolean saveNewUser(Users user);
+    boolean tryActivateAccount(String code);
 
-	public UserRoles getProfileEntity(String profileType);
+    boolean sendConfirmationEmail(String email, String code);
 
-	public Sport getSportById(Long id);
-
-	public boolean isReceivedDataNotEmpty(SignUpRequest user);
-
-	public List<Sport> getAllSports();
-	
-	public boolean tryActivateAccount(String code);
-
-	boolean sendConfirmationEmail(String email, String code);
 }

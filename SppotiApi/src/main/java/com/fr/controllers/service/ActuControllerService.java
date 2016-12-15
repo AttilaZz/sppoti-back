@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.controllers.service;
 
@@ -15,5 +15,5 @@ import com.fr.entities.Post;
 @Service
 public interface ActuControllerService extends AbstractControllerService {
 
-	public List<Post> getAllUserFriendPosts(Long userId, int pageId);
+    public List<Post> getAllUserFriendPosts(Long userId, int pageId);
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.enums;
 
@@ -8,25 +8,25 @@ package com.fr.enums;
  */
 public enum AccountState {
 
-	ACTIVE("Active"), INACTIVE("Inactive"), DELETED("Deleted"), LOCKED("Locked");
+    ACTIVE("Active"), INACTIVE("Inactive"), DELETED("Deleted"), LOCKED("Locked");
 
-	private String state;
+    private String state;
 
-	private AccountState(final String state) {
-		this.state = state;
-	}
+    private AccountState(final String state) {
+        this.state = state;
+    }
 
-	public String getState() {
-		return this.state;
-	}
+    public String getState() {
+        return this.state;
+    }
 
-	@Override
-	public String toString() {
-		return this.state;
-	}
+    @Override
+    public String toString() {
+        return this.state;
+    }
 
-	public String getName() {
-		return this.name();
-	}
+    public String getName() {
+        return this.name();
+    }
 
 }

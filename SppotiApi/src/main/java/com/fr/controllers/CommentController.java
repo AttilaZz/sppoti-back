@@ -40,9 +40,12 @@ import com.fr.entities.Users;
 @RequestMapping("/comment")
 public class CommentController {
 
-    @Autowired
-
     private CommentControllerService commentDataService;
+
+    @Autowired
+    public void setCommentDataService(CommentControllerService commentDataService) {
+        this.commentDataService = commentDataService;
+    }
 
     private static final String ATT_USER_ID = "USER_ID";
 

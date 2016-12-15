@@ -17,22 +17,22 @@ import com.fr.entities.Address;
 @Component
 public class AddressDaoImpl extends GenericDaoImpl<Address, Integer> implements AddressDaoService {
 
-	public AddressDaoImpl() {
-		this.entityClass = Address.class;
-	}
+    public AddressDaoImpl() {
+        this.entityClass = Address.class;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Address> getLastPostAddress(Long id) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Address> getLastPostAddress(Long id) {
 
-		Criteria cr = getSession().createCriteria(entityClass, "ad");
+        Criteria cr = getSession().createCriteria(entityClass, "ad");
 
-		cr.add(Restrictions.eq("ad.post.id", id));
-		cr.addOrder(Order.desc("id"));
-		cr.setMaxResults(1);
+        cr.add(Restrictions.eq("ad.post.id", id));
+        cr.addOrder(Order.desc("id"));
+        cr.setMaxResults(1);
 
-		return cr.list();
+        return cr.list();
 
-	}
+    }
 
 }

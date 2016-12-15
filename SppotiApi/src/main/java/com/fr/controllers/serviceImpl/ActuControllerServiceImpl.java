@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.controllers.serviceImpl;
 
@@ -19,30 +19,30 @@ import com.fr.entities.Sport;
 @Component
 public class ActuControllerServiceImpl extends AbstractControllerServiceImpl implements ActuControllerService {
 
-	private List<Sport> getAllUserSubscribedSports(Long userId) {
-		Set<Sport> userSp = userDaoService.getAllUserSubscribedSports(userId);
-		List<Sport> userSpList = new ArrayList<>();
-		for(Sport s : userSp){
-			userSpList.add(s);
-		}
-		return userSpList;
+    private List<Sport> getAllUserSubscribedSports(Long userId) {
+        Set<Sport> userSp = userDaoService.getAllUserSubscribedSports(userId);
+        List<Sport> userSpList = new ArrayList<>();
+        for (Sport s : userSp) {
+            userSpList.add(s);
+        }
+        return userSpList;
 
-	}
+    }
 
-	@Override
-	public List<Post> getAllUserFriendPosts(Long userId, int pageId) {
-		List<Long> sportId = new ArrayList<>();
-		
-		List<Sport> sports = getAllUserSubscribedSports(userId);
-		
-		for (Sport sport : sports) {
-			sportId.add(sport.getId());
-		}
-		
-		Long[] sp = new Long[sports.size()];
-		sp = sportId.toArray(sp);
-		
-		return postDaoService.getPostsFromSubscribedUserSports(sp, pageId);
-	}
+    @Override
+    public List<Post> getAllUserFriendPosts(Long userId, int pageId) {
+        List<Long> sportId = new ArrayList<>();
+
+        List<Sport> sports = getAllUserSubscribedSports(userId);
+
+        for (Sport sport : sports) {
+            sportId.add(sport.getId());
+        }
+
+        Long[] sp = new Long[sports.size()];
+        sp = sportId.toArray(sp);
+
+        return postDaoService.getPostsFromSubscribedUserSports(sp, pageId);
+    }
 
 }

@@ -6,6 +6,8 @@ package com.fr.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import java.util.Date;
+
 /**
  * Created by: Wail DJENANE on Aug 20, 2016
  */
@@ -13,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class ContentEditedResponse {
 
     private Long id;
-    private String dateTime;
+    private String dateTime = new Date().toString();
     private String text;
 
     private double latitude;

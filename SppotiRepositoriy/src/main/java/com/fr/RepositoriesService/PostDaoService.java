@@ -11,31 +11,31 @@ import com.fr.entities.Post;
  */
 @Service
 public interface PostDaoService extends GenericDaoService<Post, Integer> {
-	/**
-	 * @param userSportsId
-	 * @param pageId
-	 */
-	List<Post> getPostsFromSubscribedUserSports(Long[] userSportsId, int pageId);
+    /**
+     * @param userSportsId
+     * @param pageId
+     */
+    List<Post> getPostsFromSubscribedUserSports(Long[] userSportsId, int pageId);
 
-	/**
-	 * @param userId
-	 * @param buttomMarker
-	 * @return
-	 */
-	List<Post> getPhotoGalleryPostsFromLastMajId(Long userId, int buttomMarker);
+    /**
+     * @param userId
+     * @param buttomMarker
+     * @return
+     */
+    List<Post> getPhotoGalleryPostsFromLastMajId(Long userId, int buttomMarker);
 
-	/**
-	 * @param userId
-	 * @param buttomMarker
-	 * @return
-	 */
-	List<Post> getVideoGalleryPostsFromLastMajId(Long userId, int buttomMarker);
+    /**
+     * @param userId
+     * @param buttomMarker
+     * @return
+     */
+    List<Post> getVideoGalleryPostsFromLastMajId(Long userId, int buttomMarker);
 
-	/**
-	 * @param userId
-	 * @param buttomMarker
-	 * @return
-	 */
-	List<Post> getPostsFromLastPage(Long userId, int buttomMarker);
+    /**
+     * @param userId
+     * @param buttomMarker
+     * @return
+     */
+    List<Post> getPostsFromLastPage(Long userId, int buttomMarker);
 
 }

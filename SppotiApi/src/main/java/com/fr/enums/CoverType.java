@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.enums;
 
@@ -8,19 +8,19 @@ package com.fr.enums;
  */
 public enum CoverType {
 
-	IMAGE(0), VIDEO(1);
+    IMAGE(0), VIDEO(1);
 
-	private int type;
+    private int type;
 
-	private CoverType(int type) {
-		this.type = type;
-	}
+    private CoverType(int type) {
+        this.type = type;
+    }
 
-	public int type() {
-		return this.type;
-	}
+    public int type() {
+        return this.type;
+    }
 
-	public String getName() {
-		return this.name();
-	}
+    public String getName() {
+        return this.name();
+    }
 }

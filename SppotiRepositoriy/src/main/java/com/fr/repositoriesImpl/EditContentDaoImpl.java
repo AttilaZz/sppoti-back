@@ -17,81 +17,81 @@ import com.fr.entities.EditHistory;
 @Component
 public class EditContentDaoImpl extends GenericDaoImpl<EditHistory, Integer> implements EditContentDaoService {
 
-	private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 10;
 
-	public EditContentDaoImpl() {
+    public EditContentDaoImpl() {
 
-		this.entityClass = EditHistory.class;
-	}
+        this.entityClass = EditHistory.class;
+    }
 
-	@Override
-	public List<EditHistory> getLastEditedPost(Long postId) {
+    @Override
+    public List<EditHistory> getLastEditedPost(Long postId) {
 
-		return getLastEditedcontent(postId, 1);
+        return getLastEditedcontent(postId, 1);
 
-	}
+    }
 
-	@Override
-	public List<EditHistory> getLastEditedComent(Long commentId) {
-		return getLastEditedcontent(commentId, 2);
-	}
-	
-	@Override
-	public List<EditHistory> getAllPostHistory(Long postid, int page) {
-		return getHistory(postid, page, 1);
-	}
+    @Override
+    public List<EditHistory> getLastEditedComent(Long commentId) {
+        return getLastEditedcontent(commentId, 2);
+    }
 
-	@Override
-	public List<EditHistory> getAllComenttHistory(Long commentId, int page) {
-		return getHistory(commentId, page, 2);
-	}
+    @Override
+    public List<EditHistory> getAllPostHistory(Long postid, int page) {
+        return getHistory(postid, page, 1);
+    }
 
-	/*
-	 * 1: post 2: comment 3: address 4: ...
-	 */
-	@SuppressWarnings("unchecked")
-	private List<EditHistory> getHistory(Long id, int page, int op) {
+    @Override
+    public List<EditHistory> getAllComenttHistory(Long commentId, int page) {
+        return getHistory(commentId, page, 2);
+    }
 
-		int debut = page * PAGE_SIZE;
-		Criteria cr = getSession().createCriteria(entityClass, "ec");
-		switch (op) {
-		case 1:
-			cr.add(Restrictions.eq("ec.post.id", id));
-			break;
-		case 2:
-			cr.add(Restrictions.eq("ec.comment.id", id));
-			break;
-		default:
-			break;
-		}
+    /*
+     * 1: post 2: comment 3: address 4: ...
+     */
+    @SuppressWarnings("unchecked")
+    private List<EditHistory> getHistory(Long id, int page, int op) {
 
-		cr.setFirstResult(debut);
-		cr.setMaxResults(PAGE_SIZE);
-		cr.addOrder(Order.desc("ec.datetimeEdited"));
+        int debut = page * PAGE_SIZE;
+        Criteria cr = getSession().createCriteria(entityClass, "ec");
+        switch (op) {
+            case 1:
+                cr.add(Restrictions.eq("ec.post.id", id));
+                break;
+            case 2:
+                cr.add(Restrictions.eq("ec.comment.id", id));
+                break;
+            default:
+                break;
+        }
 
-		return cr.list();
-	}
+        cr.setFirstResult(debut);
+        cr.setMaxResults(PAGE_SIZE);
+        cr.addOrder(Order.desc("ec.datetimeEdited"));
 
-	@SuppressWarnings("unchecked")
-	private List<EditHistory> getLastEditedcontent(Long id, int op) {
-		Criteria cr = getSession().createCriteria(entityClass, "ec");
-		
-		switch (op) {
-		case 1:
-			cr.add(Restrictions.eq("ec.post.id", id));
-			break;
-		case 2:
-			cr.add(Restrictions.eq("ec.comment.id", id));
-			break;
-		default:
-			break;
-		}
+        return cr.list();
+    }
 
-		cr.addOrder(Order.desc("ec.id"));
-		cr.setMaxResults(1);
+    @SuppressWarnings("unchecked")
+    private List<EditHistory> getLastEditedcontent(Long id, int op) {
+        Criteria cr = getSession().createCriteria(entityClass, "ec");
 
-		return cr.list();
+        switch (op) {
+            case 1:
+                cr.add(Restrictions.eq("ec.post.id", id));
+                break;
+            case 2:
+                cr.add(Restrictions.eq("ec.comment.id", id));
+                break;
+            default:
+                break;
+        }
 
-	}
+        cr.addOrder(Order.desc("ec.id"));
+        cr.setMaxResults(1);
+
+        return cr.list();
+
+    }
 
 }

@@ -1,9 +1,8 @@
 /**
- * 
+ *
  */
 package com.fr.controllers.service;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -25,39 +24,41 @@ import com.fr.entities.Sppoti;
 @Service
 public interface PostControllerService extends AbstractControllerService {
 
-	public Serializable savePost(Post post);
+    Post savePost(Post post);
 
-	public boolean updatePost(EditHistory postEditRow, Address postEditAddress);
+    boolean updatePost(EditHistory postEditRow, Address postEditAddress);
 
-	public boolean deletePost(Post p);
+    boolean deletePost(Post p);
 
-	public Post findPost(Long id);
+    Post findPost(Long id);
 
-	public Sport getSportToUse(Long id);
+    Sport getSportToUse(Long id);
 
-	public Sppoti getGameById(Long id);
+    Sppoti getGameById(Long id);
 
-	public boolean likePost(LikeContent likeToSave);
+    boolean likePost(LikeContent likeToSave);
 
-	public boolean unLikePost(Long id, Long userId);
+    boolean unLikePost(Post post);
 
-	public boolean isPostAlreadyLikedByUser(Long id, Long userId);
+    boolean isPostAlreadyLikedByUser(Long id, Long userId);
 
-	public List<PostResponse> getPhotoGallery(Long userId, int buttomMarker);
+    List<PostResponse> getPhotoGallery(Long userId, int buttomMarker);
 
-	public List<PostResponse> getVideoGallery(Long userId, int buttomMarker);
+    List<PostResponse> getVideoGallery(Long userId, int buttomMarker);
 
-	public PostResponse fillPostToSend(Long userId);
+    PostResponse fillPostToSend(Post post, Long userId);
 
-	public List<ContentEditedResponse> getAllPostHistory(Long id, int page);
+    List<ContentEditedResponse> getAllPostHistory(Long id, int page);
 
-	public List<HeaderData> getLikersList(Long id, int buttomMarker);
+    List<HeaderData> getLikersList(Long id, int buttomMarker);
 
-	public List<EditHistory> getLastModification(Long postId);
+    List<EditHistory> getLastModification(Long postId);
 
-	public Sport getSportById(Long sport_id);
+    Sport getSportById(Long sport_id);
 
-	public boolean editPostVisibility(Long id, int visibility);
+    boolean editPostVisibility(Long id, int visibility);
 
-	boolean addNotification(Long userId, Long postId, String content);
+    boolean addNotification(Long userId, Long postId, String content);
+
+    List<Post> finAllPosts();
 }

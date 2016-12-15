@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.configApp;
 
@@ -13,17 +13,17 @@ import org.apache.log4j.Logger;
  */
 public class SessionListener implements HttpSessionListener {
 
-	private Logger LOGGER = Logger.getLogger(SessionListener.class);
+    private Logger LOGGER = Logger.getLogger(SessionListener.class);
 
-	@Override
-	public void sessionCreated(HttpSessionEvent se) {
-		LOGGER.info("==== Session (" + se.getSession().getId() + ") is created ====");
-		se.getSession().setMaxInactiveInterval(0);
-	}
+    @Override
+    public void sessionCreated(HttpSessionEvent se) {
+        LOGGER.info("==== Session (" + se.getSession().getId() + ") is created ====");
+        se.getSession().setMaxInactiveInterval(0);
+    }
 
-	@Override
-	public void sessionDestroyed(HttpSessionEvent se) {
-		LOGGER.info("==== Session is destroyed ====");
-	}
+    @Override
+    public void sessionDestroyed(HttpSessionEvent se) {
+        LOGGER.info("==== Session is destroyed ====");
+    }
 
 }

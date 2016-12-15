@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.models;
 
@@ -14,147 +14,147 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_EMPTY)
 public class CommentModel {
 
-	private Long id;
-	private Long postId;
+    private Long id;
+    private Long postId;
 
-	private String authorFirstName;
-	private String authorLastName;
-	private String authorUserName;
-	private String authorAvatar;
+    private String authorFirstName;
+    private String authorLastName;
+    private String authorUserName;
+    private String authorAvatar;
 
-	private String creationDate;
+    private String creationDate;
 
-	private String text;
-	private String imageLink;
-	private String videoLink;
+    private String text;
+    private String imageLink;
+    private String videoLink;
 
-	private boolean isMyComment;
+    private boolean isMyComment;
 
-	private boolean isLikedByUser;
-	private int likeCount;
+    private boolean isLikedByUser;
+    private int likeCount;
 
-	private boolean isEdited = false;
+    private boolean isEdited = false;
 
-	private List<HeaderData> commentLikers;
+    private List<HeaderData> commentLikers;
 
-	public List<HeaderData> getCommentLikers() {
-		return commentLikers;
-	}
+    public List<HeaderData> getCommentLikers() {
+        return commentLikers;
+    }
 
-	public void setCommentLikers(List<HeaderData> commentLikers) {
-		this.commentLikers = commentLikers;
-	}
+    public void setCommentLikers(List<HeaderData> commentLikers) {
+        this.commentLikers = commentLikers;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getAuthorUserName() {
-		return authorUserName;
-	}
+    public String getAuthorUserName() {
+        return authorUserName;
+    }
 
-	public void setAuthorUserName(String authorUserName) {
-		this.authorUserName = authorUserName;
-	}
+    public void setAuthorUserName(String authorUserName) {
+        this.authorUserName = authorUserName;
+    }
 
-	public String getAuthorLastName() {
-		return authorLastName;
-	}
+    public String getAuthorLastName() {
+        return authorLastName;
+    }
 
-	public void setAuthorLastName(String authorLastName) {
-		this.authorLastName = authorLastName;
-	}
+    public void setAuthorLastName(String authorLastName) {
+        this.authorLastName = authorLastName;
+    }
 
-	public String getAuthorFirstName() {
-		return authorFirstName;
-	}
+    public String getAuthorFirstName() {
+        return authorFirstName;
+    }
 
-	public void setAuthorFirstName(String authorFirstName) {
-		this.authorFirstName = authorFirstName;
-	}
+    public void setAuthorFirstName(String authorFirstName) {
+        this.authorFirstName = authorFirstName;
+    }
 
-	public String getAuthorAvatar() {
-		return authorAvatar;
-	}
+    public String getAuthorAvatar() {
+        return authorAvatar;
+    }
 
-	public void setAuthorAvatar(String authorAvatar) {
-		this.authorAvatar = authorAvatar;
-	}
+    public void setAuthorAvatar(String authorAvatar) {
+        this.authorAvatar = authorAvatar;
+    }
 
-	public String getCreationDate() {
-		return creationDate;
-	}
+    public String getCreationDate() {
+        return creationDate;
+    }
 
-	public void setCreationDate(String creationDate) {
-		this.creationDate = creationDate;
-	}
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    public void setText(String text) {
+        this.text = text;
+    }
 
-	public String getImageLink() {
-		return imageLink;
-	}
+    public String getImageLink() {
+        return imageLink;
+    }
 
-	public void setImageLink(String imageLink) {
-		this.imageLink = imageLink;
-	}
+    public void setImageLink(String imageLink) {
+        this.imageLink = imageLink;
+    }
 
-	public boolean isMyComment() {
-		return isMyComment;
-	}
+    public boolean isMyComment() {
+        return isMyComment;
+    }
 
-	public void setMyComment(boolean isMyComment) {
-		this.isMyComment = isMyComment;
-	}
+    public void setMyComment(boolean isMyComment) {
+        this.isMyComment = isMyComment;
+    }
 
-	public Long getPostId() {
-		return postId;
-	}
+    public Long getPostId() {
+        return postId;
+    }
 
-	public void setPostId(Long postId) {
-		this.postId = postId;
-	}
+    public void setPostId(Long postId) {
+        this.postId = postId;
+    }
 
-	public String getVideoLink() {
-		return videoLink;
-	}
+    public String getVideoLink() {
+        return videoLink;
+    }
 
-	public void setVideoLink(String videoLink) {
-		this.videoLink = videoLink;
-	}
+    public void setVideoLink(String videoLink) {
+        this.videoLink = videoLink;
+    }
 
-	public boolean isLikedByUser() {
-		return isLikedByUser;
-	}
+    public boolean isLikedByUser() {
+        return isLikedByUser;
+    }
 
-	public void setLikedByUser(boolean isLikedByUser) {
-		this.isLikedByUser = isLikedByUser;
-	}
+    public void setLikedByUser(boolean isLikedByUser) {
+        this.isLikedByUser = isLikedByUser;
+    }
 
-	public int getLikeCount() {
-		return likeCount;
-	}
+    public int getLikeCount() {
+        return likeCount;
+    }
 
-	public void setLikeCount(int likeCount) {
-		this.likeCount = likeCount;
-	}
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
 
-	public boolean isEdited() {
-		return isEdited;
-	}
+    public boolean isEdited() {
+        return isEdited;
+    }
 
-	public void setEdited(boolean isEdited) {
-		this.isEdited = isEdited;
-	}
+    public void setEdited(boolean isEdited) {
+        this.isEdited = isEdited;
+    }
 
 }

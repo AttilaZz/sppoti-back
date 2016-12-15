@@ -19,7 +19,6 @@ import org.springframework.stereotype.Repository;
 import com.fr.RepositoriesService.GenericDaoService;
 
 @Repository("DAO")
-@Transactional
 public abstract class GenericDaoImpl<E, id extends Serializable> implements GenericDaoService<E, id> {
 
     protected Class<E> entityClass;
@@ -42,6 +41,7 @@ public abstract class GenericDaoImpl<E, id extends Serializable> implements Gene
     }
 
     public GenericDaoImpl() {
+
     }
 
     protected Session getSession() {

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.models;
 
@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.entities.Address;
+import com.fr.entities.Post;
 import com.fr.entities.Sppoti;
 
 /**
@@ -17,192 +18,196 @@ import com.fr.entities.Sppoti;
 @JsonInclude(Include.NON_ABSENT)
 public class PostResponse {
 
-	private Long id;
-	private Long sportId;
+    private Long id;
+    private Long sportId;
 
-	private String datetime;
+    private String datetime;
 
-	@JsonProperty("text")
-	private String content;
-	private String[] imageLink;
-	private String videoLink;
+    @JsonProperty("text")
+    private String content;
+    private String[] imageLink;
+    private String videoLink;
 
-	private Sppoti game;
+    private Sppoti game;
 
-	private List<CommentModel> postComments;
-	private Long commentsCount = 0L;
+    private List<CommentModel> postComments;
+    private Long commentsCount = 0L;
 
-	private int likeCount = 0;
-	private boolean isLikedByUser;
+    private int likeCount = 0;
+    private boolean isLikedByUser;
 
-	private boolean isEdited;
+    private boolean edited;
 
-	private List<HeaderData> postLikers;
+    private List<HeaderData> postLikers;
 
-	private Address address;
+    private Address address;
 
-	private int visibility;
+    private int visibility;
 
-	private String firstName;
-	private String lastName;
-	private String username;
+    private String firstName;
+    private String lastName;
+    private String username;
 
-	private boolean isMyPost;
+    private boolean myPost;
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public PostResponse(Post post) {
+        this.content = post.getContent();
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public PostResponse() {
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	}
+    public PostResponse() {
 
-	public int getVisibility() {
-		return visibility;
-	}
+    }
 
-	public void setVisibility(int visibility) {
-		this.visibility = visibility;
-	}
+    public int getVisibility() {
+        return visibility;
+    }
 
-	public List<HeaderData> getPostLikers() {
-		return postLikers;
-	}
+    public void setVisibility(int visibility) {
+        this.visibility = visibility;
+    }
 
-	public void setPostLikers(List<HeaderData> postLikers) {
-		this.postLikers = postLikers;
-	}
+    public List<HeaderData> getPostLikers() {
+        return postLikers;
+    }
 
-	public String getContent() {
-		return content;
-	}
+    public void setPostLikers(List<HeaderData> postLikers) {
+        this.postLikers = postLikers;
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public String getDatetimeCreated() {
-		return datetime;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public void setDatetimeCreated(String datetimeCreated) {
-		this.datetime = datetimeCreated;
-	}
+    public String getDatetimeCreated() {
+        return datetime;
+    }
 
-	public String[] getImageLink() {
-		return imageLink;
-	}
+    public void setDatetimeCreated(String datetimeCreated) {
+        this.datetime = datetimeCreated;
+    }
 
-	public void setImageLink(String[] imageLink) {
-		this.imageLink = imageLink;
-	}
+    public String[] getImageLink() {
+        return imageLink;
+    }
 
-	public String getVideoLink() {
-		return videoLink;
-	}
+    public void setImageLink(String[] imageLink) {
+        this.imageLink = imageLink;
+    }
 
-	public void setVideoLink(String videoLink) {
-		this.videoLink = videoLink;
-	}
+    public String getVideoLink() {
+        return videoLink;
+    }
 
-	public Sppoti getGame() {
-		return game;
-	}
+    public void setVideoLink(String videoLink) {
+        this.videoLink = videoLink;
+    }
 
-	public void setGame(Sppoti game) {
-		this.game = game;
-	}
+    public Sppoti getGame() {
+        return game;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public void setGame(Sppoti game) {
+        this.game = game;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public List<CommentModel> getPostComments() {
-		return postComments;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setPostComments(List<CommentModel> postComments) {
-		this.postComments = postComments;
-	}
+    public List<CommentModel> getPostComments() {
+        return postComments;
+    }
 
-	public Long getSportId() {
-		return sportId;
-	}
+    public void setPostComments(List<CommentModel> postComments) {
+        this.postComments = postComments;
+    }
 
-	public void setSportId(Long sportId) {
-		this.sportId = sportId;
-	}
+    public Long getSportId() {
+        return sportId;
+    }
 
-	public Long getCommentsCount() {
-		return commentsCount;
-	}
+    public void setSportId(Long sportId) {
+        this.sportId = sportId;
+    }
 
-	public void setCommentsCount(Long long1) {
-		this.commentsCount = long1;
-	}
+    public Long getCommentsCount() {
+        return commentsCount;
+    }
 
-	public int getLikeCount() {
-		return likeCount;
-	}
+    public void setCommentsCount(Long long1) {
+        this.commentsCount = long1;
+    }
 
-	public void setLikeCount(int likeCount) {
-		this.likeCount = likeCount;
-	}
+    public int getLikeCount() {
+        return likeCount;
+    }
 
-	public boolean isLikedByUser() {
-		return isLikedByUser;
-	}
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
 
-	public void setLikedByUser(boolean isLikedByUser) {
-		this.isLikedByUser = isLikedByUser;
-	}
+    public boolean isLikedByUser() {
+        return isLikedByUser;
+    }
 
-	public boolean isEdited() {
-		return isEdited;
-	}
+    public void setLikedByUser(boolean isLikedByUser) {
+        this.isLikedByUser = isLikedByUser;
+    }
 
-	public void setEdited(boolean isEdited) {
-		this.isEdited = isEdited;
-	}
+    public boolean isEdited() {
+        return edited;
+    }
 
-	public Address getAddress() {
-		return address;
-	}
+    public void setEdited(boolean isEdited) {
+        this.edited = isEdited;
+    }
 
-	public void setAddress(Address address) {
-		this.address = address;
-	}
+    public Address getAddress() {
+        return address;
+    }
 
-	public boolean isMyPost() {
-		return isMyPost;
-	}
+    public void setAddress(Address address) {
+        this.address = address;
+    }
 
-	public void setMyPost(boolean isMyPost) {
-		this.isMyPost = isMyPost;
-	}
+    public boolean isMyPost() {
+        return myPost;
+    }
+
+    public void setMyPost(boolean isMyPost) {
+        this.myPost = isMyPost;
+    }
 
 }

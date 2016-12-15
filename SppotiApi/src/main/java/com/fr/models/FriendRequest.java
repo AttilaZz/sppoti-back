@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.models;
 
@@ -8,23 +8,23 @@ package com.fr.models;
  */
 public class FriendRequest {
 
-	private Long friendId;
-	private String friendUsername;
+    private Long friendId;
+    private String friendUsername;
 
-	public Long getFriendId() {
-		return friendId;
-	}
+    public Long getFriendId() {
+        return friendId;
+    }
 
-	public void setFriendId(Long friendId) {
-		this.friendId = friendId;
-	}
+    public void setFriendId(Long friendId) {
+        this.friendId = friendId;
+    }
 
-	public String getFriendUsername() {
-		return friendUsername;
-	}
+    public String getFriendUsername() {
+        return friendUsername;
+    }
 
-	public void setFriendUsername(String friendUsername) {
-		this.friendUsername = friendUsername;
-	}
+    public void setFriendUsername(String friendUsername) {
+        this.friendUsername = friendUsername;
+    }
 
 }

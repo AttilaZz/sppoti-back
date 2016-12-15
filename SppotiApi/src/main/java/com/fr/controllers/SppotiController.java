@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.controllers;
 
@@ -35,98 +35,97 @@ import com.fr.entities.Users;
  */
 
 @RestController
-@CrossOrigin
 @RequestMapping("/sppoti")
 public class SppotiController {
 
-	@Autowired
-	private SppotiControllerService sppotiControllerService;
+    @Autowired
+    private SppotiControllerService sppotiControllerService;
 
-	private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
+    private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
-	private static final String ATT_USER_ID = "USER_ID";
+    private static final String ATT_USER_ID = "USER_ID";
 
-	@RequestMapping(value = "/add", method = RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded")
-	public ResponseEntity<SppotiResponse> addPost(@ModelAttribute JsonPostRequest json, UriComponentsBuilder ucBuilder,
-			HttpServletRequest request) {
+    @RequestMapping(value = "/add", method = RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded")
+    public ResponseEntity<SppotiResponse> addPost(@ModelAttribute JsonPostRequest json, UriComponentsBuilder ucBuilder,
+                                                  HttpServletRequest request) {
 
-		Gson gson = new Gson();
-		SppotiRequest newfr = null;
-		if (json != null) {
-			try {
-				newfr = gson.fromJson(json.getJson(), SppotiRequest.class);
+        Gson gson = new Gson();
+        SppotiRequest newfr = null;
+        if (json != null) {
+            try {
+                newfr = gson.fromJson(json.getJson(), SppotiRequest.class);
 
-				LOGGER.info("SPPOTI data sent by user: " + new ObjectMapper().writeValueAsString(newfr));
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-			}
-		} else {
-			LOGGER.info("SPPOTI: Data sent by user are invalid");
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+                LOGGER.info("SPPOTI data sent by user: " + new ObjectMapper().writeValueAsString(newfr));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        } else {
+            LOGGER.info("SPPOTI: Data sent by user are invalid");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-		// get current logged user
-		Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-		Users user = sppotiControllerService.getUserById(userId);
-		LOGGER.info("LOGGED User: => " + userId);
+        // get current logged user
+        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Users user = sppotiControllerService.getUserById(userId);
+        LOGGER.info("LOGGED User: => " + userId);
 
-		Sppoti frToSave = new Sppoti();
-		frToSave.setUserGame(user);
+        Sppoti frToSave = new Sppoti();
+        frToSave.setUserGame(user);
 
 		/*
-		 * For all element check if the value is not NULL
+         * For all element check if the value is not NULL
 		 */
-		String titre = newfr.getTitre();
+        String titre = newfr.getTitre();
 
-		// check if the sport id is valid
-		Long sportId = newfr.getSportId();
+        // check if the sport id is valid
+        Long sportId = newfr.getSportId();
 
-		String description = newfr.getDescription();
-		String date = newfr.getDate();
+        String description = newfr.getDescription();
+        String date = newfr.getDate();
 
-		// check if id's refers to existing peoples
-		Long[] teamPeopleId = newfr.getTeamPeopleId();
+        // check if id's refers to existing peoples
+        Long[] teamPeopleId = newfr.getTeamPeopleId();
 
-		// Check if all address element are present
-		Address spotAddress = newfr.getAddress();
+        // Check if all address element are present
+        Address spotAddress = newfr.getAddress();
 
-		int membersCount = newfr.getMembersCount();
+        int membersCount = newfr.getMembersCount();
 
-		int type = newfr.getType();
-		
-		String tags = newfr.getTags();
-		
-		try {
-			sppotiControllerService.verifyAllDataBeforeSaving(titre, sportId, description, date, teamPeopleId,
-					spotAddress, membersCount, type, tags);
+        int type = newfr.getType();
 
-		} catch (Exception e) {
-			if (e instanceof EmptyArgumentException) {
-				LOGGER.info(e.getMessage());
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			} else if (e instanceof EntityNotFoundException) {
-				LOGGER.info(e.getMessage());
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			} else if (e instanceof InterruptedException) {
-				// problem in thread sleep -- see the service
-			}
-		}
+        String tags = newfr.getTags();
 
-		frToSave.setTeamMemnbers(sppotiControllerService.getTeamGame());
-		// frToSave.setDatetime(datetime);
-		frToSave.setDescription(sppotiControllerService.getDescription());
-		frToSave.setTitre(sppotiControllerService.getTitre());
-		frToSave.setGameAddress(sppotiControllerService.getAddressGame());
-		frToSave.setRelatedSport(sppotiControllerService.getSportGame());
+        try {
+            sppotiControllerService.verifyAllDataBeforeSaving(titre, sportId, description, date, teamPeopleId,
+                    spotAddress, membersCount, type, tags);
 
-		if (sppotiControllerService.saveSpoot(frToSave)) {
-			LOGGER.info("SPOT: has been saved");
-			return new ResponseEntity<SppotiResponse>(HttpStatus.ACCEPTED);
-		}
+        } catch (Exception e) {
+            if (e instanceof EmptyArgumentException) {
+                LOGGER.info(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else if (e instanceof EntityNotFoundException) {
+                LOGGER.info(e.getMessage());
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else if (e instanceof InterruptedException) {
+                // problem in thread sleep -- see the service
+            }
+        }
 
-		LOGGER.info("SPOT: Saving problem -- Data Base problem !!");
-		return new ResponseEntity<SppotiResponse>(HttpStatus.FORBIDDEN);
+        frToSave.setTeamMemnbers(sppotiControllerService.getTeamGame());
+        // frToSave.setDatetime(datetime);
+        frToSave.setDescription(sppotiControllerService.getDescription());
+        frToSave.setTitre(sppotiControllerService.getTitre());
+        frToSave.setGameAddress(sppotiControllerService.getAddressGame());
+        frToSave.setRelatedSport(sppotiControllerService.getSportGame());
 
-	}
+        if (sppotiControllerService.saveSpoot(frToSave)) {
+            LOGGER.info("SPOT: has been saved");
+            return new ResponseEntity<SppotiResponse>(HttpStatus.ACCEPTED);
+        }
+
+        LOGGER.info("SPOT: Saving problem -- Data Base problem !!");
+        return new ResponseEntity<SppotiResponse>(HttpStatus.FORBIDDEN);
+
+    }
 
 }

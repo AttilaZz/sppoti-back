@@ -1,19 +1,18 @@
 package com.fr.controllers.serviceImpl;
 
-import java.util.List;
-
-import javax.mail.MessagingException;
-
+import com.fr.controllers.service.SignUpService;
+import com.fr.entities.*;
+import com.fr.exceptions.ConflictEmailException;
+import com.fr.exceptions.ConflictPhoneException;
+import com.fr.exceptions.ConflictUsernameException;
+import com.fr.models.SignUpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.fr.controllers.service.SignUpService;
-import com.fr.models.SignUpRequest;
-import com.fr.entities.Sport;
-import com.fr.entities.UserRoles;
-import com.fr.entities.Users;
+import javax.mail.MessagingException;
+import java.util.List;
 
 /**
  * Created by: Wail DJENANE On June 01, 2016
@@ -22,97 +21,103 @@ import com.fr.entities.Users;
 @Component
 public class SignUpServiceImpl extends AbstractControllerServiceImpl implements SignUpService {
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-	@Value("${key.originBack}")
-	private String rootAddress;
+    @Value("${key.originBack}")
+    private String rootAddress;
 
-	@Override
-	public boolean isEmailContentValid(String email) {
-		return !userDaoService.isEmailExist(email);
-	}
+    @Override
+    public void saveNewUser(Users user) throws Exception {
 
-	@Override
-	public boolean isEmailFormValid(String email) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+        //user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-	@Override
-	public boolean isUsernameValid(String username) {
-		return !userDaoService.isUsernameExist(username);
-	}
+        if (userRepository.getByEmail(user.getEmail()) != null) {
+            throw new ConflictEmailException("Email already exists");
+        }
+//        else if (userRepository.getByTelephone(user.getTelephone()) != null) {
+//            throw new ConflictPhoneException("Phone already exists");
+//        }
+        else if (userRepository.getByUsername(user.getUsername()) != null) {
+            throw new ConflictUsernameException("Username already exists");
+        } else {
+            try {
+                Users u = userRepository.save(user);
+                Thread.sleep(2000);
+                friendRepository.save(new Friend(u));
 
-	@Override
-	public boolean isEmailConfirmed(String email) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-	@Override
-	public boolean saveNewUser(Users user) {
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		try {
-			userDaoService.save(user);
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			return false;
-		}
+    @Override
+    public Roles getProfileEntity(String profileType) {
+        return roleRepository.getByName(profileType);
+    }
 
-		return true;
-	}
+    @Override
+    public Sport getSportById(Long id) {
+        return sportRepository.getById(id);
+    }
 
-	@Override
-	public UserRoles getProfileEntity(String profileType) {
-		return profileDaoService.getProfileEntityByType(profileType);
-	}
+    @Override
+    public boolean isReceivedDataNotEmpty(SignUpRequest user) {
 
-	@Override
-	public Sport getSportById(Long id) {
-		return sportDaoService.getSportById(id);
-	}
+        if (user.getFirstName() != null && !user.getFirstName().isEmpty() && user.getLastName() != null
+                && !user.getLastName().isEmpty() && user.getEmail() != null && !user.getEmail().isEmpty()
+                && user.getUsername() != null && !user.getUsername().isEmpty() && user.getPassword() != null
+                && !user.getPassword().isEmpty() && user.getSexe() != null && !user.getSexe().isEmpty()
+                && user.getSportId() != null && user.getSportId().length > 0 && user.getDateBorn() != null
+                && !user.getDateBorn().isEmpty())
+            return true;
 
-	@Override
-	public boolean isReceivedDataNotEmpty(SignUpRequest user) {
-		if (user.getFirstName() != null && !user.getFirstName().isEmpty() && user.getLastName() != null
-				&& !user.getLastName().isEmpty() && user.getEmail() != null && !user.getEmail().isEmpty()
-				&& user.getUsername() != null && !user.getUsername().isEmpty() && user.getPassword() != null
-				&& !user.getPassword().isEmpty() && user.getSexe() != null && !user.getSexe().isEmpty()
-				&& user.getSportId() != null && user.getSportId().length > 0 && user.getDateBorn() != null
-				&& !user.getDateBorn().isEmpty())
-			return true;
+        return false;
+    }
 
-		return false;
-	}
+    @Override
+    public boolean tryActivateAccount(String code) {
 
-	@Override
-	public List<Sport> getAllSports() {
-		return sportDaoService.getAll();
-	}
+        Users users = userRepository.getByConfirmationCode(code);
 
-	@Override
-	public boolean tryActivateAccount(String code) {
-		return userDaoService.performActivateAccount(code);
-	}
+        if (users.isConfirmed()) {
+            return false;
+        }
 
-	@Override
-	public boolean sendConfirmationEmail(String email, String code) {
+        try {
 
-		// String rootAddress =
-		// globalAddressConfigProperties().getProperty("originBack");
-		String link = rootAddress + "SppotiWebAppGui/inscription/create/user/" + code;
-		String body = "<H2>Account confirmation</H2><br/><br/>"
-				+ "<p>Please Click the link or copy/paste in the broser to corfirm your account</p><br/>" + "<p>" + link
-				+ "</p>";
-		// Send a composed mail
-		try {
-			mailer.sendMail2(email, "Account Confirmation", body);
-		} catch (MessagingException e) {
-			e.printStackTrace();
-			return false;
-		}
+            users.setConfirmed(true);
+            userRepository.save(users);
+            return true;
 
-		return true;
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    @Override
+    public boolean sendConfirmationEmail(String email, String code) {
+
+        // String rootAddress =
+        // globalAddressConfigProperties().getProperty("originBack");
+        String link = rootAddress + "SppotiWebAppGui/inscription/create/user/" + code;
+        String body = "<H2>Account confirmation</H2><br/><br/>"
+                + "<p>Please Click the link or copy/paste in the browser to corfirm your account</p><br/>" + "<p>" + link
+                + "</p>";
+        // Send a composed mail
+        try {
+
+            mailer.sendMail2(email, "Account Confirmation", body);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
 }

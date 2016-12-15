@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.controllers;
 
@@ -23,44 +23,43 @@ import com.fr.entities.Messages;
  * Created by: Wail DJENANE on Jun 25, 2016
  */
 
-@CrossOrigin
 @RestController
 @RequestMapping("/message/draft")
 public class MessageDraftController {
 
-	@Autowired
-	private MessageControllerService messageControllerService;
+    @Autowired
+    private MessageControllerService messageControllerService;
 
-	private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
+    private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
-	// private static final String ATT_USER_ID = "USER_ID";
+    // private static final String ATT_USER_ID = "USER_ID";
 
-	@RequestMapping(value = "/update/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Messages> updateUser(@PathVariable("id") Long id, @RequestBody Messages newMsg) {
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Messages> updateUser(@PathVariable("id") Long id, @RequestBody Messages newMsg) {
 
-		if (id > 0) {
-			Messages oldMsg = messageControllerService.findMessageById(id);
-			if (oldMsg != null) {
-				Messages updated = new Messages();
-				// prepare data for update
-				if (newMsg.getContent() != null) {
-					updated.setContent(newMsg.getContent());
-				}
-				if (newMsg.getObject() != null) {
-					updated.setObject(newMsg.getObject());
-				}
+        if (id > 0) {
+            Messages oldMsg = messageControllerService.findMessageById(id);
+            if (oldMsg != null) {
+                Messages updated = new Messages();
+                // prepare data for update
+                if (newMsg.getContent() != null) {
+                    updated.setContent(newMsg.getContent());
+                }
+                if (newMsg.getObject() != null) {
+                    updated.setObject(newMsg.getObject());
+                }
 
-				// if (messageControllerService.updateMessage(updated)) {
-				// LOGGER.info("UPDATE: success");
-				// return new ResponseEntity<Messages>(updated, HttpStatus.OK);
-				// }
+                // if (messageControllerService.updateMessage(updated)) {
+                // LOGGER.info("UPDATE: success");
+                // return new ResponseEntity<Messages>(updated, HttpStatus.OK);
+                // }
 
-			}
-			return new ResponseEntity<Messages>(HttpStatus.NO_CONTENT);
-		}
+            }
+            return new ResponseEntity<Messages>(HttpStatus.NO_CONTENT);
+        }
 
-		// BAD MESSAGE ID
-		LOGGER.info("UPDATE: bad argument");
-		return new ResponseEntity<Messages>(HttpStatus.BAD_REQUEST);
-	}
+        // BAD MESSAGE ID
+        LOGGER.info("UPDATE: bad argument");
+        return new ResponseEntity<Messages>(HttpStatus.BAD_REQUEST);
+    }
 }

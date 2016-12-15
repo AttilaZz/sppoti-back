@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.controllers;
 
@@ -22,15 +22,15 @@ import org.springframework.web.context.request.RequestContextHolder;
 @RequestMapping("/notif")
 public class NotificationController {
 
-	private static Logger LOGGER = Logger.getLogger(NotificationController.class);
+    private static Logger LOGGER = Logger.getLogger(NotificationController.class);
 
-	@RequestMapping(value = "/update/{notifId}", method = RequestMethod.GET)
-	public ResponseEntity<Void> getRole(@PathVariable("notifId") Long id, HttpServletRequest request) {
+    @RequestMapping(value = "/update/{notifId}", method = RequestMethod.GET)
+    public ResponseEntity<Void> getRole(@PathVariable("notifId") Long id, HttpServletRequest request) {
 
-		LOGGER.info("Session ID -> " + RequestContextHolder.currentRequestAttributes().getSessionId());
+        LOGGER.info("Session ID -> " + RequestContextHolder.currentRequestAttributes().getSessionId());
 
-		return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
 
-	}
+    }
 
 }

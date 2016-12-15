@@ -24,7 +24,6 @@ import java.util.UUID;
  * Created by: Wail DJENANE On June 01, 2016
  */
 @RestController
-@CrossOrigin
 @RequestMapping("/profile")
 public class UserProfileController {
 
@@ -61,8 +60,7 @@ public class UserProfileController {
      * Return only header data - ANGULAR need - Request from @BACHIR
      */
     @GetMapping(value = "/header/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HeaderData> getHeaderData(HttpServletRequest request,
-                                                    @PathVariable("username") String username) {
+    public ResponseEntity<HeaderData> getHeaderData(HttpServletRequest request, @PathVariable("username") String username) {
 
         Long userId = null;
         // userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
@@ -88,14 +86,14 @@ public class UserProfileController {
         }
 
         // Get unseen notifications
-        List<Notification> listNotif = usersDataService.getUnseenNotifications(userId, 0);
+        //List<Notification> listNotif = usersDataService.getUnseenNotifications(userId, 0);
 
         HeaderData headerInfo = usersDataService.getHeaderData(userId);
-        headerInfo.setNotifList(listNotif);
-        headerInfo.setNotifListcount(listNotif.size());
+        //headerInfo.setNotifList(listNotif);
+        //headerInfo.setNotifListcount(listNotif.size());
 
         LOGGER.info("HEADER DATA: Header data has been returned :-)");
-        return new ResponseEntity<HeaderData>(headerInfo, HttpStatus.OK);
+        return new ResponseEntity<>(headerInfo, HttpStatus.OK);
 
     }
 
@@ -134,13 +132,16 @@ public class UserProfileController {
 
         Gson gson = new Gson();
         PostRequest preq = null;
+
         if (json != null) {
+
             try {
                 preq = gson.fromJson(json.getJson(), PostRequest.class);
                 LOGGER.info("POST data sent by user: " + new ObjectMapper().writeValueAsString(preq));
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
+
         } else {
             LOGGER.info("POST: Data sent by user are invalid");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -151,7 +152,7 @@ public class UserProfileController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         /*
-		 * 1: edit avatar 2: edit cover
+         * 1: edit avatar 2: edit cover
 		 */
         if (editType == 1) {
             if (preq.getNewAvatar() != null) {
@@ -244,10 +245,10 @@ public class UserProfileController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        List<HeaderData> foundUsers = usersDataService.getFriendFromPrefix(loggedUserId, friendPrefix, page);
+        //List<HeaderData> foundUsers = usersDataService.getFriendFromPrefix(loggedUserId, friendPrefix, page);
 
         LOGGER.info("PROFILE SEARCH-USER: Users has been returned !");
-        return new ResponseEntity<>(foundUsers, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

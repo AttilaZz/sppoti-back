@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.fr.exceptions;
 
@@ -8,15 +8,15 @@ package com.fr.exceptions;
  */
 public class EmptyArgumentException extends Exception {
 
-	private static final long serialVersionUID = 4552507363386252439L;
+    private static final long serialVersionUID = 4552507363386252439L;
 
-	public EmptyArgumentException() {
-		super();
-	}
+    public EmptyArgumentException() {
+        super();
+    }
 
-	public EmptyArgumentException(String message) {
-		super(message);
-		// TODO Auto-generated constructor stub
-	}
+    public EmptyArgumentException(String message) {
+        super(message);
+        // TODO Auto-generated constructor stub
+    }
 
 }
