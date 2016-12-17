@@ -29,6 +29,9 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Value("${key.likesPerPage}")
     private int like_size;
 
+    @Value("${key.postsPerPage}")
+    private int post_size;
+
     @Override
     public Post savePost(Post post) {
         return postRepository.save(post);
@@ -392,8 +395,13 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<Post> finAllPosts(int uuid) {
-        return postRepository.getByUserUuid(uuid);
+    public List<Post> finAllPosts(int uuid, int page) {
+
+        int debut = page * post_size;
+
+        Pageable pageable = new PageRequest(debut, post_size);
+
+        return postRepository.getByUserUuid(uuid, pageable);
     }
 
 }

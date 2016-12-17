@@ -73,10 +73,10 @@ public class PostController {
 
     }
 
-    @GetMapping(value = "/all/{user_unique_id}")
-    public ResponseEntity<Object> getAllPosts(@PathVariable int user_unique_id, HttpServletRequest request) {
+    @GetMapping(value = "/all/{user_unique_id}/{page}")
+    public ResponseEntity<Object> getAllPosts(@PathVariable int user_unique_id, @PathVariable int page, HttpServletRequest request) {
 
-        List<Post> posts = postDataService.finAllPosts(user_unique_id);
+        List<Post> posts = postDataService.finAllPosts(user_unique_id, page);
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 

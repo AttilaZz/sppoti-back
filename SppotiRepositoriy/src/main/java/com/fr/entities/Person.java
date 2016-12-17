@@ -1,10 +1,10 @@
 package com.fr.entities;
 
-import org.springframework.core.annotation.Order;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Created by djenanewail on 12/13/16.

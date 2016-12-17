@@ -79,6 +79,10 @@ public class SearchController {
     }
 
     /**
+     * Find friends
+     */
+
+    /**
      * Find spooties
      */
 
