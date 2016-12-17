@@ -216,24 +216,6 @@ public class UserProfileController {
         return new ResponseEntity<>(pView, HttpStatus.OK);
     }
 
-    /*
-     * Look for a user from a letter
-     */
-    @GetMapping(value = "/find/users/{user}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<HeaderData>> searchUser(@PathVariable("user") String userPrefix,
-                                                       @PathVariable("page") int page, HttpServletRequest request) {
-
-        if (userPrefix.isEmpty()) {
-            LOGGER.info("PROFILE SEARCH-USER: Prefix not valid !");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        List<HeaderData> foundUsers = usersDataService.getUserFromPrefix(userPrefix, page);
-
-        LOGGER.info("PROFILE SEARCH-USER: Users has been returned !");
-        return new ResponseEntity<>(foundUsers, HttpStatus.OK);
-    }
-
     @GetMapping(value = "/find/friends/{friend}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<HeaderData>> searchFriend(@PathVariable("friend") String friendPrefix,
                                                          @PathVariable("page") int page, HttpServletRequest request) {

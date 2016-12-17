@@ -270,8 +270,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         int debut = page * like_size;
 
-
-        Pageable pageable = new PageRequest(page, like_size);
+        Pageable pageable = new PageRequest(debut, like_size);
 
         List<EditHistory> postHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(id, pageable);
 

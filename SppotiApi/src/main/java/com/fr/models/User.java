@@ -10,8 +10,9 @@ public class User {
 
     private String firstname;
     private String lastName;
-
     private String username;
+    private String avatar;
+
     private int id;
 
     public String getUsername() {
@@ -44,5 +45,13 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

@@ -1,8 +1,10 @@
 package com.fr.entities;
 
+import org.springframework.core.annotation.Order;
+
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by djenanewail on 12/13/16.
@@ -16,6 +18,9 @@ public class Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(nullable = false)
     protected Long id;
+
+    @ElementCollection
+    private Map<String, String> avatars = new TreeMap<String, String>();
 
     @Column(nullable = false)
     protected String lastName;
@@ -173,5 +178,13 @@ public class Person implements Serializable {
 
     public void setRelatedSports(Set<Sport> relatedSports) {
         this.relatedSports = relatedSports;
+    }
+
+    public Map<String, String> getAvatars() {
+        return avatars;
+    }
+
+    public void setAvatars(Map<String, String> avatars) {
+        this.avatars = avatars;
     }
 }
