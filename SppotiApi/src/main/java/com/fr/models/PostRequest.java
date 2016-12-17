@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.gson.annotations.SerializedName;
 import com.fr.entities.Address;
 
+import java.util.Set;
+
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
  */
@@ -97,7 +99,7 @@ public class PostRequest {
         @SerializedName("text")
         @JsonProperty("text")
         private String content;
-        private String[] imageLink;
+        private Set<String> imageLink;
         private String videoLink;
 
         public String getContent() {
@@ -108,11 +110,11 @@ public class PostRequest {
             this.content = content;
         }
 
-        public String[] getImageLink() {
+        public Set<String> getImageLink() {
             return imageLink;
         }
 
-        public void setImageLink(String[] imageLink) {
+        public void setImageLink(Set<String> imageLink) {
             this.imageLink = imageLink;
         }
 

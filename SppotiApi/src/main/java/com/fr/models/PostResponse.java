@@ -3,7 +3,10 @@
  */
 package com.fr.models;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -18,14 +21,18 @@ import com.fr.entities.Sppoti;
 @JsonInclude(Include.NON_ABSENT)
 public class PostResponse {
 
-    private Long id;
+    private int id;
     private Long sportId;
 
     private String datetime;
 
     @JsonProperty("text")
     private String content;
-    private String[] imageLink;
+
+    @JsonProperty("album")
+    private Set<String> imageLink = new HashSet<>();
+
+    @JsonProperty("video")
     private String videoLink;
 
     private Sppoti game;
@@ -114,11 +121,11 @@ public class PostResponse {
         this.datetime = datetimeCreated;
     }
 
-    public String[] getImageLink() {
+    public Set<String> getImageLink() {
         return imageLink;
     }
 
-    public void setImageLink(String[] imageLink) {
+    public void setImageLink(Set<String> imageLink) {
         this.imageLink = imageLink;
     }
 
@@ -138,13 +145,6 @@ public class PostResponse {
         this.game = game;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public List<CommentModel> getPostComments() {
         return postComments;
@@ -210,4 +210,11 @@ public class PostResponse {
         this.myPost = isMyPost;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

@@ -96,6 +96,7 @@ public class RegisterController {
          * saving the new user
 		 */
         try {
+            newUser.setUuid(UUID.randomUUID().hashCode());
             signUpService.saveNewUser(newUser);
             /*
              * Send confirmation email

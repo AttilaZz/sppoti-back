@@ -3,6 +3,7 @@ package com.fr.security;
 import com.fr.RepositoriesService.UserDaoService;
 import com.fr.entities.Users;
 import com.fr.models.HeaderData;
+import com.fr.models.User;
 import com.fr.repositories.UserRepository;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
@@ -66,9 +67,12 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
         Users users = userRepository.getById(accountUserDetails.getId());
+        User user = new User();
+        user.setUsername(users.getUsername());
+        user.setId(users.getUuid());
 
         Gson gson = new Gson();
-        response.getWriter().write(gson.toJson(users.getUsername()));
+        response.getWriter().write(gson.toJson(user));
 
         response.setStatus(HttpServletResponse.SC_OK);
 

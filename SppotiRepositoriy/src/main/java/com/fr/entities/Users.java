@@ -34,6 +34,8 @@ public class Users extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE)
     protected Long id;
 
+    protected int uuid;
+
     @Column(nullable = false)
     protected String confirmationCode;
 
@@ -187,5 +189,13 @@ public class Users extends Person implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(int uuid) {
+        this.uuid = uuid;
     }
 }

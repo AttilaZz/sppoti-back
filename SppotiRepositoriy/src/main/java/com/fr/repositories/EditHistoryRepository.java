@@ -1,6 +1,7 @@
 package com.fr.repositories;
 
 import com.fr.entities.EditHistory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -10,8 +11,8 @@ import java.util.List;
  */
 public interface EditHistoryRepository extends JpaRepository<EditHistory, Long> {
 
-    List<EditHistory> getByPostIdOrderByIdDesc(Long postId);
+    List<EditHistory> getByPostUuidOrderByDatetimeEditedDesc(int postId);
 
-    List<EditHistory> getByCommentIdOrderByIdDesc(Long commentId);
+    List<EditHistory> getByPostUuidOrderByDatetimeEditedDesc(int postId, Pageable pageable);
 
 }

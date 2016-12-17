@@ -3,14 +3,13 @@
  */
 package com.fr.controllers;
 
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.fr.aop.TraceAuthentification;
+import com.fr.controllers.service.PostControllerService;
+import com.fr.entities.*;
 import com.fr.exceptions.PostContentMissingException;
-import com.fr.repositories.PostRepository;
+import com.fr.models.ContentEditedResponse;
+import com.fr.models.PostRequest;
+import com.fr.models.PostResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,24 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import com.fr.aop.TraceAuthentification;
-import com.fr.controllers.service.PostControllerService;
-import com.fr.models.ContentEditedResponse;
-import com.fr.models.HeaderData;
-import com.fr.models.JsonPostRequest;
-import com.fr.models.PostRequest;
-import com.fr.models.PostResponse;
-import com.fr.entities.Address;
-import com.fr.entities.EditHistory;
-import com.fr.entities.LikeContent;
-import com.fr.entities.Post;
-import com.fr.entities.Sport;
-import com.fr.entities.Sppoti;
-import com.fr.entities.Users;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
@@ -64,7 +47,7 @@ public class PostController {
      * @return all post details
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<PostResponse> detailsPost(@PathVariable("id") Long id, HttpServletRequest request) {
+    public ResponseEntity<PostResponse> detailsPost(@PathVariable("id") int id, HttpServletRequest request) {
 
         Post mPost = postDataService.findPost(id);
 
@@ -90,10 +73,10 @@ public class PostController {
 
     }
 
-    @GetMapping(value = "/all")
-    public ResponseEntity<Object> getAllPosts(HttpServletRequest request) {
+    @GetMapping(value = "/all/{user_unique_id}")
+    public ResponseEntity<Object> getAllPosts(@PathVariable int user_unique_id, HttpServletRequest request) {
 
-        List<Post> posts = postDataService.finAllPosts();
+        List<Post> posts = postDataService.finAllPosts(user_unique_id);
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
@@ -122,7 +105,7 @@ public class PostController {
      * @return Add post by user
      */
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<PostResponse> addPost(@RequestBody PostRequest newPostReq, HttpServletRequest request) {
 
         // get current logged user
@@ -153,7 +136,7 @@ public class PostController {
                 postRep.setSportId(sportId);
             } else {
                 LOGGER.info("POST-ADD: The received sport ID is not valid");
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
         } else {
@@ -171,7 +154,7 @@ public class PostController {
 
             if (game == null) {
                 LOGGER.info("POST-ADD: Game id is not valid");
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
             newPostToSave.setGame(game);
@@ -185,9 +168,18 @@ public class PostController {
         newPostToSave.setVisibility(visibility);
         postRep.setVisibility(visibility);
 
-        String content = newPostReq.getContent().getContent();
-        String[] image = newPostReq.getContent().getImageLink();
-        String video = newPostReq.getContent().getVideoLink();
+        String content = null;
+        Set<String> image = new HashSet<>();
+        String video = null;
+
+        try {
+            content = newPostReq.getContent().getContent();
+            image = newPostReq.getContent().getImageLink();
+            video = newPostReq.getContent().getVideoLink();
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("ADD-POST: Data sent in json rrquest are incorrect");
+        }
 
         // if post has only classic content - Text, Image, Video
         if (newPostReq.getContent() != null) {
@@ -205,7 +197,7 @@ public class PostController {
             if (content != null) {
                 if (content.trim().length() <= 0) {
                     LOGGER.info("POST-ADD: Content value is empty");
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
 
                 // base64 encode content
@@ -217,9 +209,9 @@ public class PostController {
             }
 
             if (image != null) {
-                if (image.length <= 0) {
+                if (image.size() <= 0) {
                     LOGGER.info("POST-ADD: imageLink value is empty");
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
                 postRep.setImageLink(image);
                 newPostToSave.setAlbum(image);
@@ -228,7 +220,7 @@ public class PostController {
             if (video != null) {
                 if (video.trim().length() <= 0) {
                     LOGGER.info("POST-ADD: videoLink value is empty");
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
                 postRep.setVideoLink(video);
                 newPostToSave.setVideoLink(video);
@@ -246,9 +238,13 @@ public class PostController {
         // save post
 
         try {
+
             if (!canAdd) throw new PostContentMissingException("At least a game or a post content must be assigned");
             //Save and get the inserted id
-            Long insertedPostId = postDataService.savePost(newPostToSave).getId();
+
+
+            newPostToSave.setUuid(UUID.randomUUID().hashCode());
+            int insertedPostId = postDataService.savePost(newPostToSave).getUuid();
 
             //Fill the id in the response object
             postRep.setId(insertedPostId);
@@ -260,9 +256,11 @@ public class PostController {
              */
             // check if logged user has been tagged
             if (content != null) {
-                postDataService.addNotification(userId, insertedPostId, content);
+                //postDataService.addNotification(userId, insertedPostId, content);
             }
 
+            postRep.setMyPost(true);
+            LOGGER.info("UUID: " + postRep.getId());
             return new ResponseEntity<>(postRep, HttpStatus.CREATED);
 
         } catch (PostContentMissingException e1) {
@@ -284,7 +282,7 @@ public class PostController {
      * @return Update post data
      */
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ContentEditedResponse> updatePost(@PathVariable("id") Long postId,
+    public ResponseEntity<ContentEditedResponse> updatePost(@PathVariable("id") int postId,
                                                             @RequestBody ContentEditedResponse newData) {
 
         Post postToEdit = postDataService.findPost(postId);
@@ -378,7 +376,7 @@ public class PostController {
      * @return Delete post
      */
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deletePost(@PathVariable("id") int id) {
         Post postToDelete = postDataService.findPost(id);
 
         if (postToDelete == null) {
@@ -450,7 +448,7 @@ public class PostController {
      * @return List of post history edition
      */
     @GetMapping(value = "/history/{id}/{page}")
-    public ResponseEntity<List<ContentEditedResponse>> editHistory(@PathVariable("id") Long id,
+    public ResponseEntity<List<ContentEditedResponse>> editHistory(@PathVariable("id") int id,
                                                                    @PathVariable("page") int page, HttpServletRequest request) {
 
         Post postToLike = postDataService.findPost(id);
@@ -469,7 +467,7 @@ public class PostController {
     }
 
     @PutMapping(value = "/posthistory/{id}/{visibility}")
-    public ResponseEntity<Void> editVisibility(@PathVariable("id") Long id, @PathVariable("visibility") int visibility,
+    public ResponseEntity<Void> editVisibility(@PathVariable("id") int id, @PathVariable("visibility") int visibility,
                                                HttpServletRequest request) {
 
         Post postToEdit = postDataService.findPost(id);

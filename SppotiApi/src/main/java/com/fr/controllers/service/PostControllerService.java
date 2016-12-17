@@ -4,6 +4,7 @@
 package com.fr.controllers.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public interface PostControllerService extends AbstractControllerService {
 
     boolean deletePost(Post p);
 
-    Post findPost(Long id);
+    Post findPost(int id);
 
     Sport getSportToUse(Long id);
 
@@ -40,7 +41,7 @@ public interface PostControllerService extends AbstractControllerService {
 
     boolean unLikePost(Post post);
 
-    boolean isPostAlreadyLikedByUser(Long id, Long userId);
+    boolean isPostAlreadyLikedByUser(int postId, Long userId);
 
     List<PostResponse> getPhotoGallery(Long userId, int buttomMarker);
 
@@ -48,17 +49,17 @@ public interface PostControllerService extends AbstractControllerService {
 
     PostResponse fillPostToSend(Post post, Long userId);
 
-    List<ContentEditedResponse> getAllPostHistory(Long id, int page);
+    List<ContentEditedResponse> getAllPostHistory(int id, int page);
 
-    List<HeaderData> getLikersList(Long id, int buttomMarker);
+    List<HeaderData> getLikersList(int id, int page);
 
-    List<EditHistory> getLastModification(Long postId);
+    List<EditHistory> getLastModification(int postId);
 
     Sport getSportById(Long sport_id);
 
-    boolean editPostVisibility(Long id, int visibility);
+    boolean editPostVisibility(int id, int visibility);
 
-    boolean addNotification(Long userId, Long postId, String content);
+    boolean addNotification(Long userId, int postId, String content);
 
-    List<Post> finAllPosts();
+    List<Post> finAllPosts(int uuid);
 }

@@ -1,6 +1,5 @@
 package com.fr.controllers;
 
-import com.fr.aop.TraceAuthentification;
 import com.fr.controllers.service.PostControllerService;
 import com.fr.entities.LikeContent;
 import com.fr.entities.Post;
@@ -46,7 +45,7 @@ public class LikeController {
      * @return Like post
      */
     @PutMapping(value = "/post/{id}")
-    public ResponseEntity<Void> likePost(@PathVariable("id") Long id, HttpServletRequest request) {
+    public ResponseEntity<Void> likePost(@PathVariable("id") int id, HttpServletRequest request) {
 
         Post postToLike = postDataService.findPost(id);
 
@@ -93,7 +92,7 @@ public class LikeController {
      * @return unlike post
      */
     @DeleteMapping(value = "/post/{id}")
-    public ResponseEntity<Void> unLikePost(@PathVariable("id") Long id, HttpServletRequest request) {
+    public ResponseEntity<Void> unLikePost(@PathVariable("id") int id, HttpServletRequest request) {
 
         Post postToUnlike = postDataService.findPost(id);
 
@@ -137,7 +136,7 @@ public class LikeController {
      * @return list of people who liked the post
      */
     @GetMapping(value = "/post/{id}/{page}")
-    public ResponseEntity<PostResponse> getPostLikers(@PathVariable("id") Long id, @PathVariable("page") int page) {
+    public ResponseEntity<PostResponse> getPostLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
 
         Post currentPost = postDataService.findPost(id);
 

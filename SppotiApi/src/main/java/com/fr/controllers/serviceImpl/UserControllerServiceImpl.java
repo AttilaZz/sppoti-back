@@ -1,8 +1,6 @@
 package com.fr.controllers.serviceImpl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.springframework.stereotype.Component;
 
@@ -76,11 +74,10 @@ public class UserControllerServiceImpl extends AbstractControllerServiceImpl imp
 
             PostResponse pres = new PostResponse();
 
-            Long id = post.getId();
-            if (id != null)
-                pres.setId(id);
+            int id = post.getUuid();
+            pres.setId(id);
 
-            String[] album = post.getAlbum();
+            Set<String> album = post.getAlbum();
             if (album != null)
                 pres.setImageLink(album);
 

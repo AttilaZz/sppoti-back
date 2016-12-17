@@ -32,12 +32,12 @@ public class LikeContent {
     private Users user;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "post_id", nullable = true)
+    @JoinColumn(name = "post_id")
     @JsonIgnore
     private Post post;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "comment_id", nullable = true)
+    @JoinColumn(name = "comment_id")
     @JsonIgnore
     private Comment comment;
 

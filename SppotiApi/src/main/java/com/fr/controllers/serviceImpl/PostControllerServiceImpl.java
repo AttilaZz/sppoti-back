@@ -10,7 +10,6 @@ import com.fr.models.HeaderData;
 import com.fr.models.PostResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -82,9 +81,12 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public Post findPost(Long id) {
-        if (postRepository.getById(id).isEmpty()) return null;
-        return postRepository.getById(id).get(0);
+    public Post findPost(int id) {
+        List<Post> posts = postRepository.getByUuid(id);
+
+        if (posts.isEmpty()) return null;
+
+        return posts.get(0);
     }
 
     @Override
@@ -114,7 +116,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     public boolean unLikePost(Post post) {
         try {
             LikeContent likeContent = likeRepository.getByPostId(post.getId());
-            likeDaoService.delete(likeContent);
+            likeRepository.delete(likeContent);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,9 +126,9 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public boolean isPostAlreadyLikedByUser(Long postId, Long userId) {
+    public boolean isPostAlreadyLikedByUser(int postId, Long userId) {
 
-        return likeRepository.getByUserIdAndPostId(userId, postId) != null;
+        return likeRepository.getByUserIdAndPostUuid(userId, postId) != null;
 
     }
 
@@ -169,7 +171,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             PostResponse pres = new PostResponse();
 
             if (post.getId() != null)
-                pres.setId(post.getId());
+                pres.setId(post.getUuid());
 
             if (post.getContent() != null)
                 pres.setContent(post.getContent());
@@ -195,7 +197,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             }
 
             // check if content has been modified or not
-            List<EditHistory> editHistory = editHistoryRepository.getByPostIdOrderByIdDesc(post.getId());
+            List<EditHistory> editHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(post.getUuid());
 
             if (!editHistory.isEmpty()) {
 
@@ -263,20 +265,28 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<ContentEditedResponse> getAllPostHistory(Long id, int page) {
-        List<EditHistory> dsHistoryList = editContentDaoService.getAllPostHistory(id, page);
-        return fillEditContentResponse(dsHistoryList);
-    }
+    public List<ContentEditedResponse> getAllPostHistory(int id, int page) {
 
-    @Override
-    public List<HeaderData> getLikersList(Long id, int page) {
 
         int debut = page * like_size;
 
 
-        Pageable pageable1 = new PageRequest(page, like_size);
+        Pageable pageable = new PageRequest(page, like_size);
 
-        List<LikeContent> likersData = likeRepository.getByPostIdOrderByDatetimeCreated(id, pageable1);
+        List<EditHistory> postHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(id, pageable);
+
+        return fillEditContentResponse(postHistory);
+    }
+
+    @Override
+    public List<HeaderData> getLikersList(int id, int page) {
+
+        int debut = page * like_size;
+
+
+        Pageable pageable1 = new PageRequest(debut, like_size);
+
+        List<LikeContent> likersData = likeRepository.getByPostUuidOrderByDatetimeCreated(id, pageable1);
 
         List<HeaderData> likers = new ArrayList<>();
 
@@ -299,9 +309,9 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<EditHistory> getLastModification(Long postId) {
+    public List<EditHistory> getLastModification(int postId) {
 //        return editContentDaoService.getLastEditedPost(postId);
-        return editHistoryRepository.getByPostIdOrderByIdDesc(postId);
+        return editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(postId);
     }
 
     @Override
@@ -310,19 +320,23 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public boolean editPostVisibility(Long id, int visibility) {
+    public boolean editPostVisibility(int id, int visibility) {
 
-        Post p = postDaoService.getEntityByID(id);
-        p.setVisibility(visibility);
+        List<Post> posts = postRepository.getByUuid(id);
 
-        return postDaoService.update(p);
+        if (posts == null) return false;
+
+        Post post = posts.get(0);
+        post.setVisibility(visibility);
+
+        return postDaoService.update(post);
     }
 
     @Override
-    public boolean addNotification(Long userId, Long postId, String content) {
+    public boolean addNotification(Long userId, int postId, String content) {
 
         Users connectedUser = userRepository.getById(userId);
-        Post concernedePostTag = postRepository.getOne(postId);
+        Post concernedePostTag = postRepository.getByUuid(postId).get(0);
 
         /**
          * All words starting with DOLLAR, followed by Letter or accented Letter
@@ -379,8 +393,8 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<Post> finAllPosts() {
-        return postRepository.findAll();
+    public List<Post> finAllPosts(int uuid) {
+        return postRepository.getByUserUuid(uuid);
     }
 
 }

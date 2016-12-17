@@ -1,18 +1,11 @@
 package com.fr.entities;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
+import javax.persistence.*;
 
 import org.joda.time.DateTime;
 
@@ -40,6 +33,8 @@ public class Post implements Comparable<Post> {
     @GeneratedValue
     private Long id;
 
+    private int uuid;
+
     @Column(length = 500)
     @SerializedName("text")
     private String content;
@@ -49,8 +44,8 @@ public class Post implements Comparable<Post> {
 
     private String videoLink;
 
-    @Column(columnDefinition = "longtext")
-    private String[] album;
+    @ElementCollection
+    private Set<String> album = new HashSet<String>();
 
     @Column(nullable = false)
     private int visibility = 0;
@@ -185,11 +180,11 @@ public class Post implements Comparable<Post> {
         this.address = address;
     }
 
-    public String[] getAlbum() {
+    public Set<String> getAlbum() {
         return album;
     }
 
-    public void setAlbum(String[] album) {
+    public void setAlbum(Set<String> album) {
         this.album = album;
     }
 
@@ -215,6 +210,14 @@ public class Post implements Comparable<Post> {
 
     public void setNotifications(Set<Notifications> notifications) {
         this.notifications = notifications;
+    }
+
+    public int getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(int uuid) {
+        this.uuid = uuid;
     }
 
     @SuppressWarnings("unused")
