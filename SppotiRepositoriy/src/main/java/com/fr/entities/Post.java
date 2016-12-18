@@ -1,9 +1,6 @@
 package com.fr.entities;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.UUID;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -25,7 +22,6 @@ import com.google.gson.annotations.SerializedName;
  */
 
 @Entity
-// @JsonIgnoreProperties( { "hibernateLazyInitializer", "handler" } )
 @JsonInclude(Include.NON_EMPTY)
 public class Post implements Comparable<Post> {
 
@@ -33,7 +29,7 @@ public class Post implements Comparable<Post> {
     @GeneratedValue
     private Long id;
 
-    private int uuid;
+    private int uuid = UUID.randomUUID().hashCode();
 
     @Column(length = 500)
     @SerializedName("text")
@@ -57,7 +53,8 @@ public class Post implements Comparable<Post> {
     private Set<Notifications> notifications;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-    private Set<Address> address;
+    @OrderBy("dateTime DESC")
+    private SortedSet<Address> addresses;
 
     public Post() {
         super();
@@ -172,13 +169,6 @@ public class Post implements Comparable<Post> {
         this.editList = editList;
     }
 
-    public Set<Address> getAddress() {
-        return address;
-    }
-
-    public void setAddress(Set<Address> address) {
-        this.address = address;
-    }
 
     public Set<String> getAlbum() {
         return album;
@@ -218,6 +208,14 @@ public class Post implements Comparable<Post> {
 
     public void setUuid(int uuid) {
         this.uuid = uuid;
+    }
+
+    public SortedSet<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(SortedSet<Address> addresses) {
+        this.addresses = addresses;
     }
 
     @SuppressWarnings("unused")

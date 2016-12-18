@@ -2,9 +2,7 @@ package com.fr.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by djenanewail on 12/13/16.
@@ -12,15 +10,17 @@ import java.util.TreeMap;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Person implements Serializable {
+public abstract class Person implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(nullable = false)
     protected Long id;
 
+    protected int uuid = UUID.randomUUID().hashCode();
+
     @ElementCollection
-    private Map<String, String> avatars = new TreeMap<String, String>();
+    protected Map<String, String> avatars = new TreeMap<String, String>();
 
     @Column(nullable = false)
     protected String lastName;
@@ -60,11 +60,16 @@ public class Person implements Serializable {
     @JoinColumn(name = "sport_id", nullable = false)
     protected Set<Sport> relatedSports;
 
-    public Person() {
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
+    @OrderBy("dateTime DESC")
+    protected SortedSet<Address> addresses;
+
+    protected Person() {
         super();
     }
 
-    public Person(Users user) {
+    protected Person(Users user) {
         this.lastName = user.getLastName();
         this.firstName = user.getFirstName();
         this.dateBorn = user.getDateBorn();
@@ -186,5 +191,21 @@ public class Person implements Serializable {
 
     public void setAvatars(Map<String, String> avatars) {
         this.avatars = avatars;
+    }
+
+    public SortedSet<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(SortedSet<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public int getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(int uuid) {
+        this.uuid = uuid;
     }
 }

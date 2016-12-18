@@ -1,158 +1,52 @@
 package com.fr.entities;
 
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.joda.time.DateTime;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import javax.persistence.*;
+import java.util.UUID;
 
 /**
- * Created by: Wail DJENANE On May 22, 2016
+ * Created by djenanewail on 12/18/16.
  */
+
 @Entity
-// @JsonIgnoreProperties( { "hibernateLazyInitializer", "handler" } )
-@JsonInclude(Include.NON_EMPTY)
 public class Address implements Comparable<Address> {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private Long id;
 
-    @Column(nullable = true)
-    private Integer number;
-    @Column(nullable = true)
-    private String type; // rue avenue
-    @Column(nullable = true)
-    private String streetName;
-    @Column(nullable = true)
-    private Integer zipCode;
-    @Column(nullable = true)
-    private String townName;
-    @Column(nullable = true)
-    private String Country;
-    @Column(nullable = true)
-    private double latitude;
-    @Column(nullable = true)
-    private double longitude;
-    @Column(nullable = false)
-    private String datetimeCreated = new DateTime().toString();
+    private int uuid = UUID.randomUUID().hashCode();
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "userAddress", cascade = CascadeType.ALL)
-    private Set<Users> users;
+    private String address;
+    private String dateTime = new DateTime().toString();
 
-    @OneToOne(mappedBy = "gameAddress", cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(columnDefinition = "post_id")
     @JsonIgnore
-    private Sppoti game;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JsonIgnore
-    @JoinColumn(name = "post_id", nullable = true)
     private Post post;
 
-    public Address() {
+    @ManyToOne
+    @JoinColumn(columnDefinition = "userid")
+    @JsonIgnore
+    private Users users;
+
+    public String getAddress() {
+        return address;
     }
 
-    public Address(Integer number, String type, String streetName, Integer zipCode, String townName) {
-        super();
-        this.number = number;
-        this.type = type;
-        this.streetName = streetName;
-        this.zipCode = zipCode;
-        this.townName = townName;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public Long getId() {
-        return id;
+    public String getDateTime() {
+        return dateTime;
     }
 
-    public Integer getNumber() {
-        return number;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getStreetName() {
-        return streetName;
-    }
-
-    public Integer getZipCode() {
-        return zipCode;
-    }
-
-    public String getTownName() {
-        return townName;
-    }
-
-    public Sppoti getGame() {
-        return game;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setStreetName(String streetName) {
-        this.streetName = streetName;
-    }
-
-    public void setZipCode(Integer zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public void setTownName(String townName) {
-        this.townName = townName;
-    }
-
-    public void setGame(Sppoti game) {
-        this.game = game;
-    }
-
-    public Set<Users> getUser() {
-        return users;
-    }
-
-    public void setUser(Set<Users> users) {
-        this.users = users;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double d) {
-        this.latitude = d;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 
     public Post getPost() {
@@ -163,28 +57,35 @@ public class Address implements Comparable<Address> {
         this.post = post;
     }
 
-    public String getCountry() {
-        return Country;
+    public Long getId() {
+        return id;
     }
 
-    public void setCountry(String country) {
-        Country = country;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getDatetimeCreated() {
-        return datetimeCreated;
+    public int getUuid() {
+        return uuid;
     }
 
-    public void setDatetimeCreated(String datetimeCreated) {
-        this.datetimeCreated = datetimeCreated;
+    public void setUuid(int uuid) {
+        this.uuid = uuid;
     }
 
-    @SuppressWarnings("unused")
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
     @Override
     public int compareTo(Address o) {
         if (this != null) {
             if (o != null) {
-                return this.datetimeCreated.compareTo(o.datetimeCreated);
+                return this.dateTime.compareTo(o.dateTime);
             } else {
                 return 1;
             }
@@ -195,5 +96,4 @@ public class Address implements Comparable<Address> {
 
         return 0;
     }
-
 }

@@ -1,26 +1,14 @@
 package com.fr.entities;
 
-import java.io.Serializable;
-import java.util.Set;
-import java.util.SortedSet;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.UUID;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -34,18 +22,11 @@ public class Users extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE)
     protected Long id;
 
-    protected int uuid;
+    @Column(nullable = false)
+    private String confirmationCode;
 
     @Column(nullable = false)
-    protected String confirmationCode;
-
-    @Column(nullable = false)
-    protected String password;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
-    @OrderBy("datetimeCreated DESC")
-    private Set<Address> userAddress;
+    private String password;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("datetimeCreated DESC")
@@ -80,14 +61,6 @@ public class Users extends Person implements Serializable {
     private Set<Resources> ressources;
 
     public Users() {
-    }
-
-    public Set<Address> getUserAddress() {
-        return userAddress;
-    }
-
-    public void setUserAddress(Set<Address> userAddress) {
-        this.userAddress = userAddress;
     }
 
     public Set<Post> getUserPosts() {
@@ -191,11 +164,5 @@ public class Users extends Person implements Serializable {
         this.password = password;
     }
 
-    public int getUuid() {
-        return uuid;
-    }
 
-    public void setUuid(int uuid) {
-        this.uuid = uuid;
-    }
 }

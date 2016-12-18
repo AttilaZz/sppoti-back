@@ -6,10 +6,11 @@ package com.fr.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.google.gson.annotations.SerializedName;
 import com.fr.entities.Address;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
@@ -71,14 +72,6 @@ public class PostRequest {
         this.content = content;
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
     public String getNewAvatar() {
         return avatar;
     }
@@ -93,6 +86,14 @@ public class PostRequest {
 
     public void setCover(String cover) {
         this.cover = cover;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public class Data {

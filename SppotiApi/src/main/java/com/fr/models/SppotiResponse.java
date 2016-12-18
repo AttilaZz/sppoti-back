@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.entities.Address;
 import com.fr.entities.Sport;
 import com.fr.entities.Users;
 
@@ -23,7 +22,7 @@ public class SppotiResponse {
     private String description;
     private String date;
     private List<Users> teamPeopleId;
-    private Address spotAddress;
+    private String spotAddress;
 
     public String getTitre() {
         return titre;
@@ -65,11 +64,11 @@ public class SppotiResponse {
         this.teamPeopleId = teamPeopleId;
     }
 
-    public Address getSpotAddress() {
+    public String getSpotAddress() {
         return spotAddress;
     }
 
-    public void setSpotAddress(Address spotAddress) {
+    public void setSpotAddress(String spotAddress) {
         this.spotAddress = spotAddress;
     }
 

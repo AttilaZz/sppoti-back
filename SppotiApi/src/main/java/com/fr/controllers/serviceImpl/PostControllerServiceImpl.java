@@ -14,8 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,11 +47,14 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      * content
      */
     @Override
-    public boolean updatePost(EditHistory postEditRow, Address postEditAddress) {
+    public boolean updatePost(EditHistory postEditRow, SortedSet<Address> postEditAddress, int postId) {
         if (postEditAddress != null) {
 
             try {
-                addressRepository.save(postEditAddress);
+                Post post = postRepository.getByUuid(postId);
+                post.setAddresses(postEditAddress);
+
+                postRepository.save(post);
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;
@@ -85,7 +87,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     @Override
     public Post findPost(int id) {
-        List<Post> posts = postRepository.getByUuid(id);
+        List<Post> posts = postRepository.getByUuid(id, null);
 
         if (posts.isEmpty()) return null;
 
@@ -197,6 +199,13 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
             if (post.getSport() != null && post.getSport().getId() != null) {
                 pres.setSportId(post.getSport().getId());
+            }
+
+            //Add address
+            if(!post.getAddresses().isEmpty()){
+
+                pres.setAddresses(post.getAddresses());
+
             }
 
             // check if content has been modified or not
@@ -324,7 +333,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public boolean editPostVisibility(int id, int visibility) {
 
-        List<Post> posts = postRepository.getByUuid(id);
+        List<Post> posts = postRepository.getByUuid(id, null);
 
         if (posts == null) return false;
 
@@ -338,7 +347,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     public boolean addNotification(Long userId, int postId, String content) {
 
         Users connectedUser = userRepository.getById(userId);
-        Post concernedePostTag = postRepository.getByUuid(postId).get(0);
+        Post concernedePostTag = postRepository.getByUuid(postId);
 
         /**
          * All words starting with DOLLAR, followed by Letter or accented Letter

@@ -3,17 +3,16 @@
  */
 package com.fr.models;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.entities.Address;
 import com.fr.entities.Post;
 import com.fr.entities.Sppoti;
+
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Created by: Wail DJENANE on Aug 7, 2016
@@ -30,7 +29,7 @@ public class PostResponse {
     private String content;
 
     @JsonProperty("album")
-    private Set<String> imageLink = new HashSet<>();
+    private Set<String> imageLink;
 
     @JsonProperty("video")
     private String videoLink;
@@ -47,7 +46,7 @@ public class PostResponse {
 
     private List<HeaderData> postLikers;
 
-    private Address address;
+    private SortedSet<Address> addresses;
 
     private int visibility;
 
@@ -194,12 +193,12 @@ public class PostResponse {
         this.edited = isEdited;
     }
 
-    public Address getAddress() {
-        return address;
+    public String getDatetime() {
+        return datetime;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
     }
 
     public boolean isMyPost() {
@@ -216,5 +215,13 @@ public class PostResponse {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public SortedSet<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(SortedSet<Address> addresses) {
+        this.addresses = addresses;
     }
 }

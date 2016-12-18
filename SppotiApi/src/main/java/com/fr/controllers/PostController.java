@@ -11,6 +11,7 @@ import com.fr.models.ContentEditedResponse;
 import com.fr.models.PostRequest;
 import com.fr.models.PostResponse;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -94,7 +96,7 @@ public class PostController {
         }
 
 //        PostResponse prep = postDataService.fillPostToSend(postResponses, userId);
-        LOGGER.info("all_POST: All post have been returned");
+        LOGGER.info("ALL_POST: All post have been returned");
         return new ResponseEntity<>(postResponses, HttpStatus.OK);
 
     }
@@ -167,6 +169,23 @@ public class PostController {
         int visibility = newPostReq.getVisibility();
         newPostToSave.setVisibility(visibility);
         postRep.setVisibility(visibility);
+
+        /*
+            ---- Manage address
+         */
+        Address address = newPostReq.getAddress();
+
+        if (address != null) {
+            address.setPost(newPostToSave);
+            SortedSet<Address> addresses = new TreeSet<>();
+            addresses.add(address);
+
+            newPostToSave.setAddresses(addresses);
+        }
+
+        /*
+            --- End address
+         */
 
         String content = null;
         Set<String> image = new HashSet<>();
@@ -242,8 +261,6 @@ public class PostController {
             if (!canAdd) throw new PostContentMissingException("At least a game or a post content must be assigned");
             //Save and get the inserted id
 
-
-            newPostToSave.setUuid(UUID.randomUUID().hashCode());
             int insertedPostId = postDataService.savePost(newPostToSave).getUuid();
 
             //Fill the id in the response object
@@ -292,7 +309,7 @@ public class PostController {
         boolean isAlreadyEdited = !lastPostEditList.isEmpty();
 
         EditHistory postEditRow = new EditHistory();
-        Address postEditAddress = null;
+        SortedSet<Address> postEditAddress = null;
 
         // Required attributes
         if (postToEdit == null) {
@@ -322,14 +339,6 @@ public class PostController {
                 postEditRow.setSport(postToEdit.getSport());
             }
 
-        } else if (newData.getLatitude() != 0.0 && newData.getLongitude() != 0.0) {
-            // get old address -> update coordinate -> save as edited content
-            // TODO: Location edit should be as same as text and sport
-            postEditAddress = new Address();
-            postEditAddress.setLatitude(newData.getLatitude());
-            postEditAddress.setLongitude(newData.getLongitude());
-            postEditAddress.setPost(postToEdit);
-
         } else if (newData.getSportId() != null) {
             // sport modification
             Sport sp = postDataService.getSportById(newData.getSportId());
@@ -348,7 +357,7 @@ public class PostController {
         }
 
         // if all arguments are correctly assigned - edit post
-        if (postDataService.updatePost(postEditRow, postEditAddress))
+        if (postDataService.updatePost(postEditRow, postEditAddress, postId))
 
         {
             LOGGER.info("POST_UPDATE: success");

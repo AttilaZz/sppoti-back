@@ -6,11 +6,15 @@ import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictPhoneException;
 import com.fr.exceptions.ConflictUsernameException;
 import com.fr.models.SignUpRequest;
+import com.fr.models.User;
 import com.fr.models.UserRoleType;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,9 +28,9 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping(value = "/account")
-public class RegisterController {
+public class AccountController {
 
-    private Logger LOGGER = Logger.getLogger(RegisterController.class);
+    private Logger LOGGER = Logger.getLogger(AccountController.class);
 
     @Autowired
     private SignUpServiceImpl signUpService;
@@ -96,7 +100,6 @@ public class RegisterController {
          * saving the new user
 		 */
         try {
-            newUser.setUuid(UUID.randomUUID().hashCode());
             signUpService.saveNewUser(newUser);
             /*
              * Send confirmation email
@@ -140,7 +143,7 @@ public class RegisterController {
 
     }
 
-    @GetMapping(value = "/validate/{code}")
+    @PutMapping(value = "/validate/{code}")
     public ResponseEntity<Void> confirmUserEmail(@PathVariable("code") String code) {
 
         if (code == null || code.isEmpty()) {
@@ -156,4 +159,28 @@ public class RegisterController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
     }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping
+    public ResponseEntity<User> connectedUserInfo(Authentication authentication) {
+
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+
+        Users connectedUser = accountUserDetails.getConnectedUserDetails();
+
+        User user = new User();
+        user.setLastName(connectedUser.getLastName());
+        user.setFirstname(connectedUser.getFirstName());
+        user.setUsername(connectedUser.getUsername());
+
+        try{
+            user.setAddress(connectedUser.getAddresses().first().getAddress());
+        }catch (Exception e){
+            LOGGER.warn("User has no address yet !");
+        }
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+
+    }
+
 }

@@ -1,6 +1,9 @@
 package com.fr.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fr.entities.Address;
+
+import java.util.SortedSet;
 
 /**
  * Created by djenanewail on 12/16/16.
@@ -11,6 +14,7 @@ public class User {
     private String firstname;
     private String lastName;
     private String username;
+    private String address;
     private String avatar;
 
     private int id;
@@ -53,5 +57,13 @@ public class User {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

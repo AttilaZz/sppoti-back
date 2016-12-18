@@ -7,6 +7,7 @@ import com.fr.models.User;
 import com.fr.repositories.UserRepository;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -67,9 +68,12 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
         Users users = userRepository.getById(accountUserDetails.getId());
+        String username = users.getUsername();
+        int uid = users.getUuid();
+
         User user = new User();
-        user.setUsername(users.getUsername());
-        user.setId(users.getUuid());
+        user.setUsername(username);
+        user.setId(uid);
 
         Gson gson = new Gson();
         response.getWriter().write(gson.toJson(user));

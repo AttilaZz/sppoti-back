@@ -5,7 +5,6 @@ package com.fr.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.entities.Address;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -19,7 +18,7 @@ public class SppotiRequest {
     private String description;
     private String date;
     private Long[] teamPeopleId;
-    private Address address;
+    private String address;
     private int membersCount;
     private int type; // public/private
     private String tags;
@@ -64,12 +63,12 @@ public class SppotiRequest {
         this.teamPeopleId = teamPeopleId;
     }
 
-    public Address getAddress() {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(Address spotAddress) {
-        this.address = spotAddress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public int getMembersCount() {

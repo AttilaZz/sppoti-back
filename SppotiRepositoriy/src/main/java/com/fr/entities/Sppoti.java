@@ -39,9 +39,8 @@ public class Sppoti {
     @Column(nullable = false)
     private String datetime = new DateTime().toString();
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "addressId", nullable = false)
-    private Address gameAddress;
+    @Column(name = "address")
+    private String gameAddress;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sport_id", nullable = false)
@@ -76,11 +75,11 @@ public class Sppoti {
         this.datetime = datetime;
     }
 
-    public Address getGameAddress() {
+    public String getGameAddress() {
         return gameAddress;
     }
 
-    public void setGameAddress(Address gameAddress) {
+    public void setGameAddress(String gameAddress) {
         this.gameAddress = gameAddress;
     }
 

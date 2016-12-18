@@ -12,14 +12,13 @@ import java.util.List;
  */
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    @PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted()")
-    List<Post> getById(Long postId);
+    Post getByUuid(int postId);
 
     @PostFilter("(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend())) && !filterObject.isDeleted() ")
     List<Post> findAll();
 
     @PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted()")
-    List<Post> getByUuid(int id);
+    List<Post> getByUuid(int id, Pageable pageable);
 
     @PostFilter("(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend())) && !filterObject.isDeleted() ")
     List<Post> getByUserUuid(int uuid, Pageable pageable);

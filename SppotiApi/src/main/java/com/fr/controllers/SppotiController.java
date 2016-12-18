@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +25,6 @@ import com.fr.exceptions.EmptyArgumentException;
 import com.fr.models.JsonPostRequest;
 import com.fr.models.SppotiResponse;
 import com.fr.models.SppotiRequest;
-import com.fr.entities.Address;
 import com.fr.entities.Sppoti;
 import com.fr.entities.Users;
 
@@ -87,7 +85,7 @@ public class SppotiController {
         Long[] teamPeopleId = newfr.getTeamPeopleId();
 
         // Check if all address element are present
-        Address spotAddress = newfr.getAddress();
+        String spotAddress = newfr.getAddress();
 
         int membersCount = newfr.getMembersCount();
 
@@ -111,12 +109,16 @@ public class SppotiController {
             }
         }
 
-        frToSave.setTeamMemnbers(sppotiControllerService.getTeamGame());
+//TODO: create a set of USERS from a table of LONG
+        frToSave.setTeamMemnbers(null);
+
         // frToSave.setDatetime(datetime);
-        frToSave.setDescription(sppotiControllerService.getDescription());
-        frToSave.setTitre(sppotiControllerService.getTitre());
-        frToSave.setGameAddress(sppotiControllerService.getAddressGame());
-        frToSave.setRelatedSport(sppotiControllerService.getSportGame());
+        frToSave.setDescription(description);
+        frToSave.setTitre(titre);
+        frToSave.setGameAddress(spotAddress);
+
+//TODO: create a set of SPORT from a table of LONG
+        frToSave.setRelatedSport(null);
 
         if (sppotiControllerService.saveSpoot(frToSave)) {
             LOGGER.info("SPOT: has been saved");

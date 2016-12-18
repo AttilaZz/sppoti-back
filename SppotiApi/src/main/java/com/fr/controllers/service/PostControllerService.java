@@ -4,19 +4,15 @@
 package com.fr.controllers.service;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
+import java.util.SortedSet;
 
+import com.fr.entities.*;
 import org.springframework.stereotype.Service;
 
 import com.fr.models.ContentEditedResponse;
 import com.fr.models.HeaderData;
 import com.fr.models.PostResponse;
-import com.fr.entities.Address;
-import com.fr.entities.EditHistory;
-import com.fr.entities.LikeContent;
-import com.fr.entities.Post;
-import com.fr.entities.Sport;
-import com.fr.entities.Sppoti;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
@@ -27,7 +23,14 @@ public interface PostControllerService extends AbstractControllerService {
 
     Post savePost(Post post);
 
-    boolean updatePost(EditHistory postEditRow, Address postEditAddress);
+    /*
+     * The post update method is used to update the location (address) of the
+     * post and the content. This two jobs are separated, not at the same time.
+     *
+     * That's why we check if the address is not null before persisting the new
+     * content
+     */
+    boolean updatePost(EditHistory postEditRow, SortedSet<Address> postEditAddress, int postId);
 
     boolean deletePost(Post p);
 

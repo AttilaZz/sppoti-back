@@ -1,7 +1,7 @@
 package com.fr.controllers.serviceImpl;
 
 import com.fr.RepositoriesService.*;
-import com.fr.controllers.RegisterController;
+import com.fr.controllers.AccountController;
 import com.fr.controllers.service.AbstractControllerService;
 import com.fr.entities.*;
 import com.fr.mail.ApplicationMailer;
@@ -32,17 +32,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected NotificationRepository notificationRepository;
     protected FriendRepository friendRepository;
     protected EditHistoryRepository editHistoryRepository;
-    protected AddressRepository addressRepository;
     protected LikeRepository likeRepository;
 
     @Autowired
     public void setLikeRepository(LikeRepository likeRepository) {
         this.likeRepository = likeRepository;
-    }
-
-    @Autowired
-    public void setAddressRepository(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
     }
 
     @Autowired
@@ -106,9 +100,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected MessageDaoService messageDaoService;
 
     @Autowired
-    protected AddressDaoService addressDaoService;
-
-    @Autowired
     protected GameDaoService sppotiDaoService;
 
     @Autowired
@@ -129,7 +120,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     @Autowired
     protected ResourceDaoService resourceDaoService;
 
-    protected Logger LOGGER = Logger.getLogger(RegisterController.class);
+    protected Logger LOGGER = Logger.getLogger(AccountController.class);
 
     @SuppressWarnings("unchecked")
     @Override

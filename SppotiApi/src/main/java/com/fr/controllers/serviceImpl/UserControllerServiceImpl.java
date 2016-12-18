@@ -9,7 +9,6 @@ import com.fr.enums.RessourceType;
 import com.fr.models.HeaderData;
 import com.fr.models.Notification;
 import com.fr.models.PostResponse;
-import com.fr.entities.Address;
 import com.fr.entities.Comment;
 import com.fr.entities.EditHistory;
 import com.fr.entities.Notifications;
@@ -156,12 +155,7 @@ public class UserControllerServiceImpl extends AbstractControllerServiceImpl imp
             }
 
             // get Last post address
-            List<Address> postAddress = addressDaoService.getLastPostAddress(post.getId());
-            if (!postAddress.isEmpty()) {
 
-                pres.setAddress(postAddress.get(0));// get last inserted address
-
-            }
 
             int nbLike = post.getLikes().size();
             if (post.getLikes() != null) {

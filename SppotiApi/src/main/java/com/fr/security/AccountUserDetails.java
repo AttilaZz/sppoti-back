@@ -11,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
  */
-@SuppressWarnings("serial")
 public class AccountUserDetails implements MyUserDetails {
 
     private final Users account;
@@ -103,4 +103,8 @@ public class AccountUserDetails implements MyUserDetails {
         return friendRepository.getFriendByMatchingUserId(account.getId());
     }
 
+    @Override
+    public Users getConnectedUserDetails() {
+        return account;
+    }
 }

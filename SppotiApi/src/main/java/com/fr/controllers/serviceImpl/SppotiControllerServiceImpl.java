@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import com.fr.controllers.service.SppotiControllerService;
 import com.fr.exceptions.EmptyArgumentException;
-import com.fr.entities.Address;
 import com.fr.entities.Sport;
 import com.fr.entities.Sppoti;
 import com.fr.entities.Users;
@@ -25,7 +24,7 @@ import com.fr.entities.Users;
 public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService {
 
     private Sport sportGame;
-    private Address addressGame;
+    private String addressGame;
     private Set<Users> teamGame;
     private String titre;
     private String description;
@@ -35,20 +34,16 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     public SppotiControllerServiceImpl() {
         sportGame = new Sport();
-        addressGame = new Address();
         teamGame = new HashSet<>();
     }
 
     @Override
     public void verifyAllDataBeforeSaving(String titre, Long sportId, String description, String date,
-                                          Long[] teamPeopleId, Address spotAddress, int membersCount, int type, String tags) throws Exception {
+                                          Long[] teamPeopleId, String spotAddress, int membersCount, int type, String tags) throws Exception {
 
         if (titre == null || titre.isEmpty() || sportId == null || description == null || description.isEmpty()
                 || date == null || date.isEmpty() || teamPeopleId == null || teamPeopleId.length == 0
-                || spotAddress == null || spotAddress.getNumber() == null || spotAddress.getStreetName() == null
-                || spotAddress.getStreetName().isEmpty() || spotAddress.getTownName() == null
-                || spotAddress.getTownName().isEmpty() || spotAddress.getType() == null
-                || spotAddress.getType().isEmpty() || spotAddress.getZipCode() == null || membersCount <= 0
+                || spotAddress == null || membersCount <= 0
                 || type <= 0) {
 
             throw new EmptyArgumentException("Missing Argument in the JSON request");
@@ -80,78 +75,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
     }
 
-    @Override
-    public Sport getSportGame() {
-        return sportGame;
-    }
-
-    @Override
-    public void setSportGame(Sport sportGame) {
-        this.sportGame = sportGame;
-    }
-
-    @Override
-    public Address getAddressGame() {
-        return addressGame;
-    }
-
-    @Override
-    public void setAddressGame(Address addressGame) {
-        this.addressGame = addressGame;
-    }
-
-    @Override
-    public Set<Users> getTeamGame() {
-        return teamGame;
-    }
-
-    @Override
-    public void setTeamGame(Set<Users> teamGame) {
-        this.teamGame = teamGame;
-    }
-
-    @Override
-    public String getTitre() {
-        return titre;
-    }
-
-    @Override
-    public void setTitre(String titre) {
-        this.titre = titre;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    @Override
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getTeamCount() {
-        return teamCount;
-    }
-
-    public void setTeamCount(int teamCount) {
-        this.teamCount = teamCount;
-    }
-
-    public int getSppotiType() {
-        return sppotiType;
-    }
-
-    public void setSppotiType(int sppotiType) {
-        this.sppotiType = sppotiType;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
     }
 
     @Override
