@@ -187,6 +187,8 @@ public class AccountController {
         user.setLastName(connectedUser.getLastName());
         user.setFirstname(connectedUser.getFirstName());
         user.setUsername(connectedUser.getUsername());
+        user.setEmail(connectedUser.getEmail());
+        user.setPhone(connectedUser.getTelephone());
         user.setId(connectedUser.getUuid());
 
         try {
