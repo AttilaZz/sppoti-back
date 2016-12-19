@@ -211,6 +211,7 @@ public class AccountController {
         //detect which element uwer want to update
         Resources resource = new Resources();
 
+
         if ((user.getAvatar() != null && !user.getAvatar().isEmpty()) || (user.getCover() != null && !user.getCover().isEmpty())) {
 
             resource.setSelected(true);
@@ -221,6 +222,9 @@ public class AccountController {
                 resource.setUrl(user.getCover());
             }
 
+            //TODO: Deselect the old resource
+
+            resource.setUser(connected_user);
             connected_user.getRessources().add(resource);
 
         } else {
