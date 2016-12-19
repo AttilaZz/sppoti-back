@@ -17,6 +17,7 @@ public abstract class Person implements Serializable {
     @Column(nullable = false)
     protected Long id;
 
+    @Column(unique = true)
     protected int uuid = UUID.randomUUID().hashCode();
 
     @ElementCollection

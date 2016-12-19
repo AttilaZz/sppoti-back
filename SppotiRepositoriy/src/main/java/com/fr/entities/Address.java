@@ -33,6 +33,10 @@ public class Address implements Comparable<Address> {
     @JsonIgnore
     private Users users;
 
+    public Address(String address) {
+        this.address = address;
+    }
+
     public String getAddress() {
         return address;
     }

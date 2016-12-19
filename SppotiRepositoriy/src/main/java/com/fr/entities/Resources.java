@@ -33,19 +33,10 @@ public class Resources {
     @Column(nullable = false)
     private String url;
 
-    @Column(nullable = true)
     private String description;
-
-    @Column(nullable = true)
-    private Integer type; // 0: avatar, 2: cover, 3: document
-
-    @Column(nullable = true)
-    private Integer typeExtension; // 0: image, 2: vidéo, 3: pdf, word ...
-
-    @Column(nullable = false)
+    private Integer type; // 1: avatar, 2: cover, 3: document
+    private Integer typeExtension; // 1: image, 2: vidéo, 3: pdf, word ...
     private String dateTime = new Date().toString();
-
-    @Column(nullable = false)
     private boolean isSelected = false;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

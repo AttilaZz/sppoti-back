@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     Users getById(Long id);
 
     List<Users> getByUsernameContaining(String userPrefix, Pageable pageable);
+
+    Users getByUuid(int id);
 }

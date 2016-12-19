@@ -15,8 +15,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,9 +33,20 @@ import java.util.UUID;
 public class AccountController {
 
     private Logger LOGGER = Logger.getLogger(AccountController.class);
+    private static final String ATT_USER_ID = "USER_ID";
+
+    private SignUpServiceImpl signUpService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private SignUpServiceImpl signUpService;
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Autowired
+    public void setSignUpService(SignUpServiceImpl signUpService) {
+        this.signUpService = signUpService;
+    }
 
     @PostMapping(value = "/create")
     @ResponseBody
@@ -61,9 +74,11 @@ public class AccountController {
         String confirmationCode = UUID.randomUUID().toString();
         newUser.setConfirmationCode(confirmationCode);
 
+        //newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         newUser.setPassword(user.getPassword());
-        String uName = user.getUsername();
-        uName = uName.trim().toLowerCase();
+
+        String uName = user.getUsername().trim();
+        //uName = uName.toLowerCase();
         newUser.setUsername(uName);
 
         for (Long sportId : user.getSportId()) {
@@ -172,10 +187,11 @@ public class AccountController {
         user.setLastName(connectedUser.getLastName());
         user.setFirstname(connectedUser.getFirstName());
         user.setUsername(connectedUser.getUsername());
+        user.setId(connectedUser.getUuid());
 
-        try{
+        try {
             user.setAddress(connectedUser.getAddresses().first().getAddress());
-        }catch (Exception e){
+        } catch (Exception e) {
             LOGGER.warn("User has no address yet !");
         }
 
@@ -183,4 +199,57 @@ public class AccountController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PutMapping
+    public ResponseEntity<User> editUserInfo(@RequestBody User user, HttpServletRequest request) {
+
+        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Users connected_user = signUpService.getUserById(userId);
+
+        //detect which element uwer want to update
+        Resources resource = new Resources();
+
+        if ((user.getAvatar() != null && !user.getAvatar().isEmpty()) || (user.getCover() != null && !user.getCover().isEmpty())) {
+
+            resource.setSelected(true);
+
+            if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
+                resource.setUrl(user.getAvatar());
+            } else if (user.getCover() != null && !user.getCover().isEmpty()) {
+                resource.setUrl(user.getCover());
+            }
+
+            connected_user.getRessources().add(resource);
+
+        } else {
+            if (user.getFirstname() != null && !user.getFirstname().isEmpty()) {
+                connected_user.setFirstName(user.getFirstname());
+            }
+            if (user.getLastName() != null && !user.getLastName().isEmpty()) {
+                connected_user.setLastName(user.getLastName());
+            }
+            if (user.getAddress() != null && !user.getAddress().isEmpty()) {
+                connected_user.getAddresses().add(new Address(user.getAddress()));
+            }
+            if (user.getUsername() != null && !user.getUsername().isEmpty()) {
+                connected_user.setUsername(user.getUsername());
+            }
+            if (user.getPhone() != null && !user.getPhone().isEmpty()) {
+                connected_user.setTelephone(user.getPhone());
+            }
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                String encodedPassword = passwordEncoder.encode(user.getPassword());
+                connected_user.setPassword(user.getPassword());
+            }
+        }
+
+        if (signUpService.updateUser(connected_user)) {
+            LOGGER.info("USER-UPDATE: User has been updated!");
+            return new ResponseEntity<>(user, HttpStatus.OK);
+
+        } else {
+            LOGGER.error("USER-UPDATE: ERROR updating user");
+            return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+        }
+    }
 }

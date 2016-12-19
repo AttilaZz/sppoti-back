@@ -22,7 +22,7 @@ public class Users extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE)
     protected Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String confirmationCode;
 
     @Column(nullable = false)

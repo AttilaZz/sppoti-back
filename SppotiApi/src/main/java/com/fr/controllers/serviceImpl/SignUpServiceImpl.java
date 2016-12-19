@@ -3,7 +3,6 @@ package com.fr.controllers.serviceImpl;
 import com.fr.controllers.service.SignUpService;
 import com.fr.entities.*;
 import com.fr.exceptions.ConflictEmailException;
-import com.fr.exceptions.ConflictPhoneException;
 import com.fr.exceptions.ConflictUsernameException;
 import com.fr.models.SignUpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
-import java.util.List;
 
 /**
  * Created by: Wail DJENANE On June 01, 2016
@@ -21,16 +19,11 @@ import java.util.List;
 @Component
 public class SignUpServiceImpl extends AbstractControllerServiceImpl implements SignUpService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Value("${key.originBack}")
     private String rootAddress;
 
     @Override
     public void saveNewUser(Users user) throws Exception {
-
-        //user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (userRepository.getByEmail(user.getEmail()) != null) {
             throw new ConflictEmailException("Email already exists");
@@ -118,6 +111,22 @@ public class SignUpServiceImpl extends AbstractControllerServiceImpl implements 
         }
 
         return true;
+    }
+
+    @Override
+    public Users getUserById(int id){
+        return userRepository.getByUuid(id);
+    }
+
+    @Override
+    public boolean updateUser(Users connected_user) {
+        try {
+            userRepository.save(connected_user);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

@@ -1,16 +1,10 @@
 package com.fr.controllers.service;
 
-import com.fr.entities.Person;
-import com.fr.entities.Sport;
 import com.fr.entities.Roles;
+import com.fr.entities.Sport;
 import com.fr.entities.Users;
-import com.fr.exceptions.ConflictEmailException;
-import com.fr.exceptions.ConflictPhoneException;
-import com.fr.exceptions.ConflictUsernameException;
 import com.fr.models.SignUpRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public interface SignUpService {
@@ -27,4 +21,7 @@ public interface SignUpService {
 
     boolean sendConfirmationEmail(String email, String code);
 
+    Users getUserById(int id);
+
+    boolean updateUser(Users connected_user);
 }
