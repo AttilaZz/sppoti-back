@@ -126,11 +126,11 @@ public class AccountController {
 			/*
              * Send email to confirm account
 			 */
-//            Thread thread = new Thread(() -> {
-//                signUpService.sendConfirmationEmail(newUser.getEmail(), confirmationCode);
-//                LOGGER.info("Confirmation email has been sent successfully !");
-//            });
-//            thread.start();
+            Thread thread = new Thread(() -> {
+                signUpService.sendConfirmationEmail(newUser.getEmail(), confirmationCode);
+                LOGGER.info("Confirmation email has been sent successfully !");
+            });
+            thread.start();
 
 			/*
              * newUser is returned in the JSON, so the confirmation code must be
@@ -252,6 +252,7 @@ public class AccountController {
                 String encodedPassword = passwordEncoder.encode(user.getPassword());
                 connected_user.setPassword(user.getPassword());
             }
+            //TODO: Update sports
         }
 
         if (signUpService.updateUser(connected_user)) {
