@@ -57,7 +57,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         this.sppotiType = type;
         this.tags = tags;
 
-        Sport sp = sportDaoService.getEntityByID(sportId);
+        Sport sp = sportRepository.getOne(sportId);
         if (sp != null) {
             this.sportGame = sp;
         } else {
@@ -65,7 +65,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         for (Long userId : teamPeopleId) {
-            Users u = userDaoService.getEntityByID(userId);
+            Users u = userRepository.getOne(userId);
             if (u != null) {
                 this.teamGame.add(u);
             } else {
@@ -92,7 +92,10 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
             for (Users user : teamGame) {
                 user.setGameTeam(g);
-                if (!userDaoService.update(user)) {
+
+                try {
+                    userRepository.save(user);
+                } catch (Exception e) {
                     userIsUpToDate = false;
                 }
 

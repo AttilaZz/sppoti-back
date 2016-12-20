@@ -5,9 +5,7 @@ import com.fr.entities.*;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;
 import com.fr.models.SignUpRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
@@ -114,19 +112,22 @@ public class SignUpServiceImpl extends AbstractControllerServiceImpl implements 
     }
 
     @Override
-    public Users getUserById(int id){
-        return userRepository.getByUuid(id);
-    }
-
-    @Override
     public boolean updateUser(Users connected_user) {
         try {
             userRepository.save(connected_user);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
+    @Override
+    public void unSelectOldResource(Long userId, int i) {
+        Resources resources = resourceRepository.getByUserIdAndTypeAndIsSelectedTrue(userId, i);
+        if (resources != null) {
 }
+            resources.setSelected(false);
+            resourceRepository.save(resources);
+        }
+    }

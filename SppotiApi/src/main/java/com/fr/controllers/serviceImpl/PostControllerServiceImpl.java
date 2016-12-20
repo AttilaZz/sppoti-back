@@ -14,7 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -202,7 +204,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             }
 
             //Add address
-            if(!post.getAddresses().isEmpty()){
+            if (!post.getAddresses().isEmpty()) {
 
                 pres.setAddresses(post.getAddresses());
 
@@ -305,7 +307,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             for (LikeContent row : likersData) {
                 // get liker data
                 HeaderData u = new HeaderData();
-                u.setAvatar(userDaoService.getLastAvatar(row.getUser().getId()).get(0).getUrl());
+//                u.setAvatar(userDaoService.getLastAvatar(row.getUser().getId()).get(0).getUrl());
                 u.setFirstName(row.getUser().getFirstName());
                 u.setLastName(row.getUser().getLastName());
                 // u.setCover(userDao.getLastCover(row.getUser().getId(),
@@ -327,7 +329,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     @Override
     public Sport getSportById(Long sport_id) {
-        return sportDaoService.getEntityByID(sport_id);
+        return null;
     }
 
     @Override

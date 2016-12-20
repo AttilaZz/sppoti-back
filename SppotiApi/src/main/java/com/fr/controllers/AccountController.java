@@ -218,11 +218,16 @@ public class AccountController {
 
             if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
                 resource.setUrl(user.getAvatar());
-            } else if (user.getCover() != null && !user.getCover().isEmpty()) {
+                resource.setType(1);
+                signUpService.unSelectOldResource(userId, 1);
+            } else if (user.getCover() != null && !user.getCover().isEmpty() && user.getCoverType() != null) {
                 resource.setUrl(user.getCover());
+                resource.setType(2);
+                signUpService.unSelectOldResource(userId, 2);
             }
 
             //TODO: Deselect the old resource
+
 
             resource.setUser(connected_user);
             connected_user.getRessources().add(resource);

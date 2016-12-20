@@ -8,4 +8,7 @@ import org.springframework.data.repository.CrudRepository;
  */
 
 public interface ResourceRepository extends CrudRepository<Resources, Long> {
+
+    Resources getByUserIdAndTypeAndIsSelectedTrue(Long id, int type);
+
 }

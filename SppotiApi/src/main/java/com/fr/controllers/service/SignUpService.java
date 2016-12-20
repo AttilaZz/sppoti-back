@@ -21,7 +21,7 @@ public interface SignUpService {
 
     boolean sendConfirmationEmail(String email, String code);
 
-    Users getUserById(int id);
-
     boolean updateUser(Users connected_user);
+
+    void unSelectOldResource(Long userId, int i);
 }

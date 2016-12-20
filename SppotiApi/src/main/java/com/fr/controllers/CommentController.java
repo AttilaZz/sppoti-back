@@ -3,34 +3,25 @@
  */
 package com.fr.controllers;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fr.aop.TraceAuthentification;
+import com.fr.controllers.service.CommentControllerService;
+import com.fr.entities.Comment;
+import com.fr.entities.EditHistory;
+import com.fr.entities.Post;
+import com.fr.entities.Users;
+import com.fr.models.CommentModel;
+import com.fr.models.ContentEditedResponse;
+import com.fr.models.JsonPostRequest;
+import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.fr.aop.TraceAuthentification;
-import com.fr.controllers.service.CommentControllerService;
-import com.fr.models.CommentModel;
-import com.fr.models.ContentEditedResponse;
-import com.fr.models.HeaderData;
-import com.fr.models.JsonPostRequest;
-import com.fr.entities.Comment;
-import com.fr.entities.EditHistory;
-import com.fr.entities.LikeContent;
-import com.fr.entities.Post;
-import com.fr.entities.Users;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
@@ -216,151 +207,4 @@ public class CommentController {
         }
 
     }
-
-    @RequestMapping(value = "/like/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Void> likeComment(@PathVariable("id") Long id, HttpServletRequest request) {
-
-        Comment commentToLike = commentDataService.findComment(id);
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = commentDataService.getUserById(userId);
-
-        if (commentToLike == null || user == null) {
-
-            if (commentToLike == null) {
-                // post not fount
-                LOGGER.info("LIKE_COMMENT: Failed to retreive the post");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else {
-                LOGGER.info("LIKE_COMMENT: Failed to retreive user session");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-        }
-
-        LikeContent likeToSave = new LikeContent();
-        likeToSave.setComment(commentToLike);
-        likeToSave.setUser(user);
-
-        if (!commentDataService.isCommentAlreadyLikedByUser(id, userId)) {
-
-            if (commentDataService.likeComment(likeToSave)) {
-                // delete success
-                LOGGER.info("LIKE_COMMENT: Comment with id:" + id + " has been liked by: " + user.getFirstName() + " "
-                        + user.getLastName());
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                LOGGER.info("LIKE_COMMENT: Database like problem !!");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            LOGGER.info("LIKE: Comment already liked by: " + user.getFirstName() + " " + user.getLastName());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
-    @RequestMapping(value = "/unlike/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Void> unLikeComment(@PathVariable("id") Long id, HttpServletRequest request) {
-
-        Comment commentToLike = commentDataService.findComment(id);
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = commentDataService.getUserById(userId);
-
-        if (commentToLike == null || user == null) {
-
-            if (commentToLike == null) {
-                // post not fount
-                LOGGER.info("LIKE_COMMENT: Failed to retreive the comment");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else {
-                LOGGER.info("LIKE_COMMENT: Failed to retreive user session");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-        }
-        if (commentDataService.isCommentAlreadyLikedByUser(id, userId)) {
-            if (commentDataService.unLikeComment(id, userId)) {
-                // delete success
-                LOGGER.info("LIKE_COMMENT: Comment with id:" + id + " has been unliked by: " + user.getFirstName() + " "
-                        + user.getLastName());
-                return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                LOGGER.info("LIKE_COMMENT: Database like problem !!");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            LOGGER.info("LIKE_COMMENT: Comment not liked by: " + user.getFirstName() + " " + user.getLastName());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
-    /*
-     * List of people who liked the comment
-     */
-    @RequestMapping(value = "/like/list/{id}/{page}", method = RequestMethod.GET)
-    public ResponseEntity<CommentModel> getPostLikers(@PathVariable("id") Long id, @PathVariable("page") int page) {
-
-        Comment currentComment = commentDataService.findComment(id);
-
-        if (currentComment == null) {
-            // post not fount
-            LOGGER.info("COMMENT_LIKERS_COMMENT: Failed to retreive the post");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        List<HeaderData> likersList = commentDataService.getLikersList(id, page);
-
-        if (likersList.isEmpty()) {
-            LOGGER.info("COMMENT_LIKERS_COMMENT: Empty !!");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        CommentModel pr = new CommentModel();
-        pr.setCommentLikers(likersList);
-        pr.setLikeCount(currentComment.getLikes().size());
-
-        LOGGER.info("COMMENT_LIKERS_COMMENT: returned :-)");
-        return new ResponseEntity<>(pr, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/post/{id}/{bottomMajId}", method = RequestMethod.GET)
-    public ResponseEntity<List<CommentModel>> getAllPostComment(@PathVariable("id") Long postId,
-                                                                @PathVariable("bottomMajId") int bottomMajId, HttpServletRequest request) {
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Post mPost = commentDataService.findPostById(postId);
-
-        // Required attributes
-        if (mPost == null) {
-            LOGGER.info("COMMENT: Failed to retreive the post id");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        List<CommentModel> postComments = commentDataService.getPostCommentsFromLastId(postId, bottomMajId, userId);
-
-        return new ResponseEntity<List<CommentModel>>(postComments, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/edithistory/{id}/{page}", method = RequestMethod.GET)
-    public ResponseEntity<List<ContentEditedResponse>> editHistory(@PathVariable("id") Long id,
-                                                                   @PathVariable("page") int page, HttpServletRequest request) {
-
-        Comment targetComment = commentDataService.findComment(id);
-
-        if (targetComment == null) {
-
-            // post not fount
-            LOGGER.info("COMMENT_EDIT_HISTORY: Failed to retreive the comment");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        }
-
-        LOGGER.info("COMMENT_EDIT_HISTORY: comment history has been returned for id:" + id);
-        return new ResponseEntity<>(commentDataService.getAllPostHistory(id, page), HttpStatus.OK);
-
-    }
-
 }

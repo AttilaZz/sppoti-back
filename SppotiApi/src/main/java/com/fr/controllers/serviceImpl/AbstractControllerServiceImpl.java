@@ -91,16 +91,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
 
     @Autowired
-    protected UserDaoService userDaoService;
-
-    @Autowired
     protected PostDaoService postDaoService;
 
     @Autowired
     protected ProfileDaoService profileDaoService;
-
-    @Autowired
-    protected SportDaoService sportDaoService;
 
     @Autowired
     protected MessageDaoService messageDaoService;
@@ -115,16 +109,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     private Environment environment;
 
     @Autowired
-    protected LikeDaoService likeDaoService;
-
-    @Autowired
     protected CommentDaoService commentDaoService;
 
     @Autowired
     protected EditContentDaoService editContentDaoService;
-
-    @Autowired
-    protected ResourceDaoService resourceDaoService;
 
     protected Logger LOGGER = Logger.getLogger(AccountController.class);
 
@@ -215,8 +203,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             Long commentId = comment.getId();
             CommentModel cm = new CommentModel();
 
-            if (!userDaoService.getLastAvatar(userId).isEmpty())
-                cm.setAuthorAvatar(userDaoService.getLastAvatar(userId).get(0).getUrl());
+//            if (!userDaoService.getLastAvatar(userId).isEmpty())
+//                cm.setAuthorAvatar(userDaoService.getLastAvatar(userId).get(0).getUrl());
 
             cm.setAuthorFirstName(comment.getUser().getFirstName());
             cm.setAuthorLastName(comment.getUser().getLastName());

@@ -3,8 +3,6 @@ package com.fr; /**
  */
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fr.RepositoriesService.ProfileDaoService;
-import com.fr.RepositoriesService.SportDaoService;
 import com.fr.entities.Sport;
 import com.fr.entities.Roles;
 import com.fr.models.SportList;

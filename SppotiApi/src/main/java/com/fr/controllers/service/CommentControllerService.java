@@ -25,22 +25,14 @@ public interface CommentControllerService extends AbstractControllerService {
 
     boolean deleteComment(Comment comment);
 
-    public Comment findComment(Long id);
+    Comment findComment(Long id);
 
-    public Post findPostById(Long id);
+    Post findPostById(Long id);
 
     boolean updateComment(EditHistory commentEditRow);
 
-    boolean likeComment(LikeContent likeToSave);
+    List<CommentModel> getPostCommentsFromLastId(Long postId, int bottomMajId, Long userId);
 
-    boolean unLikeComment(Long id, Long userId);
-
-    boolean isCommentAlreadyLikedByUser(Long id, Long userId);
-
-    public List<CommentModel> getPostCommentsFromLastId(Long postId, int bottomMajId, Long userId);
-
-    public List<ContentEditedResponse> getAllPostHistory(Long id, int page);
-
-    List<HeaderData> getLikersList(Long id, int page);
+    List<ContentEditedResponse> getAllPostHistory(Long id, int page);
 
 }

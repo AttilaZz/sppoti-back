@@ -49,21 +49,6 @@ public class CommentControllerServiceimpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public boolean likeComment(LikeContent likeToSave) {
-        return likeDaoService.saveOrUpdate(likeToSave);
-    }
-
-    @Override
-    public boolean unLikeComment(Long id, Long userId) {
-        return likeDaoService.unLikeComment(id, userId);
-    }
-
-    @Override
-    public boolean isCommentAlreadyLikedByUser(Long commentId, Long userId) {
-        return likeDaoService.isCommentAlreadyLiked(commentId, userId);
-    }
-
-    @Override
     public List<CommentModel> getPostCommentsFromLastId(Long postId, int bottomMajId, Long userId) {
         List<Comment> lComment = commentDaoService.getCommentsFromLastMajId(postId, bottomMajId);
 
@@ -74,30 +59,6 @@ public class CommentControllerServiceimpl extends AbstractControllerServiceImpl 
     public List<ContentEditedResponse> getAllPostHistory(Long id, int page) {
         List<EditHistory> dsHistoryList = editContentDaoService.getAllComenttHistory(id, page);
         return fillEditContentResponse(dsHistoryList);
-    }
-
-    @Override
-    public List<HeaderData> getLikersList(Long id, int page) {
-        List<LikeContent> likersData = likeDaoService.getCommentLikers(id, page);
-
-        List<HeaderData> likers = new ArrayList<>();
-
-        if (!likersData.isEmpty()) {
-            for (LikeContent row : likersData) {
-                // get liker data
-                HeaderData u = new HeaderData();
-                u.setAvatar(userDaoService.getLastAvatar(row.getUser().getId()).get(0).getUrl());
-                u.setFirstName(row.getUser().getFirstName());
-                u.setLastName(row.getUser().getLastName());
-                // u.setCover(userDao.getLastCover(row.getUser().getId(),
-                // coverType));
-                u.setUsername(row.getUser().getUsername());
-
-                likers.add(u);
-            }
-        }
-
-        return likers;
     }
 
 }
