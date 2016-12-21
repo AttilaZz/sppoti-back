@@ -1,6 +1,7 @@
 package com.fr.entities;
 
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,15 +32,15 @@ public class Comment implements Comparable<Comment> {
     @GeneratedValue
     private Long id;
 
+    @Column(unique = true)
+    protected int uuid = UUID.randomUUID().hashCode();
+
     @JsonProperty("text")
-    @Column(nullable = true)
     private String content;
-
-    @Column(nullable = true)
     private String imageLink;
-
-    @Column(nullable = true)
     private String videoLink;
+
+    private boolean deleted = false;
 
     @Column(nullable = false)
     private String datetimeCreated = new DateTime().toString();
@@ -130,6 +131,22 @@ public class Comment implements Comparable<Comment> {
 
     public void setEditList(Set<EditHistory> editList) {
         this.editList = editList;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public int getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(int uuid) {
+        this.uuid = uuid;
     }
 
     @SuppressWarnings("unused")

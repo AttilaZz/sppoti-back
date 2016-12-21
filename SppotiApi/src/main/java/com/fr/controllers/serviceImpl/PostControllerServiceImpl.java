@@ -406,7 +406,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<Post> finAllPosts(int uuid, int page) {
+    public List<Post> findAllPosts(int uuid, int page) {
 
         int debut = page * post_size;
 

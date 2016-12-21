@@ -34,6 +34,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected EditHistoryRepository editHistoryRepository;
     protected LikeRepository likeRepository;
     protected ResourceRepository resourceRepository;
+    protected CommentRepository commentRepository;
+
+    @Autowired
+    public void setCommentRepository(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
+    }
 
     @Autowired
     public void setResourceRepository(ResourceRepository resourceRepository) {
@@ -81,15 +87,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
 
-
-
-
-
-
-
-
-
-
     @Autowired
     protected PostDaoService postDaoService;
 
@@ -111,9 +108,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     @Autowired
     protected CommentDaoService commentDaoService;
 
-    @Autowired
-    protected EditContentDaoService editContentDaoService;
-
     protected Logger LOGGER = Logger.getLogger(AccountController.class);
 
     @SuppressWarnings("unchecked")
@@ -121,7 +115,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     public List<String> getUserRole() {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        ArrayList<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
+        ArrayList<GrantedAuthority> roles;
 
         List<String> userRoles = new ArrayList<>();
 
@@ -200,7 +194,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         List<CommentModel> myList = new ArrayList<>();
 
         for (Comment comment : dbCommentList) {
-            Long commentId = comment.getId();
+            int commentId = comment.getUuid();
             CommentModel cm = new CommentModel();
 
 //            if (!userDaoService.getLastAvatar(userId).isEmpty())
@@ -217,7 +211,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             cm.setLikedByUser(isCommentLikedByMe);
             cm.setLikeCount(comment.getLikes().size());
 
-            List<EditHistory> editHistory = editContentDaoService.getLastEditedComent(commentId);
+            List<EditHistory> editHistory = editHistoryRepository.getByCommentUuidOrderByDatetimeEditedDesc(commentId);
             if (!editHistory.isEmpty()) {
                 cm.setEdited(true);
 
@@ -241,8 +235,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected boolean isContentLikedByUser(Object o, Long userId) {
 
         List<LikeContent> lp = new ArrayList<>();
-        Post p = null;
-        Comment c = null;
+        Post p;
+        Comment c;
 
         if (o instanceof Post) {
             p = (Post) o;

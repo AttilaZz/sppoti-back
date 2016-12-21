@@ -64,5 +64,5 @@ public interface PostControllerService extends AbstractControllerService {
 
     boolean addNotification(Long userId, int postId, String content);
 
-    List<Post> finAllPosts(int uuid, int page);
+    List<Post> findAllPosts(int uuid, int page);
 }

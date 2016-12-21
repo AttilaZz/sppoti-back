@@ -25,14 +25,13 @@ public interface CommentControllerService extends AbstractControllerService {
 
     boolean deleteComment(Comment comment);
 
-    Comment findComment(Long id);
+    Comment findComment(int id);
 
-    Post findPostById(Long id);
+    Post findPostById(int id);
 
     boolean updateComment(EditHistory commentEditRow);
 
     List<CommentModel> getPostCommentsFromLastId(Long postId, int bottomMajId, Long userId);
 
-    List<ContentEditedResponse> getAllPostHistory(Long id, int page);
-
+    List<ContentEditedResponse> getAllPostHistory(int id, int page);
 }

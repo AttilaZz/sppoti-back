@@ -6,6 +6,9 @@ package com.fr.controllers.serviceImpl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.fr.controllers.service.CommentControllerService;
@@ -17,11 +20,16 @@ import com.fr.entities.EditHistory;
 import com.fr.entities.LikeContent;
 import com.fr.entities.Post;
 
+import javax.validation.Valid;
+
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
  */
 @Component
 public class CommentControllerServiceimpl extends AbstractControllerServiceImpl implements CommentControllerService {
+
+    @Value("${key.commentsPerPage}")
+    private int comment_size;
 
     @Override
     public boolean saveComment(Comment newComment) {
@@ -30,22 +38,37 @@ public class CommentControllerServiceimpl extends AbstractControllerServiceImpl 
 
     @Override
     public boolean deleteComment(Comment comment) {
-        return commentDaoService.delete(comment);
+        comment.setDeleted(true);
+        try {
+            commentRepository.save(comment);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
-    public Comment findComment(Long id) {
-        return commentDaoService.getEntityByID(id);
+    public Comment findComment(int id) {
+        return commentRepository.getByUuid(id);
     }
 
     @Override
-    public Post findPostById(Long id) {
-        return postDaoService.getEntityByID(id);
+    public Post findPostById(int id) {
+        return postRepository.getByUuid(id);
     }
 
     @Override
     public boolean updateComment(EditHistory commentToEdit) {
-        return editContentDaoService.saveOrUpdate(commentToEdit);
+
+        try {
+            editHistoryRepository.save(commentToEdit);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 
     @Override
@@ -56,8 +79,13 @@ public class CommentControllerServiceimpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public List<ContentEditedResponse> getAllPostHistory(Long id, int page) {
-        List<EditHistory> dsHistoryList = editContentDaoService.getAllComenttHistory(id, page);
+    public List<ContentEditedResponse> getAllPostHistory(int id, int page) {
+
+        int debut = page * comment_size;
+
+        Pageable pageable = new PageRequest(debut, comment_size);
+
+        List<EditHistory> dsHistoryList = editHistoryRepository.getByCommentUuidOrderByDatetimeEditedDesc(id, pageable);
         return fillEditContentResponse(dsHistoryList);
     }
 

@@ -42,32 +42,19 @@ public class CommentController {
 
     private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded")
-    public ResponseEntity<CommentModel> addComment(@ModelAttribute JsonPostRequest json, HttpServletRequest request) {
+    @PostMapping
+    public ResponseEntity<CommentModel> addComment(@RequestBody CommentModel newComment, HttpServletRequest request) {
 
-        Gson gson = new Gson();
-        CommentModel newComment = null;
         Comment commentToSave = new Comment();
-        if (json != null) {
-            try {
-                newComment = gson.fromJson(json.getJson(), CommentModel.class);
-                LOGGER.info("COMMENT POST - data sent by user: " + new ObjectMapper().writeValueAsString(newComment));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        } else {
-            LOGGER.info("POST: Data sent by user are invalid");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
         if (newComment != null) {
 
             String content = newComment.getText();
             String image = newComment.getImageLink();
             String video = newComment.getVideoLink();
-            Long postId = newComment.getPostId();
+            int postId = newComment.getPostId();
 
-            if ((content == null && image == null && video == null) && postId == null) {
+            if (content == null && image == null && video == null) {
                 LOGGER.info("COMMENT: Missing attributes");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
@@ -79,6 +66,7 @@ public class CommentController {
                 }
                 commentToSave.setContent(content);
             }
+
             if (image != null) {
                 if (image.trim().length() <= 0) {
                     LOGGER.info("COMMENT: imageLink value is empty");
@@ -86,6 +74,7 @@ public class CommentController {
                 }
                 commentToSave.setImageLink(image);
             }
+
             if (video != null) {
                 if (video.trim().length() <= 0) {
                     LOGGER.info("COMMENT: videoLink value is empty");
@@ -93,17 +82,14 @@ public class CommentController {
                 }
                 commentToSave.setVideoLink(video);
             }
+
             // get post id to link the comment
-            if (postId != null && postId instanceof Long) {
-                Post p = commentDataService.findPostById(postId);
-                if (p != null) {
-                    commentToSave.setPostComment(p);
-                } else {
-                    LOGGER.info("COMMENT: post id is invalid");
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                }
+            Post p = commentDataService.findPostById(postId);
+
+            if (p != null) {
+                commentToSave.setPostComment(p);
             } else {
-                LOGGER.info("COMMENT: post id must be numeric value");
+                LOGGER.info("COMMENT: post id is invalid");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
@@ -118,7 +104,7 @@ public class CommentController {
 
             if (commentDataService.saveComment(commentToSave)) {
                 LOGGER.info("COMMENT: post has been saved");
-                return new ResponseEntity<CommentModel>(newComment, HttpStatus.CREATED);
+                return new ResponseEntity<>(newComment, HttpStatus.CREATED);
             } else {
                 LOGGER.info("COMMENT: Failed when saving the post in the DB");
                 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -130,14 +116,14 @@ public class CommentController {
         }
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public ResponseEntity<Void> deleteComment(@PathVariable("id") Long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable("id") int id) {
         Comment commentToDelete = commentDataService.findComment(id);
 
         if (commentToDelete == null) {
             // post not fount
             LOGGER.info("POST: Failed to retreive the comment");
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
 
@@ -152,34 +138,18 @@ public class CommentController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded")
-    public ResponseEntity<CommentModel> updateComment(@PathVariable("id") Long id,
-                                                      @ModelAttribute JsonPostRequest json) {
-
-        Gson gson = new Gson();
-        CommentModel newComment = null;
-        ContentEditedResponse edit = new ContentEditedResponse();
-
-        if (json != null) {
-            try {
-                newComment = gson.fromJson(json.getJson(), CommentModel.class);
-
-                LOGGER.info("COMMENT_UPDATE data sent by user: " + new ObjectMapper().writeValueAsString(newComment));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        } else {
-            LOGGER.info("COMMENT_UPDATE: Data sent by user are invalid");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<CommentModel> updateComment(@PathVariable("id") int id,
+                                                      @RequestBody CommentModel newComment) {
 
         Comment commentToEdit = commentDataService.findComment(id);
         EditHistory commentEditRow = new EditHistory();
+        ContentEditedResponse edit = new ContentEditedResponse();
 
         // Required attributes
         if (commentToEdit == null) {
             LOGGER.info("COMMENT_UPDATE: Failed to retreive the comment");
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         commentEditRow.setComment(commentToEdit);
@@ -200,10 +170,11 @@ public class CommentController {
             edit.setText(commentEditRow.getText());
 
             LOGGER.info("COMMENT_UPDATE: update success");
-            return new ResponseEntity<CommentModel>(newComment, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(newComment, HttpStatus.ACCEPTED);
+
         } else {
             LOGGER.info("COMMENT_UPDATE: Failed when trying to update the comment in DB");
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
     }

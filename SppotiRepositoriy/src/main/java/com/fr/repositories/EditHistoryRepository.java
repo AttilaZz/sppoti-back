@@ -15,4 +15,8 @@ public interface EditHistoryRepository extends JpaRepository<EditHistory, Long> 
 
     List<EditHistory> getByPostUuidOrderByDatetimeEditedDesc(int postId, Pageable pageable);
 
+    List<EditHistory> getByCommentUuidOrderByDatetimeEditedDesc(int commentId);
+
+    List<EditHistory> getByCommentUuidOrderByDatetimeEditedDesc(int commentId, Pageable pageable);
+
 }

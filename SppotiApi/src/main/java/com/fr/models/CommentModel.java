@@ -14,8 +14,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_EMPTY)
 public class CommentModel {
 
-    private Long id;
-    private Long postId;
+    private int id;
+    private int postId;
 
     private String authorFirstName;
     private String authorLastName;
@@ -43,14 +43,6 @@ public class CommentModel {
 
     public void setCommentLikers(List<HeaderData> commentLikers) {
         this.commentLikers = commentLikers;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getAuthorUserName() {
@@ -117,14 +109,6 @@ public class CommentModel {
         this.isMyComment = isMyComment;
     }
 
-    public Long getPostId() {
-        return postId;
-    }
-
-    public void setPostId(Long postId) {
-        this.postId = postId;
-    }
-
     public String getVideoLink() {
         return videoLink;
     }
@@ -157,4 +141,19 @@ public class CommentModel {
         this.isEdited = isEdited;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getPostId() {
+        return postId;
+    }
+
+    public void setPostId(int postId) {
+        this.postId = postId;
+    }
 }
