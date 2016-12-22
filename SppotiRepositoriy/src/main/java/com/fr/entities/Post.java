@@ -79,7 +79,7 @@ public class Post implements Comparable<Post> {
     @JoinColumn(name = "game_id")
     private Sppoti game;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "postComment")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     @OrderBy("datetimeCreated DESC")
     private SortedSet<Comment> Comments;
 

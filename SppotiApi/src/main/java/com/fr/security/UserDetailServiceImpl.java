@@ -10,6 +10,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by: Wail DJENANE On May 22, 2016
  */
@@ -29,7 +33,13 @@ public class UserDetailServiceImpl extends AbstractControllerServiceImpl impleme
             throw new UsernameNotFoundException("no user found with: " + loginUser);
         }
 
-        LOGGER.info("Trying to log user : " + loginUser + " with id=" + account.getId());
+        Date aujourdhui = new Date();
+
+        DateFormat mediumDateFormat = DateFormat.getDateTimeInstance(
+                DateFormat.MEDIUM,
+                DateFormat.MEDIUM);
+
+        LOGGER.info("Trying to log user : " + loginUser + " with id=" + account.getId() + " - at: " + mediumDateFormat.format(aujourdhui));
         return new AccountUserDetails(account);
     }
 

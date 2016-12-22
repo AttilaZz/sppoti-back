@@ -53,7 +53,7 @@ public class Comment implements Comparable<Comment> {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "post_id", nullable = false)
     @JsonIgnore
-    private Post postComment;
+    private Post post;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
     private Set<LikeContent> likes;
@@ -85,12 +85,12 @@ public class Comment implements Comparable<Comment> {
         this.imageLink = imageLink;
     }
 
-    public Post getPostComment() {
-        return postComment;
+    public Post getPost() {
+        return post;
     }
 
-    public void setPostComment(Post postComment) {
-        this.postComment = postComment;
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     public String getDatetimeCreated() {

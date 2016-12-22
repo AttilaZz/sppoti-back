@@ -105,9 +105,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     @Autowired
     private Environment environment;
 
-    @Autowired
-    protected CommentDaoService commentDaoService;
-
     protected Logger LOGGER = Logger.getLogger(AccountController.class);
 
     @SuppressWarnings("unchecked")

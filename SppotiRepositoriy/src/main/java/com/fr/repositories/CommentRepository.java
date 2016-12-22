@@ -1,7 +1,12 @@
 package com.fr.repositories;
 
 import com.fr.entities.Comment;
+import com.fr.entities.Post;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.access.prepost.PostFilter;
+
+import java.util.List;
 
 /**
  * Created by djenanewail on 12/14/16.
@@ -9,5 +14,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CommentRepository extends JpaRepository<Comment, Long>{
 
     Comment getByUuid(int id);
+
+    @PostFilter("!filterObject.isDeleted()")
+    List<Comment> getByPostUuid(int uuid, Pageable pageable);
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import com.fr.controllers.service.CommentControllerService;
@@ -32,8 +33,10 @@ public class CommentControllerServiceimpl extends AbstractControllerServiceImpl 
     private int comment_size;
 
     @Override
-    public boolean saveComment(Comment newComment) {
-        return commentDaoService.saveOrUpdate(newComment);
+    public Comment saveComment(Comment newComment) {
+
+        return commentRepository.save(newComment);
+
     }
 
     @Override
@@ -72,14 +75,20 @@ public class CommentControllerServiceimpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public List<CommentModel> getPostCommentsFromLastId(Long postId, int bottomMajId, Long userId) {
-        List<Comment> lComment = commentDaoService.getCommentsFromLastMajId(postId, bottomMajId);
+    public List<CommentModel> getPostCommentsFromLastId(int postId, int page, Long userId) {
 
+        int debut = page * comment_size;
+
+        Pageable pageable = new PageRequest(debut, comment_size);
+
+        List<Comment> lComment = commentRepository.getByPostUuid(postId, pageable);
+
+        //userId used to distinguich connected user comments
         return fillCommentModelList(lComment, userId);
     }
 
     @Override
-    public List<ContentEditedResponse> getAllPostHistory(int id, int page) {
+    public List<ContentEditedResponse> getAllCommentHistory(int id, int page) {
 
         int debut = page * comment_size;
 

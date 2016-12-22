@@ -21,7 +21,7 @@ import com.fr.entities.Post;
 @Service
 public interface CommentControllerService extends AbstractControllerService {
 
-    boolean saveComment(Comment newComment);
+    Comment saveComment(Comment newComment);
 
     boolean deleteComment(Comment comment);
 
@@ -31,7 +31,7 @@ public interface CommentControllerService extends AbstractControllerService {
 
     boolean updateComment(EditHistory commentEditRow);
 
-    List<CommentModel> getPostCommentsFromLastId(Long postId, int bottomMajId, Long userId);
+    List<CommentModel> getPostCommentsFromLastId(int postId, int page, Long userId);
 
-    List<ContentEditedResponse> getAllPostHistory(int id, int page);
+    List<ContentEditedResponse> getAllCommentHistory(int id, int page);
 }

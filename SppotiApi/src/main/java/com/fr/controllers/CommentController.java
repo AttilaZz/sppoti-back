@@ -3,8 +3,6 @@
  */
 package com.fr.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.aop.TraceAuthentification;
 import com.fr.controllers.service.CommentControllerService;
 import com.fr.entities.Comment;
@@ -13,8 +11,6 @@ import com.fr.entities.Post;
 import com.fr.entities.Users;
 import com.fr.models.CommentModel;
 import com.fr.models.ContentEditedResponse;
-import com.fr.models.JsonPostRequest;
-import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
@@ -41,6 +38,23 @@ public class CommentController {
     private static final String ATT_USER_ID = "USER_ID";
 
     private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
+
+    @GetMapping("/{postId}/{page}")
+    public ResponseEntity<Object> getAllPostComments(@PathVariable int postId, @PathVariable int page, HttpServletRequest httpServletRequest) {
+
+        Long userId = (Long) httpServletRequest.getSession().getAttribute(ATT_USER_ID);
+
+        List<CommentModel> commentModelList = commentDataService.getPostCommentsFromLastId(postId, page, userId);
+
+        if (commentModelList.isEmpty()) {
+            LOGGER.info("COMMENT_LIST: No comment has been found");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        LOGGER.info("COMMENT_LIST: All comments have been returned");
+        return new ResponseEntity<>(commentModelList, HttpStatus.OK);
+
+    }
 
     @PostMapping
     public ResponseEntity<CommentModel> addComment(@RequestBody CommentModel newComment, HttpServletRequest request) {
@@ -62,15 +76,20 @@ public class CommentController {
             if (content != null) {
                 if (content.trim().length() <= 0) {
                     LOGGER.info("COMMENT: Content value is empty");
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
                 commentToSave.setContent(content);
+            }
+
+            if (image != null && video != null) {
+                LOGGER.info("COMMENT: Image or Video ! make a choice");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
             if (image != null) {
                 if (image.trim().length() <= 0) {
                     LOGGER.info("COMMENT: imageLink value is empty");
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
                 commentToSave.setImageLink(image);
             }
@@ -78,7 +97,7 @@ public class CommentController {
             if (video != null) {
                 if (video.trim().length() <= 0) {
                     LOGGER.info("COMMENT: videoLink value is empty");
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
                 commentToSave.setVideoLink(video);
             }
@@ -87,7 +106,7 @@ public class CommentController {
             Post p = commentDataService.findPostById(postId);
 
             if (p != null) {
-                commentToSave.setPostComment(p);
+                commentToSave.setPost(p);
             } else {
                 LOGGER.info("COMMENT: post id is invalid");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -102,16 +121,20 @@ public class CommentController {
             newComment.setAuthorLastName(user.getLastName());
             newComment.setAuthorUserName(user.getUsername());
 
-            if (commentDataService.saveComment(commentToSave)) {
+            try {
+                Comment c = commentDataService.saveComment(commentToSave);
+                newComment.setId(c.getUuid());
+                newComment.setMyComment(true);
                 LOGGER.info("COMMENT: post has been saved");
                 return new ResponseEntity<>(newComment, HttpStatus.CREATED);
-            } else {
-                LOGGER.info("COMMENT: Failed when saving the post in the DB");
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.error("COMMENT: Failed to save comment");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
         } else {
-            LOGGER.info("COMMENT: Object received is null");
+            LOGGER.error("COMMENT: Object received is null");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
