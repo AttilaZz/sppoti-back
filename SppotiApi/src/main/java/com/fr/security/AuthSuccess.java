@@ -1,8 +1,10 @@
 package com.fr.security;
 
 import com.fr.RepositoriesService.UserDaoService;
+import com.fr.entities.Sport;
 import com.fr.entities.Users;
 import com.fr.models.HeaderData;
+import com.fr.models.SportModel;
 import com.fr.models.User;
 import com.fr.repositories.UserRepository;
 import com.google.gson.Gson;
@@ -21,7 +23,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import static com.fr.filter.HeadersAttributes.*;
 import static com.fr.filter.HeadersValues.*;
@@ -74,6 +79,19 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
         User user = new User();
         user.setUsername(username);
         user.setId(uid);
+
+        Set<Sport> sports = users.getRelatedSports();
+        List<SportModel> sportModels = new ArrayList<>();
+
+        for (Sport sport : sports) {
+            SportModel sportModel = new SportModel();
+            sportModel.setId(sport.getId());
+            sportModel.setName(sport.getName());
+
+            sportModels.add(sportModel);
+        }
+
+        user.setSportModels(sportModels);
 
         Gson gson = new Gson();
         response.getWriter().write(gson.toJson(user));

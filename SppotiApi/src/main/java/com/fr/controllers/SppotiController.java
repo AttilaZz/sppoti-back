@@ -75,7 +75,7 @@ public class SppotiController {
 		 */
         String titre = newfr.getTitre();
 
-        // check if the sport id is valid
+        // check if the SportModel id is valid
         Long sportId = newfr.getSportId();
 
         String description = newfr.getDescription();

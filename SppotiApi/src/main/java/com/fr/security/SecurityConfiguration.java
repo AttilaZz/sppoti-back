@@ -124,7 +124,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .tokenValiditySeconds(86400)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/login", "/account/**", "/sport/**", "/csrf").permitAll()
+                .antMatchers("/", "/login", "/account/**", "/SportModel/**", "/csrf").permitAll()
                 .antMatchers("/admin/**").hasRole(UserRoleType.ADMIN.getUserProfileType())
                 .antMatchers("/api/profile/**").hasAnyRole(UserRoleType.USER.getUserProfileType(),
                 UserRoleType.ADMIN.getUserProfileType())

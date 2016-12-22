@@ -1,6 +1,9 @@
 package com.fr.models;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.*;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * Created by djenanewail on 12/16/16.
@@ -12,6 +15,11 @@ public class User {
     private String lastName;
     private String username;
     private String address;
+
+    @SerializedName("sports")
+    @JsonProperty("sports")
+    private List<SportModel> sportModels;
+
 
     private String password;
     private String phone;
@@ -109,5 +117,13 @@ public class User {
 
     public void setCoverType(String coverType) {
         this.coverType = coverType;
+    }
+
+    public List<SportModel> getSportModels() {
+        return sportModels;
+    }
+
+    public void setSportModels(List<SportModel> sportModels) {
+        this.sportModels = sportModels;
     }
 }

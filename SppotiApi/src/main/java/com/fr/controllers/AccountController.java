@@ -6,6 +6,7 @@ import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictPhoneException;
 import com.fr.exceptions.ConflictUsernameException;
 import com.fr.models.SignUpRequest;
+import com.fr.models.SportModel;
 import com.fr.models.User;
 import com.fr.models.UserRoleType;
 import com.fr.security.AccountUserDetails;
@@ -20,9 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 /**
@@ -82,12 +81,12 @@ public class AccountController {
         newUser.setUsername(uName);
 
         for (Long sportId : user.getSportId()) {
-            // if the parsed sport exist in database == correct request
+            // if the parsed SportModel exist in database == correct request
             Sport mSport = accountService.getSportById(sportId);
             if (mSport != null) {
                 userSports.add(mSport);
             } else {
-                LOGGER.info("INSCRIPTION: le nom de sport envoyé n'est pas reconnu");
+                LOGGER.info("INSCRIPTION: le nom de SportModel envoyé n'est pas reconnu");
                 response.setStatus(400);
                 return;
             }
@@ -261,6 +260,18 @@ public class AccountController {
         user.setEmail(targetUser.getEmail());
         user.setPhone(targetUser.getTelephone());
         user.setId(targetUser.getUuid());
+
+        List<SportModel> sportModels = new ArrayList<>();
+
+        for (Sport sport : targetUser.getRelatedSports()) {
+            SportModel sportModel = new SportModel();
+            sportModel.setId(sport.getId());
+            sportModel.setName(sport.getName());
+
+            sportModels.add(sportModel);
+        }
+
+        user.setSportModels(sportModels);
 
         try {
             user.setAddress(targetUser.getAddresses().first().getAddress());

@@ -1,6 +1,8 @@
 package com.fr.controllers.serviceImpl;
 
-import com.fr.RepositoriesService.*;
+import com.fr.RepositoriesService.GameDaoService;
+import com.fr.RepositoriesService.MessageDaoService;
+import com.fr.RepositoriesService.ProfileDaoService;
 import com.fr.controllers.AccountController;
 import com.fr.controllers.service.AbstractControllerService;
 import com.fr.entities.*;
@@ -85,10 +87,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     public void setPostRepository(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
-
-
-    @Autowired
-    protected PostDaoService postDaoService;
 
     @Autowired
     protected ProfileDaoService profileDaoService;

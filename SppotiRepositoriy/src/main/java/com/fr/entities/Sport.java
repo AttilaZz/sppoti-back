@@ -29,9 +29,7 @@ public class Sport {
 
     @Column(nullable = false)
     private String name;
-    @Column(nullable = true)
     private String description;
-    @Column(nullable = true)
     private String icon;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "relatedSports")

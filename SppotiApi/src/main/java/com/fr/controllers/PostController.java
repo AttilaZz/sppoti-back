@@ -137,13 +137,13 @@ public class PostController {
                 newPostToSave.setSport(targedSport);
                 postRep.setSportId(sportId);
             } else {
-                LOGGER.info("POST-ADD: The received sport ID is not valid");
+                LOGGER.info("POST-ADD: The received SportModel ID is not valid");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
         } else {
 
-            LOGGER.info("POST-ADD: A sport must be defined ");
+            LOGGER.info("POST-ADD: A SportModel must be defined ");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
@@ -335,7 +335,7 @@ public class PostController {
             postEditRow.setText(newData.getText());
 
             /*
-             related sport can be modified
+             related SportModel can be modified
              */
             if (isAlreadyEdited) {
                 postEditRow.setSport(lastPostEdit.getSport());
@@ -344,7 +344,7 @@ public class PostController {
             }
 
         } else if (newData.getSportId() != null) {
-            // sport modification
+            // SportModel modification
             Sport sp = postDataService.getSportById(newData.getSportId());
             if (sp != null) {
                 postEditRow.setSport(sp);
@@ -354,7 +354,7 @@ public class PostController {
                 }
 
             } else {
-                LOGGER.info("POST_UPDATE: Failed to retreive the sport to update");
+                LOGGER.info("POST_UPDATE: Failed to retreive the SportModel to update");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {

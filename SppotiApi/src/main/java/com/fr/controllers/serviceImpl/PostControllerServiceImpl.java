@@ -156,11 +156,11 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         switch (operationType) {
             case 1:
-                dbContent = postDaoService.getPhotoGalleryPostsFromLastMajId(userId, bottomMajId);
+//                dbContent = postDaoService.getPhotoGalleryPostsFromLastMajId(userId, bottomMajId);
 
                 break;
             case 2:
-                dbContent = postDaoService.getVideoGalleryPostsFromLastMajId(userId, bottomMajId);
+//                dbContent = postDaoService.getVideoGalleryPostsFromLastMajId(userId, bottomMajId);
 
                 break;
             case 3:
@@ -336,7 +336,13 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
         Post post = posts.get(0);
         post.setVisibility(visibility);
 
-        return postDaoService.update(post);
+        try{
+            postRepository.save(post);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
