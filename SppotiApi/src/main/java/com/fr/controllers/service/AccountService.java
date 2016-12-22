@@ -7,7 +7,7 @@ import com.fr.models.SignUpRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface SignUpService {
+public interface AccountService {
 
     void saveNewUser(Users user) throws Exception;
 
@@ -24,4 +24,6 @@ public interface SignUpService {
     boolean updateUser(Users connected_user);
 
     void unSelectOldResource(Long userId, int i);
+
+    Users getUserByUsername(String username);
 }

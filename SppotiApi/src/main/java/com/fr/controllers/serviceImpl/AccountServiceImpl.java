@@ -1,6 +1,6 @@
 package com.fr.controllers.serviceImpl;
 
-import com.fr.controllers.service.SignUpService;
+import com.fr.controllers.service.AccountService;
 import com.fr.entities.*;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;
@@ -15,7 +15,7 @@ import javax.mail.MessagingException;
  */
 
 @Component
-public class SignUpServiceImpl extends AbstractControllerServiceImpl implements SignUpService {
+public class AccountServiceImpl extends AbstractControllerServiceImpl implements AccountService {
 
     @Value("${key.originBack}")
     private String rootAddress;
@@ -126,8 +126,13 @@ public class SignUpServiceImpl extends AbstractControllerServiceImpl implements 
     public void unSelectOldResource(Long userId, int i) {
         Resources resources = resourceRepository.getByUserIdAndTypeAndIsSelectedTrue(userId, i);
         if (resources != null) {
-}
-            resources.setSelected(false);
-            resourceRepository.save(resources);
         }
+        resources.setSelected(false);
+        resourceRepository.save(resources);
     }
+
+    @Override
+    public Users getUserByUsername(String username){
+        return userRepository.getByUsername(username);
+    }
+}
