@@ -4,11 +4,15 @@ import java.util.Date;
 
 import javax.transaction.Transactional;
 
+import com.fr.repositories.HibernateTokenRepository;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import com.fr.entities.PersistentLogin;
@@ -16,13 +20,12 @@ import com.fr.entities.PersistentLogin;
 /**
  * Created by: Wail DJENANE on Aug 16, 2016
  */
-@Repository("tokenRepositoryDao")
-public class HibernateTokenRepositoryImpl extends GenericDaoImpl<PersistentLogin, String>
-        implements PersistentTokenRepository {
 
-    public HibernateTokenRepositoryImpl() {
-        this.entityClass = PersistentLogin.class;
-    }
+@Component
+public class HibernateTokenRepositoryImpl implements PersistentTokenRepository {
+
+    @Autowired
+    private HibernateTokenRepository hibernateTokenRepository;
 
     private static Logger LOGGER = Logger.getLogger(HibernateTokenRepositoryImpl.class);
 
@@ -34,7 +37,7 @@ public class HibernateTokenRepositoryImpl extends GenericDaoImpl<PersistentLogin
         persistentLogin.setSeries(token.getSeries());
         persistentLogin.setToken(token.getTokenValue());
         persistentLogin.setLast_used(token.getDate());
-        persist(persistentLogin);
+        hibernateTokenRepository.save(persistentLogin);
 
     }
 
@@ -42,9 +45,8 @@ public class HibernateTokenRepositoryImpl extends GenericDaoImpl<PersistentLogin
     public PersistentRememberMeToken getTokenForSeries(String seriesId) {
         LOGGER.debug("Fetch Token if any for seriesId : {}" + seriesId);
         try {
-            Criteria crit = getSession().createCriteria(entityClass);
-            crit.add(Restrictions.eq("series", seriesId));
-            PersistentLogin persistentLogin = (PersistentLogin) crit.uniqueResult();
+
+            PersistentLogin persistentLogin = hibernateTokenRepository.getBySeries(seriesId);
 
             return new PersistentRememberMeToken(persistentLogin.getUsername(), persistentLogin.getSeries(),
                     persistentLogin.getToken(), persistentLogin.getLast_used());
@@ -57,12 +59,12 @@ public class HibernateTokenRepositoryImpl extends GenericDaoImpl<PersistentLogin
     @Override
     public void removeUserTokens(String username) {
         LOGGER.debug("Removing Token if any for user : {}" + username);
-        Criteria crit = getSession().createCriteria(entityClass);
-        crit.add(Restrictions.eq("username", username));
-        PersistentLogin persistentLogin = (PersistentLogin) crit.uniqueResult();
+
+        PersistentLogin persistentLogin = hibernateTokenRepository.getByUsername(username);
+
         if (persistentLogin != null) {
             LOGGER.info("rememberMe was selected");
-            delete(persistentLogin);
+            hibernateTokenRepository.delete(persistentLogin);
         }
 
     }
@@ -71,13 +73,11 @@ public class HibernateTokenRepositoryImpl extends GenericDaoImpl<PersistentLogin
     public void updateToken(String seriesId, String tokenValue, Date lastUsed) {
         LOGGER.debug("Updating Token for seriesId : {}" + seriesId);
 
-        Criteria crit = getSession().createCriteria(entityClass);
-        crit.add(Restrictions.eq("series", seriesId));
-        PersistentLogin persistentLogin = (PersistentLogin) crit.uniqueResult();
+        PersistentLogin persistentLogin = hibernateTokenRepository.getBySeries(seriesId);
 
         persistentLogin.setToken(tokenValue);
         persistentLogin.setLast_used(lastUsed);
-        update(persistentLogin);
+        hibernateTokenRepository.delete(persistentLogin);
     }
 
 }
