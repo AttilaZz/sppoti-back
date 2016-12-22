@@ -68,7 +68,7 @@ public class SearchController {
             User user = new User();
             user.setId(u.getUuid());
             user.setUsername(u.getUsername());
-            user.setFirstname(u.getFirstName());
+            user.setFirstName(u.getFirstName());
             user.setLastName(u.getLastName());
 
             users.add(user);

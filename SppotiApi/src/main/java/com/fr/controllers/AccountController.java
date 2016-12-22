@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -208,8 +207,8 @@ public class AccountController {
             connected_user.getRessources().add(resource);
 
         } else {
-            if (user.getFirstname() != null && !user.getFirstname().isEmpty()) {
-                connected_user.setFirstName(user.getFirstname());
+            if (user.getFirstName() != null && !user.getFirstName().isEmpty()) {
+                connected_user.setFirstName(user.getFirstName());
             }
             if (user.getLastName() != null && !user.getLastName().isEmpty()) {
                 connected_user.setLastName(user.getLastName());
@@ -257,7 +256,7 @@ public class AccountController {
 
         User user = new User();
         user.setLastName(targetUser.getLastName());
-        user.setFirstname(targetUser.getFirstName());
+        user.setFirstName(targetUser.getFirstName());
         user.setUsername(targetUser.getUsername());
         user.setEmail(targetUser.getEmail());
         user.setPhone(targetUser.getTelephone());
