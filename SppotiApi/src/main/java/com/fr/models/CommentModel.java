@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
  */
-@JsonInclude(Include.NON_EMPTY)
+@JsonInclude(Include.NON_DEFAULT)
 public class CommentModel {
 
     private int id;

@@ -33,6 +33,9 @@ public class Address implements Comparable<Address> {
     @JsonIgnore
     private Users users;
 
+    public Address() {
+    }
+
     public Address(String address) {
         this.address = address;
     }

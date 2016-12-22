@@ -247,12 +247,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             // Access here if details message is requested - otherwise no need
             // to show comments
             if (operationType == 3) {
-                List<Comment> commentsList = new ArrayList<>();
-                if (post.getComments() != null) {
-                    commentsList.clear();
-                    //commentsList = commentDaoService.getCommentsFromLastMajId(post_param.getId(), 0);
-                    pres.setPostComments(fillCommentModelList(commentsList, userId));
-                }
+                pres.setCommentsCount(post.getComments().size());
             }
 
             int nbLike = post.getLikes().size();
@@ -263,7 +258,6 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             boolean isPostLikedByMe = isContentLikedByUser(post, userId);
             pres.setLikedByUser(isPostLikedByMe);
 
-            //pres.setCommentsCount(commentDaoService.getCommentCount(post.getId()));
             mContentResponse.add(pres);
         }
 

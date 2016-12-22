@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.fr.controllers;
 
 import com.fr.aop.TraceAuthentification;
@@ -145,7 +142,7 @@ public class CommentController {
 
         if (commentToDelete == null) {
             // post not fount
-            LOGGER.info("POST: Failed to retreive the comment");
+            LOGGER.error("POST: Failed to retreive the comment");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
@@ -182,7 +179,7 @@ public class CommentController {
             commentEditRow.setText(newComment.getText());
         } else {
             LOGGER.info("COMMENT_UPDATE: No content assigned with this comment");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         // if all argument are correctly assigned - edit post

@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -176,30 +177,6 @@ public class AccountController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping("/{username}")
-    public ResponseEntity<User> connectedUserInfo(@PathVariable String username) {
-
-        Users targetUser = accountService.getUserByUsername(username);
-
-        User user = new User();
-        user.setLastName(targetUser.getLastName());
-        user.setFirstname(targetUser.getFirstName());
-        user.setUsername(targetUser.getUsername());
-        user.setEmail(targetUser.getEmail());
-        user.setPhone(targetUser.getTelephone());
-        user.setId(targetUser.getUuid());
-
-        try {
-            user.setAddress(targetUser.getAddresses().first().getAddress());
-        } catch (Exception e) {
-            LOGGER.warn("User has no address yet !");
-        }
-
-        return new ResponseEntity<>(user, HttpStatus.OK);
-
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @PutMapping
     public ResponseEntity<User> editUserInfo(@RequestBody User user, HttpServletRequest request) {
 
@@ -261,5 +238,47 @@ public class AccountController {
             LOGGER.error("USER-UPDATE: ERROR updating user");
             return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
         }
+    }
+
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping
+    public ResponseEntity<User> connectedUserInfo(Authentication authentication) {
+
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+        Users targetUser = accountUserDetails.getConnectedUserDetails();
+
+
+        return new ResponseEntity<>(fillUserResponse(targetUser), HttpStatus.OK);
+
+    }
+
+    private User fillUserResponse(Users targetUser) {
+
+        User user = new User();
+        user.setLastName(targetUser.getLastName());
+        user.setFirstname(targetUser.getFirstName());
+        user.setUsername(targetUser.getUsername());
+        user.setEmail(targetUser.getEmail());
+        user.setPhone(targetUser.getTelephone());
+        user.setId(targetUser.getUuid());
+
+        try {
+            user.setAddress(targetUser.getAddresses().first().getAddress());
+        } catch (Exception e) {
+            LOGGER.warn("User has no address yet !");
+        }
+
+        return user;
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @GetMapping("/other/{username}")
+    public ResponseEntity<User> otherUserInfo(@PathVariable String username) {
+
+        Users targetUser = accountService.getUserByUsername(username);
+
+        return new ResponseEntity<>(fillUserResponse(targetUser), HttpStatus.OK);
+
     }
 }

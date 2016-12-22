@@ -36,16 +36,14 @@ public class PostResponse {
 
     private Sppoti game;
 
-    private List<CommentModel> postComments;
-    private Long commentsCount = 0L;
+    private int commentsCount;
 
-    private int likeCount = 0;
+    private int likeCount;
     private boolean isLikedByUser;
 
     private boolean edited;
 
     private List<HeaderData> postLikers;
-
     private SortedSet<Address> addresses;
 
     private int visibility;
@@ -145,28 +143,12 @@ public class PostResponse {
     }
 
 
-    public List<CommentModel> getPostComments() {
-        return postComments;
-    }
-
-    public void setPostComments(List<CommentModel> postComments) {
-        this.postComments = postComments;
-    }
-
     public Long getSportId() {
         return sportId;
     }
 
     public void setSportId(Long sportId) {
         this.sportId = sportId;
-    }
-
-    public Long getCommentsCount() {
-        return commentsCount;
-    }
-
-    public void setCommentsCount(Long long1) {
-        this.commentsCount = long1;
     }
 
     public int getLikeCount() {
@@ -223,5 +205,13 @@ public class PostResponse {
 
     public void setAddresses(SortedSet<Address> addresses) {
         this.addresses = addresses;
+    }
+
+    public int getCommentsCount() {
+        return commentsCount;
+    }
+
+    public void setCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
     }
 }

@@ -321,7 +321,6 @@ public class PostController {
 
         // if post has been edited before, get the latest entry
         if (isAlreadyEdited) {
-            lastPostEdit = new EditHistory();
             lastPostEdit = lastPostEditList.get(0);
         }
 
@@ -332,7 +331,12 @@ public class PostController {
 		 * targeted post
 		 */
         if (newData.getText() != null && newData.getText().trim().length() > 0) {
+
             postEditRow.setText(newData.getText());
+
+            /*
+             related sport can be modified
+             */
             if (isAlreadyEdited) {
                 postEditRow.setSport(lastPostEdit.getSport());
             } else {
@@ -344,9 +348,11 @@ public class PostController {
             Sport sp = postDataService.getSportById(newData.getSportId());
             if (sp != null) {
                 postEditRow.setSport(sp);
+
                 if (isAlreadyEdited) {
                     postEditRow.setText(lastPostEdit.getText());
                 }
+
             } else {
                 LOGGER.info("POST_UPDATE: Failed to retreive the sport to update");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
