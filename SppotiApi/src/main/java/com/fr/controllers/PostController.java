@@ -11,7 +11,6 @@ import com.fr.models.ContentEditedResponse;
 import com.fr.models.PostRequest;
 import com.fr.models.PostResponse;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -49,7 +47,7 @@ public class PostController {
      * @return all post details
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<PostResponse> detailsPost(@PathVariable("id") int id, HttpServletRequest request) {
+    public ResponseEntity<PostResponse> detailsPost(@PathVariable int id, HttpServletRequest request) {
 
         Post mPost = postDataService.findPost(id);
 
@@ -70,7 +68,7 @@ public class PostController {
         }
 
         PostResponse prep = postDataService.fillPostToSend(mPost, userId);
-        LOGGER.info("DETAILS_POST: Post details has been returned for postId:" + id);
+        LOGGER.info("DETAILS_POST: Post details has been returned for postId: " + id);
         return new ResponseEntity<>(prep, HttpStatus.OK);
 
     }
@@ -229,7 +227,7 @@ public class PostController {
 
             if (image != null) {
                 if (image.size() <= 0) {
-                    LOGGER.info("POST-ADD: imageLink value is empty");
+                    LOGGER.info("POST-ADD: image link value is empty");
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
                 postRep.setImageLink(image);
@@ -238,11 +236,11 @@ public class PostController {
 
             if (video != null) {
                 if (video.trim().length() <= 0) {
-                    LOGGER.info("POST-ADD: videoLink value is empty");
+                    LOGGER.info("POST-ADD: video link value is empty");
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
                 postRep.setVideoLink(video);
-                newPostToSave.setVideoLink(video);
+                newPostToSave.setVideo(video);
             }
 
             canAdd = true;
@@ -391,7 +389,7 @@ public class PostController {
      * @return Delete post
      */
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable("id") int id) {
+    public ResponseEntity<Void> deletePost(@PathVariable int id) {
         Post postToDelete = postDataService.findPost(id);
 
         if (postToDelete == null) {
@@ -403,7 +401,7 @@ public class PostController {
 
         if (postDataService.deletePost(postToDelete)) {
             // delete success
-            LOGGER.info("POST_DELETE: Post with id:" + id + " has been deleted");
+            LOGGER.info("POST_DELETE: Post with id: " + id + "-- has been deleted");
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
@@ -412,59 +410,13 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-
-    /**
-     * @param buttomMarker
-     * @param request
-     * @return List of all photos posted by a usert
-     */
-    @GetMapping(value = "/gallery/photo/{page}")
-    public ResponseEntity<List<PostResponse>> getGalleryPhoto(@PathVariable("page") int buttomMarker,
-                                                              HttpServletRequest request) {
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = postDataService.getUserById(userId);
-
-        List<PostResponse> lpost = postDataService.getPhotoGallery(userId, buttomMarker);
-
-        if (lpost.size() == 0) {
-            LOGGER.info("PHOTO_GALLERY: Empty !!");
-            return new ResponseEntity<>(lpost, HttpStatus.NO_CONTENT);
-        }
-
-        LOGGER.info("PHOTO_GALLERY: has been returned to user:  " + user.getFirstName() + " " + user.getLastName());
-        return new ResponseEntity<>(lpost, HttpStatus.OK);
-
-    }
-
-    @GetMapping(value = "/gallery/video/{page}")
-    public ResponseEntity<List<PostResponse>> getGalleryVideo(@PathVariable("page") int buttomMarker,
-                                                              HttpServletRequest request) {
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = postDataService.getUserById(userId);
-
-        List<PostResponse> lpost = postDataService.getVideoGallery(userId, buttomMarker);
-
-        if (lpost.size() == 0) {
-            LOGGER.info("VIDEO_GALLERY: Empty !!");
-            return new ResponseEntity<>(lpost, HttpStatus.NO_CONTENT);
-        }
-
-        LOGGER.info("VIDEO_GALLERY: has been returned to user:  " + user.getFirstName() + " " + user.getLastName());
-        return new ResponseEntity<>(lpost, HttpStatus.OK);
-
-    }
-
     /**
      * @param id
      * @param page
-     * @param request
      * @return List of post history edition
      */
     @GetMapping(value = "/history/{id}/{page}")
-    public ResponseEntity<List<ContentEditedResponse>> editHistory(@PathVariable("id") int id,
-                                                                   @PathVariable("page") int page, HttpServletRequest request) {
+    public ResponseEntity<List<ContentEditedResponse>> editHistory(@PathVariable int id, @PathVariable int page) {
 
         Post postToLike = postDataService.findPost(id);
 
@@ -476,14 +428,13 @@ public class PostController {
 
         }
 
-        LOGGER.info("POST_EDIT_HISTORY: Post HISTORY has been returned for postId:" + id);
+        LOGGER.info("POST_EDIT_HISTORY: Post HISTORY has been returned for postId: " + id);
         return new ResponseEntity<>(postDataService.getAllPostHistory(id, page), HttpStatus.OK);
 
     }
 
-    @PutMapping(value = "/posthistory/{id}/{visibility}")
-    public ResponseEntity<Void> editVisibility(@PathVariable("id") int id, @PathVariable("visibility") int visibility,
-                                               HttpServletRequest request) {
+    @PutMapping(value = "/{id}/{visibility}")
+    public ResponseEntity<Void> editVisibility(@PathVariable int id, @PathVariable int visibility) {
 
         Post postToEdit = postDataService.findPost(id);
 
@@ -501,7 +452,7 @@ public class PostController {
 
         }
 
-        LOGGER.info("POST_EDIT_VISIBILITY: Post VISIBILITY has been changed for postId:" + id);
+        LOGGER.info("POST_EDIT_VISIBILITY: Post VISIBILITY has been changed for postId: " + id);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }

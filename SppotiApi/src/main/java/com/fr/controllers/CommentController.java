@@ -34,7 +34,7 @@ public class CommentController {
 
     private static final String ATT_USER_ID = "USER_ID";
 
-    private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
+    private Logger LOGGER = Logger.getLogger(CommentController.class);
 
     @GetMapping("/{postId}/{page}")
     public ResponseEntity<Object> getAllPostComments(@PathVariable int postId, @PathVariable int page, HttpServletRequest httpServletRequest) {
@@ -99,13 +99,13 @@ public class CommentController {
                 commentToSave.setVideoLink(video);
             }
 
-            // get post id to link the comment
+            // get post postId to link the comment
             Post p = commentDataService.findPostById(postId);
 
             if (p != null) {
                 commentToSave.setPost(p);
             } else {
-                LOGGER.info("COMMENT: post id is invalid");
+                LOGGER.info("COMMENT: post postId is invalid");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
@@ -136,8 +136,8 @@ public class CommentController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable("id") int id) {
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable("postId") int id) {
         Comment commentToDelete = commentDataService.findComment(id);
 
         if (commentToDelete == null) {
@@ -149,7 +149,7 @@ public class CommentController {
 
         if (commentDataService.deleteComment(commentToDelete)) {
             // delete success
-            LOGGER.info("DELETE: Comment with id:" + id + " has been deleted");
+            LOGGER.info("DELETE: Comment with postId:" + id + " has been deleted");
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
@@ -159,8 +159,7 @@ public class CommentController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CommentModel> updateComment(@PathVariable("id") int id,
-                                                      @RequestBody CommentModel newComment) {
+    public ResponseEntity<CommentModel> updateComment(@PathVariable int id, @RequestBody CommentModel newComment) {
 
         Comment commentToEdit = commentDataService.findComment(id);
         EditHistory commentEditRow = new EditHistory();
@@ -196,6 +195,26 @@ public class CommentController {
             LOGGER.info("COMMENT_UPDATE: Failed when trying to update the comment in DB");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+    }
+
+    /*
+    Get all comment modifications
+     */
+    @GetMapping("/history/{id}/{page}")
+    public ResponseEntity<Object> getAllCommentModification(@PathVariable int id, @PathVariable int page, HttpServletRequest httpServletRequest) {
+
+        Long userId = (Long) httpServletRequest.getSession().getAttribute(ATT_USER_ID);
+
+        List<ContentEditedResponse> commentModelList = commentDataService.getAllCommentHistory(id, page);
+
+        if (commentModelList.isEmpty()) {
+            LOGGER.info("COMMENT_HISTORY_LIST: No comment has been found");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        LOGGER.info("COMMENT_HISTORY_LIST: All comments have been returned");
+        return new ResponseEntity<>(commentModelList, HttpStatus.OK);
 
     }
 }

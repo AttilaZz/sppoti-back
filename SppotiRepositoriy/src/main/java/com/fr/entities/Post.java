@@ -38,10 +38,10 @@ public class Post implements Comparable<Post> {
     @Column(nullable = false)
     private String datetimeCreated = new DateTime().toString();
 
-    private String videoLink;
+    private String video;
 
     @ElementCollection
-    private Set<String> album = new HashSet<String>();
+    private Set<String> album;
 
     @Column(nullable = false)
     private int visibility = 0;
@@ -63,7 +63,7 @@ public class Post implements Comparable<Post> {
     public Post(Post post) {
         this.content = post.getContent();
         this.album = post.getAlbum();
-        this.videoLink = post.getVideoLink();
+        this.video = post.getVideo();
     }
 
     @ManyToOne
@@ -113,12 +113,12 @@ public class Post implements Comparable<Post> {
         this.user = user;
     }
 
-    public String getVideoLink() {
-        return videoLink;
+    public String getVideo() {
+        return video;
     }
 
-    public void setVideoLink(String videoLink) {
-        this.videoLink = videoLink;
+    public void setVideo(String video) {
+        this.video = video;
     }
 
     public Sport getSport() {

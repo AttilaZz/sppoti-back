@@ -173,7 +173,7 @@ public class LikeController {
         }
 
         PostResponse pr = new PostResponse();
-        pr.setPostLikers(likersList);
+        pr.setLikers(likersList);
         pr.setLikeCount(currentPost.getLikes().size());
 
         return new ResponseEntity<>(pr, HttpStatus.OK);
@@ -299,7 +299,7 @@ public class LikeController {
         }
 
         PostResponse pr = new PostResponse();
-        pr.setPostLikers(likersList);
+        pr.setLikers(likersList);
         pr.setLikeCount(currentComment.getLikes().size());
 
         return new ResponseEntity<>(pr, HttpStatus.OK);

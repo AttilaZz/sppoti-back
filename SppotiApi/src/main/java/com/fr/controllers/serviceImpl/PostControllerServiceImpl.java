@@ -6,7 +6,6 @@ package com.fr.controllers.serviceImpl;
 import com.fr.controllers.service.PostControllerService;
 import com.fr.entities.*;
 import com.fr.models.ContentEditedResponse;
-import com.fr.models.HeaderData;
 import com.fr.models.PostResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -106,30 +105,44 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<PostResponse> getPhotoGallery(Long userId, int buttomMarker) {
-        return fillPostResponseFromDbPost(buttomMarker, userId, 1, null);
+    public List<PostResponse> getPhotoGallery(Long userId, int page) {
+        return fillPostResponseFromDbPost(page, userId, 1, null);
 
     }
 
     @Override
-    public List<PostResponse> getVideoGallery(Long userId, int buttomMarker) {
-        return fillPostResponseFromDbPost(buttomMarker, userId, 2, null);
+    public List<PostResponse> getVideoGallery(Long userId, int page) {
+        return fillPostResponseFromDbPost(page, userId, 2, null);
     }
 
-    private List<PostResponse> fillPostResponseFromDbPost(int bottomMajId, Long userId, int operationType,
-                                                          Post post_param) {
+    @Override
+    public PostResponse fillPostToSend(Post post, Long userId) {
+
+        return fillPostResponseFromDbPost(0, userId, 3, post).get(0);
+
+    }
+
+    private List<PostResponse> fillPostResponseFromDbPost(int page, Long userId, int operationType, Post post_param) {
+
+        int debut = page * post_size;
+
+        Pageable pageable = new PageRequest(debut, post_size);
+
         List<Post> dbContent = new ArrayList<>();
 
         switch (operationType) {
             case 1:
-//                dbContent = postDaoService.getPhotoGalleryPostsFromLastMajId(userId, bottomMajId);
+
+                dbContent = postRepository.getByAlbumIsNotNull(pageable);
 
                 break;
             case 2:
-//                dbContent = postDaoService.getVideoGalleryPostsFromLastMajId(userId, bottomMajId);
+
+                dbContent = postRepository.getByVideoIsNotNull(pageable);
 
                 break;
             case 3:
+
                 dbContent.add(post_param);
 
                 break;
@@ -159,8 +172,8 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             if (post.getAlbum() != null)
                 pres.setImageLink(post.getAlbum());
 
-            if (post.getVideoLink() != null)
-                pres.setVideoLink(post.getVideoLink());
+            if (post.getVideo() != null)
+                pres.setVideoLink(post.getVideo());
 
             if (post.getGame() != null)
                 pres.setGame(post.getGame());
@@ -210,16 +223,11 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                 pres.setDatetimeCreated(post.getDatetimeCreated());
             }
 
-            // Access here if details message is requested - otherwise no need
-            // to show comments
-            if (operationType == 3) {
-                pres.setCommentsCount(post.getComments().size());
-            }
+            //comments count
+            pres.setCommentsCount(post.getComments().size());
 
-            int nbLike = post.getLikes().size();
-            if (post.getLikes() != null) {
-                pres.setLikeCount(nbLike);
-            }
+            //like count
+            pres.setLikeCount(post.getLikes().size());
 
             boolean isPostLikedByMe = isContentLikedByUser(post, userId);
             pres.setLikedByUser(isPostLikedByMe);
@@ -228,13 +236,6 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
         }
 
         return mContentResponse;
-
-    }
-
-    @Override
-    public PostResponse fillPostToSend(Post post, Long userId) {
-
-        return fillPostResponseFromDbPost(0, userId, 3, post).get(0);
 
     }
 
@@ -273,10 +274,10 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
         Post post = posts.get(0);
         post.setVisibility(visibility);
 
-        try{
+        try {
             postRepository.save(post);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

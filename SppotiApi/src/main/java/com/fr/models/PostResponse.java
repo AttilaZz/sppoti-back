@@ -43,7 +43,7 @@ public class PostResponse {
 
     private boolean edited;
 
-    private List<HeaderData> postLikers;
+    private List<HeaderData> likers;
     private SortedSet<Address> addresses;
 
     private int visibility;
@@ -94,12 +94,12 @@ public class PostResponse {
         this.visibility = visibility;
     }
 
-    public List<HeaderData> getPostLikers() {
-        return postLikers;
+    public List<HeaderData> getLikers() {
+        return likers;
     }
 
-    public void setPostLikers(List<HeaderData> postLikers) {
-        this.postLikers = postLikers;
+    public void setLikers(List<HeaderData> likers) {
+        this.likers = likers;
     }
 
     public String getContent() {

@@ -22,4 +22,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @PostFilter("(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend())) && !filterObject.isDeleted() ")
     List<Post> getByUserUuid(int uuid, Pageable pageable);
+
+    @PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted() ")
+    List<Post> getByAlbumIsNotNull(Pageable pageable);
+
+    @PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted() ")
+    List<Post> getByVideoIsNotNull(Pageable pageable);
 }
