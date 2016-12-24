@@ -27,9 +27,6 @@ import java.util.regex.Pattern;
 @Component
 public class PostControllerServiceImpl extends AbstractControllerServiceImpl implements PostControllerService {
 
-    @Value("${key.likesPerPage}")
-    private int like_size;
-
     @Value("${key.postsPerPage}")
     private int post_size;
 
@@ -106,37 +103,6 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     public Sppoti getGameById(Long id) {
 
         return sppotiDaoService.getEntityByID(id);
-    }
-
-    @Override
-    public boolean likePost(LikeContent likeToSave) {
-        try {
-            likeRepository.save(likeToSave);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
-    public boolean unLikePost(Post post) {
-        try {
-            LikeContent likeContent = likeRepository.getByPostId(post.getId());
-            likeRepository.delete(likeContent);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-
-    }
-
-    @Override
-    public boolean isPostAlreadyLikedByUser(int postId, Long userId) {
-
-        return likeRepository.getByUserIdAndPostUuid(userId, postId) != null;
-
     }
 
     @Override
@@ -276,44 +242,15 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     public List<ContentEditedResponse> getAllPostHistory(int id, int page) {
 
 
-        int debut = page * like_size;
+        int debut = page * post_size;
 
-        Pageable pageable = new PageRequest(debut, like_size);
+        Pageable pageable = new PageRequest(debut, post_size);
 
         List<EditHistory> postHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(id, pageable);
 
         return fillEditContentResponse(postHistory);
     }
 
-    @Override
-    public List<HeaderData> getLikersList(int id, int page) {
-
-        int debut = page * like_size;
-
-
-        Pageable pageable1 = new PageRequest(debut, like_size);
-
-        List<LikeContent> likersData = likeRepository.getByPostUuidOrderByDatetimeCreated(id, pageable1);
-
-        List<HeaderData> likers = new ArrayList<>();
-
-        if (!likersData.isEmpty()) {
-            for (LikeContent row : likersData) {
-                // get liker data
-                HeaderData u = new HeaderData();
-//                u.setAvatar(userDaoService.getLastAvatar(row.getUser().getId()).get(0).getUrl());
-                u.setFirstName(row.getUser().getFirstName());
-                u.setLastName(row.getUser().getLastName());
-                // u.setCover(userDao.getLastCover(row.getUser().getId(),
-                // coverType));
-                u.setUsername(row.getUser().getUsername());
-
-                likers.add(u);
-            }
-        }
-
-        return likers;
-    }
 
     @Override
     public List<EditHistory> getLastModification(int postId) {

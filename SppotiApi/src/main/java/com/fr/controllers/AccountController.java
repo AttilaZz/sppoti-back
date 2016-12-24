@@ -1,6 +1,6 @@
 package com.fr.controllers;
 
-import com.fr.controllers.serviceImpl.AccountServiceImpl;
+import com.fr.controllers.serviceImpl.AccountControllerServiceImpl;
 import com.fr.entities.*;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictPhoneException;
@@ -34,7 +34,7 @@ public class AccountController {
     private Logger LOGGER = Logger.getLogger(AccountController.class);
     private static final String ATT_USER_ID = "USER_ID";
 
-    private AccountServiceImpl accountService;
+    private AccountControllerServiceImpl accountService;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -43,7 +43,7 @@ public class AccountController {
     }
 
     @Autowired
-    public void setAccountService(AccountServiceImpl accountService) {
+    public void setAccountService(AccountControllerServiceImpl accountService) {
         this.accountService = accountService;
     }
 

@@ -20,7 +20,6 @@ public class User {
     @JsonProperty("sports")
     private List<SportModel> sportModels;
 
-
     private String password;
     private String phone;
     private String email;

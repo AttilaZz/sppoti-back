@@ -40,12 +40,6 @@ public interface PostControllerService extends AbstractControllerService {
 
     Sppoti getGameById(Long id);
 
-    boolean likePost(LikeContent likeToSave);
-
-    boolean unLikePost(Post post);
-
-    boolean isPostAlreadyLikedByUser(int postId, Long userId);
-
     List<PostResponse> getPhotoGallery(Long userId, int buttomMarker);
 
     List<PostResponse> getVideoGallery(Long userId, int buttomMarker);
@@ -53,8 +47,6 @@ public interface PostControllerService extends AbstractControllerService {
     PostResponse fillPostToSend(Post post, Long userId);
 
     List<ContentEditedResponse> getAllPostHistory(int id, int page);
-
-    List<HeaderData> getLikersList(int id, int page);
 
     List<EditHistory> getLastModification(int postId);
 

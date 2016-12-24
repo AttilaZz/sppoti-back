@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.fr.filter;
 
 import java.util.Properties;

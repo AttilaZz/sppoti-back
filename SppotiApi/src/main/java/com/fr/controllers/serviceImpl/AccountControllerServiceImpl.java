@@ -1,6 +1,6 @@
 package com.fr.controllers.serviceImpl;
 
-import com.fr.controllers.service.AccountService;
+import com.fr.controllers.service.AccountControllerService;
 import com.fr.entities.*;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;
@@ -15,7 +15,7 @@ import javax.mail.MessagingException;
  */
 
 @Component
-public class AccountServiceImpl extends AbstractControllerServiceImpl implements AccountService {
+public class AccountControllerServiceImpl extends AbstractControllerServiceImpl implements AccountControllerService {
 
     @Value("${key.originBack}")
     private String rootAddress;

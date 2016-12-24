@@ -7,7 +7,7 @@ import com.fr.models.SignUpRequest;
 import org.springframework.stereotype.Service;
 
 @Service
-public interface AccountService {
+public interface AccountControllerService {
 
     void saveNewUser(Users user) throws Exception;
 

@@ -20,4 +20,10 @@ public interface LikeRepository extends CrudRepository<LikeContent, Long> {
     List<LikeContent> getByPostUuidOrderByDatetimeCreated(int id, Pageable pageable1);
 
     LikeContent getByUserIdAndPostUuid(Long userId, int postId);
+
+    LikeContent getByCommentId(Long id);
+
+    Object getByUserIdAndCommentUuid(Long userId, int commentId);
+
+    List<LikeContent> getByCommentUuidOrderByDatetimeCreated(int id, Pageable pageable1);
 }
