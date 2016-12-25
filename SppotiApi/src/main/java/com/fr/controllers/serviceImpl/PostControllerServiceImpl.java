@@ -156,6 +156,8 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
             PostResponse pres = new PostResponse();
 
+            Users owner = post.getUser();
+
             if (post.getId() != null)
                 pres.setId(post.getUuid());
 
@@ -166,7 +168,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                 pres.setDatetimeCreated(post.getDatetimeCreated());
 
 
-            pres.setMyPost(userId.equals(post.getUser().getId()));
+            pres.setMyPost(userId.equals(owner.getId()));
 
 
             if (post.getAlbum() != null)
@@ -232,6 +234,11 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             boolean isPostLikedByMe = isContentLikedByUser(post, userId);
             pres.setLikedByUser(isPostLikedByMe);
 
+            //set post owner info
+            pres.setFirstName(owner.getFirstName());
+            pres.setLastName(owner.getLastName());
+            pres.setUsername(owner.getUsername());
+
             mContentResponse.add(pres);
         }
 
@@ -261,7 +268,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     @Override
     public Sport getSportById(Long sport_id) {
-        return null;
+        return sportRepository.getOne(sport_id);
     }
 
     @Override

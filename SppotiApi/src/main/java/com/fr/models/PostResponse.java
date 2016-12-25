@@ -17,7 +17,7 @@ import java.util.SortedSet;
 /**
  * Created by: Wail DJENANE on Aug 7, 2016
  */
-@JsonInclude(Include.NON_ABSENT)
+@JsonInclude(Include.NON_EMPTY)
 public class PostResponse {
 
     private int id;
