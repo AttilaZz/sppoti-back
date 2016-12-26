@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -210,7 +211,6 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                     Long spId = ec.getSport().getId();
                     pres.setSportId(spId);
                 }
-
             } else {
                 // post has not been edited - set initial params
 
@@ -226,7 +226,17 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             }
 
             //comments count
-            pres.setCommentsCount(post.getComments().size());
+            Set<Comment> comments = post.getComments();
+            pres.setCommentsCount(comments.size());
+
+            try {
+                List<Comment> commentsList = new ArrayList<>();
+                commentsList.addAll(comments);
+                pres.setComment(commentsList.get(0));
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.error("Error  asting set<Comment> to List<Comment>");
+            }
 
             //like count
             pres.setLikeCount(post.getLikes().size());
@@ -342,9 +352,8 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                     return false;
                 }
 
-                LOGGER.info(notif.toString());
-            } else
-                continue;
+                LOGGER.info("POST-ADD-NOTIF:" + notif.toString());
+            }
         }
 
         return true;

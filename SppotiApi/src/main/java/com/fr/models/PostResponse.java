@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.entities.Address;
+import com.fr.entities.Comment;
 import com.fr.entities.Post;
 import com.fr.entities.Sppoti;
 
@@ -36,6 +37,7 @@ public class PostResponse {
 
     private Sppoti game;
 
+    private Comment comment;
     private int commentsCount;
 
     private int likeCount;
@@ -205,5 +207,13 @@ public class PostResponse {
 
     public void setDatetimeCreated(String datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
+    }
+
+    public Comment getComment() {
+        return comment;
+    }
+
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 }
