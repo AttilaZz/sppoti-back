@@ -18,14 +18,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAll();
 
     @PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted()")
-    List<Post> getByUuid(int id, Pageable pageable);
+    List<Post> getByUuidOrderByDatetimeCreatedDesc(int id, Pageable pageable);
 
     @PostFilter("(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend())) && !filterObject.isDeleted() ")
-    List<Post> getByUserUuid(int uuid, Pageable pageable);
+    List<Post> getByUserUuidOrderByDatetimeCreatedDesc(int uuid, Pageable pageable);
 
     @PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted() ")
-    List<Post> getByAlbumIsNotNull(Pageable pageable);
+    List<Post> getByAlbumIsNotNullOrderByDatetimeCreatedDesc(Pageable pageable);
 
     @PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted() ")
-    List<Post> getByVideoIsNotNull(Pageable pageable);
+    List<Post> getByVideoIsNotNullOrderByDatetimeCreatedDesc(Pageable pageable);
 }

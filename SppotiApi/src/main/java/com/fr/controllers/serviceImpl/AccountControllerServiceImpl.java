@@ -132,7 +132,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public Users getUserByUsername(String username){
+    public Users getUserByUsername(String username) {
         return userRepository.getByUsername(username);
     }
 }

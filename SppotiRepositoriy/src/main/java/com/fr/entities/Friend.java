@@ -2,6 +2,7 @@ package com.fr.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fr.models.FriendStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,11 +20,8 @@ public class Friend extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE)
     protected Long id;
 
-    private Long matchingUserId;
-
     public Friend(Users user) {
         super(user);
-        this.matchingUserId = user.getId();
     }
 
     @Override
@@ -35,6 +33,8 @@ public class Friend extends Person implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    private String status = FriendStatus.PENDING.name();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "friends")
     @JsonIgnore
@@ -48,11 +48,11 @@ public class Friend extends Person implements Serializable {
         this.users = users;
     }
 
-    public Long getMatchingUserId() {
-        return matchingUserId;
+    public String getStatus() {
+        return status;
     }
 
-    public void setMatchingUserId(Long matchingUserId) {
-        this.matchingUserId = matchingUserId;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

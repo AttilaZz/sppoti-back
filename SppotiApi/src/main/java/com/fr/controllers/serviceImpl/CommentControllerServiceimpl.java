@@ -3,25 +3,18 @@
  */
 package com.fr.controllers.serviceImpl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fr.controllers.service.CommentControllerService;
+import com.fr.entities.Comment;
+import com.fr.entities.EditHistory;
+import com.fr.entities.Post;
+import com.fr.models.CommentModel;
+import com.fr.models.ContentEditedResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import com.fr.controllers.service.CommentControllerService;
-import com.fr.models.CommentModel;
-import com.fr.models.ContentEditedResponse;
-import com.fr.models.HeaderData;
-import com.fr.entities.Comment;
-import com.fr.entities.EditHistory;
-import com.fr.entities.LikeContent;
-import com.fr.entities.Post;
-
-import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016

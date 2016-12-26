@@ -45,6 +45,7 @@ public class Sport {
     private Set<Sppoti> game;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport")
+    @JsonIgnore
     private Set<EditHistory> editList;
 
     public Sport() {

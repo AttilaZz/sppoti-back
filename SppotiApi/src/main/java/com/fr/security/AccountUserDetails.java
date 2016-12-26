@@ -99,10 +99,6 @@ public class AccountUserDetails implements MyUserDetails {
         return account.isConfirmed();
     }
 
-    public Friend getUserAsFriend() {
-        return friendRepository.getFriendByMatchingUserId(account.getId());
-    }
-
     @Override
     public Users getConnectedUserDetails() {
         return account;

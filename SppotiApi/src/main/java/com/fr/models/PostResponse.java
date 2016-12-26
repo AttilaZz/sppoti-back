@@ -23,7 +23,7 @@ public class PostResponse {
     private int id;
     private Long sportId;
 
-    private String datetime;
+    private String datetimeCreated;
 
     @JsonProperty("text")
     private String content;
@@ -110,13 +110,6 @@ public class PostResponse {
         this.content = content;
     }
 
-    public String getDatetimeCreated() {
-        return datetime;
-    }
-
-    public void setDatetimeCreated(String datetimeCreated) {
-        this.datetime = datetimeCreated;
-    }
 
     public Set<String> getImageLink() {
         return imageLink;
@@ -141,7 +134,6 @@ public class PostResponse {
     public void setGame(Sppoti game) {
         this.game = game;
     }
-
 
     public Long getSportId() {
         return sportId;
@@ -175,14 +167,6 @@ public class PostResponse {
         this.edited = isEdited;
     }
 
-    public String getDatetime() {
-        return datetime;
-    }
-
-    public void setDatetime(String datetime) {
-        this.datetime = datetime;
-    }
-
     public boolean isMyPost() {
         return myPost;
     }
@@ -213,5 +197,13 @@ public class PostResponse {
 
     public void setCommentsCount(int commentsCount) {
         this.commentsCount = commentsCount;
+    }
+
+    public String getDatetimeCreated() {
+        return datetimeCreated;
+    }
+
+    public void setDatetimeCreated(String datetimeCreated) {
+        this.datetimeCreated = datetimeCreated;
     }
 }

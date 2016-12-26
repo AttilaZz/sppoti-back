@@ -1,6 +1,3 @@
-/**
- *
- */
 package com.fr.controllers;
 
 import com.fr.aop.TraceAuthentification;
@@ -27,7 +24,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/post")
 public class PostController {
-
 
     private PostControllerService postDataService;
 
@@ -182,9 +178,8 @@ public class PostController {
         }
 
         /*
-            --- End address
+            ---- End address
          */
-
         String content = null;
         Set<String> image = new HashSet<>();
         String video = null;
@@ -361,9 +356,7 @@ public class PostController {
         }
 
         // if all arguments are correctly assigned - edit post
-        if (postDataService.updatePost(postEditRow, postEditAddress, postId))
-
-        {
+        if (postDataService.updatePost(postEditRow, postEditAddress, postId)) {
             LOGGER.info("POST_UPDATE: success");
 
             ContentEditedResponse edit = new ContentEditedResponse();
@@ -375,9 +368,7 @@ public class PostController {
             edit.setLongitude(newData.getLongitude());
 
             return new ResponseEntity<>(edit, HttpStatus.ACCEPTED);
-        } else
-
-        {
+        } else {
             LOGGER.info("POST_UPDATE: Failed when trying to update the post in DB");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }

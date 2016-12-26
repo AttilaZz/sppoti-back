@@ -85,7 +85,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     @Override
     public Post findPost(int id) {
-        List<Post> posts = postRepository.getByUuid(id, null);
+        List<Post> posts = postRepository.getByUuidOrderByDatetimeCreatedDesc(id, null);
 
         if (posts.isEmpty()) return null;
 
@@ -133,12 +133,12 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
         switch (operationType) {
             case 1:
 
-                dbContent = postRepository.getByAlbumIsNotNull(pageable);
+                dbContent = postRepository.getByAlbumIsNotNullOrderByDatetimeCreatedDesc(pageable);
 
                 break;
             case 2:
 
-                dbContent = postRepository.getByVideoIsNotNull(pageable);
+                dbContent = postRepository.getByVideoIsNotNullOrderByDatetimeCreatedDesc(pageable);
 
                 break;
             case 3:
@@ -274,7 +274,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public boolean editPostVisibility(int id, int visibility) {
 
-        List<Post> posts = postRepository.getByUuid(id, null);
+        List<Post> posts = postRepository.getByUuidOrderByDatetimeCreatedDesc(id, null);
 
         if (posts == null) return false;
 
@@ -357,7 +357,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         Pageable pageable = new PageRequest(debut, post_size);
 
-        return postRepository.getByUserUuid(uuid, pageable);
+        return postRepository.getByUserUuidOrderByDatetimeCreatedDesc(uuid, pageable);
     }
 
 }

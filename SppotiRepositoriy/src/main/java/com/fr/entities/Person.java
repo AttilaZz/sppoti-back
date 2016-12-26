@@ -80,6 +80,7 @@ public abstract class Person implements Serializable {
         this.username = user.getUsername();
         this.job = user.getJob();
         this.description = user.getDescription();
+        this.uuid = user.getUuid();
     }
 
     public Long getId() {
