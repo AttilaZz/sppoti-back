@@ -152,6 +152,7 @@ public class Comment implements Comparable<Comment> {
     @SuppressWarnings("unused")
     @Override
     public int compareTo(Comment o) {
+
         if (this != null) {
             if (o != null) {
                 return this.datetimeCreated.compareTo(o.datetimeCreated);

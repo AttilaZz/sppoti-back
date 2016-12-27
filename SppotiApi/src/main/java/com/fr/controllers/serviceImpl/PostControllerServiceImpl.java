@@ -230,9 +230,15 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             pres.setCommentsCount(comments.size());
 
             try {
-                List<Comment> commentsList = new ArrayList<>();
-                commentsList.addAll(comments);
-                pres.setComment(commentsList.get(0));
+                List<Comment> commentsListTemp = new ArrayList<>();
+                commentsListTemp.addAll(comments);
+
+                List<Comment> commentList = new ArrayList<>();
+                if (!commentsListTemp.isEmpty()) {
+                    commentList.add(commentsListTemp.get(0));
+                }
+
+                pres.setComment(commentList);
             } catch (Exception e) {
                 e.printStackTrace();
                 LOGGER.error("Error  asting set<Comment> to List<Comment>");

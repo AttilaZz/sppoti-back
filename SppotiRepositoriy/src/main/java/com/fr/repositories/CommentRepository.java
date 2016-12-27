@@ -16,6 +16,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long>{
     Comment getByUuid(int id);
 
     @PostFilter("!filterObject.isDeleted()")
-    List<Comment> getByPostUuid(int uuid, Pageable pageable);
-
+    List<Comment> getByPostUuidOrderByDatetimeCreatedDesc(int postId, Pageable pageable);
 }

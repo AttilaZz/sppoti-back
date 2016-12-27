@@ -74,7 +74,7 @@ public class CommentControllerServiceimpl extends AbstractControllerServiceImpl 
 
         Pageable pageable = new PageRequest(debut, comment_size);
 
-        List<Comment> lComment = commentRepository.getByPostUuid(postId, pageable);
+        List<Comment> lComment = commentRepository.getByPostUuidOrderByDatetimeCreatedDesc(postId, pageable);
 
         //userId used to distinguich connected user comments
         return fillCommentModelList(lComment, userId);
