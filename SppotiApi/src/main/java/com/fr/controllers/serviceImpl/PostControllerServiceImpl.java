@@ -5,6 +5,7 @@ package com.fr.controllers.serviceImpl;
 
 import com.fr.controllers.service.PostControllerService;
 import com.fr.entities.*;
+import com.fr.models.CommentModel;
 import com.fr.models.ContentEditedResponse;
 import com.fr.models.PostResponse;
 import org.apache.log4j.Logger;
@@ -225,7 +226,9 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                 pres.setDatetimeCreated(post.getDatetimeCreated());
             }
 
-            //comments count
+            /*
+            Manage comments count + last comment
+             */
             Set<Comment> comments = post.getComments();
             pres.setCommentsCount(comments.size());
 
@@ -233,24 +236,39 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                 List<Comment> commentsListTemp = new ArrayList<>();
                 commentsListTemp.addAll(comments);
 
-                List<Comment> commentList = new ArrayList<>();
+                List<CommentModel> commentList = new ArrayList<>();
                 if (!commentsListTemp.isEmpty()) {
-                    commentList.add(commentsListTemp.get(comments.size() - 1));
+                    Comment comment = commentsListTemp.get(comments.size() - 1);
+
+                    CommentModel commentModel = new CommentModel(comment);
+                    commentModel.setMyComment(comment.getUser().getId().equals(userId));
+                    commentModel.setLikedByUser(isContentLikedByUser(comment, userId));
+
+                    commentList.add(commentModel);
                 }
 
                 pres.setComment(commentList);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 LOGGER.error("Error  asting set<Comment> to List<Comment>");
             }
 
-            //like count
+            /*
+            End managing comments
+             */
+
+            /*
+            manage post like + count like
+             */
             pres.setLikeCount(post.getLikes().size());
 
             boolean isPostLikedByMe = isContentLikedByUser(post, userId);
             pres.setLikedByUser(isPostLikedByMe);
 
-            //set post owner info
+            /*
+            set post owner info
+             */
             pres.setFirstName(owner.getFirstName());
             pres.setLastName(owner.getLastName());
             pres.setUsername(owner.getUsername());

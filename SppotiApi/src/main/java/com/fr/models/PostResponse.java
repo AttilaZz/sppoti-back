@@ -37,7 +37,7 @@ public class PostResponse {
 
     private Sppoti game;
 
-    private List<Comment> comment;
+    private List<CommentModel> comment;
     private int commentsCount;
 
     private int likeCount;
@@ -209,11 +209,11 @@ public class PostResponse {
         this.datetimeCreated = datetimeCreated;
     }
 
-    public List<Comment> getComment() {
+    public List<CommentModel> getComment() {
         return comment;
     }
 
-    public void setComment(List<Comment> comment) {
+    public void setComment(List<CommentModel> comment) {
         this.comment = comment;
     }
 }

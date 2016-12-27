@@ -200,7 +200,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             cm.setCreationDate(comment.getDatetimeCreated());
             cm.setId(commentId);
             cm.setImageLink(comment.getImageLink());
-            cm.setMyComment(comment.getUser().getId() == userId);
+            cm.setMyComment(comment.getUser().getId().equals(userId));
 
             boolean isCommentLikedByMe = isContentLikedByUser(comment, userId);
             cm.setLikedByUser(isCommentLikedByMe);
@@ -242,7 +242,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         }
 
         for (LikeContent likePost : lp) {
-            if (likePost.getUser().getId() == userId) {
+            if (likePost.getUser().getId().equals(userId)) {
                 return true;
             }
         }

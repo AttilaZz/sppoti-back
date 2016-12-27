@@ -1,6 +1,5 @@
 package com.fr.controllers;
 
-import com.fr.aop.TraceAuthentification;
 import com.fr.controllers.service.CommentControllerService;
 import com.fr.entities.Comment;
 import com.fr.entities.EditHistory;
@@ -116,7 +115,7 @@ public class CommentController {
 
             newComment.setAuthorFirstName(user.getFirstName());
             newComment.setAuthorLastName(user.getLastName());
-            newComment.setAuthorUserName(user.getUsername());
+            newComment.setAuthorUsername(user.getUsername());
 
             try {
                 Comment c = commentDataService.saveComment(commentToSave);

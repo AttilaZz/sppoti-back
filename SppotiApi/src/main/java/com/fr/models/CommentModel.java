@@ -7,11 +7,13 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.entities.Comment;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
  */
-@JsonInclude(Include.NON_DEFAULT)
+@JsonInclude(Include.NON_EMPTY)
 public class CommentModel {
 
     private int id;
@@ -19,7 +21,7 @@ public class CommentModel {
 
     private String authorFirstName;
     private String authorLastName;
-    private String authorUserName;
+    private String authorUsername;
     private String authorAvatar;
 
     private String creationDate;
@@ -37,6 +39,25 @@ public class CommentModel {
 
     private List<HeaderData> commentLikers;
 
+    public CommentModel() {
+    }
+
+    public CommentModel(Comment comment) {
+        this.id = comment.getUuid();
+
+//        this.authorAvatar = comment.getUser().getAvatars();
+        this.authorFirstName = comment.getUser().getFirstName();
+        this.authorUsername = comment.getUser().getUsername();
+        this.authorLastName = comment.getUser().getLastName();
+
+        this.creationDate = comment.getDatetimeCreated();
+        this.text = comment.getContent();
+        this.imageLink = comment.getImageLink();
+        this.videoLink = comment.getVideoLink();
+
+        this.isEdited = !comment.getEditList().isEmpty();
+    }
+
     public List<HeaderData> getCommentLikers() {
         return commentLikers;
     }
@@ -45,12 +66,12 @@ public class CommentModel {
         this.commentLikers = commentLikers;
     }
 
-    public String getAuthorUserName() {
-        return authorUserName;
+    public String getAuthorUsername() {
+        return authorUsername;
     }
 
-    public void setAuthorUserName(String authorUserName) {
-        this.authorUserName = authorUserName;
+    public void setAuthorUsername(String authorUsername) {
+        this.authorUsername = authorUsername;
     }
 
     public String getAuthorLastName() {
