@@ -235,7 +235,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
                 List<Comment> commentList = new ArrayList<>();
                 if (!commentsListTemp.isEmpty()) {
-                    commentList.add(commentsListTemp.get(0));
+                    commentList.add(commentsListTemp.get(comments.size() - 1));
                 }
 
                 pres.setComment(commentList);
