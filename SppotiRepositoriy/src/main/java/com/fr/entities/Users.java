@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 /**
@@ -30,7 +31,7 @@ public class Users extends Person implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("datetimeCreated DESC")
-    private SortedSet<Post> userPosts;
+    private SortedSet<Post> userPosts = new TreeSet<Post>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userGame")
     private Set<Sppoti> userGames;

@@ -54,7 +54,7 @@ public class Post implements Comparable<Post> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     @OrderBy("dateTime DESC")
-    private SortedSet<Address> addresses;
+    private SortedSet<Address> addresses = new TreeSet<Address>();
 
     public Post() {
         super();
@@ -81,13 +81,16 @@ public class Post implements Comparable<Post> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     @OrderBy("datetimeCreated DESC")
-    private SortedSet<Comment> Comments;
+    private SortedSet<Comment> Comments = new TreeSet<Comment>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     private Set<LikeContent> likes;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     private Set<EditHistory> editList;
+
+    @Column(name = "target_user")
+    private int targetUserProfileUuid;
 
     public Long getId() {
         return id;
@@ -216,6 +219,14 @@ public class Post implements Comparable<Post> {
 
     public void setAddresses(SortedSet<Address> addresses) {
         this.addresses = addresses;
+    }
+
+    public int getTargetUserProfileUuid() {
+        return targetUserProfileUuid;
+    }
+
+    public void setTargetUserProfileUuid(int targetUserProfileUuid) {
+        this.targetUserProfileUuid = targetUserProfileUuid;
     }
 
     @SuppressWarnings("unused")

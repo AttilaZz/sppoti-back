@@ -137,7 +137,7 @@ public class PostController {
 
         } else {
 
-            LOGGER.info("POST-ADD: A SportModel must be defined ");
+            LOGGER.info("POST-ADD: A sport_id must be defined ");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
@@ -253,6 +253,8 @@ public class PostController {
 
             if (!canAdd) throw new PostContentMissingException("At least a game or a post content must be assigned");
             //Save and get the inserted id
+
+            newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUseruuid());
 
             int insertedPostId = postDataService.savePost(newPostToSave).getUuid();
 

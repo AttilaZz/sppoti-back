@@ -4,13 +4,12 @@
 package com.fr.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.entities.Address;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Set;
-import java.util.SortedSet;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
@@ -31,6 +30,9 @@ public class PostRequest {
     private String cover;
 
     private int visibility;
+
+    @JsonProperty("targetUser")
+    private int targetUseruuid;
 
     public int getVisibility() {
         return visibility;
@@ -94,6 +96,14 @@ public class PostRequest {
 
     public void setAddress(Address address) {
         this.address = address;
+    }
+
+    public int getTargetUseruuid() {
+        return targetUseruuid;
+    }
+
+    public void setTargetUseruuid(int targetUseruuid) {
+        this.targetUseruuid = targetUseruuid;
     }
 
     public class Data {
