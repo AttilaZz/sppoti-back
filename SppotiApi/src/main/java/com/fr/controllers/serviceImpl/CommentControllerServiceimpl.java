@@ -10,6 +10,7 @@ import com.fr.entities.Post;
 import com.fr.models.CommentModel;
 import com.fr.models.ContentEditedResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -70,9 +71,7 @@ public class CommentControllerServiceimpl extends AbstractControllerServiceImpl 
     @Override
     public List<CommentModel> getPostCommentsFromLastId(int postId, int page, Long userId) {
 
-        int debut = page * comment_size;
-
-        Pageable pageable = new PageRequest(debut, comment_size);
+        Pageable pageable = new PageRequest(page, comment_size);
 
         List<Comment> lComment = commentRepository.getByPostUuidOrderByDatetimeCreatedDesc(postId, pageable);
 
@@ -83,9 +82,7 @@ public class CommentControllerServiceimpl extends AbstractControllerServiceImpl 
     @Override
     public List<ContentEditedResponse> getAllCommentHistory(int id, int page) {
 
-        int debut = page * comment_size;
-
-        Pageable pageable = new PageRequest(debut, comment_size);
+        Pageable pageable = new PageRequest(page, comment_size);
 
         List<EditHistory> dsHistoryList = editHistoryRepository.getByCommentUuidOrderByDatetimeEditedDesc(id, pageable);
         return fillEditContentResponse(dsHistoryList);

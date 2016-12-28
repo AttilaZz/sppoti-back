@@ -54,10 +54,8 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public List<HeaderData> getPostLikersList(int id, int page) {
 
-        int debut = page * like_size;
 
-
-        Pageable pageable1 = new PageRequest(debut, like_size);
+        Pageable pageable1 = new PageRequest(page, like_size);
 
         List<LikeContent> likersData = likeRepository.getByPostUuidOrderByDatetimeCreated(id, pageable1);
 
@@ -68,10 +66,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public List<HeaderData> getCommentLikersList(int id, int page) {
 
-        int debut = page * like_size;
-
-
-        Pageable pageable1 = new PageRequest(debut, like_size);
+        Pageable pageable1 = new PageRequest(page, like_size);
 
         List<LikeContent> likersData = likeRepository.getByCommentUuidOrderByDatetimeCreated(id, pageable1);
 

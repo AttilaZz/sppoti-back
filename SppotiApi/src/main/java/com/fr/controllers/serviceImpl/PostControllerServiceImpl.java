@@ -87,6 +87,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     @Override
     public Post findPost(int id) {
+
         List<Post> posts = postRepository.getByUuidOrderByDatetimeCreatedDesc(id, null);
 
         if (posts.isEmpty()) return null;
@@ -126,9 +127,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     private List<PostResponse> fillPostResponseFromDbPost(int page, Long userId, int operationType, Post post_param) {
 
-        int debut = page * post_size;
-
-        Pageable pageable = new PageRequest(debut, post_size);
+        Pageable pageable = new PageRequest(page, post_size);
 
         List<Post> dbContent = new ArrayList<>();
 
@@ -305,10 +304,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public List<ContentEditedResponse> getAllPostHistory(int id, int page) {
 
-
-        int debut = page * post_size;
-
-        Pageable pageable = new PageRequest(debut, post_size);
+        Pageable pageable = new PageRequest(page, post_size);
 
         List<EditHistory> postHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(id, pageable);
 
@@ -408,9 +404,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public List<Post> findAllPosts(int uuid, int page) {
 
-        int debut = page * post_size;
-
-        Pageable pageable = new PageRequest(debut, post_size);
+        Pageable pageable = new PageRequest(page, post_size);
 
         return postRepository.getByUserUuidOrderByDatetimeCreatedDesc(uuid, pageable);
     }
