@@ -121,6 +121,7 @@ public class CommentController {
                 Comment c = commentDataService.saveComment(commentToSave);
                 newComment.setId(c.getUuid());
                 newComment.setMyComment(true);
+                newComment.setCreationDate(c.getDatetimeCreated());
                 LOGGER.info("COMMENT: post has been saved");
                 return new ResponseEntity<>(newComment, HttpStatus.CREATED);
             } catch (Exception e) {
