@@ -224,23 +224,25 @@ public class PostResponse {
         return targetUser;
     }
 
-    public void setTargetUser(String firstName, String lastName, String username) {
-        this.targetUser = new TargetUser(firstName, lastName, username);
+    public void setTargetUser(String firstName, String lastName, String username, int id) {
+        this.targetUser = new TargetUser(firstName, lastName, username, id);
     }
 
     public class TargetUser {
         public TargetUser() {
         }
 
+        private int id;
         private String firstName;
         private String lastName;
         private String username;
 
 
-        public TargetUser(String firstName, String lastName, String username) {
+        public TargetUser(String firstName, String lastName, String username, int id) {
             this.firstName = firstName;
             this.lastName = lastName;
             this.username = username;
+            this.id = id;
         }
 
         public String getFirstName() {
@@ -253,6 +255,10 @@ public class PostResponse {
 
         public String getUsername() {
             return username;
+        }
+
+        public int getId() {
+            return id;
         }
     }
 }
