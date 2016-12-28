@@ -11,6 +11,7 @@ import com.fr.entities.Comment;
 import com.fr.entities.Post;
 import com.fr.entities.Sppoti;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -53,6 +54,8 @@ public class PostResponse {
     private String firstName;
     private String lastName;
     private String username;
+
+    private TargetUser targetUser;
 
     private boolean myPost;
 
@@ -215,5 +218,41 @@ public class PostResponse {
 
     public void setComment(List<CommentModel> comment) {
         this.comment = comment;
+    }
+
+    public TargetUser getTargetUser() {
+        return targetUser;
+    }
+
+    public void setTargetUser(String firstName, String lastName, String username) {
+        this.targetUser = new TargetUser(firstName, lastName, username);
+    }
+
+    public class TargetUser {
+        public TargetUser() {
+        }
+
+        private String firstName;
+        private String lastName;
+        private String username;
+
+
+        public TargetUser(String firstName, String lastName, String username) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.username = username;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public String getUsername() {
+            return username;
+        }
     }
 }

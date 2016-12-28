@@ -273,6 +273,28 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             pres.setLastName(owner.getLastName());
             pres.setUsername(owner.getUsername());
 
+            /*
+            Check if post has been posted on a friend profile -- default value for integer is ZERO (UUID can never be a zero)
+             */
+            if (post.getTargetUserProfileUuid() != 0) {
+
+                Users target = userRepository.getByUuid(post.getTargetUserProfileUuid());
+
+                try {
+                    pres.setTargetUser(target.getFirstName(), target.getLastName(), target.getUsername());
+
+                } catch (Exception e) {
+                    if (e instanceof NullPointerException) {
+                        e.printStackTrace();
+                        LOGGER.error("GET-POSTS: Target user UUID is incorrect! -- NOT FOUND");
+                    } else {
+                        e.printStackTrace();
+                        LOGGER.error("GET-POSTS: Target user problem !!");
+                    }
+                }
+            }
+
+            //return all formated posts
             mContentResponse.add(pres);
         }
 
