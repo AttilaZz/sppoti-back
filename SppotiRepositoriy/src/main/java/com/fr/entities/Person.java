@@ -20,8 +20,8 @@ public abstract class Person implements Serializable {
     @Column(unique = true)
     protected int uuid = UUID.randomUUID().hashCode();
 
-    @ElementCollection
-    protected Map<String, String> avatars = new TreeMap<String, String>();
+//    @ElementCollection
+//    protected Map<String, String> avatars = new TreeMap<String, String>();
 
     @Column(nullable = false)
     protected String lastName;
@@ -185,14 +185,6 @@ public abstract class Person implements Serializable {
 
     public void setRelatedSports(Set<Sport> relatedSports) {
         this.relatedSports = relatedSports;
-    }
-
-    public Map<String, String> getAvatars() {
-        return avatars;
-    }
-
-    public void setAvatars(Map<String, String> avatars) {
-        this.avatars = avatars;
     }
 
     public SortedSet<Address> getAddresses() {

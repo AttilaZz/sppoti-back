@@ -126,9 +126,9 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     public void unSelectOldResource(Long userId, int i) {
         Resources resources = resourceRepository.getByUserIdAndTypeAndIsSelectedTrue(userId, i);
         if (resources != null) {
+            resources.setSelected(false);
+            resourceRepository.save(resources);
         }
-        resources.setSelected(false);
-        resourceRepository.save(resources);
     }
 
     @Override
