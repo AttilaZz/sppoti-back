@@ -7,11 +7,13 @@ import com.fr.exceptions.PostContentMissingException;
 import com.fr.models.ContentEditedResponse;
 import com.fr.models.PostRequest;
 import com.fr.models.PostResponse;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,19 +72,33 @@ public class PostController {
     }
 
     @GetMapping(value = "/all/{user_unique_id}/{page}")
-    public ResponseEntity<Object> getAllPosts(@PathVariable int user_unique_id, @PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<Object> getAllPosts(@PathVariable int user_unique_id, @PathVariable int page, HttpServletRequest request, Authentication authentication) {
 
-        List<Post> posts = postDataService.findAllPosts(user_unique_id, page);
+        //if user_unique_id is the connected user
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+        Long connecteduserId = accountUserDetails.getId();
+        List<Post> posts;
+
+        if(postDataService.getUserByUuId(user_unique_id) == null){
+            LOGGER.error("GET-ALL-POSTS: User id is invalid");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        posts = postDataService.findAllPosts(user_unique_id, page);
+
+
+        //if user_unique_id is not the connected user
+
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
-        if (posts.isEmpty()) {
+        if (posts != null && posts.isEmpty()) {
+            LOGGER.error("GET-ALL-POSTS: No content found !");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         }
 
         List<PostResponse> postResponses = new ArrayList<>();
-
 
         for (Post post : posts) {
 //            PostResponse postResponse = new PostResponse(post);
@@ -254,7 +270,7 @@ public class PostController {
             if (!canAdd) throw new PostContentMissingException("At least a game or a post content must be assigned");
             //Save and get the inserted id
 
-            newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUseruuid());
+            newPostToSave.setTargetUserProfileId(newPostReq.getTargetUseruuid());
 
             int insertedPostId = postDataService.savePost(newPostToSave).getUuid();
 

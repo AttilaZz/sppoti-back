@@ -162,6 +162,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return userRepository.getById(id);
     }
 
+    @Override
+    public Users getUserByUuId(int id) {
+        return userRepository.getByUuid(id);
+    }
+
     protected Properties globalAddressConfigProperties() {
         Properties properties = new Properties();
         properties.put("rootAddress", environment.getRequiredProperty("rootAddress"));

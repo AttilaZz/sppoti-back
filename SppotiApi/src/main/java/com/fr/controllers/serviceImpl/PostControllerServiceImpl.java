@@ -14,10 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -275,9 +272,9 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             /*
             Check if post has been posted on a friend profile -- default value for integer is ZERO (UUID can never be a zero)
              */
-            if (post.getTargetUserProfileUuid() != 0) {
+            if (post.getTargetUserProfileId() != 0) {
 
-                Users target = userRepository.getByUuid(post.getTargetUserProfileUuid());
+                Users target = getUserByUuId(post.getTargetUserProfileId());
 
                 try {
                     pres.setTargetUser(target.getFirstName(), target.getLastName(), target.getUsername(), target.getUuid());
@@ -406,7 +403,17 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         Pageable pageable = new PageRequest(page, post_size);
 
-        return postRepository.getByUserUuidOrderByDatetimeCreatedDesc(uuid, pageable);
+        List<Sport> sports = sportRepository.getBySubscribedUsersUuid(uuid);
+
+        Long[] sportIdTemp = new Long[sports.size()];
+
+        int index = 0;
+        for (Sport sport : sports) {
+            sportIdTemp[index] = sport.getId();
+            index++;
+        }
+
+        return postRepository.getAllPosts(Arrays.asList(sportIdTemp), 0, pageable);
     }
 
 }

@@ -19,4 +19,5 @@ public interface AbstractControllerService {
 
     Users getUserById(Long id);
 
+    Users getUserByUuId(int id);
 }

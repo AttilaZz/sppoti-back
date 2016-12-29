@@ -244,7 +244,7 @@ public class AccountController {
     public ResponseEntity<User> connectedUserInfo(Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-        Users targetUser = accountUserDetails.getConnectedUserDetails();
+        Users targetUser = accountService.getUserById(accountUserDetails.getId());
 
 
         return new ResponseEntity<>(fillUserResponse(targetUser), HttpStatus.OK);
@@ -260,6 +260,8 @@ public class AccountController {
         user.setEmail(targetUser.getEmail());
         user.setPhone(targetUser.getTelephone());
         user.setId(targetUser.getUuid());
+
+
 
         List<SportModel> sportModels = new ArrayList<>();
 
