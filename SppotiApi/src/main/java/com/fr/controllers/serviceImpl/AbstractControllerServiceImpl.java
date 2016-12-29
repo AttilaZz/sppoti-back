@@ -224,6 +224,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 cm.setCreationDate(comment.getDatetimeCreated());
             }
 
+            cm.setLikeCount(comment.getLikes().size());
+
             myList.add(cm);
         }
 
