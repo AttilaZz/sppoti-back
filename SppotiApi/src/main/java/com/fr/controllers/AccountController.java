@@ -17,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -262,7 +264,6 @@ public class AccountController {
         user.setId(targetUser.getUuid());
 
 
-
         List<SportModel> sportModels = new ArrayList<>();
 
         for (Sport sport : targetUser.getRelatedSports()) {
@@ -285,11 +286,22 @@ public class AccountController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping("/other/{username}")
-    public ResponseEntity<User> otherUserInfo(@PathVariable String username) {
+    @GetMapping("/other/{username}/**")
+    public ResponseEntity<User> otherUserInfo(@PathVariable("username") String username, HttpServletRequest httpServletRequest) {
+
+//        String path = (String) httpServletRequest.getAttribute(
+//                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+//        AntPathMatcher apm = new AntPathMatcher();
+//        String bestMatchPattern = (String ) httpServletRequest.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+//        String finalPath = apm.extractPathWithinPattern(bestMatchPattern, path);
 
         Users targetUser = accountService.getUserByUsername(username);
 
+        if (targetUser == null) {
+            LOGGER.error("ACCOUNT-OTHER: Username not found");
+            return new ResponseEntity<>(fillUserResponse(targetUser), HttpStatus.BAD_REQUEST);
+
+        }
         return new ResponseEntity<>(fillUserResponse(targetUser), HttpStatus.OK);
 
     }
