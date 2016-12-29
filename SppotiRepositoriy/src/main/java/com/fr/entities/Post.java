@@ -89,7 +89,8 @@ public class Post implements Comparable<Post> {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     private Set<EditHistory> editList;
 
-    private int targetUserProfileId;
+    @Column(name = "target_user")
+    private int targetUserProfileUuid;
 
     public Long getId() {
         return id;
@@ -220,12 +221,12 @@ public class Post implements Comparable<Post> {
         this.addresses = addresses;
     }
 
-    public int getTargetUserProfileId() {
-        return targetUserProfileId;
+    public int getTargetUserProfileUuid() {
+        return targetUserProfileUuid;
     }
 
-    public void setTargetUserProfileId(int targetUserProfileId) {
-        this.targetUserProfileId = targetUserProfileId;
+    public void setTargetUserProfileUuid(int targetUserProfileUuid) {
+        this.targetUserProfileUuid = targetUserProfileUuid;
     }
 
     @SuppressWarnings("unused")

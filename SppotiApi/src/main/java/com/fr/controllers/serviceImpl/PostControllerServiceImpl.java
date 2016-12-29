@@ -12,8 +12,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -272,9 +274,9 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             /*
             Check if post has been posted on a friend profile -- default value for integer is ZERO (UUID can never be a zero)
              */
-            if (post.getTargetUserProfileId() != 0) {
+            if (post.getTargetUserProfileUuid() != 0) {
 
-                Users target = getUserByUuId(post.getTargetUserProfileId());
+                Users target = getUserByUuId(post.getTargetUserProfileUuid());
 
                 try {
                     pres.setTargetUser(target.getFirstName(), target.getLastName(), target.getUsername(), target.getUuid());
@@ -289,6 +291,9 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                     }
                 }
             }
+
+            //set visibility
+            pres.setVisibility(post.getVisibility());
 
             //return all formated posts
             mContentResponse.add(pres);
@@ -399,21 +404,21 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<Post> findAllPosts(int uuid, int page) {
+    public List<Post> findAllPosts(Long userLongId, int userIntId, List visibility, int page) {
 
-        Pageable pageable = new PageRequest(page, post_size);
+        Pageable pageable = new PageRequest(page, post_size, Sort.Direction.DESC, "datetimeCreated");
 
-        List<Sport> sports = sportRepository.getBySubscribedUsersUuid(uuid);
+//        List<Sport> sports = sportRepository.getBySubscribedUsersUuid(uuid);
+//
+//        c
+//
+//        int index = 0;
+//        for (Sport sport : sports) {
+//            sportIdTemp[index] = sport.getId();
+//            index++;
+//        }
 
-        Long[] sportIdTemp = new Long[sports.size()];
-
-        int index = 0;
-        for (Sport sport : sports) {
-            sportIdTemp[index] = sport.getId();
-            index++;
-        }
-
-        return postRepository.getAllPosts(Arrays.asList(sportIdTemp), 0, pageable);
+        return postRepository.getAllPosts(userIntId, userLongId, visibility, pageable);
     }
 
 }

@@ -76,15 +76,30 @@ public class PostController {
 
         //if user_unique_id is the connected user
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-        Long connecteduserId = accountUserDetails.getId();
+        Long connectedUserId = accountUserDetails.getId();
+
         List<Post> posts;
 
-        if(postDataService.getUserByUuId(user_unique_id) == null){
+        Users requestUser = postDataService.getUserByUuId(user_unique_id);
+
+        if (requestUser == null) {
             LOGGER.error("GET-ALL-POSTS: User id is invalid");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        posts = postDataService.findAllPosts(user_unique_id, page);
+        if (connectedUserId.equals(requestUser.getId())) {
+            //get connected user posts - visibility: 0,1,2
+            List visibility = Arrays.asList(0, 1, 2);
+            posts = postDataService.findAllPosts(connectedUserId, user_unique_id, visibility, page);
+        } else if (requestUser.getFriends().contains(requestUser.getId())) {
+            //get friend posts - visibility: 0,1
+            List visibility = Arrays.asList(0, 1);
+            posts = postDataService.findAllPosts(requestUser.getId(), user_unique_id, visibility, page);
+        } else {
+            //get unknown user posts - visibility: 0
+            List visibility = Arrays.asList(0);
+            posts = postDataService.findAllPosts(requestUser.getId(), user_unique_id, visibility, page);
+        }
 
 
         //if user_unique_id is not the connected user
@@ -270,7 +285,8 @@ public class PostController {
             if (!canAdd) throw new PostContentMissingException("At least a game or a post content must be assigned");
             //Save and get the inserted id
 
-            newPostToSave.setTargetUserProfileId(newPostReq.getTargetUseruuid());
+            newPostToSave.setTargetUserProfileUuid(
+                    newPostReq.getTargetUseruuid());
 
             int insertedPostId = postDataService.savePost(newPostToSave).getUuid();
 

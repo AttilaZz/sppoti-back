@@ -33,9 +33,16 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
             throw new ConflictUsernameException("Username already exists");
         } else {
             try {
+
                 Users u = userRepository.save(user);
+
                 Thread.sleep(2000);
-                friendRepository.save(new Friend(u));
+
+                Thread thread = new Thread(() -> {
+                    Friend friend = new Friend(u);
+                    friendRepository.save(friend);
+                });
+                thread.start();
 
             } catch (Exception e) {
                 e.printStackTrace();

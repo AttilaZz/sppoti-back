@@ -32,6 +32,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted() ")
     List<Post> getByVideoIsNotNullOrderByDatetimeCreatedDesc(Pageable pageable);
 
-    @Query("select p from Post p where  p.visibility = :visibility and p.sport.id IN(:sports)")
-    List<Post> getAllPosts(@Param("sports") List userSport, @Param("visibility") int visibility, Pageable pageable);
+    @PostFilter("!filterObject.isDeleted() ")
+    @Query("SELECT p FROM Post p WHERE (p.user.id = :userId OR p.targetUserProfileUuid = :userUuid) AND p.visibility IN (:visibility)")
+    List<Post> getAllPosts(@Param("userUuid") int userIntId, @Param("userId") Long userLongId, @Param("visibility") List visibility, Pageable pageable);
 }
