@@ -51,16 +51,27 @@ public class SearchController {
 
 
         if (userPrefix.isEmpty()) {
-            LOGGER.info("SEARCH-USER: Prefix not valid !");
+            LOGGER.error("SEARCH-USER: Prefix not valid !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        List<Users> foundUsers = null;
+        Pageable pageable = new PageRequest(page, friend_size);
 
-        int debut = page * friend_size;
+        String[] parts = userPrefix.split(" ");
 
-        Pageable pageable = new PageRequest(debut, friend_size);
+        if(parts.length > 2){
+            LOGGER.error("SEARCH-USER: Too many words in your request");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }else if(parts.length == 2){
+            //get users by first name and last name
+            foundUsers = userRepository.getSearchedUsersByFirstNameAndLastName(parts[0], parts[1], pageable);
+        }else{
+            //get users by username, first name and last name
+            foundUsers = userRepository.getSearchedUsers(parts[0], pageable);
 
-        List<Users> foundUsers = userRepository.getSearchedUsers(userPrefix, pageable);
+        }
+
 
         List<User> users = new ArrayList<>();
 
