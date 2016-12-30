@@ -15,7 +15,8 @@ import java.util.List;
 @SuppressWarnings("ALL")
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    Post getByUuid(int postId);
+    @PostFilter("!filterObject.isDeleted() ")
+    List<Post> getByUuid(int postId);
 
     @PostFilter("(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend())) && !filterObject.isDeleted() ")
     List<Post> findAll();

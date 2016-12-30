@@ -50,8 +50,12 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
         if (postEditAddress != null) {
 
             try {
-                Post post = postRepository.getByUuid(postId);
-                post.setAddresses(postEditAddress);
+                List<Post> post = postRepository.getByUuid(postId);
+                if (post == null) {
+                    throw new IllegalArgumentException("Trying to update non existing post");
+                } else {
+                    post.get(0).setAddresses(postEditAddress);
+                }
 
                 postRepository.save(post);
             } catch (Exception e) {
@@ -87,11 +91,14 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public Post findPost(int id) {
 
-        List<Post> posts = postRepository.getByUuidOrderByDatetimeCreatedDesc(id, null);
+        List<Post> posts = postRepository.getByUuid(id);
 
-        if (posts.isEmpty()) return null;
+        if (posts == null || posts.isEmpty()) {
+            return null;
+        } else {
+            return posts.get(0);
+        }
 
-        return posts.get(0);
     }
 
     @Override
@@ -349,7 +356,20 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     public boolean addNotification(Long userId, int postId, String content) {
 
         Users connectedUser = userRepository.getById(userId);
-        Post concernedePostTag = postRepository.getByUuid(postId);
+        Post concernedePostTag;
+
+        try {
+            List<Post> posts = postRepository.getByUuid(postId);
+
+            if (posts == null) {
+                throw new IllegalArgumentException("Incorrect post id passed in parameters");
+            } else {
+                concernedePostTag = posts.get(0);
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
 
         /**
          * All words starting with DOLLAR, followed by Letter or accented Letter

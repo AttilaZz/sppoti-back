@@ -1,6 +1,7 @@
 package com.fr.controllers;
 
 import com.fr.controllers.service.CommentControllerService;
+import com.fr.controllers.service.PostControllerService;
 import com.fr.entities.Comment;
 import com.fr.entities.EditHistory;
 import com.fr.entities.Post;
@@ -27,6 +28,12 @@ import java.util.List;
 public class CommentController {
 
     private CommentControllerService commentDataService;
+    private PostControllerService postControllerService;
+
+    @Autowired
+    public void setPostControllerService(PostControllerService postControllerService) {
+        this.postControllerService = postControllerService;
+    }
 
     @Autowired
     public void setCommentDataService(CommentControllerService commentDataService) {
@@ -101,7 +108,7 @@ public class CommentController {
             }
 
             // get post postId to link the comment
-            Post p = commentDataService.findPostById(postId);
+            Post p = postControllerService.findPost(postId);
 
             if (p != null) {
                 commentToSave.setPost(p);

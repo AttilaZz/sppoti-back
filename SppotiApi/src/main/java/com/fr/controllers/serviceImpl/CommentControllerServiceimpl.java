@@ -51,11 +51,6 @@ public class CommentControllerServiceimpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public Post findPostById(int id) {
-        return postRepository.getByUuid(id);
-    }
-
-    @Override
     public boolean updateComment(EditHistory commentToEdit) {
 
         try {

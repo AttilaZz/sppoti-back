@@ -285,8 +285,7 @@ public class PostController {
             if (!canAdd) throw new PostContentMissingException("At least a game or a post content must be assigned");
             //Save and get the inserted id
 
-            newPostToSave.setTargetUserProfileUuid(
-                    newPostReq.getTargetUseruuid());
+            newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUseruuid());
 
             int insertedPostId = postDataService.savePost(newPostToSave).getUuid();
 

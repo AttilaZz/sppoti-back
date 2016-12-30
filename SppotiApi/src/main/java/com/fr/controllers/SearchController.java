@@ -60,7 +60,7 @@ public class SearchController {
 
         Pageable pageable = new PageRequest(debut, friend_size);
 
-        List<Users> foundUsers = userRepository.getByUsernameContaining(userPrefix, pageable);
+        List<Users> foundUsers = userRepository.getSearchedUsers(userPrefix, pageable);
 
         List<User> users = new ArrayList<>();
 

@@ -29,6 +29,11 @@ public class Users extends Person implements Serializable {
     @Column(nullable = false)
     private String password;
 
+    private boolean deleted = false;
+
+    private boolean confirmed = false;
+
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("datetimeCreated DESC")
     private SortedSet<Post> userPosts = new TreeSet<Post>();
@@ -60,6 +65,22 @@ public class Users extends Person implements Serializable {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Resources> ressources;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
+    }
 
     public Users() {
     }

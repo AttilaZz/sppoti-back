@@ -41,9 +41,6 @@ public abstract class Person implements Serializable {
     @Column(nullable = false, unique = true)
     protected String email;
 
-    @Column(nullable = false)
-    protected boolean isConfirmed = false;
-
     @Column(nullable = false, unique = true)
     protected String username;
 
@@ -137,14 +134,6 @@ public abstract class Person implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public boolean isConfirmed() {
-        return isConfirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-        isConfirmed = confirmed;
     }
 
     public String getUsername() {

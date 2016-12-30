@@ -3,6 +3,9 @@ package com.fr.repositories;
 import com.fr.entities.Users;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -22,7 +25,12 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     Users getById(Long id);
 
+    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed")
     List<Users> getByUsernameContaining(String userPrefix, Pageable pageable);
 
     Users getByUuid(int id);
+
+    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
+    @Query("SELECT u from Users u WHERE u.username LIKE CONCAT('%',:prefix,'%') OR u.firstName LIKE CONCAT('%',:prefix,'%') OR u.lastName LIKE CONCAT('%',:prefix,'%') ")
+    List<Users> getSearchedUsers(@Param("prefix") String userPrefix, Pageable pageable);
 }
