@@ -28,6 +28,10 @@ public class User {
     private String avatar;
     private int coverType;
 
+    @SerializedName("friend_id")
+    @JsonProperty("friend_id")
+    private int friendUuid;
+
     private int id;
 
     public String getUsername() {
@@ -124,5 +128,13 @@ public class User {
 
     public void setSportModels(List<SportModel> sportModels) {
         this.sportModels = sportModels;
+    }
+
+    public int getFriendUuid() {
+        return friendUuid;
+    }
+
+    public void setFriendUuid(int friendUuid) {
+        this.friendUuid = friendUuid;
     }
 }

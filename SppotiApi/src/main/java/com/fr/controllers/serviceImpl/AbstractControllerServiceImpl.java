@@ -296,7 +296,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 user.setCoverType(resource2.getTypeExtension());
             }
 
-
         } else {
             // size is = 1 -> cover or avatar
             Resources resource = resources1.get(0);

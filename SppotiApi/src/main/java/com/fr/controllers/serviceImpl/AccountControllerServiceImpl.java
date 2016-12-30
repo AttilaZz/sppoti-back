@@ -37,13 +37,8 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
 
                 Users u = userRepository.save(user);
 
-                Thread.sleep(2000);
-
-                Thread thread = new Thread(() -> {
-                    Friend friend = new Friend(u);
-                    friendRepository.save(friend);
-                });
-                thread.start();
+//                Friend friend = new Friend(u);
+//                friendRepository.save(friend);
 
             } catch (Exception e) {
                 e.printStackTrace();

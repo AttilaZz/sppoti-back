@@ -20,6 +20,9 @@ public class Friend extends Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE)
     protected Long id;
 
+    public Friend() {
+    }
+
     public Friend(Users user) {
         super(user);
     }
