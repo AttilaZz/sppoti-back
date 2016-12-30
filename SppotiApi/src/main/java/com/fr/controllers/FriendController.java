@@ -2,6 +2,7 @@ package com.fr.controllers;
 
 import com.fr.entities.Friend;
 import com.fr.entities.Users;
+import com.fr.models.FriendStatus;
 import com.fr.models.User;
 import com.fr.repositories.FriendRepository;
 import com.fr.repositories.UserRepository;
@@ -70,7 +71,7 @@ public class FriendController {
      * @return add friend personnal information
      */
     @PostMapping
-    public ResponseEntity<Friend> getAllPostComments(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<Friend> addFriend(@RequestBody User user, HttpServletRequest request) {
 
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
@@ -81,70 +82,147 @@ public class FriendController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        if(user.getFriendUuid() == connected_user.getUuid()){
+        Users targetFriend = userRepository.getByUuid(user.getFriendUuid());
+        if (targetFriend == null) {
+
+            LOGGER.error("ADD-FRIEND: Friend id unknown");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        /*
+        friend with my self
+         */
+        if (connected_user.getId().equals(targetFriend.getId())) {
             LOGGER.error("ADD-FRIEND: FriendShip denied - choose another person !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         /*
-        check if id is correct and has an entry in users table
+        Check if friendship already exist
          */
-        Users userAsFriend = userRepository.getByUuid(user.getFriendUuid());
-        if (userAsFriend == null) {
-            LOGGER.error("ADD-FRIEND: Friend id doesn't exist");
+
+        Set<Friend> friendsTemp = connected_user.getFriends();
+        for (Friend friend : friendsTemp) {
+            if (friend.getUuid() == user.getFriendUuid()) {
+                LOGGER.error("ADD-FRIEND: FriendShip already exist - choose another person !");
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        /*
+        save
+         */
+
+        Set<Friend> friends = new HashSet<>();
+
+        Friend friend = new Friend(targetFriend);
+        friend.setUsers(connected_user);
+        friends.add(friend);
+        connected_user.setFriends(friends);
+
+        try {
+            //save new friend
+            userRepository.save(connected_user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("ADD-FRIEND: Problem when saving friend");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+        LOGGER.info("ADD-FRIEND: Friend has been saved");
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<Friend> updateFriend(@RequestBody User user, HttpServletRequest request) {
+
+        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+
+        if (user == null) {
+            LOGGER.error("UPDATE-FRIEND: No data found in the body");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         /*
-        check if a friend with the id already exist
+        check if the given friend id refers to a friend
          */
-        Set<Users> userss = new HashSet<>();
-        Set<Friend> friends = new HashSet<>();
-        Friend existingFriend = friendRepository.getByUuid(user.getFriendUuid());
+        Friend targetFriend = friendRepository.getByUuid(user.getFriendUuid());
+        if (targetFriend == null) {
+            LOGGER.error("UPDATE-FRIEND: No friend with the givven id");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        if (existingFriend == null) {
+        /*
+        Check if the target friend is friend with connected user
+         */
+        if (userRepository.getByIdAndFriendsUuid(userId, user.getFriendUuid()) == null) {
+            LOGGER.error("ADD-FRIEND: FriendShip doesn't exist !!");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-            Friend friend = new Friend(userAsFriend);
-            friends.add(friend);
-            connected_user.setFriends(friends);
+        /*
+        Check if setted status is correct
+         */
+        if (user.getFriendStatus() != FriendStatus.PENDING.getValue()
+                && user.getFriendStatus() != FriendStatus.CONFIRMED.getValue()
+                && user.getFriendStatus() != FriendStatus.REFUSED.getValue()) {
 
-            userss.add(connected_user);
-            friend.setUsers(userss);
-
-
-            try {
-                //save new friend
-                friendRepository.save(friend);
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error("ADD-FRIEND: Problem when saving friend");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-        } else {
-
-            //check if friendship already exist
-            if (userRepository.getByIdAndFriendsUuid(userId, user.getFriendUuid()) != null) {
-                LOGGER.error("ADD-FRIEND: FriendShip already exist !!");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-            userss.add(connected_user);
-            existingFriend.setUsers(userss);
-
-            try {
-                //update existing friend
-                friendRepository.save(existingFriend);
-            } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error("ADD-FRIEND: Problem when saving friend");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+            LOGGER.error("UPDATE-FRIEND: Status are incorrect ! (0 - 1 - 2)");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
 
-        LOGGER.error("ADD-FRIEND: Friend has been saved");
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        /*
+        Prepare update
+         */
+        for (FriendStatus friendStatus : FriendStatus.values()) {
+            if (friendStatus.getValue() == user.getFriendStatus()) {
+                targetFriend.setStatus(friendStatus.name());
+            }
+        }
+
+        /*
+        Update
+         */
+        try {
+            friendRepository.save(targetFriend);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("UPDATE-FRIEND: Problem updating friend status");
+        }
+
+        LOGGER.info("UPDATE-FRIEND: Friend updated");
+        return new ResponseEntity<>(HttpStatus.OK);
+
+    }
+
+    @DeleteMapping("/{friend_id}")
+    public ResponseEntity<Friend> deleteFriend(@PathVariable("friend_id") int friendId, HttpServletRequest request) {
+
+        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+
+         /*
+        Check if the target friend is friend with connected user
+         */
+        if (userRepository.getByIdAndFriendsUuid(userId, friendId) == null) {
+            LOGGER.error("ADD-FRIEND: FriendShip doesn't exist !!");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Friend friend = friendRepository.getByUuid(friendId);
+
+        try {
+            friendRepository.delete(friend);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("DELETE-FRIEND: Problem deleting friend");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
+        LOGGER.error("DELETE-FRIEND: Friend deleted");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

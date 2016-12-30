@@ -5,6 +5,15 @@ package com.fr.models;
  */
 public enum FriendStatus {
 
-    PENDING, CONFIRMED, REFUSED;
+    PENDING(0), CONFIRMED(1), REFUSED(2);
 
+    private int status;
+
+    FriendStatus(int status) {
+        this.status = status;
+    }
+
+    public int getValue(){
+        return this.status;
+    }
 }

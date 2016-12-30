@@ -34,7 +34,7 @@ public class Sport {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "relatedSports")
     @JsonIgnore
-    private Set<Person> subscribedUsers;
+    private Set<Users> subscribedUsers;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport")
     @JsonIgnore
@@ -96,11 +96,11 @@ public class Sport {
         this.post = post;
     }
 
-    public Set<Person> getSubscribedUsers() {
+    public Set<Users> getSubscribedUsers() {
         return subscribedUsers;
     }
 
-    public void setSubscribedUsers(Set<Person> subscribedUsers) {
+    public void setSubscribedUsers(Set<Users> subscribedUsers) {
         this.subscribedUsers = subscribedUsers;
     }
 

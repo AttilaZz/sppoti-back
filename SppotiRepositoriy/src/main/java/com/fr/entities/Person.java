@@ -44,25 +44,6 @@ public abstract class Person implements Serializable {
     @Column(nullable = false, unique = true)
     protected String username;
 
-    @Column(name = "job")
-    protected String job;
-
-    @Column(name = "description")
-    protected String description;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_id", nullable = false)
-    protected Set<Roles> userRoles;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "sport_id", nullable = false)
-    protected Set<Sport> relatedSports;
-
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
-    @OrderBy("dateTime DESC")
-    protected SortedSet<Address> addresses;
-
     protected Person() {
         super();
     }
@@ -75,9 +56,6 @@ public abstract class Person implements Serializable {
         this.telephone = user.getTelephone();
         this.email = user.getEmail();
         this.username = user.getUsername();
-        this.job = user.getJob();
-        this.description = user.getDescription();
-        this.uuid = user.getUuid();
     }
 
     public Long getId() {
@@ -142,46 +120,6 @@ public abstract class Person implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getJob() {
-        return job;
-    }
-
-    public void setJob(String job) {
-        this.job = job;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Set<Roles> getUserRoles() {
-        return userRoles;
-    }
-
-    public void setUserRoles(Set<Roles> userRoles) {
-        this.userRoles = userRoles;
-    }
-
-    public Set<Sport> getRelatedSports() {
-        return relatedSports;
-    }
-
-    public void setRelatedSports(Set<Sport> relatedSports) {
-        this.relatedSports = relatedSports;
-    }
-
-    public SortedSet<Address> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(SortedSet<Address> addresses) {
-        this.addresses = addresses;
     }
 
     public int getUuid() {

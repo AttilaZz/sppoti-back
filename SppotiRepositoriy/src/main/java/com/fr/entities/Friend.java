@@ -6,7 +6,6 @@ import com.fr.models.FriendStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * Created by djenanewail on 12/13/16.
@@ -19,6 +18,11 @@ public class Friend extends Person implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     protected Long id;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private Users users;
 
     public Friend() {
     }
@@ -39,23 +43,19 @@ public class Friend extends Person implements Serializable {
 
     private String status = FriendStatus.PENDING.name();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "friends")
-    @JsonIgnore
-    private Set<Users> users;
-
-    public Set<Users> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<Users> users) {
-        this.users = users;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
     }
 }

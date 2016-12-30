@@ -279,33 +279,36 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         List<Resources> resources1 = new ArrayList<>();
         resources1.addAll(resources);
 
-        if (resources1.size() == 2) {
-            //cover and avatar found
-            Resources resource1 = resources1.get(0);
-            Resources resource2 = resources1.get(1);
+        if (!resources1.isEmpty()) {
+            if (resources1.size() == 2) {
+                //cover and avatar found
+                Resources resource1 = resources1.get(0);
+                Resources resource2 = resources1.get(1);
 
-            if (resource1.getType() == 1) {//acatar
-                user.setAvatar(resource1.getUrl());
+                if (resource1.getType() == 1) {//acatar
+                    user.setAvatar(resource1.getUrl());
 
-                user.setCover(resource2.getUrl());
-                user.setCoverType(resource2.getTypeExtension());
+                    user.setCover(resource2.getUrl());
+                    user.setCoverType(resource2.getTypeExtension());
+                } else {
+                    user.setAvatar(resource2.getUrl());
+
+                    user.setCover(resource2.getUrl());
+                    user.setCoverType(resource2.getTypeExtension());
+                }
+
             } else {
-                user.setAvatar(resource2.getUrl());
-
-                user.setCover(resource2.getUrl());
-                user.setCoverType(resource2.getTypeExtension());
-            }
-
-        } else {
-            // size is = 1 -> cover or avatar
-            Resources resource = resources1.get(0);
-            if (resource.getType() == 1) {//acatar
-                user.setAvatar(resource.getUrl());
-            } else {
-                user.setCover(resource.getUrl());
-                user.setCoverType(resource.getTypeExtension());
+                // size is = 1 -> cover or avatar
+                Resources resource = resources1.get(0);
+                if (resource.getType() == 1) {//acatar
+                    user.setAvatar(resource.getUrl());
+                } else {
+                    user.setCover(resource.getUrl());
+                    user.setCoverType(resource.getTypeExtension());
+                }
             }
         }
+
 
         /*
         End resource manager

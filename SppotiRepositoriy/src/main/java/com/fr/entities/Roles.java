@@ -31,7 +31,7 @@ public class Roles {
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "userRoles", cascade = CascadeType.ALL)
-    private Set<Person> roles;
+    private Set<Users> roles;
 
     public Roles() {
         super();
@@ -62,11 +62,11 @@ public class Roles {
         this.name = name;
     }
 
-    public Set<Person> getRoles() {
+    public Set<Users> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Person> roles) {
+    public void setRoles(Set<Users> roles) {
         this.roles = roles;
     }
 }

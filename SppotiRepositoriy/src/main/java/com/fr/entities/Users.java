@@ -35,6 +35,11 @@ public class Users extends Person implements Serializable {
 
     private boolean confirmed = false;
 
+    @Column
+    private String job;
+
+    @Column
+    private String description;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("datetimeCreated DESC")
@@ -46,8 +51,7 @@ public class Users extends Person implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userMessage")
     private Set<Messages> userMessages;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "friend_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
     private Set<Friend> friends;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
@@ -68,6 +72,18 @@ public class Users extends Person implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     @Where(clause = "is_selected='1'")
     private Set<Resources> ressources;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Set<Roles> userRoles;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "sport_id", nullable = false)
+    private Set<Sport> relatedSports;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
+    @OrderBy("dateTime DESC")
+    protected SortedSet<Address> addresses;
 
     public boolean isDeleted() {
         return deleted;
@@ -189,5 +205,43 @@ public class Users extends Person implements Serializable {
         this.password = password;
     }
 
+    public String getJob() {
+        return job;
+    }
 
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<Roles> getUserRoles() {
+        return userRoles;
+    }
+
+    public void setUserRoles(Set<Roles> userRoles) {
+        this.userRoles = userRoles;
+    }
+
+    public Set<Sport> getRelatedSports() {
+        return relatedSports;
+    }
+
+    public void setRelatedSports(Set<Sport> relatedSports) {
+        this.relatedSports = relatedSports;
+    }
+
+    public SortedSet<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(SortedSet<Address> addresses) {
+        this.addresses = addresses;
+    }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by djenanewail on 12/16/16.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class User {
 
     private String firstName;
@@ -31,6 +31,9 @@ public class User {
     @SerializedName("friend_id")
     @JsonProperty("friend_id")
     private int friendUuid;
+    @SerializedName("friend_status")
+    @JsonProperty("friend_status")
+    private int friendStatus;
 
     private int id;
 
@@ -136,5 +139,13 @@ public class User {
 
     public void setFriendUuid(int friendUuid) {
         this.friendUuid = friendUuid;
+    }
+
+    public int getFriendStatus() {
+        return friendStatus;
+    }
+
+    public void setFriendStatus(int friendStatus) {
+        this.friendStatus = friendStatus;
     }
 }
