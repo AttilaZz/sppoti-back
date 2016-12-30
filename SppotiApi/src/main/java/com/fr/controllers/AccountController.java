@@ -1,7 +1,9 @@
 package com.fr.controllers;
 
+import com.fr.controllers.service.AccountControllerService;
 import com.fr.controllers.serviceImpl.AccountControllerServiceImpl;
 import com.fr.entities.*;
+import com.fr.enums.CoverType;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictPhoneException;
 import com.fr.exceptions.ConflictUsernameException;
@@ -14,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,12 +34,12 @@ import java.util.*;
  */
 @RestController
 @RequestMapping(value = "/account")
-public class AccountController {
+public class AccountController{
 
     private Logger LOGGER = Logger.getLogger(AccountController.class);
     private static final String ATT_USER_ID = "USER_ID";
 
-    private AccountControllerServiceImpl accountService;
+    private AccountControllerService accountService;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -45,7 +48,7 @@ public class AccountController {
     }
 
     @Autowired
-    public void setAccountService(AccountControllerServiceImpl accountService) {
+    public void setAccountService(AccountControllerService accountService) {
         this.accountService = accountService;
     }
 
@@ -186,23 +189,25 @@ public class AccountController {
         //detect which element uwer want to update
         Resources resource = new Resources();
 
+        boolean update = false;
 
-        if ((user.getAvatar() != null && !user.getAvatar().isEmpty()) || (user.getCover() != null && !user.getCover().isEmpty())) {
+        if ((user.getAvatar() != null && !user.getAvatar().isEmpty()) || (user.getCover() != null && !user.getCover().isEmpty() && user.getCoverType() != 0)) {
 
             resource.setSelected(true);
 
             if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
                 resource.setUrl(user.getAvatar());
                 resource.setType(1);
+                resource.setTypeExtension(1);
                 accountService.unSelectOldResource(userId, 1);
-            } else if (user.getCover() != null && !user.getCover().isEmpty() && user.getCoverType() != null) {
+                update = true;
+            } else if (user.getCover() != null && !user.getCover().isEmpty() && (CoverType.IMAGE.type() == user.getCoverType() || CoverType.VIDEO.type() == user.getCoverType())) {
                 resource.setUrl(user.getCover());
                 resource.setType(2);
+                resource.setTypeExtension(user.getCoverType());
                 accountService.unSelectOldResource(userId, 2);
+                update = true;
             }
-
-            //TODO: Deselect the old resource
-
 
             resource.setUser(connected_user);
             connected_user.getRessources().add(resource);
@@ -210,34 +215,46 @@ public class AccountController {
         } else {
             if (user.getFirstName() != null && !user.getFirstName().isEmpty()) {
                 connected_user.setFirstName(user.getFirstName());
+                update = true;
             }
             if (user.getLastName() != null && !user.getLastName().isEmpty()) {
                 connected_user.setLastName(user.getLastName());
+                update = true;
             }
             if (user.getAddress() != null && !user.getAddress().isEmpty()) {
                 connected_user.getAddresses().add(new Address(user.getAddress()));
+                update = true;
             }
             if (user.getUsername() != null && !user.getUsername().isEmpty()) {
                 connected_user.setUsername(user.getUsername());
+                update = true;
             }
             if (user.getPhone() != null && !user.getPhone().isEmpty()) {
                 connected_user.setTelephone(user.getPhone());
+                update = true;
             }
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
                 String encodedPassword = passwordEncoder.encode(user.getPassword());
                 connected_user.setPassword(user.getPassword());
+                update = true;
             }
             //TODO: Update sports
         }
 
-        if (accountService.updateUser(connected_user)) {
-            LOGGER.info("USER-UPDATE: User has been updated!");
-            return new ResponseEntity<>(user, HttpStatus.OK);
+        if(update){
+            if (accountService.updateUser(connected_user)) {
+                LOGGER.info("USER-UPDATE: User has been updated!");
+                return new ResponseEntity<>(user, HttpStatus.OK);
 
-        } else {
-            LOGGER.error("USER-UPDATE: ERROR updating user");
+            } else {
+                LOGGER.error("USER-UPDATE: ERROR updating user");
+                return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+            }
+        }else{
+            LOGGER.error("USER-UPDATE: Nothing to update OR missigin parameter");
             return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
         }
+
     }
 
 
@@ -249,41 +266,11 @@ public class AccountController {
         Users targetUser = accountService.getUserById(accountUserDetails.getId());
 
 
-        return new ResponseEntity<>(fillUserResponse(targetUser), HttpStatus.OK);
+        return new ResponseEntity<>(accountService.fillUserResponse(targetUser), HttpStatus.OK);
 
     }
 
-    private User fillUserResponse(Users targetUser) {
 
-        User user = new User();
-        user.setLastName(targetUser.getLastName());
-        user.setFirstName(targetUser.getFirstName());
-        user.setUsername(targetUser.getUsername());
-        user.setEmail(targetUser.getEmail());
-        user.setPhone(targetUser.getTelephone());
-        user.setId(targetUser.getUuid());
-
-
-        List<SportModel> sportModels = new ArrayList<>();
-
-        for (Sport sport : targetUser.getRelatedSports()) {
-            SportModel sportModel = new SportModel();
-            sportModel.setId(sport.getId());
-            sportModel.setName(sport.getName());
-
-            sportModels.add(sportModel);
-        }
-
-        user.setSportModels(sportModels);
-
-        try {
-            user.setAddress(targetUser.getAddresses().first().getAddress());
-        } catch (Exception e) {
-            LOGGER.warn("User has no address yet !");
-        }
-
-        return user;
-    }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/other/{username}/**")
@@ -299,10 +286,10 @@ public class AccountController {
 
         if (targetUser == null) {
             LOGGER.error("ACCOUNT-OTHER: Username not found");
-            return new ResponseEntity<>(fillUserResponse(targetUser), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(accountService.fillUserResponse(targetUser), HttpStatus.BAD_REQUEST);
 
         }
-        return new ResponseEntity<>(fillUserResponse(targetUser), HttpStatus.OK);
+        return new ResponseEntity<>(accountService.fillUserResponse(targetUser), HttpStatus.OK);
 
     }
 }

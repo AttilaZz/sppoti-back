@@ -12,7 +12,7 @@ public enum CoverType {
 
     private int type;
 
-    private CoverType(int type) {
+    CoverType(int type) {
         this.type = type;
     }
 

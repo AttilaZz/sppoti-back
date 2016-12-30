@@ -9,6 +9,8 @@ import com.fr.entities.*;
 import com.fr.mail.ApplicationMailer;
 import com.fr.models.CommentModel;
 import com.fr.models.ContentEditedResponse;
+import com.fr.models.SportModel;
+import com.fr.models.User;
 import com.fr.repositories.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 @Component("abstractService")
 public abstract class AbstractControllerServiceImpl implements AbstractControllerService {
@@ -256,6 +259,78 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
         return false;
 
+    }
+
+    protected User fillUserResponse(Users targetUser) {
+
+        User user = new User();
+        user.setLastName(targetUser.getLastName());
+        user.setFirstName(targetUser.getFirstName());
+        user.setUsername(targetUser.getUsername());
+        user.setEmail(targetUser.getEmail());
+        user.setPhone(targetUser.getTelephone());
+        user.setId(targetUser.getUuid());
+
+        /*
+        Manage resources
+         */
+        Set<Resources> resources = targetUser.getRessources();
+
+        List<Resources> resources1 = new ArrayList<>();
+        resources1.addAll(resources);
+
+        if (resources1.size() == 2) {
+            //cover and avatar found
+            Resources resource1 = resources1.get(0);
+            Resources resource2 = resources1.get(1);
+
+            if (resource1.getType() == 1) {//acatar
+                user.setAvatar(resource1.getUrl());
+
+                user.setCover(resource2.getUrl());
+                user.setCoverType(resource2.getTypeExtension());
+            } else {
+                user.setAvatar(resource2.getUrl());
+
+                user.setCover(resource2.getUrl());
+                user.setCoverType(resource2.getTypeExtension());
+            }
+
+
+        } else {
+            // size is = 1 -> cover or avatar
+            Resources resource = resources1.get(0);
+            if (resource.getType() == 1) {//acatar
+                user.setAvatar(resource.getUrl());
+            } else {
+                user.setCover(resource.getUrl());
+                user.setCoverType(resource.getTypeExtension());
+            }
+        }
+
+        /*
+        End resource manager
+         */
+
+        List<SportModel> sportModels = new ArrayList<>();
+
+        for (Sport sport : targetUser.getRelatedSports()) {
+            SportModel sportModel = new SportModel();
+            sportModel.setId(sport.getId());
+            sportModel.setName(sport.getName());
+
+            sportModels.add(sportModel);
+        }
+
+        user.setSportModels(sportModels);
+
+        try {
+            user.setAddress(targetUser.getAddresses().first().getAddress());
+        } catch (Exception e) {
+            LOGGER.warn("User has no address yet !");
+        }
+
+        return user;
     }
 
 }

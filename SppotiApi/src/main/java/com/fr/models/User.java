@@ -26,7 +26,7 @@ public class User {
 
     private String cover;
     private String avatar;
-    private String coverType;
+    private int coverType;
 
     private int id;
 
@@ -110,11 +110,11 @@ public class User {
         this.password = password;
     }
 
-    public String getCoverType() {
+    public int getCoverType() {
         return coverType;
     }
 
-    public void setCoverType(String coverType) {
+    public void setCoverType(int coverType) {
         this.coverType = coverType;
     }
 

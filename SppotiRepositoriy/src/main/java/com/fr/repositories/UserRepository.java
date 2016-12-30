@@ -25,9 +25,6 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     Users getById(Long id);
 
-    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed")
-    List<Users> getByUsernameContaining(String userPrefix, Pageable pageable);
-
     Users getByUuid(int id);
 
     @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")

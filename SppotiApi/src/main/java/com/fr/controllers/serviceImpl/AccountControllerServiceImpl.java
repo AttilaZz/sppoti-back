@@ -5,6 +5,7 @@ import com.fr.entities.*;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;
 import com.fr.models.SignUpRequest;
+import com.fr.models.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -141,5 +142,10 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     @Override
     public Users getUserByUsername(String username) {
         return userRepository.getByUsername(username);
+    }
+
+    @Override
+    public User fillUserResponse(Users targetUser) {
+        return super.fillUserResponse(targetUser);
     }
 }

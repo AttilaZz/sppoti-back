@@ -1,5 +1,6 @@
 package com.fr.controllers;
 
+import com.fr.controllers.service.AccountControllerService;
 import com.fr.entities.Users;
 import com.fr.models.User;
 import com.fr.repositories.UserRepository;
@@ -33,6 +34,13 @@ public class SearchController {
 
     private UserRepository userRepository;
 
+    private AccountControllerService accountControllerService;
+
+    @Autowired
+    public void setAccountControllerService(AccountControllerService accountControllerService) {
+        this.accountControllerService = accountControllerService;
+    }
+
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -60,13 +68,13 @@ public class SearchController {
 
         String[] parts = userPrefix.split(" ");
 
-        if(parts.length > 2){
+        if (parts.length > 2) {
             LOGGER.error("SEARCH-USER: Too many words in your request");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }else if(parts.length == 2){
+        } else if (parts.length == 2) {
             //get users by first name and last name
             foundUsers = userRepository.getSearchedUsersByFirstNameAndLastName(parts[0], parts[1], pageable);
-        }else{
+        } else {
             //get users by username, first name and last name
             foundUsers = userRepository.getSearchedUsers(parts[0], pageable);
 
@@ -75,14 +83,9 @@ public class SearchController {
 
         List<User> users = new ArrayList<>();
 
-        for (Users u : foundUsers) {
-            User user = new User();
-            user.setId(u.getUuid());
-            user.setUsername(u.getUsername());
-            user.setFirstName(u.getFirstName());
-            user.setLastName(u.getLastName());
+        for (Users users1 : foundUsers) {
 
-            users.add(user);
+            users.add(accountControllerService.fillUserResponse(users1));
         }
 
         LOGGER.info("PROFILE SEARCH-USER: Users has been returned !");

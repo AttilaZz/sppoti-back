@@ -2,17 +2,11 @@ package com.fr.entities;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.hibernate.annotations.Where;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -29,14 +23,17 @@ public class Resources {
     @GeneratedValue
     @Column(name = "id")
     private Long id;
-
     @Column(nullable = false)
     private String url;
-
+    @Column
     private String description;
+    @Column
     private Integer type; // 1: avatar, 2: cover, 3: document
+    @Column
     private Integer typeExtension; // 1: image, 2: vidéo, 3: pdf, word ...
+    @Column
     private String dateTime = new Date().toString();
+    @Column
     private boolean isSelected = false;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -3,6 +3,8 @@ package com.fr.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import org.hibernate.annotations.Where;
+import org.springframework.security.access.prepost.PostFilter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -64,6 +66,7 @@ public class Users extends Person implements Serializable {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    @Where(clause = "is_selected='1'")
     private Set<Resources> ressources;
 
     public boolean isDeleted() {
