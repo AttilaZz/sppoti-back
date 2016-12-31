@@ -35,5 +35,4 @@ public interface UserRepository extends JpaRepository<Users, Long> {
     @Query("SELECT u from Users u WHERE (u.firstName LIKE CONCAT('%',:part1,'%') AND u.lastName LIKE CONCAT('%',:part2,'%')) OR (u.firstName LIKE CONCAT('%',:part2,'%') AND u.lastName LIKE CONCAT('%',:part1,'%')) ")
     List<Users> getSearchedUsersByFirstNameAndLastName(@Param("part1") String part1, @Param("part2") String part2, Pageable pageable);
 
-    Users getByIdAndFriendsUuid(Long userId, int friendUuid);
 }

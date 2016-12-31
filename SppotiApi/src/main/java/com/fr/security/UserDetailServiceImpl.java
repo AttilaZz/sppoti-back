@@ -2,7 +2,6 @@ package com.fr.security;
 
 import com.fr.aop.TraceControllers;
 import com.fr.controllers.serviceImpl.AbstractControllerServiceImpl;
-import com.fr.entities.Person;
 import com.fr.entities.Users;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**

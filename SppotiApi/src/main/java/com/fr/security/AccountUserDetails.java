@@ -1,17 +1,13 @@
 package com.fr.security;
 
 import com.fr.aop.TraceAuthentification;
-import com.fr.entities.Friend;
-import com.fr.entities.Person;
 import com.fr.entities.Roles;
 import com.fr.entities.Users;
-import com.fr.repositories.FriendRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -23,13 +19,6 @@ public class AccountUserDetails implements MyUserDetails {
     private final Users account;
 
     private static Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
-
-    private FriendRepository friendRepository;
-
-    @Autowired
-    public void setFriendRepository(FriendRepository friendRepository) {
-        this.friendRepository = friendRepository;
-    }
 
     public AccountUserDetails(Users account) {
         this.account = account;

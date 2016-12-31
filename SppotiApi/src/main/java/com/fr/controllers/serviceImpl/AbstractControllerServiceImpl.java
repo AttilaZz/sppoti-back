@@ -35,7 +35,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected RoleRepository roleRepository;
     protected PostRepository postRepository;
     protected NotificationRepository notificationRepository;
-    protected FriendRepository friendRepository;
     protected EditHistoryRepository editHistoryRepository;
     protected LikeRepository likeRepository;
     protected ResourceRepository resourceRepository;
@@ -59,11 +58,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     @Autowired
     public void setEditHistoryRepository(EditHistoryRepository editHistoryRepository) {
         this.editHistoryRepository = editHistoryRepository;
-    }
-
-    @Autowired
-    public void setFriendRepository(FriendRepository friendRepository) {
-        this.friendRepository = friendRepository;
     }
 
     @Autowired

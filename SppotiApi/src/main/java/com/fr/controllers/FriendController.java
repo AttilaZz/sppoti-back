@@ -1,10 +1,12 @@
 package com.fr.controllers;
 
-import com.fr.entities.Friend;
+import com.fr.controllers.service.AccountControllerService;
+import com.fr.entities.FriendShip;
 import com.fr.entities.Users;
+import com.fr.models.FriendResponse;
 import com.fr.models.FriendStatus;
 import com.fr.models.User;
-import com.fr.repositories.FriendRepository;
+import com.fr.repositories.FriendShipRepository;
 import com.fr.repositories.UserRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by djenanewail on 12/26/16.
@@ -31,12 +33,18 @@ public class FriendController {
 
     private Logger LOGGER = Logger.getLogger(CommentController.class);
 
-    private FriendRepository friendRepository;
+    private FriendShipRepository friendShipRepository;
     private UserRepository userRepository;
+    private AccountControllerService accountControllerService;
 
     @Autowired
-    public void setFriendRepository(FriendRepository friendRepository) {
-        this.friendRepository = friendRepository;
+    public void setAccountControllerService(AccountControllerService accountControllerService) {
+        this.accountControllerService = accountControllerService;
+    }
+
+    @Autowired
+    public void setFriendShipRepository(FriendShipRepository friendShipRepository) {
+        this.friendShipRepository = friendShipRepository;
     }
 
     @Autowired
@@ -50,135 +58,201 @@ public class FriendController {
     /**
      * @param userId
      * @param page
-     * @return all user friends
+     * @param request
+     * @return confirmed friend lis
      */
-    @GetMapping("/{userId}/{page}")
-    public ResponseEntity<Object> getAllPostComments(@PathVariable int userId, @PathVariable int page) {
+    @GetMapping("/confirmed/{userId}/{page}")
+    public ResponseEntity<FriendResponse> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
 
-        int debut = page * friend_list_size;
+        Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Users connectedUser = userRepository.getById(connected_user);
 
-        Pageable pageable = new PageRequest(debut, friend_list_size);
+        Pageable pageable = new PageRequest(page, friend_list_size);
 
+        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.CONFIRMED.name(), pageable);
+
+        List<User> friendList = new ArrayList<>();
+
+        for (FriendShip friendShip : friendShips) {
+            Users userdb = userRepository.getByUuid(friendShip.getFriend());
+
+            User user = accountControllerService.fillUserResponse(userdb);
+
+            friendList.add(user);
+
+        }
+
+        /*
+        Prepare response
+         */
+        FriendResponse friendResponse = new FriendResponse();
+        friendResponse.setConfirmedList(friendList);
 
         LOGGER.info("FRIEND_LIST: user friend list has been returned");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(friendResponse, HttpStatus.OK);
 
     }
 
-    /**
-     * @param user
-     * @param request
-     * @return add friend personnal information
-     */
+    @GetMapping("/pending/{userId}/{page}")
+    public ResponseEntity<FriendResponse> getPendingFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
+
+        Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Users connectedUser = userRepository.getById(connected_user);
+
+        Pageable pageable = new PageRequest(page, friend_list_size);
+
+        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
+
+        List<User> friendList = new ArrayList<>();
+
+        for (FriendShip friendShip : friendShips) {
+            Users userdb = userRepository.getByUuid(friendShip.getFriend());
+
+            User user = accountControllerService.fillUserResponse(userdb);
+
+            friendList.add(user);
+
+        }
+
+        /*
+        Prepare response
+         */
+        FriendResponse friendResponse = new FriendResponse();
+        friendResponse.setPendingList(friendList);
+
+        LOGGER.info("FRIEND_LIST: user friend list has been returned");
+        return new ResponseEntity<>(friendResponse, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/refused/{userId}/{page}")
+    public ResponseEntity<FriendResponse> getRefusedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
+
+        Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Users connectedUser = userRepository.getById(connected_user);
+
+
+        Pageable pageable = new PageRequest(page, friend_list_size);
+
+        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.REFUSED.name(), pageable);
+
+        List<User> friendList = new ArrayList<>();
+
+        for (FriendShip friendShip : friendShips) {
+            Users userdb = userRepository.getByUuid(friendShip.getFriend());
+
+            User user = accountControllerService.fillUserResponse(userdb);
+
+            friendList.add(user);
+
+        }
+
+        /*
+        Prepare response
+         */
+        FriendResponse friendResponse = new FriendResponse();
+        friendResponse.setConfirmedList(friendList);
+
+        LOGGER.info("FRIEND_LIST: user friend list has been returned");
+        return new ResponseEntity<>(friendResponse, HttpStatus.OK);
+
+    }
+
     @PostMapping
-    public ResponseEntity<Friend> addFriend(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<Object> addFriend(@RequestBody User user, HttpServletRequest request) {
 
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connected_user = userRepository.getById(userId);
-
+        /*
+        Chekck received data
+         */
         if (user == null || user.getFriendUuid() == 0) {
-            LOGGER.error("ADD-FRIEND: Missing parameter to add friend");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        Users targetFriend = userRepository.getByUuid(user.getFriendUuid());
-        if (targetFriend == null) {
-
-            LOGGER.error("ADD-FRIEND: Friend id unknown");
+            LOGGER.error("ADD-FRIEND: No data found in the body");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         /*
-        friend with my self
+        Get connected user id
          */
-        if (connected_user.getId().equals(targetFriend.getId())) {
-            LOGGER.error("ADD-FRIEND: FriendShip denied - choose another person !");
+        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+
+        /*
+        Prepare friendShip
+         */
+        Users connectedUser = userRepository.getById(userId);
+        Users friend = userRepository.getByUuid(user.getFriendUuid());
+
+        /*
+        Check if the friend id refers to an existing user account
+         */
+        if (friend == null) {
+            LOGGER.error("ADD-FRIEND: Friend id not found !!");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         /*
-        Check if friendship already exist
+        Friend with my self
          */
-
-        Set<Friend> friendsTemp = connected_user.getFriends();
-        for (Friend friend : friendsTemp) {
-            if (friend.getUuid() == user.getFriendUuid()) {
-                LOGGER.error("ADD-FRIEND: FriendShip already exist - choose another person !");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+        if (connectedUser.equals(friend)) {
+            LOGGER.error("ADD-FRIEND: You can't be friend of your self");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         /*
-        save
+        Check if friendship exist
          */
+        if (friendShipRepository.getByFriendAndUser(user.getFriendUuid(), connectedUser.getUuid()) != null) {
+            LOGGER.error("ADD-FRIEND: You are already friends");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        Set<Friend> friends = new HashSet<>();
-
-        Friend friend = new Friend(targetFriend);
-        friend.setUsers(connected_user);
-        friends.add(friend);
-        connected_user.setFriends(friends);
+        /*
+        Prepare friendship for saving
+         */
+        FriendShip friendShip = new FriendShip();
+        friendShip.setFriend(user.getFriendUuid());
+        friendShip.setUser(connectedUser.getUuid());
 
         try {
-            //save new friend
-            userRepository.save(connected_user);
+            friendShipRepository.save(friendShip);
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("ADD-FRIEND: Problem when saving friend");
+            LOGGER.error("ADD-FRIEND: Problem saving the friendship ! try again OR read logs");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
 
         LOGGER.info("ADD-FRIEND: Friend has been saved");
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<Friend> updateFriend(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<Object> updateFriend(@RequestBody User user, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
-        if (user == null) {
+        if (user == null || user.getFriendUuid() == 0) {
             LOGGER.error("UPDATE-FRIEND: No data found in the body");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         /*
-        check if the given friend id refers to a friend
+        Prepare friendShip
          */
-        Friend targetFriend = friendRepository.getByUuid(user.getFriendUuid());
-        if (targetFriend == null) {
-            LOGGER.error("UPDATE-FRIEND: No friend with the givven id");
+        Users connectedUser = userRepository.getById(userId);
+
+         /*
+        Check if friendship exist
+         */
+        FriendShip friendShip = friendShipRepository.getByFriendAndUser(user.getFriendUuid(), connectedUser.getUuid());
+        if (friendShip == null) {
+            LOGGER.error("UPDATE-FRIEND: FriendShip not found !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         /*
-        Check if the target friend is friend with connected user
-         */
-        if (userRepository.getByIdAndFriendsUuid(userId, user.getFriendUuid()) == null) {
-            LOGGER.error("ADD-FRIEND: FriendShip doesn't exist !!");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        /*
-        Check if setted status is correct
-         */
-        if (user.getFriendStatus() != FriendStatus.PENDING.getValue()
-                && user.getFriendStatus() != FriendStatus.CONFIRMED.getValue()
-                && user.getFriendStatus() != FriendStatus.REFUSED.getValue()) {
-
-            LOGGER.error("UPDATE-FRIEND: Status are incorrect ! (0 - 1 - 2)");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-
-        /*
-        Prepare update
+        prepare update
          */
         for (FriendStatus friendStatus : FriendStatus.values()) {
             if (friendStatus.getValue() == user.getFriendStatus()) {
-                targetFriend.setStatus(friendStatus.name());
+                friendShip.setStatus(friendStatus.name());
             }
         }
 
@@ -186,10 +260,12 @@ public class FriendController {
         Update
          */
         try {
-            friendRepository.save(targetFriend);
+            friendShipRepository.save(friendShip);
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("UPDATE-FRIEND: Problem updating friend status");
+
+            LOGGER.error("UPDATE-FRIEND: FriendShip failed to update");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         LOGGER.info("UPDATE-FRIEND: Friend updated");
@@ -198,28 +274,28 @@ public class FriendController {
     }
 
     @DeleteMapping("/{friend_id}")
-    public ResponseEntity<Friend> deleteFriend(@PathVariable("friend_id") int friendId, HttpServletRequest request) {
+    public ResponseEntity<Void> deleteFriend(@PathVariable("friend_id") int friendId, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Users connectedUser = userRepository.getById(userId);
 
-         /*
-        Check if the target friend is friend with connected user
+        /*
+        Check if friendship exist
          */
-        if (userRepository.getByIdAndFriendsUuid(userId, friendId) == null) {
-            LOGGER.error("ADD-FRIEND: FriendShip doesn't exist !!");
+        FriendShip friendShip = friendShipRepository.getByFriendAndUser(friendId, connectedUser.getUuid());
+        if (friendShip == null) {
+            LOGGER.error("UPDATE-FRIEND: No friendship found to delete !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-        Friend friend = friendRepository.getByUuid(friendId);
 
         try {
-            friendRepository.delete(friend);
+            friendShipRepository.delete(friendShip);
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("DELETE-FRIEND: Problem deleting friend");
+
+            LOGGER.error("DELETE-FRIEND: Failed to delete ! see logs.");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
 
         LOGGER.error("DELETE-FRIEND: Friend deleted");
         return new ResponseEntity<>(HttpStatus.OK);

@@ -19,20 +19,51 @@ import java.util.UUID;
 
 @Entity
 @JsonInclude(Include.NON_EMPTY)
-public class Users extends Person implements Serializable {
+public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     protected Long id;
 
+
+    protected int uuid = UUID.randomUUID().hashCode();
+
+//    @ElementCollection
+//    protected Map<String, String> avatars = new TreeMap<String, String>();
+
+    @Column(nullable = false)
+    protected String lastName;
+
+    @Column(nullable = false)
+    protected String firstName;
+
+    @Column(nullable = false)
+    protected String dateBorn;
+
+    @Column(nullable = false)
+    protected String sexe;
+
+    @Column(unique = true)
+    protected String telephone;
+
+    @Column(nullable = false, unique = true)
+    protected String email;
+
+    @Column(nullable = false, unique = true)
+    protected String username;
+
+    @JsonIgnore
     @Column(nullable = false, unique = true)
     private String confirmationCode;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
+    @JsonIgnore
     private boolean deleted = false;
 
+    @JsonIgnore
     private boolean confirmed = false;
 
     @Column
@@ -50,9 +81,6 @@ public class Users extends Person implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userMessage")
     private Set<Messages> userMessages;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
-    private Set<Friend> friends;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Comment> comments;
@@ -75,10 +103,12 @@ public class Users extends Person implements Serializable {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", nullable = false)
+    @JsonIgnore
     private Set<Roles> userRoles;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "sport_id", nullable = false)
+    @JsonIgnore
     private Set<Sport> relatedSports;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
@@ -176,19 +206,6 @@ public class Users extends Person implements Serializable {
         this.notifications = notifications;
     }
 
-    public Set<Friend> getFriends() {
-        return friends;
-    }
-
-    public void setFriends(Set<Friend> friends) {
-        this.friends = friends;
-    }
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
     public String getConfirmationCode() {
         return confirmationCode;
     }
@@ -243,5 +260,77 @@ public class Users extends Person implements Serializable {
 
     public void setAddresses(SortedSet<Address> addresses) {
         this.addresses = addresses;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public int getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(int uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getDateBorn() {
+        return dateBorn;
+    }
+
+    public void setDateBorn(String dateBorn) {
+        this.dateBorn = dateBorn;
+    }
+
+    public String getSexe() {
+        return sexe;
+    }
+
+    public void setSexe(String sexe) {
+        this.sexe = sexe;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

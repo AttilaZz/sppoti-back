@@ -1,6 +1,7 @@
 package com.fr.models;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fr.entities.Users;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
