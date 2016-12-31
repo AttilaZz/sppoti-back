@@ -57,4 +57,6 @@ public interface PostControllerService extends AbstractControllerService {
     boolean addNotification(Long userId, int postId, String content);
 
     List<Post> findAllPosts(Long userLongId, int userIntId, List visibility, int page);
+
+    boolean isTargetUserFriendOfMe(int connected_user_uuid, int friend_id);
 }

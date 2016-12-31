@@ -3,11 +3,14 @@
  */
 package com.fr.models;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Jul 3, 2016
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FriendResponse {
 
     private List<User> pendingList;

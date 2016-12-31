@@ -91,10 +91,10 @@ public class PostController {
             //get connected user posts - visibility: 0,1,2
             List visibility = Arrays.asList(0, 1, 2);
             posts = postDataService.findAllPosts(connectedUserId, user_unique_id, visibility, page);
-//        } else if (requestUser.getFriends().contains(requestUser.getId())) {
-//            //get friend posts - visibility: 0,1
-//            List visibility = Arrays.asList(0, 1);
-//            posts = postDataService.findAllPosts(requestUser.getId(), user_unique_id, visibility, page);
+        } else if (postDataService.isTargetUserFriendOfMe(postDataService.getUserById(connectedUserId).getUuid(), user_unique_id)) {
+            //get friend posts - visibility: 0,1
+            List visibility = Arrays.asList(0, 1);
+            posts = postDataService.findAllPosts(requestUser.getId(), user_unique_id, visibility, page);
         } else {
             //get unknown user posts - visibility: 0
             List visibility = Arrays.asList(0);

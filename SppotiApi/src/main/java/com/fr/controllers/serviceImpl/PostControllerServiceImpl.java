@@ -442,4 +442,8 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
         return postRepository.getAllPosts(userIntId, userLongId, visibility, pageable);
     }
 
+    @Override
+    public boolean isTargetUserFriendOfMe(int connected_user_uuid, int friend_id) {
+        return friendShipRepository.getByFriendAndUser(friend_id, connected_user_uuid) != null;
+    }
 }

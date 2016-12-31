@@ -149,4 +149,6 @@ public class User {
     public void setFriendStatus(int friendStatus) {
         this.friendStatus = friendStatus;
     }
+
+
 }
