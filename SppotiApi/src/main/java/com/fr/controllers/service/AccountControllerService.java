@@ -30,5 +30,5 @@ public interface AccountControllerService{
 
     Users getUserById(Long userId);
 
-    User fillUserResponse(Users targetUser);
+    User fillUserResponse(Users targetUser, Users connected_user);
 }

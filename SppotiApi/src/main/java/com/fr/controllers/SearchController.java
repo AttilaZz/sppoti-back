@@ -85,7 +85,7 @@ public class SearchController {
 
         for (Users users1 : foundUsers) {
 
-            users.add(accountControllerService.fillUserResponse(users1));
+            users.add(accountControllerService.fillUserResponse(users1, null));
         }
 
         LOGGER.info("PROFILE SEARCH-USER: Users has been returned !");

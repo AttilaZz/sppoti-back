@@ -1,30 +1,24 @@
 package com.fr.security;
 
-import com.fr.RepositoriesService.UserDaoService;
 import com.fr.entities.Sport;
 import com.fr.entities.Users;
-import com.fr.models.HeaderData;
 import com.fr.models.SportModel;
 import com.fr.models.User;
 import com.fr.repositories.UserRepository;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 

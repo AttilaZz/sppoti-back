@@ -140,7 +140,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public User fillUserResponse(Users targetUser) {
-        return super.fillUserResponse(targetUser);
+    public User fillUserResponse(Users targetUser, Users connected_user) {
+        return super.fillUserResponse(targetUser, connected_user);
     }
 }

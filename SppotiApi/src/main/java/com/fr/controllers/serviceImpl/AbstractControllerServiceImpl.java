@@ -4,10 +4,7 @@ import com.fr.controllers.AccountController;
 import com.fr.controllers.service.AbstractControllerService;
 import com.fr.entities.*;
 import com.fr.mail.ApplicationMailer;
-import com.fr.models.CommentModel;
-import com.fr.models.ContentEditedResponse;
-import com.fr.models.SportModel;
-import com.fr.models.User;
+import com.fr.models.*;
 import com.fr.repositories.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -255,7 +252,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     }
 
-    protected User fillUserResponse(Users targetUser) {
+    protected User fillUserResponse(Users targetUser, Users connected_user) {
 
         User user = new User();
         user.setLastName(targetUser.getLastName());
@@ -264,6 +261,24 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         user.setEmail(targetUser.getEmail());
         user.setPhone(targetUser.getTelephone());
         user.setId(targetUser.getUuid());
+
+        if (connected_user != null && !connected_user.getId().equals(targetUser.getId())) {
+
+            FriendShip friendShip = friendShipRepository.getByFriendAndUser(targetUser.getUuid(), connected_user.getUuid());
+
+            if (friendShip == null) {
+                user.setFriendStatus(FriendStatus.PUBLICRELATION.getValue());
+            } else {
+                if (friendShip.getStatus().equals(FriendStatus.CONFIRMED.name())) {
+                    user.setFriendStatus(FriendStatus.CONFIRMED.getValue());
+                } else if (friendShip.getStatus().equals(FriendStatus.PENDING.name())) {
+                    user.setFriendStatus(FriendStatus.PENDING.getValue());
+                } else if (friendShip.getStatus().equals(FriendStatus.REFUSED.name())) {
+                    user.setFriendStatus(FriendStatus.REFUSED.getValue());
+                }
+            }
+
+        }
 
         /*
         Manage resources
@@ -284,7 +299,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
                     user.setCover(resource2.getUrl());
                     user.setCoverType(resource2.getTypeExtension());
-                } else if(resource1.getType() == 2 && resource2.getType() == 1){
+                } else if (resource1.getType() == 2 && resource2.getType() == 1) {
                     user.setAvatar(resource2.getUrl());
 
                     user.setCover(resource1.getUrl());

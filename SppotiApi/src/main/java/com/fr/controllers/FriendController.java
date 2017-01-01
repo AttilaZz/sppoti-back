@@ -76,7 +76,7 @@ public class FriendController {
         for (FriendShip friendShip : friendShips) {
             Users userdb = userRepository.getByUuid(friendShip.getFriend());
 
-            User user = accountControllerService.fillUserResponse(userdb);
+            User user = accountControllerService.fillUserResponse(userdb, null);
 
             friendList.add(user);
 
@@ -108,7 +108,7 @@ public class FriendController {
         for (FriendShip friendShip : friendShips) {
             Users userdb = userRepository.getByUuid(friendShip.getFriend());
 
-            User user = accountControllerService.fillUserResponse(userdb);
+            User user = accountControllerService.fillUserResponse(userdb, null);
 
             friendList.add(user);
 
@@ -141,7 +141,7 @@ public class FriendController {
         for (FriendShip friendShip : friendShips) {
             Users userdb = userRepository.getByUuid(friendShip.getFriend());
 
-            User user = accountControllerService.fillUserResponse(userdb);
+            User user = accountControllerService.fillUserResponse(userdb, null);
 
             friendList.add(user);
 

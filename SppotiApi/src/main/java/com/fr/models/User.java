@@ -1,7 +1,7 @@
 package com.fr.models;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fr.entities.Users;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -9,9 +9,10 @@ import java.util.List;
 /**
  * Created by djenanewail on 12/16/16.
  */
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 
+    private int id;
     private String firstName;
     private String lastName;
     private String username;
@@ -34,9 +35,7 @@ public class User {
     private int friendUuid;
     @SerializedName("friend_status")
     @JsonProperty("friend_status")
-    private int friendStatus;
-
-    private int id;
+    private Long friendStatus = null;
 
     public String getUsername() {
         return username;
@@ -142,13 +141,11 @@ public class User {
         this.friendUuid = friendUuid;
     }
 
-    public int getFriendStatus() {
+    public Long getFriendStatus() {
         return friendStatus;
     }
 
-    public void setFriendStatus(int friendStatus) {
+    public void setFriendStatus(Long friendStatus) {
         this.friendStatus = friendStatus;
     }
-
-
 }

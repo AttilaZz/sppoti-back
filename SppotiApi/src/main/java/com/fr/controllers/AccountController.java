@@ -266,20 +266,23 @@ public class AccountController {
         Users targetUser = accountService.getUserById(accountUserDetails.getId());
 
 
-        return new ResponseEntity<>(accountService.fillUserResponse(targetUser), HttpStatus.OK);
+        return new ResponseEntity<>(accountService.fillUserResponse(targetUser, null), HttpStatus.OK);
 
     }
 
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/other/{username}/**")
-    public ResponseEntity<User> otherUserInfo(@PathVariable("username") String username, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<User> otherUserInfo(@PathVariable("username") String username, HttpServletRequest request) {
 
 //        String path = (String) httpServletRequest.getAttribute(
 //                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 //        AntPathMatcher apm = new AntPathMatcher();
 //        String bestMatchPattern = (String ) httpServletRequest.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 //        String finalPath = apm.extractPathWithinPattern(bestMatchPattern, path);
+
+        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Users connected_user = accountService.getUserById(userId);
 
         Users targetUser = accountService.getUserByUsername(username);
 
@@ -288,7 +291,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
-        return new ResponseEntity<>(accountService.fillUserResponse(targetUser), HttpStatus.OK);
+        return new ResponseEntity<>(accountService.fillUserResponse(targetUser, connected_user), HttpStatus.OK);
 
     }
 }
