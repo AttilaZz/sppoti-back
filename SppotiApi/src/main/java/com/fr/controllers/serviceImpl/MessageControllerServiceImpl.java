@@ -17,38 +17,34 @@ import com.fr.entities.Messages;
 @Component
 public class MessageControllerServiceImpl extends AbstractControllerServiceImpl implements MessageControllerService {
 
+
     @Override
     public List<Messages> getSentUserMessages(Long userId, int page) {
-        return messageDaoService.getAllSentMessagesByUserId(userId, page);
+        return null;
     }
 
     @Override
     public List<Messages> getReceivedUserMessages(Long userId, int page) {
-        return messageDaoService.getAllReceivedtMessagesByUserId(userId, page);
+        return null;
     }
 
     @Override
     public Boolean saveMessage(Messages msg) {
-        return messageDaoService.saveOrUpdate(msg);
+        return null;
     }
 
     @Override
     public Boolean updateMessage(Messages msg) {
-        return messageDaoService.update(msg);
+        return null;
     }
 
     @Override
     public Boolean deteleMessageById(Long msgId) {
-        Messages m = messageDaoService.getMessageById(msgId);
-        if (m != null) {
-            return messageDaoService.delete(m);
-        }
-        return false;
+        return null;
     }
 
     @Override
     public Messages findMessageById(Long msgId) {
-        return messageDaoService.getMessageById(msgId);
+        return null;
     }
-
 }

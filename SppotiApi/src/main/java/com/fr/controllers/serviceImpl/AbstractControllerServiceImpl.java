@@ -1,8 +1,5 @@
 package com.fr.controllers.serviceImpl;
 
-import com.fr.RepositoriesService.GameDaoService;
-import com.fr.RepositoriesService.MessageDaoService;
-import com.fr.RepositoriesService.ProfileDaoService;
 import com.fr.controllers.AccountController;
 import com.fr.controllers.service.AbstractControllerService;
 import com.fr.entities.*;
@@ -40,6 +37,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected ResourceRepository resourceRepository;
     protected CommentRepository commentRepository;
     protected FriendShipRepository friendShipRepository;
+    protected SppotiRepository sppotiRepository;
+
+    @Autowired
+    public void setSppotiRepository(SppotiRepository sppotiRepository) {
+        this.sppotiRepository = sppotiRepository;
+    }
 
     @Autowired
     public void setFriendShipRepository(FriendShipRepository friendShipRepository) {
@@ -90,15 +93,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     public void setPostRepository(PostRepository postRepository) {
         this.postRepository = postRepository;
     }
-
-    @Autowired
-    protected ProfileDaoService profileDaoService;
-
-    @Autowired
-    protected MessageDaoService messageDaoService;
-
-    @Autowired
-    protected GameDaoService sppotiDaoService;
 
     @Autowired
     protected ApplicationMailer mailer;

@@ -110,7 +110,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public Sppoti getGameById(Long id) {
 
-        return sppotiDaoService.getEntityByID(id);
+        return sppotiRepository.getOne(id);
     }
 
     @Override

@@ -1,15 +1,7 @@
-/**
- *
- */
 package com.fr.controllers.service;
 
-import java.util.Set;
-
-import org.springframework.stereotype.Service;
-
 import com.fr.entities.Sppoti;
-import com.fr.entities.Sport;
-import com.fr.entities.Users;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016

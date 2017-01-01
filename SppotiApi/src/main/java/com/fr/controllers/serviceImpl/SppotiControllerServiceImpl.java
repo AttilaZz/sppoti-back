@@ -84,11 +84,13 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         boolean userIsUpToDate = true;
 
         // add the game
-        Long gameId = (Long) sppotiDaoService.save(spotToSave);
+        Sppoti sppoti = sppotiRepository.save(spotToSave);
+
+        Long gameId = sppoti.getId();
         if (gameId > 0) {
             // if game has been added -> Link users to create the team
 
-            Sppoti g = sppotiDaoService.getEntityByID(gameId);
+            Sppoti g = sppotiRepository.getOne(gameId);
 
             for (Users user : teamGame) {
                 user.setGameTeam(g);

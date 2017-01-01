@@ -26,16 +26,16 @@ import javax.servlet.ServletException;
         @PropertySource(value = "classpath:pagination.properties", ignoreResourceNotFound = true),
         @PropertySource(value = "classpath:headerConfig.properties", ignoreResourceNotFound = true)
 })
-public class SppotiApplication implements ServletContextInitializer {
+public class SppotiApplication {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(SppotiApplication.class, args);
     }
 
-    @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
-        servletContext.getSessionCookieConfig().setName("SPPOTI-SESSION-ID");
-    }
+//    @Override
+//    public void onStartup(ServletContext servletContext) throws ServletException {
+//        servletContext.getSessionCookieConfig().setName("SPPOTI-SESSION-ID");
+//    }
 
 //    @Bean
 //    public FilterRegistrationBean corsFilter() {

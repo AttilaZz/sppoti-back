@@ -10,10 +10,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,90 +40,66 @@ public class SppotiController {
 
     private static final String ATT_USER_ID = "USER_ID";
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded")
-    public ResponseEntity<SppotiResponse> addPost(@ModelAttribute JsonPostRequest json, UriComponentsBuilder ucBuilder,
-                                                  HttpServletRequest request) {
-
-        Gson gson = new Gson();
-        SppotiRequest newfr = null;
-        if (json != null) {
-            try {
-                newfr = gson.fromJson(json.getJson(), SppotiRequest.class);
-
-                LOGGER.info("SPPOTI data sent by user: " + new ObjectMapper().writeValueAsString(newfr));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        } else {
-            LOGGER.info("SPPOTI: Data sent by user are invalid");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @PostMapping(value = "/add")
+    public ResponseEntity<SppotiResponse> addPost(@RequestBody SppotiRequest newSppoti, HttpServletRequest request) {
 
         // get current logged user
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
         Users user = sppotiControllerService.getUserById(userId);
         LOGGER.info("LOGGED User: => " + userId);
 
-        Sppoti frToSave = new Sppoti();
-        frToSave.setUserGame(user);
+        Sppoti sppotiToSave = new Sppoti();
+        sppotiToSave.setUserGame(user);
 
 		/*
          * For all element check if the value is not NULL
 		 */
-        String titre = newfr.getTitre();
+        String titre = newSppoti.getTitre();
 
         // check if the SportModel id is valid
-        Long sportId = newfr.getSportId();
+        Long sportId = newSppoti.getSportId();
 
-        String description = newfr.getDescription();
-        String date = newfr.getDate();
+        String description = newSppoti.getDescription();
+        String date = newSppoti.getDate();
 
         // check if id's refers to existing peoples
-        Long[] teamPeopleId = newfr.getTeamPeopleId();
+        Long[] teamPeopleId = newSppoti.getTeamPeopleId();
 
         // Check if all address element are present
-        String spotAddress = newfr.getAddress();
+        String spotAddress = newSppoti.getAddress();
 
-        int membersCount = newfr.getMembersCount();
+        int membersCount = newSppoti.getMembersCount();
 
-        int type = newfr.getType();
+        int type = newSppoti.getType();
 
-        String tags = newfr.getTags();
+        String tags = newSppoti.getTags();
 
         try {
             sppotiControllerService.verifyAllDataBeforeSaving(titre, sportId, description, date, teamPeopleId,
                     spotAddress, membersCount, type, tags);
 
         } catch (Exception e) {
-            if (e instanceof EmptyArgumentException) {
-                LOGGER.info(e.getMessage());
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else if (e instanceof EntityNotFoundException) {
-                LOGGER.info(e.getMessage());
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else if (e instanceof InterruptedException) {
-                // problem in thread sleep -- see the service
-            }
+            e.getMessage();
+
         }
 
 //TODO: create a set of USERS from a table of LONG
-        frToSave.setTeamMemnbers(null);
-
+        sppotiToSave.setTeamMemnbers(null);
         // frToSave.setDatetime(datetime);
-        frToSave.setDescription(description);
-        frToSave.setTitre(titre);
-        frToSave.setGameAddress(spotAddress);
+        sppotiToSave.setDescription(description);
+        sppotiToSave.setTitre(titre);
+        sppotiToSave.setGameAddress(spotAddress);
 
 //TODO: create a set of SPORT from a table of LONG
-        frToSave.setRelatedSport(null);
+        sppotiToSave.setRelatedSport(null);
 
-        if (sppotiControllerService.saveSpoot(frToSave)) {
+        if (sppotiControllerService.saveSpoot(sppotiToSave)) {
             LOGGER.info("SPOT: has been saved");
-            return new ResponseEntity<SppotiResponse>(HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
 
         LOGGER.info("SPOT: Saving problem -- Data Base problem !!");
-        return new ResponseEntity<SppotiResponse>(HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
     }
 
