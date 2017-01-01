@@ -287,7 +287,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                 Users target = getUserByUuId(post.getTargetUserProfileUuid());
 
                 try {
-                    pres.setTargetUser(target.getFirstName(), target.getLastName(), target.getUsername(), target.getUuid());
+                    pres.setTargetUser(target.getFirstName(), target.getLastName(), target.getUsername(), target.getUuid(), userId.equals(target.getId()));
 
                 } catch (Exception e) {
                     if (e instanceof NullPointerException) {

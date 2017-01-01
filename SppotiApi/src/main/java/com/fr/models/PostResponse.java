@@ -224,8 +224,8 @@ public class PostResponse {
         return targetUser;
     }
 
-    public void setTargetUser(String firstName, String lastName, String username, int id) {
-        this.targetUser = new TargetUser(firstName, lastName, username, id);
+    public void setTargetUser(String firstName, String lastName, String username, int id, boolean myAccount) {
+        this.targetUser = new TargetUser(firstName, lastName, username, id, myAccount);
     }
 
     public class TargetUser {
@@ -237,12 +237,15 @@ public class PostResponse {
         private String lastName;
         private String username;
 
+        private boolean myAccount;
 
-        public TargetUser(String firstName, String lastName, String username, int id) {
+
+        public TargetUser(String firstName, String lastName, String username, int id, boolean myAccount) {
             this.firstName = firstName;
             this.lastName = lastName;
             this.username = username;
             this.id = id;
+            this.myAccount = myAccount;
         }
 
         public String getFirstName() {
@@ -259,6 +262,10 @@ public class PostResponse {
 
         public int getId() {
             return id;
+        }
+
+        public boolean isMyAccount() {
+            return myAccount;
         }
     }
 }

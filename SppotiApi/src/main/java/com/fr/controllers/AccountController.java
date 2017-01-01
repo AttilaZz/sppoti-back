@@ -34,7 +34,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping(value = "/account")
-public class AccountController{
+public class AccountController {
 
     private Logger LOGGER = Logger.getLogger(AccountController.class);
     private static final String ATT_USER_ID = "USER_ID";
@@ -241,7 +241,7 @@ public class AccountController{
             //TODO: Update sports
         }
 
-        if(update){
+        if (update) {
             if (accountService.updateUser(connected_user)) {
                 LOGGER.info("USER-UPDATE: User has been updated!");
                 return new ResponseEntity<>(user, HttpStatus.OK);
@@ -250,7 +250,7 @@ public class AccountController{
                 LOGGER.error("USER-UPDATE: ERROR updating user");
                 return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
             }
-        }else{
+        } else {
             LOGGER.error("USER-UPDATE: Nothing to update OR missigin parameter");
             return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
         }
@@ -271,7 +271,6 @@ public class AccountController{
     }
 
 
-
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/other/{username}/**")
     public ResponseEntity<User> otherUserInfo(@PathVariable("username") String username, HttpServletRequest httpServletRequest) {
@@ -286,7 +285,7 @@ public class AccountController{
 
         if (targetUser == null) {
             LOGGER.error("ACCOUNT-OTHER: Username not found");
-            return new ResponseEntity<>(accountService.fillUserResponse(targetUser), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
         return new ResponseEntity<>(accountService.fillUserResponse(targetUser), HttpStatus.OK);
