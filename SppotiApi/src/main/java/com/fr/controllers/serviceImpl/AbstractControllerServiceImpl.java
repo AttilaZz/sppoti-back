@@ -276,30 +276,30 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
          */
         Set<Resources> resources = targetUser.getRessources();
 
-        List<Resources> resources1 = new ArrayList<>();
-        resources1.addAll(resources);
+        List<Resources> resources_temp = new ArrayList<>();
+        resources_temp.addAll(resources);
 
-        if (!resources1.isEmpty()) {
-            if (resources1.size() == 2) {
+        if (!resources_temp.isEmpty()) {
+            if (resources_temp.size() == 2) {
                 //cover and avatar found
-                Resources resource1 = resources1.get(0);
-                Resources resource2 = resources1.get(1);
+                Resources resource1 = resources_temp.get(0);
+                Resources resource2 = resources_temp.get(1);
 
-                if (resource1.getType() == 1) {//acatar
+                if (resource1.getType() == 1 && resource2.getType() == 2) {//acatar
                     user.setAvatar(resource1.getUrl());
 
                     user.setCover(resource2.getUrl());
                     user.setCoverType(resource2.getTypeExtension());
-                } else {
+                } else if(resource1.getType() == 2 && resource2.getType() == 1){
                     user.setAvatar(resource2.getUrl());
 
-                    user.setCover(resource2.getUrl());
-                    user.setCoverType(resource2.getTypeExtension());
+                    user.setCover(resource1.getUrl());
+                    user.setCoverType(resource1.getTypeExtension());
                 }
 
             } else {
                 // size is = 1 -> cover or avatar
-                Resources resource = resources1.get(0);
+                Resources resource = resources_temp.get(0);
                 if (resource.getType() == 1) {//acatar
                     user.setAvatar(resource.getUrl());
                 } else {
