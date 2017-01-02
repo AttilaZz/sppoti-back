@@ -93,38 +93,12 @@ public class FriendController {
 
     }
 
-    @GetMapping("/pending/{userId}/{page}")
-    public ResponseEntity<FriendResponse> getPendingFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
-
-        Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = userRepository.getById(connected_user);
-
-        Pageable pageable = new PageRequest(page, friend_list_size);
-
-        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
-
-        List<User> friendList = new ArrayList<>();
-
-        for (FriendShip friendShip : friendShips) {
-            Users userdb = userRepository.getByUuid(friendShip.getFriend());
-
-            User user = accountControllerService.fillUserResponse(userdb, null);
-
-            friendList.add(user);
-
-        }
-
-        /*
-        Prepare response
-         */
-        FriendResponse friendResponse = new FriendResponse();
-        friendResponse.setPendingList(friendList);
-
-        LOGGER.info("FRIEND_LIST: user friend list has been returned");
-        return new ResponseEntity<>(friendResponse, HttpStatus.OK);
-
-    }
-
+    /**
+     * @param userId
+     * @param page
+     * @param request
+     * @return
+     */
     @GetMapping("/refused/{userId}/{page}")
     public ResponseEntity<FriendResponse> getRefusedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
 
@@ -158,6 +132,99 @@ public class FriendController {
 
     }
 
+
+    /**
+     * @param page
+     * @param request
+     * @return
+     */
+    @GetMapping("/pending/sent/{page}")
+    public ResponseEntity<FriendResponse> getSentPendingFriendList(@PathVariable int page, HttpServletRequest request) {
+
+        Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Users connectedUser = userRepository.getById(connected_user);
+
+        Pageable pageable = new PageRequest(page, friend_list_size);
+
+        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
+
+        if(friendShips.isEmpty()){
+            LOGGER.error("GET_PENDING_SENT: No sent friend request found !");
+            return new ResponseEntity<>( HttpStatus.NO_CONTENT);
+        }
+
+        List<User> friendList = new ArrayList<>();
+
+        for (FriendShip friendShip : friendShips) {
+            Users userdb = userRepository.getByUuid(friendShip.getFriend());
+
+            User user = accountControllerService.fillUserResponse(userdb, null);
+            user.setDatetimeCreated(friendShip.getDatetime());
+
+            friendList.add(user);
+
+        }
+
+        /*
+        Prepare response
+         */
+        FriendResponse friendResponse = new FriendResponse();
+        friendResponse.setPendingList(friendList);
+
+        LOGGER.info("FRIEND_LIST: user friend list has been returned");
+        return new ResponseEntity<>(friendResponse, HttpStatus.OK);
+
+    }
+
+
+    /**
+     * @param page
+     * @param request
+     * @return
+     */
+    @GetMapping("/pending/received/{page}")
+    public ResponseEntity<FriendResponse> getREceivedPendingFriendList(@PathVariable int page, HttpServletRequest request) {
+
+        Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Users connectedUser = userRepository.getById(connected_user);
+
+        Pageable pageable = new PageRequest(page, friend_list_size);
+
+        List<FriendShip> friendShips = friendShipRepository.getByFriendAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
+
+        if(friendShips.isEmpty()){
+            LOGGER.error("GET_PENDING_RECEIVED: No received request friend found !");
+            return new ResponseEntity<>( HttpStatus.NO_CONTENT);
+        }
+
+        List<User> friendList = new ArrayList<>();
+
+        for (FriendShip friendShip : friendShips) {
+            Users userdb = userRepository.getByUuid(friendShip.getUser());
+
+            User user = accountControllerService.fillUserResponse(userdb, null);
+            user.setDatetimeCreated(friendShip.getDatetime());
+
+            friendList.add(user);
+
+        }
+
+        /*
+        Prepare response
+         */
+        FriendResponse friendResponse = new FriendResponse();
+        friendResponse.setPendingList(friendList);
+
+        LOGGER.info("FRIEND_LIST: user friend list has been returned");
+        return new ResponseEntity<>(friendResponse, HttpStatus.OK);
+
+    }
+
+    /**
+     * @param user
+     * @param request
+     * @return
+     */
     @PostMapping
     public ResponseEntity<Object> addFriend(@RequestBody User user, HttpServletRequest request) {
 
@@ -223,6 +290,11 @@ public class FriendController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    /**
+     * @param user
+     * @param request
+     * @return
+     */
     @PutMapping
     public ResponseEntity<Object> updateFriend(@RequestBody User user, HttpServletRequest request) {
 
@@ -273,6 +345,11 @@ public class FriendController {
 
     }
 
+    /**
+     * @param friendId
+     * @param request
+     * @return
+     */
     @DeleteMapping("/{friend_id}")
     public ResponseEntity<Void> deleteFriend(@PathVariable("friend_id") int friendId, HttpServletRequest request) {
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,6 +37,8 @@ public class User {
     @SerializedName("friend_status")
     @JsonProperty("friend_status")
     private int friendStatus = -1;
+
+    private String datetimeCreated;
 
     private boolean myProfile = false;
 
@@ -157,5 +160,13 @@ public class User {
 
     public void setMyProfile(boolean myProfile) {
         this.myProfile = myProfile;
+    }
+
+    public String getDatetimeCreated() {
+        return datetimeCreated;
+    }
+
+    public void setDatetimeCreated(String datetimeCreated) {
+        this.datetimeCreated = datetimeCreated;
     }
 }

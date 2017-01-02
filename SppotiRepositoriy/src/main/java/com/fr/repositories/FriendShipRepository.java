@@ -15,4 +15,6 @@ public interface FriendShipRepository extends CrudRepository<FriendShip, Long> {
     FriendShip getByFriendAndUser(int friendUuid, int uuid);
 
     List<FriendShip> getByUserAndStatus(int uuid, String name, Pageable pageable);
+
+    List<FriendShip> getByFriendAndStatus(int uuid, String name, Pageable pageable);
 }
