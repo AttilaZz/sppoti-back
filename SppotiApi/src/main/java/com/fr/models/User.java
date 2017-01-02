@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by djenanewail on 12/16/16.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class User {
 
     private int id;
@@ -35,7 +35,9 @@ public class User {
     private int friendUuid;
     @SerializedName("friend_status")
     @JsonProperty("friend_status")
-    private Long friendStatus = null;
+    private int friendStatus = -1;
+
+    private boolean myProfile = false;
 
     public String getUsername() {
         return username;
@@ -141,11 +143,19 @@ public class User {
         this.friendUuid = friendUuid;
     }
 
-    public Long getFriendStatus() {
+    public int getFriendStatus() {
         return friendStatus;
     }
 
-    public void setFriendStatus(Long friendStatus) {
+    public void setFriendStatus(int friendStatus) {
         this.friendStatus = friendStatus;
+    }
+
+    public boolean isMyProfile() {
+        return myProfile;
+    }
+
+    public void setMyProfile(boolean myProfile) {
+        this.myProfile = myProfile;
     }
 }

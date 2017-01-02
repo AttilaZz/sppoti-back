@@ -291,6 +291,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
+
         return new ResponseEntity<>(accountService.fillUserResponse(targetUser, connected_user), HttpStatus.OK);
 
     }

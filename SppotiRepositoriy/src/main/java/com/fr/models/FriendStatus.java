@@ -5,15 +5,15 @@ package com.fr.models;
  */
 public enum FriendStatus {
 
-    PENDING(0L), CONFIRMED(1L), REFUSED(2L), PUBLICRELATION(-1L);
+    PENDING(0), CONFIRMED(1), REFUSED(2), PUBLICRELATION(-1);
 
-    private Long status;
+    private int status;
 
-    FriendStatus(Long status) {
+    FriendStatus(int status) {
         this.status = status;
     }
 
-    public Long getValue() {
+    public int getValue() {
         return this.status;
     }
 }

@@ -262,21 +262,25 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         user.setPhone(targetUser.getTelephone());
         user.setId(targetUser.getUuid());
 
-        if (connected_user != null && !connected_user.getId().equals(targetUser.getId())) {
+        if (connected_user != null) {
 
-            FriendShip friendShip = friendShipRepository.getByFriendAndUser(targetUser.getUuid(), connected_user.getUuid());
+            if (!connected_user.getId().equals(targetUser.getId())) {
+                FriendShip friendShip = friendShipRepository.getByFriendAndUser(targetUser.getUuid(), connected_user.getUuid());
 
-            if (friendShip == null) {
-                user.setFriendStatus(FriendStatus.PUBLICRELATION.getValue());
-            } else {
-                if (friendShip.getStatus().equals(FriendStatus.CONFIRMED.name())) {
-                    user.setFriendStatus(FriendStatus.CONFIRMED.getValue());
-                } else if (friendShip.getStatus().equals(FriendStatus.PENDING.name())) {
-                    user.setFriendStatus(FriendStatus.PENDING.getValue());
-                } else if (friendShip.getStatus().equals(FriendStatus.REFUSED.name())) {
-                    user.setFriendStatus(FriendStatus.REFUSED.getValue());
+                if (friendShip == null) {
+                    user.setFriendStatus(FriendStatus.PUBLICRELATION.getValue());
+                } else {
+                    if (friendShip.getStatus().equals(FriendStatus.CONFIRMED.name())) {
+                        user.setFriendStatus(FriendStatus.CONFIRMED.getValue());
+                    } else if (friendShip.getStatus().equals(FriendStatus.PENDING.name())) {
+                        user.setFriendStatus(FriendStatus.PENDING.getValue());
+                    } else if (friendShip.getStatus().equals(FriendStatus.REFUSED.name())) {
+                        user.setFriendStatus(FriendStatus.REFUSED.getValue());
+                    }
                 }
             }
+
+            user.setMyProfile(connected_user.getId().equals(targetUser.getId()));
 
         }
 

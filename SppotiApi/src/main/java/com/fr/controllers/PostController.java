@@ -277,6 +277,20 @@ public class PostController {
         postRep.setLastName(user.getLastName());
         postRep.setUsername(user.getUsername());
 
+        /*
+        Check target user
+         */
+        int requestTargetUserId = newPostReq.getTargetUseruuid();
+        Users targetUser = postDataService.getUserByUuId(requestTargetUserId);
+        if (requestTargetUserId != 0 && targetUser != null) {
+
+            newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUseruuid());
+            postRep.setTargetUser(targetUser.getFirstName(), targetUser.getLastName(), targetUser.getUsername(), targetUser.getUuid(), false);
+        }else if(requestTargetUserId != 0 && targetUser == null){
+            LOGGER.error("ADD-POST: Target user id not found !");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         // if a game or one of the previous classic content has been assigned -
         // save post
 
@@ -285,7 +299,6 @@ public class PostController {
             if (!canAdd) throw new PostContentMissingException("At least a game or a post content must be assigned");
             //Save and get the inserted id
 
-            newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUseruuid());
 
             int insertedPostId = postDataService.savePost(newPostToSave).getUuid();
 
