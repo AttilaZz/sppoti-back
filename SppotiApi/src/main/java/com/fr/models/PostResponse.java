@@ -54,6 +54,7 @@ public class PostResponse {
     private String firstName;
     private String lastName;
     private String username;
+    private String avatar;
 
     private TargetUser targetUser;
 
@@ -222,6 +223,14 @@ public class PostResponse {
 
     public TargetUser getTargetUser() {
         return targetUser;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public void setTargetUser(String firstName, String lastName, String username, int id, boolean myAccount) {

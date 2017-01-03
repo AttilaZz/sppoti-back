@@ -279,6 +279,15 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             pres.setLastName(owner.getLastName());
             pres.setUsername(owner.getUsername());
 
+            List<Resources> resources = new ArrayList<>();
+            resources.addAll(owner.getRessources());
+
+            if(!resources.isEmpty()){
+                if(resources.get(0) != null && resources.get(0).getType() == 1){
+                    pres.setAvatar(resources.get(0).getUrl());
+                }
+            }
+
             /*
             Check if post has been posted on a friend profile -- default value for integer is ZERO (UUID can never be a zero)
              */
