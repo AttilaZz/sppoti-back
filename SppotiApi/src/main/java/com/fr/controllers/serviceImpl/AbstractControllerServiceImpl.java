@@ -36,6 +36,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected FriendShipRepository friendShipRepository;
     protected SppotiRepository sppotiRepository;
 
+
     @Autowired
     public void setSppotiRepository(SppotiRepository sppotiRepository) {
         this.sppotiRepository = sppotiRepository;

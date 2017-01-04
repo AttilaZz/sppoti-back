@@ -33,14 +33,18 @@ import com.fr.entities.Users;
 @RequestMapping("/sppoti")
 public class SppotiController {
 
-    @Autowired
     private SppotiControllerService sppotiControllerService;
+
+    @Autowired
+    public void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
+        this.sppotiControllerService = sppotiControllerService;
+    }
 
     private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
     private static final String ATT_USER_ID = "USER_ID";
 
-    @PostMapping(value = "/add")
+    @PostMapping
     public ResponseEntity<SppotiResponse> addPost(@RequestBody SppotiRequest newSppoti, HttpServletRequest request) {
 
         // get current logged user
@@ -79,26 +83,24 @@ public class SppotiController {
                     spotAddress, membersCount, type, tags);
 
         } catch (Exception e) {
-            e.getMessage();
-
+            LOGGER.error("SPPOT-ADD: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-//TODO: create a set of USERS from a table of LONG
-        sppotiToSave.setTeamMemnbers(null);
+        sppotiToSave.setTeamMemnbers(sppotiControllerService.getTeamGame());
         // frToSave.setDatetime(datetime);
         sppotiToSave.setDescription(description);
         sppotiToSave.setTitre(titre);
         sppotiToSave.setGameAddress(spotAddress);
 
-//TODO: create a set of SPORT from a table of LONG
-        sppotiToSave.setRelatedSport(null);
+        sppotiToSave.setRelatedSport(sppotiControllerService.getSportGame());
 
         if (sppotiControllerService.saveSpoot(sppotiToSave)) {
             LOGGER.info("SPOT: has been saved");
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
 
-        LOGGER.info("SPOT: Saving problem -- Data Base problem !!");
+        LOGGER.error("SPOT: Saving problem -- Data Base problem !!");
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
     }

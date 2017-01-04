@@ -65,13 +65,17 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         for (Long userId : teamPeopleId) {
-            Users u = userRepository.getOne(userId);
-            if (u != null) {
-                this.teamGame.add(u);
-            } else {
-                throw new EntityNotFoundException("One of the team ID is not valid");
+            try {
+                Users u = userRepository.getOne(userId);
+                if (u != null) {
+                    this.teamGame.add(u);
+                } else {
+                    throw new EntityNotFoundException("One of the team ID is not valid");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            Thread.sleep(100);
+
         }
     }
 
@@ -118,4 +122,37 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         return false;
     }
 
+    @Override
+    public Sport getSportGame() {
+        return sportGame;
+    }
+
+    public String getAddressGame() {
+        return addressGame;
+    }
+
+    @Override
+    public Set<Users> getTeamGame() {
+        return teamGame;
+    }
+
+    public String getTitre() {
+        return titre;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getTeamCount() {
+        return teamCount;
+    }
+
+    public int getSppotiType() {
+        return sppotiType;
+    }
+
+    public String getTags() {
+        return tags;
+    }
 }

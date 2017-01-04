@@ -106,7 +106,7 @@ public class Users {
     @JsonIgnore
     private Set<Roles> userRoles;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "sport_id", nullable = false)
     @JsonIgnore
     private Set<Sport> relatedSports;
