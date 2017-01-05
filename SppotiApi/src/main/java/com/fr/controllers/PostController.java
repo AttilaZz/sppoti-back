@@ -277,6 +277,17 @@ public class PostController {
         postRep.setLastName(user.getLastName());
         postRep.setUsername(user.getUsername());
 
+        List<Resources> resources = new ArrayList<>();
+        resources.addAll(user.getRessources());
+
+        if (!resources.isEmpty()) {
+            if (resources.get(0) != null && resources.get(0).getType() == 1) {
+                postRep.setAvatar(resources.get(0).getUrl());
+            } else if (resources.get(1) != null && resources.get(1).getType() == 1) {
+                postRep.setAvatar(resources.get(1).getUrl());
+            }
+        }
+
         /*
         Check target user
          */
@@ -286,7 +297,7 @@ public class PostController {
 
             newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUseruuid());
             postRep.setTargetUser(targetUser.getFirstName(), targetUser.getLastName(), targetUser.getUsername(), targetUser.getUuid(), false);
-        }else if(requestTargetUserId != 0 && targetUser == null){
+        } else if (requestTargetUserId != 0 && targetUser == null) {
             LOGGER.error("ADD-POST: Target user id not found !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
