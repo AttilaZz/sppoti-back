@@ -285,6 +285,8 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             if(!resources.isEmpty()){
                 if(resources.get(0) != null && resources.get(0).getType() == 1){
                     pres.setAvatar(resources.get(0).getUrl());
+                }else if(resources.get(1) != null && resources.get(1).getType() == 1){
+                    pres.setAvatar(resources.get(1).getUrl());
                 }
             }
 

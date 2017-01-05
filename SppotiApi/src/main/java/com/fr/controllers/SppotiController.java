@@ -91,7 +91,7 @@ public class SppotiController {
         // frToSave.setDatetime(datetime);
         sppotiToSave.setDescription(description);
         sppotiToSave.setTitre(titre);
-        sppotiToSave.setGameAddress(spotAddress);
+        sppotiToSave.setLocation(spotAddress);
 
         sppotiToSave.setRelatedSport(sppotiControllerService.getSportGame());
 

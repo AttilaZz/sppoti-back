@@ -40,7 +40,7 @@ public class Sppoti {
     private String datetime = new DateTime().toString();
 
     @Column(name = "address")
-    private String gameAddress;
+    private String location;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sport_id", nullable = false)
@@ -75,12 +75,12 @@ public class Sppoti {
         this.datetime = datetime;
     }
 
-    public String getGameAddress() {
-        return gameAddress;
+    public String getLocation() {
+        return location;
     }
 
-    public void setGameAddress(String gameAddress) {
-        this.gameAddress = gameAddress;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Sport getRelatedSport() {

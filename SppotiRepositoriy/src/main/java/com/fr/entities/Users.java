@@ -97,7 +97,7 @@ public class Users {
     private Sppoti gameTeam;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     @Where(clause = "is_selected='1'")
     private Set<Resources> ressources;
 
