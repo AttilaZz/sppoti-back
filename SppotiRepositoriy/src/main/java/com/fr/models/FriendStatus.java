@@ -5,7 +5,7 @@ package com.fr.models;
  */
 public enum FriendStatus {
 
-    PUBLIC_RELATION(1), PENDING_SENT(2), PENDING_RECEIVED(3), CONFIRMED(4), REFUSED(5);
+    PUBLIC_RELATION(1), PENDING_SENT(2), PENDING(3), CONFIRMED(4), REFUSED(5);
 
     private int status;
 

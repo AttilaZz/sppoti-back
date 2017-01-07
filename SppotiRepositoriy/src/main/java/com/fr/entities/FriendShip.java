@@ -20,7 +20,7 @@ public class FriendShip {
     private String datetime = new DateTime().toString();
 
     @Column(nullable = false)
-    private String status = FriendStatus.PUBLIC_RELATION.name();
+    private String status = FriendStatus.PENDING.name();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "friend_id")

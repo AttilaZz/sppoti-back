@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by djenanewail on 12/16/16.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 
     private int id;
@@ -33,14 +32,14 @@ public class User {
 
     @SerializedName("friend_id")
     @JsonProperty("friend_id")
-    private int friendUuid = -1;
+    private int friendUuid;
     @SerializedName("friend_status")
     @JsonProperty("friend_status")
-    private int friendStatus = -1;
+    private int friendStatus;
 
     private String datetimeCreated;
 
-    private boolean myProfile = false;
+    private boolean myProfile;
 
     public String getUsername() {
         return username;

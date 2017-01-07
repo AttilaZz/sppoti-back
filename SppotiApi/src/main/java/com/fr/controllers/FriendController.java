@@ -146,7 +146,7 @@ public class FriendController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.PENDING_SENT.name(), pageable);
+        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_SENT: No sent friend request found !");
@@ -190,7 +190,7 @@ public class FriendController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.PENDING_SENT.name(), pageable);
+        List<FriendShip> friendShips = friendShipRepository.getByFriendUuidAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_RECEIVED: No received request friend found !");
@@ -266,7 +266,7 @@ public class FriendController {
         /*
         Check if friendship exist
          */
-        if (friendShipRepository.getByFriendUuidAndUser(friend, connectedUser.getUuid()) != null) {
+        if (friendShipRepository.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid()) != null) {
             LOGGER.error("ADD-FRIEND: You are already friends");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -310,12 +310,11 @@ public class FriendController {
         Prepare friendShip
          */
         Users connectedUser = userRepository.getById(userId);
-        Users friend = userRepository.getByUuid(user.getFriendUuid());
 
          /*
         Check if friendship exist
          */
-        FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(friend, connectedUser.getUuid());
+        FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(user.getFriendUuid(), connectedUser.getUuid());
         if (friendShip == null) {
             LOGGER.error("UPDATE-FRIEND: FriendShip not found !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -358,12 +357,10 @@ public class FriendController {
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
         Users connectedUser = userRepository.getById(userId);
 
-        Users friend = userRepository.getByUuid(friendId);
-
         /*
         Check if friendship exist
          */
-        FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(friend, connectedUser.getUuid());
+        FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(friendId, connectedUser.getUuid());
         if (friendShip == null) {
             LOGGER.error("UPDATE-FRIEND: No friendship found to delete !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

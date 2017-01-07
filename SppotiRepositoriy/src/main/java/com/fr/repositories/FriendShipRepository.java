@@ -15,11 +15,13 @@ import java.util.List;
  */
 public interface FriendShipRepository extends CrudRepository<FriendShip, Long> {
 
-    FriendShip getByFriendUuidAndUser(Users friend, int uuid);
+    FriendShip getByFriendUuidAndUser(int friend, int uuid);
 
     List<FriendShip> getByUserAndStatus(int uuid, String name, Pageable pageable);
 
-    List<FriendShip> getByFriendUuidAndStatus(Users friend, String name, Pageable pageable);
+    List<FriendShip> getByFriendUuidAndStatus(int friend, String name, Pageable pageable);
+
+    List<FriendShip>  getByUserAndFriendUuidAndStatus(int connected_user, int uuid, String name);
 
 
     //    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
