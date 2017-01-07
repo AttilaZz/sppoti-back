@@ -74,7 +74,7 @@ public class FriendController {
         List<User> friendList = new ArrayList<>();
 
         for (FriendShip friendShip : friendShips) {
-            Users userdb = userRepository.getByUuid(friendShip.getFriend());
+            Users userdb = friendShip.getFriend();
 
             User user = accountControllerService.fillUserResponse(userdb, null);
 
@@ -113,7 +113,7 @@ public class FriendController {
         List<User> friendList = new ArrayList<>();
 
         for (FriendShip friendShip : friendShips) {
-            Users userdb = userRepository.getByUuid(friendShip.getFriend());
+            Users userdb = friendShip.getFriend();
 
             User user = accountControllerService.fillUserResponse(userdb, null);
 
@@ -148,15 +148,15 @@ public class FriendController {
 
         List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
 
-        if(friendShips.isEmpty()){
+        if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_SENT: No sent friend request found !");
-            return new ResponseEntity<>( HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         List<User> friendList = new ArrayList<>();
 
         for (FriendShip friendShip : friendShips) {
-            Users userdb = userRepository.getByUuid(friendShip.getFriend());
+            Users userdb = friendShip.getFriend();
 
             User user = accountControllerService.fillUserResponse(userdb, null);
             user.setDatetimeCreated(friendShip.getDatetime());
@@ -192,9 +192,9 @@ public class FriendController {
 
         List<FriendShip> friendShips = friendShipRepository.getByFriendAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
 
-        if(friendShips.isEmpty()){
+        if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_RECEIVED: No received request friend found !");
-            return new ResponseEntity<>( HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         List<User> friendList = new ArrayList<>();
@@ -275,7 +275,8 @@ public class FriendController {
         Prepare friendship for saving
          */
         FriendShip friendShip = new FriendShip();
-        friendShip.setFriend(user.getFriendUuid());
+        Users u = userRepository.getByUuid(user.getFriendUuid());
+        friendShip.setFriend(u);
         friendShip.setUser(connectedUser.getUuid());
 
         try {

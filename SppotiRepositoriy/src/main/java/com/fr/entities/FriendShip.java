@@ -3,10 +3,7 @@ package com.fr.entities;
 import com.fr.models.FriendStatus;
 import org.joda.time.DateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by: Wail DJENANE on Jul 3, 2016
@@ -25,8 +22,9 @@ public class FriendShip {
     @Column(nullable = false)
     private String status = FriendStatus.PENDING.name();
 
-    @Column(name = "friend_id")
-    private int friend;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "friend_id")
+    private Users friend;
 
     @Column(name = "user_id")
     private int user;
@@ -55,11 +53,11 @@ public class FriendShip {
         this.status = status;
     }
 
-    public int getFriend() {
+    public Users getFriend() {
         return friend;
     }
 
-    public void setFriend(int friend) {
+    public void setFriend(Users friend) {
         this.friend = friend;
     }
 
