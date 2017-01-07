@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -455,6 +454,6 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     @Override
     public boolean isTargetUserFriendOfMe(int connected_user_uuid, int friend_id) {
-        return friendShipRepository.getByFriendAndUser(friend_id, connected_user_uuid) != null;
+        return friendShipRepository.getByFriendUuidAndUser(userRepository.getByUuid(friend_id), connected_user_uuid) != null;
     }
 }

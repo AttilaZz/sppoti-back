@@ -23,34 +23,34 @@ public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    protected Long id;
+    private Long id;
 
 
-    protected int uuid = UUID.randomUUID().hashCode();
+    private int uuid = UUID.randomUUID().hashCode();
 
 //    @ElementCollection
-//    protected Map<String, String> avatars = new TreeMap<String, String>();
+//    private Map<String, String> avatars = new TreeMap<String, String>();
 
     @Column(nullable = false)
-    protected String lastName;
+    private String lastName;
 
     @Column(nullable = false)
-    protected String firstName;
+    private String firstName;
 
     @Column(nullable = false)
-    protected String dateBorn;
+    private String dateBorn;
 
     @Column(nullable = false)
-    protected String sexe;
+    private String sexe;
 
     @Column(unique = true)
-    protected String telephone;
+    private String telephone;
 
     @Column(nullable = false, unique = true)
-    protected String email;
+    private String email;
 
     @Column(nullable = false, unique = true)
-    protected String username;
+    private String username;
 
     @JsonIgnore
     @Column(nullable = false, unique = true)
@@ -113,7 +113,7 @@ public class Users {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
     @OrderBy("dateTime DESC")
-    protected SortedSet<Address> addresses;
+    private SortedSet<Address> addresses;
 
     public boolean isDeleted() {
         return deleted;

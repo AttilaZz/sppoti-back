@@ -266,18 +266,33 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         if (connected_user != null) {
 
             if (!connected_user.getId().equals(targetUser.getId())) {
-                FriendShip friendShip = friendShipRepository.getByFriendAndUser(targetUser.getUuid(), connected_user.getUuid());
+                FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(targetUser, connected_user.getUuid());
 
                 if (friendShip == null) {
-                    user.setFriendStatus(FriendStatus.PUBLICRELATION.getValue());
+                    user.setFriendStatus(FriendStatus.PUBLIC_RELATION.getValue());
                 } else {
+
+
+
                     if (friendShip.getStatus().equals(FriendStatus.CONFIRMED.name())) {
                         user.setFriendStatus(FriendStatus.CONFIRMED.getValue());
-                    } else if (friendShip.getStatus().equals(FriendStatus.PENDING.name())) {
-                        user.setFriendStatus(FriendStatus.PENDING.getValue());
+
+
+
+                    } else if (friendShip.getStatus().equals(FriendStatus.PENDING_SENT.name())) {
+                        user.setFriendStatus(FriendStatus.PENDING_SENT.getValue());
+
+
+
                     } else if (friendShip.getStatus().equals(FriendStatus.REFUSED.name())) {
                         user.setFriendStatus(FriendStatus.REFUSED.getValue());
+
+
+
                     }
+
+
+
                 }
             }
 
