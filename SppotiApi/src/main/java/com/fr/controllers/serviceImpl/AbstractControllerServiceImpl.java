@@ -266,36 +266,35 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         if (connected_user != null) {
 
             if (!connected_user.getId().equals(targetUser.getId())) {
+                /*
+                manage requests sent to me
+                 */
                 FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(targetUser.getUuid(), connected_user.getUuid());
 
                 if (friendShip == null) {
                     user.setFriendStatus(FriendStatus.PUBLIC_RELATION.getValue());
                 } else {
 
-
                     //We are friend
                     if (friendShip.getStatus().equals(FriendStatus.CONFIRMED.name())) {
                         user.setFriendStatus(FriendStatus.CONFIRMED.getValue());
 
-                    //Friend request waiting to be accepted by me
+                        //Friend request waiting to be accepted by me
                     } else if (friendShip.getStatus().equals(FriendStatus.PENDING_SENT.name())) {
                         user.setFriendStatus(FriendStatus.PENDING.getValue());
 
-                    //Friend request refused by me
+                        //Friend request refused by me
                     } else if (friendShip.getStatus().equals(FriendStatus.REFUSED.name())) {
                         user.setFriendStatus(FriendStatus.REFUSED.getValue());
 
-                    //Friend request sent by me and not accepted yet by the user
-                        /*
-                        check if my unique id exist in target user pending list
-                         */
-                    }else if(!friendShipRepository.getByUserAndFriendUuidAndStatus(connected_user.getUuid(), targetUser.getUuid(), FriendStatus.PENDING.name()).isEmpty()){
-                        user.setFriendStatus(FriendStatus.PENDING_SENT.getValue());
-
                     }
 
-
-
+                }
+                /*
+                Manage request sent by me
+                 */
+                if (!friendShipRepository.getByUserAndFriendUuidAndStatus(targetUser.getUuid(), connected_user.getUuid(), FriendStatus.PENDING.name()).isEmpty()) {
+                    user.setFriendStatus(FriendStatus.PENDING_SENT.getValue());
                 }
             }
 

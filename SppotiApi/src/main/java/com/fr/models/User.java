@@ -35,7 +35,7 @@ public class User {
     private int friendUuid;
     @SerializedName("friend_status")
     @JsonProperty("friend_status")
-    private int friendStatus;
+    private int friendStatus = FriendStatus.PUBLIC_RELATION.getValue();
 
     private String datetimeCreated;
 
