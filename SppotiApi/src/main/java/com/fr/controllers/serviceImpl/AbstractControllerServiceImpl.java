@@ -280,7 +280,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                         user.setFriendStatus(FriendStatus.CONFIRMED.getValue());
 
                         //Friend request waiting to be accepted by me
-                    } else if (friendShip.getStatus().equals(FriendStatus.PENDING_SENT.name())) {
+                    } else if (friendShip.getStatus().equals(FriendStatus.PENDING.name())) {
                         user.setFriendStatus(FriendStatus.PENDING.getValue());
 
                         //Friend request refused by me
