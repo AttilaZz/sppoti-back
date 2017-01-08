@@ -3,7 +3,6 @@
  */
 package com.fr.controllers;
 
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -11,15 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.fr.aop.TraceAuthentification;
 import com.fr.controllers.service.SppotiControllerService;
-import com.fr.exceptions.EmptyArgumentException;
-import com.fr.models.JsonPostRequest;
 import com.fr.models.SppotiResponse;
 import com.fr.models.SppotiRequest;
 import com.fr.entities.Sppoti;
@@ -64,7 +57,7 @@ public class SppotiController {
         Long sportId = newSppoti.getSportId();
 
         String description = newSppoti.getDescription();
-        String date = newSppoti.getDate();
+        String date = newSppoti.getDatetimeCreated();
 
         // check if id's refers to existing peoples
         Long[] teamPeopleId = newSppoti.getTeamPeopleId();

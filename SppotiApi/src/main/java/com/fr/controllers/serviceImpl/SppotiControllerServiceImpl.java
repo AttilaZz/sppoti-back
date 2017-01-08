@@ -41,14 +41,42 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     public void verifyAllDataBeforeSaving(String titre, Long sportId, String description, String date,
                                           Long[] teamPeopleId, String spotAddress, int membersCount, int type, String tags) throws Exception {
 
-        if (titre == null || titre.isEmpty() || sportId == null || description == null || description.isEmpty()
-                || date == null || date.isEmpty() || teamPeopleId == null || teamPeopleId.length == 0
-                || spotAddress == null || membersCount <= 0
-                || type <= 0) {
+        if (titre == null || titre.isEmpty()) {
 
-            throw new EmptyArgumentException("Missing Argument in the JSON request");
+            throw new EmptyArgumentException("Missing Argument (TITLE) in the JSON request");
 
         }
+        if (sportId == null) {
+            throw new EmptyArgumentException("Missing Argument (SPORT-ID) n the JSON request");
+
+        }
+        if (description == null || description.isEmpty()) {
+            throw new EmptyArgumentException("Missing Argument (DESCRIPTION) in the JSON request");
+
+        }
+        if (date == null || date.isEmpty()) {
+            throw new EmptyArgumentException("Missing Argument (DATE) in the JSON request");
+
+        }
+
+        if (teamPeopleId == null || teamPeopleId.length == 0) {
+            throw new EmptyArgumentException("Missing or Empty Argument (TEAM-PEOPLE) in the JSON request");
+
+        }
+
+        if (spotAddress == null) {
+            throw new EmptyArgumentException("Missing Argument (ADDRESS) in the JSON request");
+
+        }
+
+//        if (membersCount <= 0) {
+//            throw new EmptyArgumentException("Missing Argument (MEMBERS-COUNT) in the JSON request");
+//
+//        }
+//        if (type <= 0) {
+//            throw new EmptyArgumentException("Missing Argument (TYPE) in the JSON request");
+//
+//        }
 
         this.titre = titre;
         this.description = description;
@@ -64,7 +92,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Sport ID is not valid");
         }
 
-        for (Long userId : teamPeopleId) {
+        for (Long userId : teamPeopleId)
+        {
             try {
                 Users u = userRepository.getOne(userId);
                 if (u != null) {
@@ -75,8 +104,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
+
     }
 
     public void setDescription(String description) {

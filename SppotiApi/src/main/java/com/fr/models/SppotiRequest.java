@@ -16,7 +16,7 @@ public class SppotiRequest {
     private String titre;
     private Long sportId;
     private String description;
-    private String date;
+    private String datetimeCreated;
     private Long[] teamPeopleId;
     private String address;
     private int membersCount;
@@ -47,12 +47,12 @@ public class SppotiRequest {
         this.description = description;
     }
 
-    public String getDate() {
-        return date;
+    public String getDatetimeCreated() {
+        return datetimeCreated;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDatetimeCreated(String datetimeCreated) {
+        this.datetimeCreated = datetimeCreated;
     }
 
     public Long[] getTeamPeopleId() {
