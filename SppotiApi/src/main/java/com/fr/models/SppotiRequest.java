@@ -20,7 +20,6 @@ public class SppotiRequest {
     private Long[] teamPeopleId;
     private String address;
     private int maxTeamCount;
-    private int type; // public/private
     private String tags;
 
     public String getTitre() {
@@ -77,14 +76,6 @@ public class SppotiRequest {
 
     public void setMaxTeamCount(int maxTeamCount) {
         this.maxTeamCount = maxTeamCount;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public String getTags() {

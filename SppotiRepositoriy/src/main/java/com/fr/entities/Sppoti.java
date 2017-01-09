@@ -48,7 +48,7 @@ public class Sppoti {
     private Set<Post> post;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "gameTeam")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "sppoties")
     private Set<Users> teamMemnbers;
 
     @Column

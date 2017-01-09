@@ -94,7 +94,7 @@ public class Users {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "team_id")
     @JsonIgnore
-    private Set<Sppoti> gameTeam;
+    private Set<Sppoti> sppoties;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
@@ -172,14 +172,6 @@ public class Users {
 
     public void setLikes(Set<LikeContent> likes) {
         this.likes = likes;
-    }
-
-    public Set<Sppoti> getGameTeam() {
-        return gameTeam;
-    }
-
-    public void setGameTeam(Set<Sppoti> gameTeam) {
-        this.gameTeam = gameTeam;
     }
 
     public Set<Resources> getRessources() {
@@ -324,5 +316,13 @@ public class Users {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Set<Sppoti> getSppoties() {
+        return sppoties;
+    }
+
+    public void setSppoties(Set<Sppoti> sppoties) {
+        this.sppoties = sppoties;
     }
 }

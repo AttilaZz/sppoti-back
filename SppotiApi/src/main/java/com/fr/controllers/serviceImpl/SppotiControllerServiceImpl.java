@@ -3,19 +3,16 @@
  */
 package com.fr.controllers.serviceImpl;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.EntityNotFoundException;
-
-import com.fr.models.User;
-import org.springframework.stereotype.Component;
-
 import com.fr.controllers.service.SppotiControllerService;
-import com.fr.exceptions.EmptyArgumentException;
 import com.fr.entities.Sport;
 import com.fr.entities.Sppoti;
 import com.fr.entities.Users;
+import com.fr.exceptions.EmptyArgumentException;
+import org.springframework.stereotype.Component;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -30,7 +27,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     private String titre;
     private String description;
     private int teamCount;
-    private int sppotiType;
     private String tags;
 
     public SppotiControllerServiceImpl() {
@@ -40,7 +36,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     @Override
     public void verifyAllDataBeforeSaving(String titre, Long sportId, String description, String date,
-                                          Long[] teamPeopleId, String spotAddress, int membersCount, int type, String tags) throws Exception {
+                                          Long[] teamPeopleId, String spotAddress, int membersCount, String tags) throws Exception {
 
         if (titre == null || titre.isEmpty()) {
 
@@ -83,10 +79,9 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         this.description = description;
         this.addressGame = spotAddress;
         this.teamCount = membersCount;
-        this.sppotiType = type;
         this.tags = tags;
 
-        Sport sp = sportRepository.getOne(sportId);
+        Sport sp = sportRepository.getSportById(sportId);
         if (sp != null) {
             this.sportGame = sp;
         } else {
@@ -152,10 +147,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     public int getTeamCount() {
         return teamCount;
-    }
-
-    public int getSppotiType() {
-        return sppotiType;
     }
 
     public String getTags() {

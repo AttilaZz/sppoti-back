@@ -67,13 +67,11 @@ public class SppotiController {
 
         int membersCount = newSppoti.getMaxTeamCount();
 
-        int type = newSppoti.getType();
-
         String tags = newSppoti.getTags();
 
         try {
             sppotiControllerService.verifyAllDataBeforeSaving(titre, sportId, description, date, teamPeopleId,
-                    spotAddress, membersCount, type, tags);
+                    spotAddress, membersCount, tags);
 
         } catch (Exception e) {
             LOGGER.error("SPPOT-ADD: " + e.getMessage());
@@ -97,6 +95,9 @@ public class SppotiController {
         } catch (Exception e) {
 
             LOGGER.error("SPOT: Saving problem -- Data Base problem !!");
+            LOGGER.error(e.getMessage());
+
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
