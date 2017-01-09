@@ -2,16 +2,7 @@ package com.fr.entities;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 import org.joda.time.DateTime;
 
@@ -37,7 +28,7 @@ public class Sppoti {
     private String description;
 
     @Column(nullable = false)
-    private String datetime = new DateTime().toString();
+    private String datetimeCreated = new DateTime().toString();
 
     @Column(name = "address")
     private String location;
@@ -56,8 +47,12 @@ public class Sppoti {
     @JsonIgnore
     private Set<Post> post;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "gameTeam")
     private Set<Users> teamMemnbers;
+
+    @Column
+    private int maxMembersCount;
 
     public Long getId() {
         return id;
@@ -67,12 +62,12 @@ public class Sppoti {
         this.id = id;
     }
 
-    public String getDatetime() {
-        return datetime;
+    public String getDatetimeCreated() {
+        return datetimeCreated;
     }
 
-    public void setDatetime(String datetime) {
-        this.datetime = datetime;
+    public void setDatetimeCreated(String datetimeCreated) {
+        this.datetimeCreated = datetimeCreated;
     }
 
     public String getLocation() {
@@ -131,4 +126,11 @@ public class Sppoti {
         this.teamMemnbers = teamMemnbers;
     }
 
+    public int getMaxMembersCount() {
+        return maxMembersCount;
+    }
+
+    public void setMaxMembersCount(int maxMembersCount) {
+        this.maxMembersCount = maxMembersCount;
+    }
 }

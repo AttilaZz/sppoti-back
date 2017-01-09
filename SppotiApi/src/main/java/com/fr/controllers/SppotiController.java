@@ -38,7 +38,7 @@ public class SppotiController {
     private static final String ATT_USER_ID = "USER_ID";
 
     @PostMapping
-    public ResponseEntity<SppotiResponse> addPost(@RequestBody SppotiRequest newSppoti, HttpServletRequest request) {
+    public ResponseEntity<Sppoti> addPost(@RequestBody SppotiRequest newSppoti, HttpServletRequest request) {
 
         // get current logged user
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
@@ -65,7 +65,7 @@ public class SppotiController {
         // Check if all address element are present
         String spotAddress = newSppoti.getAddress();
 
-        int membersCount = newSppoti.getMembersCount();
+        int membersCount = newSppoti.getMaxTeamCount();
 
         int type = newSppoti.getType();
 
@@ -81,20 +81,25 @@ public class SppotiController {
         }
 
         sppotiToSave.setTeamMemnbers(sppotiControllerService.getTeamGame());
-        // frToSave.setDatetime(datetime);
+        sppotiToSave.setDatetimeCreated(date);
         sppotiToSave.setDescription(description);
         sppotiToSave.setTitre(titre);
         sppotiToSave.setLocation(spotAddress);
+        sppotiToSave.setMaxMembersCount(membersCount);
 
         sppotiToSave.setRelatedSport(sppotiControllerService.getSportGame());
 
-        if (sppotiControllerService.saveSpoot(sppotiToSave)) {
+        try {
+            sppotiControllerService.saveSpoot(sppotiToSave);
+
             LOGGER.info("SPOT: has been saved");
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>(sppotiToSave, HttpStatus.CREATED);
+        } catch (Exception e) {
+
+            LOGGER.error("SPOT: Saving problem -- Data Base problem !!");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOGGER.error("SPOT: Saving problem -- Data Base problem !!");
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
     }
 

@@ -19,7 +19,7 @@ public class SppotiRequest {
     private String datetimeCreated;
     private Long[] teamPeopleId;
     private String address;
-    private int membersCount;
+    private int maxTeamCount;
     private int type; // public/private
     private String tags;
 
@@ -71,12 +71,12 @@ public class SppotiRequest {
         this.address = address;
     }
 
-    public int getMembersCount() {
-        return membersCount;
+    public int getMaxTeamCount() {
+        return maxTeamCount;
     }
 
-    public void setMembersCount(int membersCount) {
-        this.membersCount = membersCount;
+    public void setMaxTeamCount(int maxTeamCount) {
+        this.maxTeamCount = maxTeamCount;
     }
 
     public int getType() {

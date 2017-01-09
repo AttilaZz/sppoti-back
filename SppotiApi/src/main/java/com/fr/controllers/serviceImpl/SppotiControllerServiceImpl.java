@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
 
+import com.fr.models.User;
 import org.springframework.stereotype.Component;
 
 import com.fr.controllers.service.SppotiControllerService;
@@ -92,8 +93,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Sport ID is not valid");
         }
 
-        for (Long userId : teamPeopleId)
-        {
+        for (Long userId : teamPeopleId) {
             try {
                 Users u = userRepository.getOne(userId);
                 if (u != null) {
@@ -114,41 +114,18 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     @Override
     public boolean saveSpoot(Sppoti spotToSave) {
-        boolean userIsUpToDate = true;
 
-        // add the game
-        Sppoti sppoti = sppotiRepository.save(spotToSave);
+        Set<Users> users = new HashSet<>();
 
-        Long gameId = sppoti.getId();
-        if (gameId > 0) {
-            // if game has been added -> Link users to create the team
-
-            Sppoti g = sppotiRepository.getOne(gameId);
-
-            for (Users user : teamGame) {
-                user.setGameTeam(g);
-
-                try {
-                    userRepository.save(user);
-                } catch (Exception e) {
-                    userIsUpToDate = false;
-                }
-
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (userIsUpToDate)
-                return true;
-
-            // TODO: If one of the users failed to update -- retry
-
+        for (Users user : teamGame) {
+            users.add(user);
         }
 
-        return false;
+        spotToSave.setTeamMemnbers(users);
+
+        Sppoti sppoti = sppotiRepository.save(spotToSave);
+
+        return sppoti != null;
     }
 
     @Override

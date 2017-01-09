@@ -91,10 +91,10 @@ public class Users {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "notifSender")
     private Set<Notifications> notifications;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "team_id")
     @JsonIgnore
-    private Sppoti gameTeam;
+    private Set<Sppoti> gameTeam;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
@@ -174,19 +174,11 @@ public class Users {
         this.likes = likes;
     }
 
-    public Sppoti getTeamMemnbers() {
+    public Set<Sppoti> getGameTeam() {
         return gameTeam;
     }
 
-    public void setTeamMemnbers(Sppoti gameTeam) {
-        this.gameTeam = gameTeam;
-    }
-
-    public Sppoti getGameTeam() {
-        return gameTeam;
-    }
-
-    public void setGameTeam(Sppoti gameTeam) {
+    public void setGameTeam(Set<Sppoti> gameTeam) {
         this.gameTeam = gameTeam;
     }
 
