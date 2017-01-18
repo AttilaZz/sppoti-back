@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.fr.controllers.serviceImpl;
+package com.fr.controllers.service.implem;
 
 import com.fr.controllers.service.SppotiControllerService;
 import com.fr.entities.Sport;
@@ -11,6 +11,7 @@ import com.fr.exceptions.EmptyArgumentException;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +24,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     private Sport sportGame;
     private String addressGame;
-    private Set<Users> teamGame;
+    private Set<Users> myTeam;
+    private Set<Users> adverseTeam;
     private String titre;
     private String description;
     private int teamCount;
@@ -31,12 +33,13 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     public SppotiControllerServiceImpl() {
         sportGame = new Sport();
-        teamGame = new HashSet<>();
+        myTeam = new HashSet<>();
+        adverseTeam = new HashSet<>();
     }
 
     @Override
-    public void verifyAllDataBeforeSaving(String titre, Long sportId, String description, String date,
-                                          Long[] teamPeopleId, String spotAddress, int membersCount, String tags) throws Exception {
+    public void verifyAllDataBeforeSaving(String titre, Long sportId, String description, Date date,
+                                          Long[] teamPeopleId, Long[] vsTeam, String spotAddress, int membersCount, String tags) throws Exception {
 
         if (titre == null || titre.isEmpty()) {
 
@@ -51,13 +54,18 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EmptyArgumentException("Missing Argument (DESCRIPTION) in the JSON request");
 
         }
-        if (date == null || date.isEmpty()) {
+        if (date == null) {
             throw new EmptyArgumentException("Missing Argument (DATE) in the JSON request");
 
         }
 
         if (teamPeopleId == null || teamPeopleId.length == 0) {
-            throw new EmptyArgumentException("Missing or Empty Argument (TEAM-PEOPLE) in the JSON request");
+            throw new EmptyArgumentException("Missing or Empty Argument (MY-TEAM) in the JSON request");
+
+        }
+
+        if (vsTeam == null || vsTeam.length == 0) {
+            throw new EmptyArgumentException("Missing or Empty Argument (ADVERSE-TEAM) in the JSON request");
 
         }
 
@@ -81,18 +89,34 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         this.teamCount = membersCount;
         this.tags = tags;
 
-        Sport sp = sportRepository.getSportById(sportId);
+        Sport sp = sportRepository.findById(sportId);
+
         if (sp != null) {
             this.sportGame = sp;
         } else {
             throw new EntityNotFoundException("Sport ID is not valid");
         }
 
+        //my team
         for (Long userId : teamPeopleId) {
             try {
                 Users u = userRepository.getOne(userId);
                 if (u != null) {
-                    this.teamGame.add(u);
+                    this.myTeam.add(u);
+                } else {
+                    throw new EntityNotFoundException("One of the team ID is not valid");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        //adverse team
+        for (Long userId : vsTeam) {
+            try {
+                Users u = userRepository.getOne(userId);
+                if (u != null) {
+                    this.adverseTeam.add(u);
                 } else {
                     throw new EntityNotFoundException("One of the team ID is not valid");
                 }
@@ -112,15 +136,27 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         Set<Users> users = new HashSet<>();
 
-        for (Users user : teamGame) {
+        Set sppoti = new HashSet();
+        sppoti.add(spotToSave);
+
+        //my team
+        for (Users user : myTeam) {
+            user.setTeamSppoties(sppoti);
             users.add(user);
         }
+        spotToSave.setMyteam(users);
 
-        spotToSave.setTeamMemnbers(users);
+        //adverse team
+        users.clear();
+        for (Users user : adverseTeam) {
+            user.setAdverseSppoties(sppoti);
+            users.add(user);
+        }
+        spotToSave.setAdverseTeam(users);
 
-        Sppoti sppoti = sppotiRepository.save(spotToSave);
 
-        return sppoti != null;
+        return sppotiRepository.save(spotToSave) != null;
+
     }
 
     @Override
@@ -132,9 +168,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         return addressGame;
     }
 
-    @Override
-    public Set<Users> getTeamGame() {
-        return teamGame;
+    public Set<Users> getMyTeam() {
+        return myTeam;
     }
 
     public String getTitre() {

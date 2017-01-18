@@ -12,6 +12,5 @@ public interface SportRepository extends JpaRepository<Sport, Long> {
 
     Sport getById(Long id);
 
-    @Query("SELECT s FROM Sport s WHERE s.id = :id")
-    Sport getSportById(@Param("id") Long sportId);
+    Sport findById(Long sportId);
 }

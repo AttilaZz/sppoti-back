@@ -1,4 +1,4 @@
-package com.fr.controllers.serviceImpl;
+package com.fr.controllers.service.implem;
 
 import com.fr.controllers.AccountController;
 import com.fr.controllers.service.AbstractControllerService;

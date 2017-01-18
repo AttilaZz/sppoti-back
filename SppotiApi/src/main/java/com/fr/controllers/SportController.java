@@ -1,6 +1,6 @@
 package com.fr.controllers;
 
-import com.fr.controllers.serviceImpl.AbstractControllerServiceImpl;
+import com.fr.controllers.service.implem.AbstractControllerServiceImpl;
 import com.fr.entities.Sport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

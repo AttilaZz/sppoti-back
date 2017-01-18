@@ -1,14 +1,12 @@
 package com.fr.controllers;
 
 import com.fr.controllers.service.AccountControllerService;
-import com.fr.controllers.serviceImpl.AccountControllerServiceImpl;
 import com.fr.entities.*;
 import com.fr.enums.CoverType;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictPhoneException;
 import com.fr.exceptions.ConflictUsernameException;
 import com.fr.models.SignUpRequest;
-import com.fr.models.SportModel;
 import com.fr.models.User;
 import com.fr.models.UserRoleType;
 import com.fr.security.AccountUserDetails;
@@ -16,13 +14,10 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

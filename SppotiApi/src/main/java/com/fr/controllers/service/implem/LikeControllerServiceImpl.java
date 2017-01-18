@@ -1,12 +1,9 @@
-package com.fr.controllers.serviceImpl;
+package com.fr.controllers.service.implem;
 
 import com.fr.controllers.service.LikeControllerService;
 import com.fr.entities.Comment;
-import com.fr.entities.EditHistory;
 import com.fr.entities.LikeContent;
 import com.fr.entities.Post;
-import com.fr.models.CommentModel;
-import com.fr.models.ContentEditedResponse;
 import com.fr.models.HeaderData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;

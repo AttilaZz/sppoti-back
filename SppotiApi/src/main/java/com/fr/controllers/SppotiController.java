@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fr.aop.TraceAuthentification;
 import com.fr.controllers.service.SppotiControllerService;
-import com.fr.models.SppotiResponse;
 import com.fr.models.SppotiRequest;
 import com.fr.entities.Sppoti;
 import com.fr.entities.Users;
+
+import java.util.Date;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -57,10 +58,11 @@ public class SppotiController {
         Long sportId = newSppoti.getSportId();
 
         String description = newSppoti.getDescription();
-        String date = newSppoti.getDatetimeCreated();
+        Date date = newSppoti.getDatetimeCreated();
 
         // check if id's refers to existing peoples
-        Long[] teamPeopleId = newSppoti.getTeamPeopleId();
+        Long[] myTeam = newSppoti.getMyTeam();
+        Long[] adverseTeam = newSppoti.getVsTeam();
 
         // Check if all address element are present
         String spotAddress = newSppoti.getAddress();
@@ -70,7 +72,7 @@ public class SppotiController {
         String tags = newSppoti.getTags();
 
         try {
-            sppotiControllerService.verifyAllDataBeforeSaving(titre, sportId, description, date, teamPeopleId,
+            sppotiControllerService.verifyAllDataBeforeSaving(titre, sportId, description, date, myTeam, adverseTeam,
                     spotAddress, membersCount, tags);
 
         } catch (Exception e) {
@@ -78,7 +80,7 @@ public class SppotiController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        sppotiToSave.setTeamMemnbers(sppotiControllerService.getTeamGame());
+        sppotiToSave.setMyteam(sppotiControllerService.getMyTeam());
         sppotiToSave.setDatetimeCreated(date);
         sppotiToSave.setDescription(description);
         sppotiToSave.setTitre(titre);

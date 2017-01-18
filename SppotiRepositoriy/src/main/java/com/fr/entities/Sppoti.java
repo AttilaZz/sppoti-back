@@ -1,14 +1,12 @@
 package com.fr.entities;
 
-import java.util.Set;
-
-import javax.persistence.*;
-
-import org.joda.time.DateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -28,7 +26,7 @@ public class Sppoti {
     private String description;
 
     @Column(nullable = false)
-    private String datetimeCreated = new DateTime().toString();
+    private Date datetimeCreated = new Date();
 
     @Column(name = "address")
     private String location;
@@ -48,8 +46,12 @@ public class Sppoti {
     private Set<Post> post;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "sppoties")
-    private Set<Users> teamMemnbers;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "TeamSppoties")
+    private Set<Users> myteam;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "AdverseSppoties")
+    private Set<Users> adverseTeam;
 
     @Column
     private int maxMembersCount;
@@ -62,11 +64,11 @@ public class Sppoti {
         this.id = id;
     }
 
-    public String getDatetimeCreated() {
+    public Date getDatetimeCreated() {
         return datetimeCreated;
     }
 
-    public void setDatetimeCreated(String datetimeCreated) {
+    public void setDatetimeCreated(Date datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
     }
 
@@ -118,12 +120,12 @@ public class Sppoti {
         this.description = description;
     }
 
-    public Set<Users> getTeamMemnbers() {
-        return teamMemnbers;
+    public Set<Users> getMyteam() {
+        return myteam;
     }
 
-    public void setTeamMemnbers(Set<Users> teamMemnbers) {
-        this.teamMemnbers = teamMemnbers;
+    public void setMyteam(Set<Users> myteam) {
+        this.myteam = myteam;
     }
 
     public int getMaxMembersCount() {
@@ -132,5 +134,13 @@ public class Sppoti {
 
     public void setMaxMembersCount(int maxMembersCount) {
         this.maxMembersCount = maxMembersCount;
+    }
+
+    public Set<Users> getAdverseTeam() {
+        return adverseTeam;
+    }
+
+    public void setAdverseTeam(Set<Users> adverseTeam) {
+        this.adverseTeam = adverseTeam;
     }
 }

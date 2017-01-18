@@ -1,16 +1,14 @@
 /**
  *
  */
-package com.fr.controllers.serviceImpl;
+package com.fr.controllers.service.implem;
 
 import com.fr.controllers.service.CommentControllerService;
 import com.fr.entities.Comment;
 import com.fr.entities.EditHistory;
-import com.fr.entities.Post;
 import com.fr.models.CommentModel;
 import com.fr.models.ContentEditedResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;

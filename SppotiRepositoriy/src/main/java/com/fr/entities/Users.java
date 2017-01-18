@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.hibernate.annotations.Where;
-import org.springframework.security.access.prepost.PostFilter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -91,10 +89,15 @@ public class Users {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "notifSender")
     private Set<Notifications> notifications;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "team_id")
     @JsonIgnore
-    private Set<Sppoti> sppoties;
+    private Set<Sppoti> TeamSppoties;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "adverse_team_id")
+    @JsonIgnore
+    private Set<Sppoti> AdverseSppoties;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
@@ -318,11 +321,19 @@ public class Users {
         this.username = username;
     }
 
-    public Set<Sppoti> getSppoties() {
-        return sppoties;
+    public Set<Sppoti> getTeamSppoties() {
+        return TeamSppoties;
     }
 
-    public void setSppoties(Set<Sppoti> sppoties) {
-        this.sppoties = sppoties;
+    public void setTeamSppoties(Set<Sppoti> teamSppoties) {
+        this.TeamSppoties = teamSppoties;
+    }
+
+    public Set<Sppoti> getAdverseSppoties() {
+        return AdverseSppoties;
+    }
+
+    public void setAdverseSppoties(Set<Sppoti> adverseSppoties) {
+        AdverseSppoties = adverseSppoties;
     }
 }

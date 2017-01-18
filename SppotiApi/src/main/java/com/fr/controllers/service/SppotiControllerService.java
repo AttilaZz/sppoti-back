@@ -5,6 +5,7 @@ import com.fr.entities.Sppoti;
 import com.fr.entities.Users;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -13,12 +14,13 @@ import java.util.Set;
 
 @Service
 public interface SppotiControllerService extends AbstractControllerService {
-    void verifyAllDataBeforeSaving(String titre, Long sportId, String description, String date,
-                                   Long[] teamPeopleId, String spotAddress, int membersCount, String tags) throws Exception;
+
+    void verifyAllDataBeforeSaving(String titre, Long sportId, String description, Date date,
+                                   Long[] teamPeopleId, Long[] vsTeam, String spotAddress, int membersCount, String tags) throws Exception;
 
     boolean saveSpoot(Sppoti spotToSave);
 
     Sport getSportGame();
 
-    Set<Users> getTeamGame();
+    Set<Users> getMyTeam();
 }

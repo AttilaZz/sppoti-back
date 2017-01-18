@@ -6,6 +6,8 @@ package com.fr.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import java.util.Date;
+
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
  */
@@ -16,8 +18,9 @@ public class SppotiRequest {
     private String titre;
     private Long sportId;
     private String description;
-    private String datetimeCreated;
-    private Long[] teamPeopleId;
+    private Date datetimeCreated;
+    private Long[] myTeam;
+    private Long[] vsTeam;
     private String address;
     private int maxTeamCount;
     private String tags;
@@ -46,20 +49,20 @@ public class SppotiRequest {
         this.description = description;
     }
 
-    public String getDatetimeCreated() {
+    public Date getDatetimeCreated() {
         return datetimeCreated;
     }
 
-    public void setDatetimeCreated(String datetimeCreated) {
+    public void setDatetimeCreated(Date datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
     }
 
-    public Long[] getTeamPeopleId() {
-        return teamPeopleId;
+    public Long[] getMyTeam() {
+        return myTeam;
     }
 
-    public void setTeamPeopleId(Long[] teamPeopleId) {
-        this.teamPeopleId = teamPeopleId;
+    public void setMyTeam(Long[] myTeam) {
+        this.myTeam = myTeam;
     }
 
     public String getAddress() {
@@ -86,4 +89,11 @@ public class SppotiRequest {
         this.tags = tags;
     }
 
+    public Long[] getVsTeam() {
+        return vsTeam;
+    }
+
+    public void setVsTeam(Long[] vsTeam) {
+        this.vsTeam = vsTeam;
+    }
 }

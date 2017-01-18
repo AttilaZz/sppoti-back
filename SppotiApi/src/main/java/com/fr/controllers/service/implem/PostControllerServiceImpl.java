@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.fr.controllers.serviceImpl;
+package com.fr.controllers.service.implem;
 
 import com.fr.controllers.service.PostControllerService;
 import com.fr.entities.*;
