@@ -5,6 +5,7 @@ package com.fr.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
@@ -18,9 +19,13 @@ public class SppotiRequest {
     private String titre;
     private Long sportId;
     private String description;
-    private Date datetimeCreated;
-    private Long[] myTeam;
-    private Long[] vsTeam;
+    @JsonProperty("sppotiDatetime")
+    private Date datetimeStart;
+    @JsonProperty("teamHost")
+    private Team myTeam;
+    @JsonProperty("guestHost")
+    private Team vsTeam;
+    @JsonProperty("location")
     private String address;
     private int maxTeamCount;
     private String tags;
@@ -49,20 +54,28 @@ public class SppotiRequest {
         this.description = description;
     }
 
-    public Date getDatetimeCreated() {
-        return datetimeCreated;
+    public Date getDatetimeStart() {
+        return datetimeStart;
     }
 
-    public void setDatetimeCreated(Date datetimeCreated) {
-        this.datetimeCreated = datetimeCreated;
+    public void setDatetimeStart(Date datetimeStart) {
+        this.datetimeStart = datetimeStart;
     }
 
-    public Long[] getMyTeam() {
+    public Team getMyTeam() {
         return myTeam;
     }
 
-    public void setMyTeam(Long[] myTeam) {
+    public void setMyTeam(Team myTeam) {
         this.myTeam = myTeam;
+    }
+
+    public Team getVsTeam() {
+        return vsTeam;
+    }
+
+    public void setVsTeam(Team vsTeam) {
+        this.vsTeam = vsTeam;
     }
 
     public String getAddress() {
@@ -89,11 +102,42 @@ public class SppotiRequest {
         this.tags = tags;
     }
 
-    public Long[] getVsTeam() {
-        return vsTeam;
-    }
+    public class Team{
+        private String name;
+        private String logoPath;
+        private String coverPath;
+        private Long[] memberIdList;
 
-    public void setVsTeam(Long[] vsTeam) {
-        this.vsTeam = vsTeam;
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getLogoPath() {
+            return logoPath;
+        }
+
+        public void setLogoPath(String logoPath) {
+            this.logoPath = logoPath;
+        }
+
+        public String getCoverPath() {
+            return coverPath;
+        }
+
+        public void setCoverPath(String coverPath) {
+            this.coverPath = coverPath;
+        }
+
+        public Long[] getMemberIdList() {
+            return memberIdList;
+        }
+
+        public void setMemberIdList(Long[] memberIdList) {
+            this.memberIdList = memberIdList;
+        }
     }
 }

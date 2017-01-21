@@ -184,7 +184,7 @@ public class PostController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            newPostToSave.setGame(game);
+//            newPostToSave.setSppoti(game);
             postRep.setGame(game);
             canAdd = true;
 

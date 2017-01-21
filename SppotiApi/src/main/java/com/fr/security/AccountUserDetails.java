@@ -29,7 +29,7 @@ public class AccountUserDetails implements MyUserDetails {
 
         ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-        for (Roles userRole : account.getUserRoles()) {
+        for (Roles userRole : account.getRoles()) {
 
             authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getName()));
         }

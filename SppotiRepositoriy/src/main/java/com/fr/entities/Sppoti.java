@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -28,8 +27,17 @@ public class Sppoti {
     @Column(nullable = false)
     private Date datetimeCreated = new Date();
 
-    @Column(name = "address")
+    @Column(nullable = false)
+    private Date dateTimeStart;
+
+    @Column(nullable = false)
     private String location;
+
+    @Column(nullable = false)
+    private int maxMembersCount;
+
+    @Column(nullable = false)
+    private String tags;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sport_id", nullable = false)
@@ -39,22 +47,17 @@ public class Sppoti {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    private Users userGame;
+    private Users userSppoti;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "game")
+    @OneToOne
+    @JoinColumn(name = "team_host_id", nullable = false)
     @JsonIgnore
-    private Set<Post> post;
+    private Team teamHost;
 
+    @OneToOne
+    @JoinColumn(name = "team_guest_id", nullable = false)
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "TeamSppoties")
-    private Set<Users> myteam;
-
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "AdverseSppoties")
-    private Set<Users> adverseTeam;
-
-    @Column
-    private int maxMembersCount;
+    private Team teamGuest;
 
     public Long getId() {
         return id;
@@ -88,20 +91,12 @@ public class Sppoti {
         this.relatedSport = relatedSport;
     }
 
-    public Users getUserGame() {
-        return userGame;
+    public Users getUserSppoti() {
+        return userSppoti;
     }
 
-    public void setUserGame(Users userGame) {
-        this.userGame = userGame;
-    }
-
-    public Set<Post> getPost() {
-        return post;
-    }
-
-    public void setPost(Set<Post> post) {
-        this.post = post;
+    public void setUserSppoti(Users userSppoti) {
+        this.userSppoti = userSppoti;
     }
 
     public String getTitre() {
@@ -120,13 +115,6 @@ public class Sppoti {
         this.description = description;
     }
 
-    public Set<Users> getMyteam() {
-        return myteam;
-    }
-
-    public void setMyteam(Set<Users> myteam) {
-        this.myteam = myteam;
-    }
 
     public int getMaxMembersCount() {
         return maxMembersCount;
@@ -136,11 +124,35 @@ public class Sppoti {
         this.maxMembersCount = maxMembersCount;
     }
 
-    public Set<Users> getAdverseTeam() {
-        return adverseTeam;
+    public Date getDateTimeStart() {
+        return dateTimeStart;
     }
 
-    public void setAdverseTeam(Set<Users> adverseTeam) {
-        this.adverseTeam = adverseTeam;
+    public void setDateTimeStart(Date dateTimeStart) {
+        this.dateTimeStart = dateTimeStart;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public Team getTeamHost() {
+        return teamHost;
+    }
+
+    public void setTeamHost(Team teamHost) {
+        this.teamHost = teamHost;
+    }
+
+    public Team getTeamGuest() {
+        return teamGuest;
+    }
+
+    public void setTeamGuest(Team teamGuest) {
+        this.teamGuest = teamGuest;
     }
 }

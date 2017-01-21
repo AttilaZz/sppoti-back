@@ -29,7 +29,11 @@
 
     <dependencies>
 
-        <!-- Repository module-->
+        <dependency>
+            <groupId>com.sppoti</groupId>
+            <artifactId>SppotiCommons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.sppoti</groupId>
             <artifactId>SppotiRepositoriy</artifactId>

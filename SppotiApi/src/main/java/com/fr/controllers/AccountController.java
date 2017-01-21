@@ -108,7 +108,7 @@ public class AccountController {
 
         Set<Roles> roles = new HashSet<>();
         roles.add(profile);
-        newUser.setUserRoles(roles);
+        newUser.setRoles(roles);
 
 		/*
          * saving the new user

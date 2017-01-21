@@ -1,17 +1,16 @@
-/**
- *
- */
 package com.fr.controllers.service.implem;
 
 import com.fr.controllers.service.SppotiControllerService;
 import com.fr.entities.Sport;
 import com.fr.entities.Sppoti;
+import com.fr.entities.Team;
 import com.fr.entities.Users;
-import com.fr.exceptions.EmptyArgumentException;
+import com.fr.exceptions.HostMemberNotFoundException;
+import com.fr.exceptions.SportNotFoundException;
+import com.fr.models.SppotiRequest;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,169 +21,72 @@ import java.util.Set;
 @Component
 public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService {
 
-    private Sport sportGame;
-    private String addressGame;
-    private Set<Users> myTeam;
-    private Set<Users> adverseTeam;
-    private String titre;
-    private String description;
-    private int teamCount;
-    private String tags;
+    public Set<Users> getTeamMembersEntityFromDto(Long[] memberIdList) {
 
-    public SppotiControllerServiceImpl() {
-        sportGame = new Sport();
-        myTeam = new HashSet<>();
-        adverseTeam = new HashSet<>();
-    }
+        Set<Users> team = new HashSet<>();
 
-    @Override
-    public void verifyAllDataBeforeSaving(String titre, Long sportId, String description, Date date,
-                                          Long[] teamPeopleId, Long[] vsTeam, String spotAddress, int membersCount, String tags) throws Exception {
+        for (Long userId : memberIdList) {
 
-        if (titre == null || titre.isEmpty()) {
-
-            throw new EmptyArgumentException("Missing Argument (TITLE) in the JSON request");
-
-        }
-        if (sportId == null) {
-            throw new EmptyArgumentException("Missing Argument (SPORT-ID) n the JSON request");
-
-        }
-        if (description == null || description.isEmpty()) {
-            throw new EmptyArgumentException("Missing Argument (DESCRIPTION) in the JSON request");
-
-        }
-        if (date == null) {
-            throw new EmptyArgumentException("Missing Argument (DATE) in the JSON request");
-
-        }
-
-        if (teamPeopleId == null || teamPeopleId.length == 0) {
-            throw new EmptyArgumentException("Missing or Empty Argument (MY-TEAM) in the JSON request");
-
-        }
-
-        if (vsTeam == null || vsTeam.length == 0) {
-            throw new EmptyArgumentException("Missing or Empty Argument (ADVERSE-TEAM) in the JSON request");
-
-        }
-
-        if (spotAddress == null) {
-            throw new EmptyArgumentException("Missing Argument (ADDRESS) in the JSON request");
-
-        }
-
-//        if (membersCount <= 0) {
-//            throw new EmptyArgumentException("Missing Argument (MEMBERS-COUNT) in the JSON request");
-//
-//        }
-//        if (type <= 0) {
-//            throw new EmptyArgumentException("Missing Argument (TYPE) in the JSON request");
-//
-//        }
-
-        this.titre = titre;
-        this.description = description;
-        this.addressGame = spotAddress;
-        this.teamCount = membersCount;
-        this.tags = tags;
-
-        Sport sp = sportRepository.findById(sportId);
-
-        if (sp != null) {
-            this.sportGame = sp;
-        } else {
-            throw new EntityNotFoundException("Sport ID is not valid");
-        }
-
-        //my team
-        for (Long userId : teamPeopleId) {
-            try {
-                Users u = userRepository.getOne(userId);
-                if (u != null) {
-                    this.myTeam.add(u);
-                } else {
-                    throw new EntityNotFoundException("One of the team ID is not valid");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            Users u = userRepository.getOne(userId);
+            if (u != null) {
+                team.add(u);
+            } else {
+                throw new EntityNotFoundException();
             }
+
         }
-
-        //adverse team
-        for (Long userId : vsTeam) {
-            try {
-                Users u = userRepository.getOne(userId);
-                if (u != null) {
-                    this.adverseTeam.add(u);
-                } else {
-                    throw new EntityNotFoundException("One of the team ID is not valid");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public boolean saveSpoot(Sppoti spotToSave) {
-
-        Set<Users> users = new HashSet<>();
-
-        Set sppoti = new HashSet();
-        sppoti.add(spotToSave);
-
-        //my team
-        for (Users user : myTeam) {
-            user.setTeamSppoties(sppoti);
-            users.add(user);
-        }
-        spotToSave.setMyteam(users);
-
-        //adverse team
-        users.clear();
-        for (Users user : adverseTeam) {
-            user.setAdverseSppoties(sppoti);
-            users.add(user);
-        }
-        spotToSave.setAdverseTeam(users);
-
-
-        return sppotiRepository.save(spotToSave) != null;
+        return team;
 
     }
 
     @Override
-    public Sport getSportGame() {
-        return sportGame;
-    }
+    public void saveSppoti(SppotiRequest newSppoti, Long sppotiCreator) {
 
-    public String getAddressGame() {
-        return addressGame;
-    }
+        Team hostTeam = new Team(), guestTeam = new Team();
 
-    public Set<Users> getMyTeam() {
-        return myTeam;
-    }
+        hostTeam.setName(newSppoti.getMyTeam().getName());
+        hostTeam.setCoverPath(newSppoti.getMyTeam().getCoverPath());
+        hostTeam.setLogoPath(newSppoti.getMyTeam().getLogoPath());
+        try {
+            hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMemberIdList()));
+        } catch (RuntimeException e) {
+            LOGGER.error("One of the team id not found: " + e.getMessage());
+            throw new HostMemberNotFoundException("Host-Team (members) one of the team dosn't exist");
 
-    public String getTitre() {
-        return titre;
-    }
+        }
 
-    public String getDescription() {
-        return description;
-    }
+        guestTeam.setName(newSppoti.getVsTeam().getName());
+        guestTeam.setCoverPath(newSppoti.getVsTeam().getCoverPath());
+        guestTeam.setLogoPath(newSppoti.getVsTeam().getLogoPath());
 
-    public int getTeamCount() {
-        return teamCount;
-    }
+        try {
+            guestTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getVsTeam().getMemberIdList()));
+        } catch (RuntimeException e) {
+            LOGGER.error("One of the team id not found: " + e.getMessage());
+            throw new HostMemberNotFoundException("Guest-Team (members) one of the team dosn't exist");
+        }
 
-    public String getTags() {
-        return tags;
+        Sport sport = sportRepository.findOne(newSppoti.getSportId());
+        if (sport == null) {
+            throw new SportNotFoundException("Sport id is incorrect");
+        }
+
+        Users owner = userRepository.findOne(sppotiCreator);
+        if (owner == null) {
+            throw new EntityNotFoundException("Stored used id in session has not been found in database");
+        }
+
+        Sppoti sppoti = new Sppoti();
+        sppoti.setRelatedSport(sport);
+        sppoti.setUserSppoti(owner);
+        sppoti.setTags(newSppoti.getTags());
+        sppoti.setTeamGuest(guestTeam);
+        sppoti.setTeamHost(hostTeam);
+        sppoti.setDescription(newSppoti.getDescription());
+        sppoti.setLocation(newSppoti.getAddress());
+        sppoti.setDateTimeStart(newSppoti.getDatetimeStart());
+
+        sppotiRepository.save(sppoti);
+
     }
 }

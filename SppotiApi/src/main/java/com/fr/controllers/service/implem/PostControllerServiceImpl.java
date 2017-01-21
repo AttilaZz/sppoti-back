@@ -183,8 +183,8 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             if (post.getVideo() != null)
                 pres.setVideoLink(post.getVideo());
 
-            if (post.getGame() != null)
-                pres.setGame(post.getGame());
+//            if (post.getSppoti() != null)
+//                pres.setGame(post.getSppoti());
 
             if (post.getSport() != null && post.getSport().getId() != null) {
                 pres.setSportId(post.getSport().getId());

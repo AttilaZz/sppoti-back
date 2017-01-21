@@ -14,8 +14,10 @@
 
     <modules>
         <module>SppotiApi</module>
-        <module>SppotiGui</module>
+        <module>SppotiStarter</module>
         <module>SppotiRepositoriy</module>
+        <module>SppotiCommons</module>
+        <module>SppotiCore</module>
     </modules>
 
     <parent>
@@ -25,5 +27,35 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.sppoti</groupId>
+                <artifactId>SppotiApi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sppoti</groupId>
+                <artifactId>SppotiRepositoriy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sppoti</groupId>
+                <artifactId>SppotiCommons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sppoti</groupId>
+                <artifactId>SppotiCore</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

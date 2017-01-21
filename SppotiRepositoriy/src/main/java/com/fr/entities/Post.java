@@ -17,7 +17,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * 1: A post can be a simple custom content shared by the user 2: score of a
- * game 3: address of a game 4: anything else related to a game 5: related to
+ * sppoti 3: address of a sppoti 4: anything else related to a sppoti 5: related to
  * one sport
  */
 
@@ -75,10 +75,6 @@ public class Post implements Comparable<Post> {
     @JoinColumn(name = "sport_id")
     private Sport sport;
 
-    @ManyToOne
-    @JoinColumn(name = "game_id")
-    private Sppoti game;
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     @OrderBy("datetimeCreated DESC")
     private SortedSet<Comment> Comments = new TreeSet<Comment>();
@@ -130,14 +126,6 @@ public class Post implements Comparable<Post> {
 
     public void setSport(Sport sport) {
         this.sport = sport;
-    }
-
-    public Sppoti getGame() {
-        return game;
-    }
-
-    public void setGame(Sppoti game) {
-        this.game = game;
     }
 
     public String getDatetimeCreated() {

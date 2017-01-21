@@ -74,8 +74,8 @@ public class Users {
     @OrderBy("datetimeCreated DESC")
     private SortedSet<Post> userPosts = new TreeSet<Post>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userGame")
-    private Set<Sppoti> userGames;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userSppoti")
+    private Set<Sppoti> userSppoties;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userMessage")
     private Set<Messages> userMessages;
@@ -89,16 +89,6 @@ public class Users {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "notifSender")
     private Set<Notifications> notifications;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "team_id")
-    @JsonIgnore
-    private Set<Sppoti> TeamSppoties;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "adverse_team_id")
-    @JsonIgnore
-    private Set<Sppoti> AdverseSppoties;
-
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     @Where(clause = "is_selected='1'")
@@ -107,7 +97,7 @@ public class Users {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", nullable = false)
     @JsonIgnore
-    private Set<Roles> userRoles;
+    private Set<Roles> roles;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "sport_id", nullable = false)
@@ -117,6 +107,11 @@ public class Users {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
     @OrderBy("dateTime DESC")
     private SortedSet<Address> addresses;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "team_id", nullable = true)
+    @JsonIgnore
+    private Team team;
 
     public boolean isDeleted() {
         return deleted;
@@ -145,12 +140,12 @@ public class Users {
         this.userPosts = userPosts;
     }
 
-    public Set<Sppoti> getUserGames() {
-        return userGames;
+    public Set<Sppoti> getUserSppoties() {
+        return userSppoties;
     }
 
-    public void setUserGames(Set<Sppoti> userGames) {
-        this.userGames = userGames;
+    public void setUserSppoties(Set<Sppoti> userSppoties) {
+        this.userSppoties = userSppoties;
     }
 
     public Set<Messages> getUserMessages() {
@@ -225,12 +220,12 @@ public class Users {
         this.description = description;
     }
 
-    public Set<Roles> getUserRoles() {
-        return userRoles;
+    public Set<Roles> getRoles() {
+        return roles;
     }
 
-    public void setUserRoles(Set<Roles> userRoles) {
-        this.userRoles = userRoles;
+    public void setRoles(Set<Roles> roles) {
+        this.roles = roles;
     }
 
     public Set<Sport> getRelatedSports() {
@@ -321,19 +316,11 @@ public class Users {
         this.username = username;
     }
 
-    public Set<Sppoti> getTeamSppoties() {
-        return TeamSppoties;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setTeamSppoties(Set<Sppoti> teamSppoties) {
-        this.TeamSppoties = teamSppoties;
-    }
-
-    public Set<Sppoti> getAdverseSppoties() {
-        return AdverseSppoties;
-    }
-
-    public void setAdverseSppoties(Set<Sppoti> adverseSppoties) {
-        AdverseSppoties = adverseSppoties;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
