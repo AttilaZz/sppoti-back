@@ -3,8 +3,8 @@ package com.fr.controllers.service;
 import com.fr.entities.Roles;
 import com.fr.entities.Sport;
 import com.fr.entities.Users;
-import com.fr.models.SignUpRequest;
-import com.fr.models.User;
+import com.fr.dto.SignUpRequest;
+import com.fr.dto.User;
 import org.springframework.stereotype.Service;
 
 @Service

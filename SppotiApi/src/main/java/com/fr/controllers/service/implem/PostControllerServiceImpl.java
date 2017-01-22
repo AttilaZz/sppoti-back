@@ -5,9 +5,9 @@ package com.fr.controllers.service.implem;
 
 import com.fr.controllers.service.PostControllerService;
 import com.fr.entities.*;
-import com.fr.models.CommentModel;
-import com.fr.models.ContentEditedResponse;
-import com.fr.models.PostResponse;
+import com.fr.dto.CommentModel;
+import com.fr.dto.ContentEditedResponse;
+import com.fr.dto.PostResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;

@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.fr.models;
+package com.fr.dto;
 
 import java.util.List;
 import java.util.Set;

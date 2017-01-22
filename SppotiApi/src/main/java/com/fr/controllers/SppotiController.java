@@ -1,7 +1,7 @@
 package com.fr.controllers;
 
 import com.fr.controllers.service.SppotiControllerService;
-import com.fr.models.SppotiRequest;
+import com.fr.dto.SppotiRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,9 +47,9 @@ public class SppotiController {
         if (newSppoti.getSportId() == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Sport-Id not found");
         }
-        if (newSppoti.getTags() == null || newSppoti.getTags().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Tags not found");
-        }
+//        if (newSppoti.getTags() == null || newSppoti.getTags().isEmpty()) {
+//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Tags not found");
+//        }
         if (newSppoti.getTitre() == null || newSppoti.getTitre().isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Title not found");
         }
@@ -103,6 +103,7 @@ public class SppotiController {
 
         try {
             sppotiControllerService.saveSppoti(newSppoti, sppotiCreator);
+            response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (RuntimeException e) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
         }

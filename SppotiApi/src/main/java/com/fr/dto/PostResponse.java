@@ -1,17 +1,15 @@
 /**
  *
  */
-package com.fr.models;
+package com.fr.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.entities.Address;
-import com.fr.entities.Comment;
 import com.fr.entities.Post;
 import com.fr.entities.Sppoti;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;

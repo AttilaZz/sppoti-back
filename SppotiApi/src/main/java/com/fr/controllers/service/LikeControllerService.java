@@ -4,10 +4,8 @@ import com.fr.entities.Comment;
 import com.fr.entities.LikeContent;
 import com.fr.entities.Post;
 import com.fr.entities.Users;
-import com.fr.models.ContentEditedResponse;
-import com.fr.models.HeaderData;
+import com.fr.dto.HeaderData;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.AbstractController;
 
 import java.util.List;
 

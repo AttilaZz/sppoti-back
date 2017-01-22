@@ -1,4 +1,4 @@
-package com.fr.models;
+package com.fr.dto;
 
 /**
  * Created by djenanewail on 12/26/16.

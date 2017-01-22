@@ -12,8 +12,8 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.fr.models.demo.CalcInput;
-import com.fr.models.demo.Result;
+import com.fr.dto.demo.CalcInput;
+import com.fr.dto.demo.Result;
 
 /**
  * Created by: Wail DJENANE on Nov 13, 2016

@@ -4,8 +4,8 @@ import com.fr.controllers.service.AccountControllerService;
 import com.fr.entities.*;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;
-import com.fr.models.SignUpRequest;
-import com.fr.models.User;
+import com.fr.dto.SignUpRequest;
+import com.fr.dto.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -63,8 +63,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
                 && !user.getLastName().isEmpty() && user.getEmail() != null && !user.getEmail().isEmpty()
                 && user.getUsername() != null && !user.getUsername().isEmpty() && user.getPassword() != null
                 && !user.getPassword().isEmpty() && user.getSexe() != null && !user.getSexe().isEmpty()
-                && user.getSportId() != null && user.getSportId().length > 0 && user.getDateBorn() != null
-                && !user.getDateBorn().isEmpty())
+                && user.getSportId() != null && user.getSportId().length > 0 && user.getDateBorn() != null)
             return true;
 
         return false;

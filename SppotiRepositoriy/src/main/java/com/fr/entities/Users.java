@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -35,8 +32,8 @@ public class Users {
     @Column(nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
-    private String dateBorn;
+    @Column(nullable = false, columnDefinition = "DATE")
+    private Date dateBorn;
 
     @Column(nullable = false)
     private String sexe;
@@ -108,10 +105,15 @@ public class Users {
     @OrderBy("dateTime DESC")
     private SortedSet<Address> addresses;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "team_id", nullable = true)
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "team_id")
     @JsonIgnore
-    private Team team;
+    private Set<Team> team;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "team_admin_id")
+    @JsonIgnore
+    private Set<Team> teamAdmin;
 
     public boolean isDeleted() {
         return deleted;
@@ -276,11 +278,11 @@ public class Users {
         this.firstName = firstName;
     }
 
-    public String getDateBorn() {
+    public Date getDateBorn() {
         return dateBorn;
     }
 
-    public void setDateBorn(String dateBorn) {
+    public void setDateBorn(Date dateBorn) {
         this.dateBorn = dateBorn;
     }
 
@@ -316,11 +318,19 @@ public class Users {
         this.username = username;
     }
 
-    public Team getTeam() {
+    public Set<Team> getTeam() {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(Set<Team> team) {
         this.team = team;
+    }
+
+    public Set<Team> getTeamAdmin() {
+        return teamAdmin;
+    }
+
+    public void setTeamAdmin(Set<Team> teamAdmin) {
+        this.teamAdmin = teamAdmin;
     }
 }

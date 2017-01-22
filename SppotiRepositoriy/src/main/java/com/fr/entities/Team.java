@@ -1,5 +1,7 @@
 package com.fr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -22,8 +24,13 @@ public class Team {
     @Column(nullable = false)
     private String coverPath;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "team")
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "team")
     private Set<Users> teamMembers;
+
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teamAdmin")
+    private Set<Users> admins;
 
     public Long getId() {
         return id;
@@ -63,5 +70,13 @@ public class Team {
 
     public void setTeamMembers(Set<Users> teamMembers) {
         this.teamMembers = teamMembers;
+    }
+
+    public Set<Users> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(Set<Users> admins) {
+        this.admins = admins;
     }
 }

@@ -1,6 +1,6 @@
 package com.fr.controllers.service;
 
-import com.fr.models.SppotiRequest;
+import com.fr.dto.SppotiRequest;
 import org.springframework.stereotype.Service;
 
 /**

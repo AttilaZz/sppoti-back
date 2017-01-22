@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.fr.models;
+package com.fr.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

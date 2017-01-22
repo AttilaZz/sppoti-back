@@ -1,13 +1,12 @@
 /**
  *
  */
-package com.fr.models;
+package com.fr.dto;
 
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.entities.Comment;
 
 /**

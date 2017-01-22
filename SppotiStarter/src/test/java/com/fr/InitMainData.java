@@ -5,8 +5,8 @@ package com.fr; /**
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.entities.Sport;
 import com.fr.entities.Roles;
-import com.fr.models.SportList;
-import com.fr.models.UserRoleType;
+import com.fr.dto.SportList;
+import com.fr.dto.UserRoleType;
 import com.fr.repositories.RoleRepository;
 import com.fr.repositories.SportRepository;
 import org.apache.log4j.Logger;

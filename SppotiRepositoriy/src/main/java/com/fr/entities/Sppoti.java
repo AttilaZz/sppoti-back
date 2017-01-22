@@ -36,7 +36,7 @@ public class Sppoti {
     @Column(nullable = false)
     private int maxMembersCount;
 
-    @Column(nullable = false)
+    @Column
     private String tags;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -49,12 +49,12 @@ public class Sppoti {
     @JsonIgnore
     private Users userSppoti;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "team_host_id", nullable = false)
     @JsonIgnore
     private Team teamHost;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "team_guest_id", nullable = false)
     @JsonIgnore
     private Team teamGuest;

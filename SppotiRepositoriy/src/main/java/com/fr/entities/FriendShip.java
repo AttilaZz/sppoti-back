@@ -1,6 +1,6 @@
 package com.fr.entities;
 
-import com.fr.models.FriendStatus;
+import com.fr.dto.FriendStatus;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;

@@ -1,7 +1,11 @@
 /**
  *
  */
-package com.fr.models;
+package com.fr.dto;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
 
 /**
  * Created by: Wail DJENANE on Jun 15, 2016
@@ -10,7 +14,8 @@ public class SignUpRequest {
 
     private String lastName;
     private String firstName;
-    private String dateBorn;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private Date dateBorn;
     private String sexe;
     private String email;
     private String password;
@@ -33,11 +38,11 @@ public class SignUpRequest {
         this.firstName = firstName;
     }
 
-    public String getDateBorn() {
+    public Date getDateBorn() {
         return dateBorn;
     }
 
-    public void setDateBorn(String dateBorn) {
+    public void setDateBorn(Date dateBorn) {
         this.dateBorn = dateBorn;
     }
 

@@ -4,15 +4,13 @@
 package com.fr.controllers.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.SortedSet;
 
 import com.fr.entities.*;
 import org.springframework.stereotype.Service;
 
-import com.fr.models.ContentEditedResponse;
-import com.fr.models.HeaderData;
-import com.fr.models.PostResponse;
+import com.fr.dto.ContentEditedResponse;
+import com.fr.dto.PostResponse;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016

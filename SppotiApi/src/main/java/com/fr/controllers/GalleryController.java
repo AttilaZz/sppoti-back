@@ -3,7 +3,7 @@ package com.fr.controllers;
 import com.fr.controllers.service.CommentControllerService;
 import com.fr.controllers.service.PostControllerService;
 import com.fr.entities.Users;
-import com.fr.models.PostResponse;
+import com.fr.dto.PostResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

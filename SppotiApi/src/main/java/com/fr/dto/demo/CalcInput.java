@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.fr.models.demo;
+package com.fr.dto.demo;
 
 /**
  * Created by: Wail DJENANE on Nov 14, 2016

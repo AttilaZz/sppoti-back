@@ -7,7 +7,7 @@ import com.fr.entities.Team;
 import com.fr.entities.Users;
 import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.exceptions.SportNotFoundException;
-import com.fr.models.SppotiRequest;
+import com.fr.dto.SppotiRequest;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
@@ -27,7 +27,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         for (Long userId : memberIdList) {
 
-            Users u = userRepository.getOne(userId);
+            Users u = userRepository.findOne(userId);
             if (u != null) {
                 team.add(u);
             } else {
@@ -85,6 +85,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppoti.setDescription(newSppoti.getDescription());
         sppoti.setLocation(newSppoti.getAddress());
         sppoti.setDateTimeStart(newSppoti.getDatetimeStart());
+        sppoti.setTitre(newSppoti.getTitre());
+        sppoti.setMaxMembersCount(newSppoti.getMaxTeamCount());
 
         sppotiRepository.save(sppoti);
 

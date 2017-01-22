@@ -1,8 +1,9 @@
 /**
  *
  */
-package com.fr.models;
+package com.fr.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,6 +21,7 @@ public class SppotiRequest {
     private Long sportId;
     private String description;
     @JsonProperty("sppotiDatetime")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
     private Date datetimeStart;
     @JsonProperty("teamHost")
     private Team myTeam;

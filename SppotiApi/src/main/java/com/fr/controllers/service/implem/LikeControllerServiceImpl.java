@@ -4,7 +4,7 @@ import com.fr.controllers.service.LikeControllerService;
 import com.fr.entities.Comment;
 import com.fr.entities.LikeContent;
 import com.fr.entities.Post;
-import com.fr.models.HeaderData;
+import com.fr.dto.HeaderData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -2,8 +2,8 @@ package com.fr.security;
 
 import com.fr.entities.Sport;
 import com.fr.entities.Users;
-import com.fr.models.SportModel;
-import com.fr.models.User;
+import com.fr.dto.SportModel;
+import com.fr.dto.User;
 import com.fr.repositories.UserRepository;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
