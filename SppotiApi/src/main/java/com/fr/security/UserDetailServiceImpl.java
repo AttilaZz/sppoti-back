@@ -1,9 +1,11 @@
 package com.fr.security;
 
 import com.fr.aop.TraceControllers;
-import com.fr.controllers.service.implem.AbstractControllerServiceImpl;
+import com.fr.controllers.service.LoginService;
 import com.fr.entities.Users;
 import org.apache.log4j.Logger;
+import org.hibernate.service.spi.InjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,9 +18,16 @@ import java.util.Date;
  * Created by: Wail DJENANE On May 22, 2016
  */
 @Component
-public class UserDetailServiceImpl extends AbstractControllerServiceImpl implements UserDetailsService {
+public class UserDetailServiceImpl implements UserDetailsService {
 
     private static Logger LOGGER = Logger.getLogger(TraceControllers.class);
+
+    private LoginService loginService;
+
+    @Autowired
+    public void setLoginService(LoginService loginService) {
+        this.loginService = loginService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String loginUser) throws UsernameNotFoundException {
@@ -45,11 +54,11 @@ public class UserDetailServiceImpl extends AbstractControllerServiceImpl impleme
         String numberRegex = "[0-9]+";
 
         if (username.contains("@")) {
-            return userRepository.getByEmail(username);
+            return loginService.getByEmail(username);
         } else if (username.matches(numberRegex)) {
-            return userRepository.getByTelephone(username);
+            return loginService.getByTelephone(username);
         } else {
-            return userRepository.getByUsername(username);
+            return loginService.getByUsername(username);
         }
 
     }

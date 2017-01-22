@@ -14,10 +14,10 @@
 
     <modules>
         <module>SppotiApi</module>
-        <module>SppotiStarter</module>
         <module>SppotiRepositoriy</module>
         <module>SppotiCommons</module>
         <module>SppotiCore</module>
+        <module>SppotiRunApp</module>
     </modules>
 
     <parent>

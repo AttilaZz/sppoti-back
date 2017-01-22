@@ -1,14 +1,14 @@
 package com.fr.controllers.service;
 
+import com.fr.commons.dto.SignUpRequest;
+import com.fr.commons.dto.User;
 import com.fr.entities.Roles;
 import com.fr.entities.Sport;
 import com.fr.entities.Users;
-import com.fr.dto.SignUpRequest;
-import com.fr.dto.User;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
-public interface AccountControllerService{
+@Component
+public interface AccountControllerService extends AbstractControllerService{
 
     void saveNewUser(Users user) throws Exception;
 

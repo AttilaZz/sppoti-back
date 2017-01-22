@@ -14,18 +14,18 @@ import com.fr.entities.Messages;
  */
 
 @Service
-public interface MessageControllerService extends AbstractControllerService {
+ public interface MessageControllerService extends AbstractControllerService {
 
-    public List<Messages> getSentUserMessages(Long userId, int page);
+     List<Messages> getSentUserMessages(Long userId, int page);
 
-    public List<Messages> getReceivedUserMessages(Long userId, int page);
+     List<Messages> getReceivedUserMessages(Long userId, int page);
 
-    public Boolean saveMessage(Messages msg);
+     Boolean saveMessage(Messages msg);
 
-    public Boolean updateMessage(Messages msg);
+     Boolean updateMessage(Messages msg);
 
-    public Boolean deteleMessageById(Long msgId);
+     Boolean deteleMessageById(Long msgId);
 
-    public Messages findMessageById(Long msgId);
+     Messages findMessageById(Long msgId);
 
 }

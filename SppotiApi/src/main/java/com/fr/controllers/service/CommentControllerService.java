@@ -3,14 +3,13 @@
  */
 package com.fr.controllers.service;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
-import com.fr.dto.CommentModel;
-import com.fr.dto.ContentEditedResponse;
+import com.fr.commons.dto.CommentModel;
+import com.fr.commons.dto.ContentEditedResponse;
 import com.fr.entities.Comment;
 import com.fr.entities.EditHistory;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016

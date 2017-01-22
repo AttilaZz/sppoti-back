@@ -1,7 +1,7 @@
 package com.fr.controllers;
 
 import com.fr.controllers.service.SppotiControllerService;
-import com.fr.dto.SppotiRequest;
+import com.fr.commons.dto.SppotiRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

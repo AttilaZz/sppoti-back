@@ -1,7 +1,8 @@
 package com.fr.controllers;
 
-import com.fr.controllers.service.implem.AbstractControllerServiceImpl;
+import com.fr.controllers.service.SportControllerService;
 import com.fr.entities.Sport;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,12 +17,19 @@ import java.util.List;
  */
 
 @RestController
-public class SportController extends AbstractControllerServiceImpl {
+public class SportController {
+
+    private SportControllerService sportService;
+
+    @Autowired
+    public void setSportService(SportControllerService sportService) {
+        this.sportService = sportService;
+    }
 
     @GetMapping(value = "/sport/all")
     public ResponseEntity<Object> getAllSports() {
 
-        List<Sport> allSports = sportRepository.findAll();
+        List<Sport> allSports = sportService.getAllSports();
 
         if (allSports.isEmpty()) {
             return new ResponseEntity<>(allSports, HttpStatus.NO_CONTENT);

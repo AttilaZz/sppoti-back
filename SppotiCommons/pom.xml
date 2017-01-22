@@ -13,4 +13,11 @@
 
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.sppoti</groupId>
+            <artifactId>SppotiRepositoriy</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

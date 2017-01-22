@@ -4,7 +4,7 @@ import com.fr.controllers.service.AccountControllerService;
 import com.fr.entities.FriendShip;
 import com.fr.entities.Users;
 import com.fr.dto.FriendStatus;
-import com.fr.dto.User;
+import com.fr.commons.dto.User;
 import com.fr.repositories.FriendShipRepository;
 import com.fr.repositories.UserRepository;
 import org.apache.log4j.Logger;

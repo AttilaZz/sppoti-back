@@ -14,10 +14,14 @@
     <packaging>jar</packaging>
 
     <dependencies>
+
         <dependency>
             <groupId>com.sppoti</groupId>
             <artifactId>SppotiCommons</artifactId>
-            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sppoti</groupId>
+            <artifactId>SppotiApi</artifactId>
         </dependency>
     </dependencies>
 </project>

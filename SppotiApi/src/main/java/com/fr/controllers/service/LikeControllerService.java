@@ -1,10 +1,10 @@
 package com.fr.controllers.service;
 
+import com.fr.commons.dto.HeaderData;
 import com.fr.entities.Comment;
 import com.fr.entities.LikeContent;
 import com.fr.entities.Post;
 import com.fr.entities.Users;
-import com.fr.dto.HeaderData;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 @Service
-public interface LikeControllerService{
+public interface LikeControllerService extends AbstractControllerService{
     boolean likePost(LikeContent likeToSave);
 
     boolean unLikePost(Post post);

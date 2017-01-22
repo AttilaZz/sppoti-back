@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fr.controllers.service.MessageControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fr.aop.TraceAuthentification;
-import com.fr.controllers.service.MessageControllerService;
-import com.fr.dto.MessageRequest;
+import com.fr.commons.dto.MessageRequest;
 import com.fr.entities.Messages;
 import com.fr.entities.Users;
 

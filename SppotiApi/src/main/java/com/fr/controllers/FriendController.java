@@ -1,13 +1,12 @@
 package com.fr.controllers;
 
 import com.fr.controllers.service.AccountControllerService;
+import com.fr.controllers.service.FriendControllerService;
 import com.fr.entities.FriendShip;
 import com.fr.entities.Users;
-import com.fr.dto.FriendResponse;
+import com.fr.commons.dto.FriendResponse;
 import com.fr.dto.FriendStatus;
-import com.fr.dto.User;
-import com.fr.repositories.FriendShipRepository;
-import com.fr.repositories.UserRepository;
+import com.fr.commons.dto.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,24 +32,21 @@ public class FriendController {
 
     private Logger LOGGER = Logger.getLogger(CommentController.class);
 
-    private FriendShipRepository friendShipRepository;
-    private UserRepository userRepository;
     private AccountControllerService accountControllerService;
+
+    private FriendControllerService friendControllerService;
+
+    @Autowired
+    public void setFriendControllerService(FriendControllerService friendControllerService) {
+        this.friendControllerService = friendControllerService;
+    }
 
     @Autowired
     public void setAccountControllerService(AccountControllerService accountControllerService) {
         this.accountControllerService = accountControllerService;
     }
 
-    @Autowired
-    public void setFriendShipRepository(FriendShipRepository friendShipRepository) {
-        this.friendShipRepository = friendShipRepository;
-    }
 
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Value("${key.friendShipPerPage}")
     private int friend_list_size;
@@ -65,11 +61,11 @@ public class FriendController {
     public ResponseEntity<FriendResponse> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
 
         Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = userRepository.getById(connected_user);
+        Users connectedUser = friendControllerService.getUserById(connected_user);
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.CONFIRMED.name(), pageable);
+        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.CONFIRMED.name(), pageable);
 
         List<User> friendList = new ArrayList<>();
 
@@ -103,12 +99,12 @@ public class FriendController {
     public ResponseEntity<FriendResponse> getRefusedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
 
         Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = userRepository.getById(connected_user);
+        Users connectedUser = friendControllerService.getUserById(connected_user);
 
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.REFUSED.name(), pageable);
+        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.REFUSED.name(), pageable);
 
         List<User> friendList = new ArrayList<>();
 
@@ -142,11 +138,11 @@ public class FriendController {
     public ResponseEntity<FriendResponse> getSentPendingFriendList(@PathVariable int page, HttpServletRequest request) {
 
         Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = userRepository.getById(connected_user);
+        Users connectedUser = friendControllerService.getUserById(connected_user);
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendShipRepository.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
+        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_SENT: No sent friend request found !");
@@ -186,11 +182,11 @@ public class FriendController {
     public ResponseEntity<FriendResponse> getREceivedPendingFriendList(@PathVariable int page, HttpServletRequest request) {
 
         Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = userRepository.getById(connected_user);
+        Users connectedUser = friendControllerService.getUserById(connected_user);
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendShipRepository.getByFriendUuidAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
+        List<FriendShip> friendShips = friendControllerService.getByFriendUuidAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_RECEIVED: No received request friend found !");
@@ -200,7 +196,7 @@ public class FriendController {
         List<User> friendList = new ArrayList<>();
 
         for (FriendShip friendShip : friendShips) {
-            Users userdb = userRepository.getByUuid(friendShip.getUser());
+            Users userdb = friendControllerService.getUserByUuId(friendShip.getUser());
 
             User user = accountControllerService.fillUserResponse(userdb, null);
             user.setDatetimeCreated(friendShip.getDatetime());
@@ -244,8 +240,8 @@ public class FriendController {
         /*
         Prepare friendShip
          */
-        Users connectedUser = userRepository.getById(userId);
-        Users friend = userRepository.getByUuid(user.getFriendUuid());
+        Users connectedUser = friendControllerService.getUserById(userId);
+        Users friend = friendControllerService.getUserByUuId(user.getFriendUuid());
 
         /*
         Check if the friend id refers to an existing user account
@@ -266,7 +262,7 @@ public class FriendController {
         /*
         Check if friendship exist
          */
-        if (friendShipRepository.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid()) != null) {
+        if (friendControllerService.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid()) != null) {
             LOGGER.error("ADD-FRIEND: You are already friends");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -275,12 +271,12 @@ public class FriendController {
         Prepare friendship for saving
          */
         FriendShip friendShip = new FriendShip();
-        Users u = userRepository.getByUuid(user.getFriendUuid());
+        Users u = friendControllerService.getUserByUuId(user.getFriendUuid());
         friendShip.setFriend(u);
         friendShip.setUser(connectedUser.getUuid());
 
         try {
-            friendShipRepository.save(friendShip);
+            friendControllerService.saveFriendShip(friendShip);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("ADD-FRIEND: Problem saving the friendship ! try again OR read logs");
@@ -309,12 +305,12 @@ public class FriendController {
         /*
         Prepare friendShip
          */
-        Users connectedUser = userRepository.getById(userId);
+        Users connectedUser = friendControllerService.getUserById(userId);
 
          /*
         Check if i received a friend request from the USER in the request
          */
-        FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(connectedUser.getUuid(), user.getFriendUuid());
+        FriendShip friendShip = friendControllerService.getByFriendUuidAndUser(connectedUser.getUuid(), user.getFriendUuid());
         if (friendShip == null) {
             LOGGER.error("UPDATE-FRIEND: FriendShip not found !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -333,7 +329,7 @@ public class FriendController {
         Update
          */
         try {
-            friendShipRepository.save(friendShip);
+            friendControllerService.updateFriendShip(friendShip);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -355,19 +351,19 @@ public class FriendController {
     public ResponseEntity<Void> deleteFriend(@PathVariable("friend_id") int friendId, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = userRepository.getById(userId);
+        Users connectedUser = friendControllerService.getUserById(userId);
 
         /*
         Check if friendship exist
          */
-        FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(friendId, connectedUser.getUuid());
+        FriendShip friendShip = friendControllerService.getByFriendUuidAndUser(friendId, connectedUser.getUuid());
         if (friendShip == null) {
             LOGGER.error("UPDATE-FRIEND: No friendship found to delete !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         try {
-            friendShipRepository.delete(friendShip);
+            friendControllerService.deleteFriendShip(friendShip);
         } catch (Exception e) {
             e.printStackTrace();
 

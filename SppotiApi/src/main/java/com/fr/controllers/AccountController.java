@@ -6,11 +6,12 @@ import com.fr.enums.CoverType;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictPhoneException;
 import com.fr.exceptions.ConflictUsernameException;
-import com.fr.dto.SignUpRequest;
-import com.fr.dto.User;
+import com.fr.commons.dto.SignUpRequest;
+import com.fr.commons.dto.User;
 import com.fr.dto.UserRoleType;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
+import org.hibernate.service.spi.InjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,17 +35,19 @@ public class AccountController {
     private Logger LOGGER = Logger.getLogger(AccountController.class);
     private static final String ATT_USER_ID = "USER_ID";
 
-    private AccountControllerService accountService;
+
+    private AccountControllerService accountControllerService;
+
+    @Autowired
+    public void setAccountControllerService(AccountControllerService accountControllerService) {
+        this.accountControllerService = accountControllerService;
+    }
+
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @Autowired
-    public void setAccountService(AccountControllerService accountService) {
-        this.accountService = accountService;
     }
 
     @PostMapping(value = "/create")
@@ -58,7 +61,7 @@ public class AccountController {
 		 */
         Set<Sport> userSports = new HashSet<>();
 
-        if (!accountService.isReceivedDataNotEmpty(user)) {
+        if (!accountControllerService.isReceivedDataNotEmpty(user)) {
             LOGGER.info("INSCRIPTION: Un attribut obligatoire est vide !!");
             response.setStatus(400);
             return;
@@ -82,7 +85,7 @@ public class AccountController {
 
         for (Long sportId : user.getSportId()) {
             // if the parsed SportModel exist in database == correct request
-            Sport mSport = accountService.getSportById(sportId);
+            Sport mSport = accountControllerService.getSportById(sportId);
             if (mSport != null) {
                 userSports.add(mSport);
             } else {
@@ -98,7 +101,7 @@ public class AccountController {
          * processing user Profile
 		 */
         String profileNameToSet = UserRoleType.USER.getUserProfileType();
-        Roles profile = accountService.getProfileEntity(profileNameToSet);
+        Roles profile = accountControllerService.getProfileEntity(profileNameToSet);
 
         if (profile == null) {
             LOGGER.info("Profile name <" + profileNameToSet + "> doesn't exist !!");
@@ -114,7 +117,7 @@ public class AccountController {
          * saving the new user
 		 */
         try {
-            accountService.saveNewUser(newUser);
+            accountControllerService.saveNewUser(newUser);
             /*
              * Send confirmation email
 			 */
@@ -126,7 +129,7 @@ public class AccountController {
              * Send email to confirm account
 			 */
             Thread thread = new Thread(() -> {
-                accountService.sendConfirmationEmail(newUser.getEmail(), confirmationCode);
+                accountControllerService.sendConfirmationEmail(newUser.getEmail(), confirmationCode);
                 LOGGER.info("Confirmation email has been sent successfully !");
             });
             thread.start();
@@ -165,7 +168,7 @@ public class AccountController {
         }
 
         // if given code exist in database confirm registration
-        if (accountService.tryActivateAccount(code)) {
+        if (accountControllerService.tryActivateAccount(code)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
@@ -179,7 +182,7 @@ public class AccountController {
     public ResponseEntity<User> editUserInfo(@RequestBody User user, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connected_user = accountService.getUserById(userId);
+        Users connected_user = accountControllerService.getUserById(userId);
 
         //detect which element uwer want to update
         Resources resource = new Resources();
@@ -194,13 +197,13 @@ public class AccountController {
                 resource.setUrl(user.getAvatar());
                 resource.setType(1);
                 resource.setTypeExtension(1);
-                accountService.unSelectOldResource(userId, 1);
+                accountControllerService.unSelectOldResource(userId, 1);
                 update = true;
             } else if (user.getCover() != null && !user.getCover().isEmpty() && (CoverType.IMAGE.type() == user.getCoverType() || CoverType.VIDEO.type() == user.getCoverType())) {
                 resource.setUrl(user.getCover());
                 resource.setType(2);
                 resource.setTypeExtension(user.getCoverType());
-                accountService.unSelectOldResource(userId, 2);
+                accountControllerService.unSelectOldResource(userId, 2);
                 update = true;
             }
 
@@ -237,7 +240,7 @@ public class AccountController {
         }
 
         if (update) {
-            if (accountService.updateUser(connected_user)) {
+            if (accountControllerService.updateUser(connected_user)) {
                 LOGGER.info("USER-UPDATE: User has been updated!");
                 return new ResponseEntity<>(user, HttpStatus.OK);
 
@@ -258,10 +261,10 @@ public class AccountController {
     public ResponseEntity<User> connectedUserInfo(Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-        Users targetUser = accountService.getUserById(accountUserDetails.getId());
+        Users targetUser = accountControllerService.getUserById(accountUserDetails.getId());
 
 
-        return new ResponseEntity<>(accountService.fillUserResponse(targetUser, null), HttpStatus.OK);
+        return new ResponseEntity<>(accountControllerService.fillUserResponse(targetUser, null), HttpStatus.OK);
 
     }
 
@@ -277,9 +280,9 @@ public class AccountController {
 //        String finalPath = apm.extractPathWithinPattern(bestMatchPattern, path);
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connected_user = accountService.getUserById(userId);
+        Users connected_user = accountControllerService.getUserById(userId);
 
-        Users targetUser = accountService.getUserByUsername(username);
+        Users targetUser = accountControllerService.getUserByUsername(username);
 
         if (targetUser == null) {
             LOGGER.error("ACCOUNT-OTHER: Username not found");
@@ -287,7 +290,7 @@ public class AccountController {
 
         }
 
-        return new ResponseEntity<>(accountService.fillUserResponse(targetUser, connected_user), HttpStatus.OK);
+        return new ResponseEntity<>(accountControllerService.fillUserResponse(targetUser, connected_user), HttpStatus.OK);
 
     }
 }
