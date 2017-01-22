@@ -312,9 +312,9 @@ public class FriendController {
         Users connectedUser = userRepository.getById(userId);
 
          /*
-        Check if friendship exist
+        Check if i received a friend request from the USER in the request
          */
-        FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(user.getFriendUuid(), connectedUser.getUuid());
+        FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(connectedUser.getUuid(), user.getFriendUuid());
         if (friendShip == null) {
             LOGGER.error("UPDATE-FRIEND: FriendShip not found !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
