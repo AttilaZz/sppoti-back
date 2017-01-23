@@ -5,7 +5,7 @@ import com.fr.controllers.service.FriendControllerService;
 import com.fr.entities.FriendShip;
 import com.fr.entities.Users;
 import com.fr.commons.dto.FriendResponse;
-import com.fr.dto.FriendStatus;
+import com.fr.models.FriendStatus;
 import com.fr.commons.dto.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

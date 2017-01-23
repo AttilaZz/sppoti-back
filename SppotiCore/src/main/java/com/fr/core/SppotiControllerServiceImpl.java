@@ -1,5 +1,6 @@
 package com.fr.core;
 
+import com.fr.commons.dto.User;
 import com.fr.controllers.service.SppotiControllerService;
 import com.fr.entities.Sport;
 import com.fr.entities.Sppoti;
@@ -51,7 +52,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMemberIdList()));
         } catch (RuntimeException e) {
             LOGGER.error("One of the team id not found: " + e.getMessage());
-            throw new HostMemberNotFoundException("Host-Team (members) one of the team dosn't exist");
+            throw new HostMemberNotFoundException("Host-TeamRequest (members) one of the team dosn't exist");
 
         }
 
@@ -63,7 +64,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             guestTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getVsTeam().getMemberIdList()));
         } catch (RuntimeException e) {
             LOGGER.error("One of the team id not found: " + e.getMessage());
-            throw new HostMemberNotFoundException("Guest-Team (members) one of the team dosn't exist");
+            throw new HostMemberNotFoundException("Guest-TeamRequest (members) one of the team dosn't exist");
         }
 
         Sport sport = sportRepository.findOne(newSppoti.getSportId());
@@ -76,11 +77,15 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Stored used id in session has not been found in database");
         }
 
+        Set<Users> admins = new HashSet<Users>();
+        admins.add(owner);
+
         Sppoti sppoti = new Sppoti();
         sppoti.setRelatedSport(sport);
         sppoti.setUserSppoti(owner);
         sppoti.setTags(newSppoti.getTags());
         sppoti.setTeamGuest(guestTeam);
+        hostTeam.setAdmins(admins);
         sppoti.setTeamHost(hostTeam);
         sppoti.setDescription(newSppoti.getDescription());
         sppoti.setLocation(newSppoti.getAddress());

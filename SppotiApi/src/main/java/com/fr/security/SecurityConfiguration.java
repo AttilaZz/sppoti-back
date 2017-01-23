@@ -1,7 +1,7 @@
 package com.fr.security;
 
 import com.fr.filter.CsrfHeaderFilter;
-import com.fr.dto.UserRoleType;
+import com.fr.models.UserRoleType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;

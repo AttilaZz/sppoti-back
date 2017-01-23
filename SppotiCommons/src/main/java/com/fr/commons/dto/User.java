@@ -2,7 +2,7 @@ package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.dto.FriendStatus;
+import com.fr.models.FriendStatus;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

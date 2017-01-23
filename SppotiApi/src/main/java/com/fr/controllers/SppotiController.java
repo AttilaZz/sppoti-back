@@ -42,7 +42,7 @@ public class SppotiController {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Description not found");
         }
         if (newSppoti.getMaxTeamCount() == 0) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Max-Team-Count not found");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Max-TeamRequest-Count not found");
         }
         if (newSppoti.getSportId() == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Sport-Id not found");
@@ -57,44 +57,44 @@ public class SppotiController {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Date-start not found");
         }
         if (newSppoti.getMyTeam() == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-Team not found");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest not found");
         } else {
             if (newSppoti.getMyTeam().getCoverPath() == null || newSppoti.getMyTeam().getCoverPath().isEmpty()) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-Team (cover path) not found");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (cover path) not found");
 
             }
             if (newSppoti.getMyTeam().getLogoPath() == null || newSppoti.getMyTeam().getLogoPath().isEmpty()) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-Team (logo path) not found");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (logo path) not found");
 
             }
             if (newSppoti.getMyTeam().getName() == null || newSppoti.getMyTeam().getName().isEmpty()) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-Team (name) not found");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (name) not found");
 
             }
             if (newSppoti.getMyTeam().getMemberIdList() == null || newSppoti.getMyTeam().getMemberIdList().length == 0) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-Team (members) not found");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (members) not found");
 
             }
 
         }
 
         if (newSppoti.getVsTeam() == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Guest-Team not found");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Guest-TeamRequest not found");
         } else {
             if (newSppoti.getVsTeam().getCoverPath() == null || newSppoti.getVsTeam().getCoverPath().isEmpty()) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Guest-Team (cover path) not found");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Guest-TeamRequest (cover path) not found");
 
             }
             if (newSppoti.getVsTeam().getLogoPath() == null || newSppoti.getVsTeam().getLogoPath().isEmpty()) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Guest-Team (logo path) not found");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Guest-TeamRequest (logo path) not found");
 
             }
             if (newSppoti.getVsTeam().getName() == null || newSppoti.getVsTeam().getName().isEmpty()) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Guest-Team (name) not found");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Guest-TeamRequest (name) not found");
 
             }
             if (newSppoti.getVsTeam().getMemberIdList() == null || newSppoti.getVsTeam().getMemberIdList().length == 0) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Guest-Team (members) not found");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Guest-TeamRequest (members) not found");
 
             }
         }

@@ -1,6 +1,6 @@
 package com.fr.controllers;
 
-import com.fr.commons.dto.SppotiRequest;
+import com.fr.commons.dto.TeamRequest;
 import com.fr.controllers.service.TeamControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,30 +22,30 @@ public class TeamController {
 
     private static final String ATT_USER_ID = "USER_ID";
 
-    TeamControllerService teamControllerService;
+    private TeamControllerService teamControllerService;
 
     @Autowired
-    public TeamControllerService getTeamControllerService() {
-        return teamControllerService;
+    public void setTeamControllerService(TeamControllerService teamControllerService) {
+        this.teamControllerService = teamControllerService;
     }
 
     @PostMapping
-    public void createTeam(@RequestBody SppotiRequest.Team team, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public void createTeam(@RequestBody TeamRequest team, HttpServletResponse response, HttpServletRequest request) throws IOException {
 
         if (team.getCoverPath() == null || team.getCoverPath().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-Team (cover path) not found");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (cover path) not found");
 
         }
         if (team.getLogoPath() == null || team.getLogoPath().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-Team (logo path) not found");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (logo path) not found");
 
         }
         if (team.getName() == null || team.getName().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-Team (name) not found");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (name) not found");
 
         }
         if (team.getMemberIdList() == null || team.getMemberIdList().length == 0) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-Team (members) not found");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (members) not found");
 
         }
 

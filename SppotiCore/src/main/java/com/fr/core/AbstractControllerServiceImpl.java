@@ -8,7 +8,7 @@ import com.fr.controllers.AccountController;
 import com.fr.controllers.service.AbstractControllerService;
 import com.fr.entities.*;
 import com.fr.mail.ApplicationMailer;
-import com.fr.dto.*;
+import com.fr.models.*;
 import com.fr.repositories.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

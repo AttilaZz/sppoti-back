@@ -21,9 +21,9 @@ public class SppotiRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
     private Date datetimeStart;
     @JsonProperty("teamHost")
-    private Team myTeam;
+    private TeamRequest myTeam;
     @JsonProperty("guestHost")
-    private Team vsTeam;
+    private TeamRequest vsTeam;
     @JsonProperty("location")
     private String address;
     private int maxTeamCount;
@@ -61,19 +61,19 @@ public class SppotiRequest {
         this.datetimeStart = datetimeStart;
     }
 
-    public Team getMyTeam() {
+    public TeamRequest getMyTeam() {
         return myTeam;
     }
 
-    public void setMyTeam(Team myTeam) {
+    public void setMyTeam(TeamRequest myTeam) {
         this.myTeam = myTeam;
     }
 
-    public Team getVsTeam() {
+    public TeamRequest getVsTeam() {
         return vsTeam;
     }
 
-    public void setVsTeam(Team vsTeam) {
+    public void setVsTeam(TeamRequest vsTeam) {
         this.vsTeam = vsTeam;
     }
 
@@ -101,42 +101,4 @@ public class SppotiRequest {
         this.tags = tags;
     }
 
-    public class Team{
-        private String name;
-        private String logoPath;
-        private String coverPath;
-        private Long[] memberIdList;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getLogoPath() {
-            return logoPath;
-        }
-
-        public void setLogoPath(String logoPath) {
-            this.logoPath = logoPath;
-        }
-
-        public String getCoverPath() {
-            return coverPath;
-        }
-
-        public void setCoverPath(String coverPath) {
-            this.coverPath = coverPath;
-        }
-
-        public Long[] getMemberIdList() {
-            return memberIdList;
-        }
-
-        public void setMemberIdList(Long[] memberIdList) {
-            this.memberIdList = memberIdList;
-        }
-    }
 }

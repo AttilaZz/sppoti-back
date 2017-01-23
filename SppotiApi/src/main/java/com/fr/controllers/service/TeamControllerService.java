@@ -1,6 +1,6 @@
 package com.fr.controllers.service;
 
-import com.fr.commons.dto.SppotiRequest;
+import com.fr.commons.dto.TeamRequest;
 import org.springframework.stereotype.Service;
 
 /**
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface TeamControllerService extends AbstractControllerService{
 
-    void saveTeam(SppotiRequest.Team team, Long adminId);
+    void saveTeam(TeamRequest team, Long adminId);
 }

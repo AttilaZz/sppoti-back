@@ -3,7 +3,7 @@ package com.fr.controllers;
 import com.fr.controllers.service.AccountControllerService;
 import com.fr.entities.FriendShip;
 import com.fr.entities.Users;
-import com.fr.dto.FriendStatus;
+import com.fr.models.FriendStatus;
 import com.fr.commons.dto.User;
 import com.fr.repositories.FriendShipRepository;
 import com.fr.repositories.UserRepository;
