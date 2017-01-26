@@ -7,7 +7,7 @@ public class TeamRequest {
     private String name;
     private String logoPath;
     private String coverPath;
-    private Long[] memberIdList;
+    private int[] memberIdList;
 
     public String getName() {
         return name;
@@ -33,11 +33,11 @@ public class TeamRequest {
         this.coverPath = coverPath;
     }
 
-    public Long[] getMemberIdList() {
+    public int[] getMemberIdList() {
         return memberIdList;
     }
 
-    public void setMemberIdList(Long[] memberIdList) {
+    public void setMemberIdList(int[] memberIdList) {
         this.memberIdList = memberIdList;
     }
 }

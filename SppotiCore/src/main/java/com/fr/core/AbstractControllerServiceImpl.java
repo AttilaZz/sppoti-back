@@ -39,7 +39,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected CommentRepository commentRepository;
     protected FriendShipRepository friendShipRepository;
     protected SppotiRepository sppotiRepository;
+    protected TeamRepository teamRepository;
 
+    @Autowired
+    public void setTeamRepository(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+    }
 
     @Autowired
     public void setSppotiRepository(SppotiRepository sppotiRepository) {

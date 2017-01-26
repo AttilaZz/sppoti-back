@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by djenanewail on 1/21/17.
@@ -17,11 +18,14 @@ public class Team {
     @GeneratedValue
     private Long id;
 
+    @Column
+    private int uuid = UUID.randomUUID().hashCode();
+
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
+    @Column
     private String logoPath;
-    @Column(nullable = false)
+    @Column
     private String coverPath;
 
     @JsonIgnore
@@ -78,5 +82,13 @@ public class Team {
 
     public void setAdmins(Set<Users> admins) {
         this.admins = admins;
+    }
+
+    public int getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(int uuid) {
+        this.uuid = uuid;
     }
 }

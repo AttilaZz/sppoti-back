@@ -50,12 +50,12 @@ public class Sppoti {
     private Users userSppoti;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "team_host_id", nullable = false)
+    @JoinColumn(name = "team_adverse_id", nullable = false)
     @JsonIgnore
     private Team teamHost;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "team_guest_id", nullable = false)
+    @JoinColumn(name = "team_guest_id")
     @JsonIgnore
     private Team teamGuest;
 

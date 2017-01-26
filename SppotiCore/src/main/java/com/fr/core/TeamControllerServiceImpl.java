@@ -19,20 +19,19 @@ import java.util.Set;
 @Component
 public class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements TeamControllerService {
 
-    private TeamRepository teamRepository;
-
-    @Autowired
-    public void setTeamRepository(TeamRepository teamRepository) {
-        this.teamRepository = teamRepository;
-    }
-
     @Override
     public void saveTeam(TeamRequest team, Long adminId) {
         Team teamToSave = new Team();
 
         teamToSave.setName(team.getName());
-        teamToSave.setCoverPath(team.getCoverPath());
-        teamToSave.setLogoPath(team.getLogoPath());
+
+        if(team.getCoverPath() != null && !team.getCoverPath().isEmpty()){
+            teamToSave.setCoverPath(team.getCoverPath());
+        }
+
+        if(team.getLogoPath() != null && !team.getLogoPath().isEmpty()){
+            teamToSave.setLogoPath(team.getLogoPath());
+        }
 
         try {
             teamToSave.setTeamMembers(getTeamMembersEntityFromDto(teamToSave, team.getMemberIdList()));
@@ -56,23 +55,24 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
-    private Set<Users> getTeamMembersEntityFromDto(Team teamToSave, Long[] memberIdList) {
+    private Set<Users> getTeamMembersEntityFromDto(Team teamToSave, int[] memberIdList) {
         Set<Users> teamUsers = new HashSet<Users>();
         Set<Team> teams = new HashSet<Team>();
         teams.add(teamToSave);
 
-        for (Long userId : memberIdList) {
+        for (int userId : memberIdList) {
 
-            Users u = userRepository.findOne(userId);
-            u.setTeam(teams);
+            Users u = userRepository.getByUuid(userId);
 
             if (u != null) {
+                u.setTeam(teams);
                 teamUsers.add(u);
             } else {
                 throw new EntityNotFoundException();
             }
 
         }
+
         return teamUsers;
     }
 }

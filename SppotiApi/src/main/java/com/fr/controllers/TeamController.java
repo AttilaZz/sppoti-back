@@ -32,14 +32,14 @@ public class TeamController {
     @PostMapping
     public void createTeam(@RequestBody TeamRequest team, HttpServletResponse response, HttpServletRequest request) throws IOException {
 
-        if (team.getCoverPath() == null || team.getCoverPath().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (cover path) not found");
-
-        }
-        if (team.getLogoPath() == null || team.getLogoPath().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (logo path) not found");
-
-        }
+//        if (team.getCoverPath() == null || team.getCoverPath().isEmpty()) {
+//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (cover path) not found");
+//
+//        }
+//        if (team.getLogoPath() == null || team.getLogoPath().isEmpty()) {
+//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (logo path) not found");
+//
+//        }
         if (team.getName() == null || team.getName().isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (name) not found");
 

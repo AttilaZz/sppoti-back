@@ -1,12 +1,11 @@
 package com.fr.core;
 
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.SppotiRequest;
 import com.fr.controllers.service.SppotiControllerService;
 import com.fr.entities.Sport;
 import com.fr.entities.Sppoti;
 import com.fr.entities.Team;
 import com.fr.entities.Users;
-import com.fr.commons.dto.SppotiRequest;
 import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.exceptions.SportNotFoundException;
 import org.springframework.stereotype.Component;
@@ -22,49 +21,71 @@ import java.util.Set;
 @Component
 public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService {
 
-    public Set<Users> getTeamMembersEntityFromDto(Long[] memberIdList) {
+    public static final String TEAM_ID_NOT_FOUND = "Team id not found";
 
-        Set<Users> team = new HashSet<Users>();
+    public Set<Users> getTeamMembersEntityFromDto(int[] memberIdList, Team team) {
 
-        for (Long userId : memberIdList) {
+        Set<Users> teamUsers = new HashSet<Users>();
+        Set<Team> teams = new HashSet<Team>();
+        teams.add(team);
 
-            Users u = userRepository.findOne(userId);
+        for (int userId : memberIdList) {
+
+            Users u = userRepository.getByUuid(userId);
+
             if (u != null) {
-                team.add(u);
+                u.setTeam(teams);
+                teamUsers.add(u);
             } else {
                 throw new EntityNotFoundException();
             }
 
         }
-        return team;
+
+        return teamUsers;
 
     }
 
     @Override
     public void saveSppoti(SppotiRequest newSppoti, Long sppotiCreator) {
 
-        Team hostTeam = new Team(), guestTeam = new Team();
+        Team hostTeam = new Team();
 
-        hostTeam.setName(newSppoti.getMyTeam().getName());
-        hostTeam.setCoverPath(newSppoti.getMyTeam().getCoverPath());
-        hostTeam.setLogoPath(newSppoti.getMyTeam().getLogoPath());
-        try {
-            hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMemberIdList()));
-        } catch (RuntimeException e) {
-            LOGGER.error("One of the team id not found: " + e.getMessage());
-            throw new HostMemberNotFoundException("Host-TeamRequest (members) one of the team dosn't exist");
+        if (newSppoti.getMyTeam() != null) {
 
-        }
+            if (newSppoti.getMyTeam().getName() != null) {
+                hostTeam.setName(newSppoti.getMyTeam().getName());
+            }
 
-        guestTeam.setName(newSppoti.getVsTeam().getName());
-        guestTeam.setCoverPath(newSppoti.getVsTeam().getCoverPath());
-        guestTeam.setLogoPath(newSppoti.getVsTeam().getLogoPath());
+            if (newSppoti.getMyTeam().getLogoPath() != null) {
+                hostTeam.setLogoPath(newSppoti.getMyTeam().getLogoPath());
+            }
 
-        try {
-            guestTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getVsTeam().getMemberIdList()));
-        } catch (RuntimeException e) {
-            LOGGER.error("One of the team id not found: " + e.getMessage());
-            throw new HostMemberNotFoundException("Guest-TeamRequest (members) one of the team dosn't exist");
+            if (newSppoti.getMyTeam().getCoverPath() != null) {
+                hostTeam.setCoverPath(newSppoti.getMyTeam().getCoverPath());
+            }
+
+            try {
+                hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMemberIdList(), hostTeam));
+            } catch (RuntimeException e) {
+                LOGGER.error("One of the team id not found: " + e.getMessage());
+                throw new HostMemberNotFoundException("Host-TeamRequest (members) one of the team dosn't exist");
+
+            }
+
+        } else if (newSppoti.getMyTeamId() != 0) {
+            try {
+                hostTeam = teamRepository.findByUuid(newSppoti.getMyTeamId());
+
+                if(hostTeam == null){
+                    throw new EntityNotFoundException("Host team not found in the request");
+                }
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                throw new EntityNotFoundException("Host team cannot be found in the request");
+            }
+        } else {
+            throw new EntityNotFoundException("Host team not found in the request");
         }
 
         Sport sport = sportRepository.findOne(newSppoti.getSportId());
@@ -77,17 +98,46 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Stored used id in session has not been found in database");
         }
 
-        Set<Users> admins = new HashSet<Users>();
-        admins.add(owner);
-
         Sppoti sppoti = new Sppoti();
         sppoti.setRelatedSport(sport);
+
+        Set<Users> admins = new HashSet<Users>();
+        admins.add(owner);
         sppoti.setUserSppoti(owner);
-        sppoti.setTags(newSppoti.getTags());
-        sppoti.setTeamGuest(guestTeam);
+
+        Set<Team> teams = new HashSet<Team>();
+        teams.add(hostTeam);
+        owner.setTeamAdmin(teams);
+
         hostTeam.setAdmins(admins);
         sppoti.setTeamHost(hostTeam);
-        sppoti.setDescription(newSppoti.getDescription());
+
+        if (newSppoti.getTags() != null) {
+            sppoti.setTags(newSppoti.getTags());
+        }
+
+        if (newSppoti.getDescription() != null) {
+            sppoti.setDescription(newSppoti.getDescription());
+        }
+
+
+        if (newSppoti.getVsTeam() != 0) {
+            Team team = null;
+            try {
+                team = teamRepository.findByUuid(newSppoti.getMyTeamId());
+
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                LOGGER.error("Error when getting team from AdverseTeamId: " + newSppoti.getVsTeam());
+            }
+
+            if (team == null) {
+                throw new EntityNotFoundException(TEAM_ID_NOT_FOUND);
+
+            }
+            sppoti.setTeamGuest(team);
+        }
+
         sppoti.setLocation(newSppoti.getAddress());
         sppoti.setDateTimeStart(newSppoti.getDatetimeStart());
         sppoti.setTitre(newSppoti.getTitre());

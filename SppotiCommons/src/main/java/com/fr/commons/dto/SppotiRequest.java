@@ -20,10 +20,15 @@ public class SppotiRequest {
     @JsonProperty("sppotiDatetime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
     private Date datetimeStart;
+
     @JsonProperty("teamHost")
     private TeamRequest myTeam;
-    @JsonProperty("guestHost")
-    private TeamRequest vsTeam;
+
+    @JsonProperty("teamHostId")
+    private int myTeamId;
+
+    @JsonProperty("teamAdverse")
+    private int vsTeam;
     @JsonProperty("location")
     private String address;
     private int maxTeamCount;
@@ -69,11 +74,11 @@ public class SppotiRequest {
         this.myTeam = myTeam;
     }
 
-    public TeamRequest getVsTeam() {
+    public int getVsTeam() {
         return vsTeam;
     }
 
-    public void setVsTeam(TeamRequest vsTeam) {
+    public void setVsTeam(int vsTeam) {
         this.vsTeam = vsTeam;
     }
 
@@ -101,4 +106,11 @@ public class SppotiRequest {
         this.tags = tags;
     }
 
+    public int getMyTeamId() {
+        return myTeamId;
+    }
+
+    public void setMyTeamId(int myTeamId) {
+        this.myTeamId = myTeamId;
+    }
 }
