@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface SppotiRepository extends JpaRepository<Sppoti, Long> {
 
 
-
+    Sppoti findByUuid(int uuid);
 }

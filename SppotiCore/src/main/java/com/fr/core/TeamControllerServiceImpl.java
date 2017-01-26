@@ -5,8 +5,6 @@ import com.fr.controllers.service.TeamControllerService;
 import com.fr.entities.Team;
 import com.fr.entities.Users;
 import com.fr.exceptions.HostMemberNotFoundException;
-import com.fr.repositories.TeamRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;

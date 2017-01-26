@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by djenanewail on 12/16/16.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User {
 
     private int id;
@@ -41,6 +41,18 @@ public class User {
     private String datetimeCreated;
 
     private boolean myProfile;
+
+    public User() {
+    }
+
+    public User(String firstName, String lastName, String username, String cover, String avatar, int coverType) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.cover = cover;
+        this.avatar = avatar;
+        this.coverType = coverType;
+    }
 
     public String getUsername() {
         return username;

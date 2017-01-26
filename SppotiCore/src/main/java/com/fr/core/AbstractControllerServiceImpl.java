@@ -129,7 +129,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     @Override
     public String getAuthenticationUsername() {
-        String userName = null;
+        String userName;
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof UserDetails) {
@@ -314,40 +314,9 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         /*
         Manage resources
          */
-        Set<Resources> resources = targetUser.getRessources();
-
-        List<Resources> resources_temp = new ArrayList<Resources>();
-        resources_temp.addAll(resources);
-
-        if (!resources_temp.isEmpty()) {
-            if (resources_temp.size() == 2) {
-                //cover and avatar found
-                Resources resource1 = resources_temp.get(0);
-                Resources resource2 = resources_temp.get(1);
-
-                if (resource1.getType() == 1 && resource2.getType() == 2) {//acatar
-                    user.setAvatar(resource1.getUrl());
-
-                    user.setCover(resource2.getUrl());
-                    user.setCoverType(resource2.getTypeExtension());
-                } else if (resource1.getType() == 2 && resource2.getType() == 1) {
-                    user.setAvatar(resource2.getUrl());
-
-                    user.setCover(resource1.getUrl());
-                    user.setCoverType(resource1.getTypeExtension());
-                }
-
-            } else {
-                // size is = 1 -> cover or avatar
-                Resources resource = resources_temp.get(0);
-                if (resource.getType() == 1) {//acatar
-                    user.setAvatar(resource.getUrl());
-                } else {
-                    user.setCover(resource.getUrl());
-                    user.setCoverType(resource.getTypeExtension());
-                }
-            }
-        }
+        User user_cover_avatar = getUserCoverAndAvatar(targetUser);
+        user.setCover(user_cover_avatar.getCover());
+        user.setAvatar(user_cover_avatar.getAvatar());
 
 
         /*
@@ -370,6 +339,47 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             user.setAddress(targetUser.getAddresses().first().getAddress());
         } catch (Exception e) {
             LOGGER.warn("User has no address yet !");
+        }
+
+        return user;
+    }
+
+    protected User getUserCoverAndAvatar(Users targetUser) {
+
+        User user = new User();
+        Set<Resources> resources = targetUser.getRessources();
+
+        List<Resources> resources_temp = new ArrayList<Resources>();
+        resources_temp.addAll(resources);
+
+        if (!resources_temp.isEmpty()) {
+            if (resources_temp.size() == 2) {
+                //cover and avatar found
+                Resources resource1 = resources_temp.get(0);
+                Resources resource2 = resources_temp.get(1);
+
+                if (resource1.getType() == 1 && resource2.getType() == 2) {
+                    user.setAvatar(resource1.getUrl());
+
+                    user.setCover(resource2.getUrl());
+                    user.setCoverType(resource2.getTypeExtension());
+                } else if (resource1.getType() == 2 && resource2.getType() == 1) {
+                    user.setAvatar(resource2.getUrl());
+
+                    user.setCover(resource1.getUrl());
+                    user.setCoverType(resource1.getTypeExtension());
+                }
+
+            } else {
+                // size is = 1 -> cover or avatar
+                Resources resource = resources_temp.get(0);
+                if (resource.getType() == 1) {//acatar
+                    user.setAvatar(resource.getUrl());
+                } else {
+                    user.setCover(resource.getUrl());
+                    user.setCoverType(resource.getTypeExtension());
+                }
+            }
         }
 
         return user;

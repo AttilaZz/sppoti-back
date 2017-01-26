@@ -1,6 +1,9 @@
 package com.fr.core;
 
 import com.fr.commons.dto.SppotiRequest;
+import com.fr.commons.dto.SppotiResponse;
+import com.fr.commons.dto.TeamResponse;
+import com.fr.commons.dto.User;
 import com.fr.controllers.service.SppotiControllerService;
 import com.fr.entities.Sport;
 import com.fr.entities.Sppoti;
@@ -11,7 +14,9 @@ import com.fr.exceptions.SportNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,9 +26,15 @@ import java.util.Set;
 @Component
 public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService {
 
-    public static final String TEAM_ID_NOT_FOUND = "Team id not found";
+    private static final String TEAM_ID_NOT_FOUND = "Team id not found";
 
-    public Set<Users> getTeamMembersEntityFromDto(int[] memberIdList, Team team) {
+    /**
+     *
+     * @param memberIdList
+     * @param team
+     * @return
+     */
+    private Set<Users> getTeamMembersEntityFromDto(int[] memberIdList, Team team) {
 
         Set<Users> teamUsers = new HashSet<Users>();
         Set<Team> teams = new HashSet<Team>();
@@ -46,8 +57,13 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     }
 
+    /**
+     *
+     * @param newSppoti
+     * @param sppotiCreator
+     */
     @Override
-    public void saveSppoti(SppotiRequest newSppoti, Long sppotiCreator) {
+    public SppotiResponse saveSppoti(SppotiRequest newSppoti, Long sppotiCreator) {
 
         Team hostTeam = new Team();
 
@@ -77,7 +93,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             try {
                 hostTeam = teamRepository.findByUuid(newSppoti.getMyTeamId());
 
-                if(hostTeam == null){
+                if (hostTeam == null) {
                     throw new EntityNotFoundException("Host team not found in the request");
                 }
             } catch (RuntimeException e) {
@@ -143,7 +159,89 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppoti.setTitre(newSppoti.getTitre());
         sppoti.setMaxMembersCount(newSppoti.getMaxTeamCount());
 
-        sppotiRepository.save(sppoti);
+        Sppoti sppoti1 = sppotiRepository.save(sppoti);
+        return  new SppotiResponse(sppoti1.getUuid());
 
     }
+
+    /**
+     *
+     * @param uuid
+     * @return
+     */
+    @Override
+    public SppotiResponse getSppotiByUuid(int uuid) {
+
+        Sppoti sppoti = sppotiRepository.findByUuid(uuid);
+
+        if (sppoti == null) {
+            throw new EntityNotFoundException("Sppoti not found");
+        }
+
+
+        SppotiResponse sppotiResponse = new SppotiResponse(sppoti.getTitre(), sppoti.getDatetimeCreated(), sppoti.getDateTimeStart(), sppoti.getLocation(), sppoti.getMaxMembersCount(), sppoti.getRelatedSport());
+
+        if (sppoti.getDescription() != null) {
+            sppotiResponse.setDescription(sppoti.getDescription());
+        }
+
+        if (sppoti.getTags() != null) {
+            sppotiResponse.setTags(sppoti.getTags());
+        }
+
+        User user_cover_avatar = getUserCoverAndAvatar(sppoti.getUserSppoti());
+
+        User sppotiOwner = new User(sppoti.getUserSppoti().getFirstName(), sppoti.getUserSppoti().getLastName(), sppoti.getUserSppoti().getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType());
+
+        sppotiResponse.setUserSppoti(sppotiOwner);
+
+        TeamResponse teamHostResponse = fillTeamResponse(sppoti.getTeamHost());
+        TeamResponse teamGuestResponse = fillTeamResponse(sppoti.getTeamGuest());
+
+        sppotiResponse.setTeamHost(teamHostResponse);
+        sppotiResponse.setTeamGuest(teamGuestResponse);
+
+        return sppotiResponse;
+
+    }
+
+    /**
+     *
+     * @param team
+     * @return a teamResponse object from Team entity
+     */
+    private TeamResponse fillTeamResponse(Team team) {
+
+        TeamResponse teamResponse = new TeamResponse();
+
+        List<User> teamUsers = new ArrayList<User>();
+
+        for (Users user : team.getTeamMembers()) {
+            User user_cover_avatar = getUserCoverAndAvatar(user);
+
+            teamUsers.add(new User(user.getFirstName(), user.getLastName(), user.getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType()));
+
+        }
+
+        teamResponse.setTeamMembers(teamUsers);
+
+        teamResponse.setCoverPath(team.getCoverPath());
+        teamResponse.setLogoPath(team.getLogoPath());
+        teamResponse.setName(team.getName());
+
+        List<User> adminUsers = new ArrayList<User>();
+
+        for (Users user : team.getAdmins()) {
+            User user_cover_avatar = getUserCoverAndAvatar(user);
+
+            adminUsers.add(new User(user.getFirstName(), user.getLastName(), user.getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType()));
+
+        }
+
+        teamResponse.setTeamAdmin(adminUsers);
+
+        return teamResponse;
+
+    }
+
 }

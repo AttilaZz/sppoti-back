@@ -1,25 +1,59 @@
 package com.fr.commons.dto;
 
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fr.entities.Sport;
-import com.fr.entities.Users;
+
+import java.util.Date;
 
 /**
  * Created by: Wail DJENANE on Jul 12, 2016
  */
-@JsonInclude(Include.NON_EMPTY)
+@JsonInclude(Include.NON_DEFAULT)
 public class SppotiResponse {
 
-    private Users userSpooti;
+    private int id;
+
     private String titre;
-    private Sport sportId;
+
     private String description;
-    private String date;
-    private List<Users> teamPeopleId;
-    private String spotAddress;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
+    private Date datetimeCreated;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
+    private Date dateTimeStart;
+
+    private String location;
+
+    private int maxMembersCount;
+
+    private String tags;
+
+    private Sport relatedSport;
+
+    private User userSppoti;
+
+    private TeamResponse teamHost;
+
+    private TeamResponse teamGuest;
+
+    public SppotiResponse() {
+    }
+
+    public SppotiResponse(String titre, Date datetimeCreated, Date dateTimeStart, String location, int maxMembersCount, Sport relatedSport) {
+        this.titre = titre;
+        this.datetimeCreated = datetimeCreated;
+        this.dateTimeStart = dateTimeStart;
+        this.location = location;
+        this.maxMembersCount = maxMembersCount;
+        this.relatedSport = relatedSport;
+    }
+
+    public SppotiResponse(int id) {
+        this.id = id;
+    }
 
     public String getTitre() {
         return titre;
@@ -27,14 +61,6 @@ public class SppotiResponse {
 
     public void setTitre(String titre) {
         this.titre = titre;
-    }
-
-    public Sport getSportId() {
-        return sportId;
-    }
-
-    public void setSportId(Sport sportId) {
-        this.sportId = sportId;
     }
 
     public String getDescription() {
@@ -45,36 +71,83 @@ public class SppotiResponse {
         this.description = description;
     }
 
-    public String getDate() {
-        return date;
+    public Date getDatetimeCreated() {
+        return datetimeCreated;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDatetimeCreated(Date datetimeCreated) {
+        this.datetimeCreated = datetimeCreated;
     }
 
-    public List<Users> getTeamPeopleId() {
-        return teamPeopleId;
+    public Date getDateTimeStart() {
+        return dateTimeStart;
     }
 
-    public void setTeamPeopleId(List<Users> teamPeopleId) {
-        this.teamPeopleId = teamPeopleId;
+    public void setDateTimeStart(Date dateTimeStart) {
+        this.dateTimeStart = dateTimeStart;
     }
 
-    public String getSpotAddress() {
-        return spotAddress;
+    public String getLocation() {
+        return location;
     }
 
-    public void setSpotAddress(String spotAddress) {
-        this.spotAddress = spotAddress;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
-    public Users getUserSpooti() {
-        return userSpooti;
+    public int getMaxMembersCount() {
+        return maxMembersCount;
     }
 
-    public void setUserSpooti(Users userSpooti) {
-        this.userSpooti = userSpooti;
+    public void setMaxMembersCount(int maxMembersCount) {
+        this.maxMembersCount = maxMembersCount;
     }
 
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public Sport getRelatedSport() {
+        return relatedSport;
+    }
+
+    public void setRelatedSport(Sport relatedSport) {
+        this.relatedSport = relatedSport;
+    }
+
+    public TeamResponse getTeamHost() {
+        return teamHost;
+    }
+
+    public void setTeamHost(TeamResponse teamHost) {
+        this.teamHost = teamHost;
+    }
+
+    public TeamResponse getTeamGuest() {
+        return teamGuest;
+    }
+
+    public void setTeamGuest(TeamResponse teamGuest) {
+        this.teamGuest = teamGuest;
+    }
+
+    public User getUserSppoti() {
+        return userSppoti;
+    }
+
+    public void setUserSppoti(User userSppoti) {
+        this.userSppoti = userSppoti;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

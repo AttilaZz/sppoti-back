@@ -1,19 +1,20 @@
 package com.fr.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fr.commons.dto.SppotiResponse;
 import com.fr.controllers.service.SppotiControllerService;
 import com.fr.commons.dto.SppotiRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -70,8 +71,12 @@ public class SppotiController {
         Long sppotiCreator = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
         try {
-            sppotiControllerService.saveSppoti(newSppoti, sppotiCreator);
-            return ResponseEntity.status(HttpStatus.CREATED).body("");
+            SppotiResponse sppotiResponse = sppotiControllerService.saveSppoti(newSppoti, sppotiCreator);
+
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonInString = mapper.writeValueAsString(sppotiResponse);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(jsonInString);
         } catch (RuntimeException e) {
             e.printStackTrace();
             LOGGER.error("Ajout de sppoti imposssible: " + e.getMessage());
@@ -79,6 +84,29 @@ public class SppotiController {
 
         }
 
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SppotiResponse> getSppotiById(@PathVariable int id) {
+
+        SppotiResponse response;
+
+        try {
+            response = sppotiControllerService.getSppotiByUuid(id);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            LOGGER.error("Sppoti not found: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(Authentication authentication, HttpServletRequest request) {
+
+        return null;
     }
 
 }

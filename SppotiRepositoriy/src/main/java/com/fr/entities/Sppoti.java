@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -17,6 +18,8 @@ public class Sppoti {
     @Id
     @GeneratedValue
     private Long id;
+
+    private int uuid = UUID.randomUUID().hashCode();
 
     @Column(nullable = false)
     private String titre;
@@ -154,5 +157,13 @@ public class Sppoti {
 
     public void setTeamGuest(Team teamGuest) {
         this.teamGuest = teamGuest;
+    }
+
+    public int getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(int uuid) {
+        this.uuid = uuid;
     }
 }
