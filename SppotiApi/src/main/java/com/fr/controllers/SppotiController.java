@@ -134,4 +134,10 @@ public class SppotiController {
 
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity updateSppoti(@PathVariable int id, @RequestBody SppotiRequest sppotiRequest) {
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }
