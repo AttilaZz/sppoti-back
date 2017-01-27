@@ -104,16 +104,13 @@ public class SppotiController {
 
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(Authentication authentication, HttpServletRequest request) {
+    @GetMapping("/all/{id}")
+    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable int id, Authentication authentication, HttpServletRequest request) {
 
         List<SppotiResponse> response;
 
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-
-
         try {
-            response = sppotiControllerService.getAllUserSppoties(accountUserDetails.getUuid());
+            response = sppotiControllerService.getAllUserSppoties(id);
         } catch (RuntimeException e) {
             e.printStackTrace();
             LOGGER.error("Sppoties not found: " + e.getMessage());
