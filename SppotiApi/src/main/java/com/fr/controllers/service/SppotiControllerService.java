@@ -19,4 +19,6 @@ public interface SppotiControllerService extends AbstractControllerService {
     SppotiResponse getSppotiByUuid(int uuid);
 
     List<SppotiResponse> getAllUserSppoties(int id);
+
+    void deleteSppoti(int id);
 }

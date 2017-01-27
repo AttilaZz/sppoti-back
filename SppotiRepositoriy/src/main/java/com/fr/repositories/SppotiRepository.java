@@ -2,6 +2,7 @@ package com.fr.repositories;
 
 import com.fr.entities.Sppoti;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.access.prepost.PostFilter;
 
 import java.util.List;
 
@@ -13,5 +14,6 @@ public interface SppotiRepository extends JpaRepository<Sppoti, Long> {
 
     Sppoti findByUuid(int uuid);
 
+    @PostFilter("!filterObject.isDeleted() ")
     List<Sppoti> findByUserSppotiUuid(int id);
 }

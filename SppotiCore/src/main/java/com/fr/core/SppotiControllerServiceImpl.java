@@ -143,9 +143,11 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         Sppoti sppoti = sppotiRepository.findByUuid(uuid);
 
-        SppotiResponse sppotiResponse = getSppotiResponse(sppoti);
+        if (sppoti.isDeleted()) {
+            throw new EntityNotFoundException("Trying to get a deleted sppoti");
+        }
 
-        return sppotiResponse;
+        return getSppotiResponse(sppoti);
 
     }
 
@@ -197,6 +199,23 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         return sppotiResponses;
+
+    }
+
+    /**
+     * @param id
+     */
+    @Override
+    public void deleteSppoti(int id) {
+
+        Sppoti sppoti = sppotiRepository.findByUuid(id);
+
+        if (sppoti != null && !sppoti.isDeleted()) {
+            sppoti.setDeleted(true);
+            sppotiRepository.save(sppoti);
+        } else {
+            throw new EntityNotFoundException("Trying to delete non existing sppoti");
+        }
 
     }
 

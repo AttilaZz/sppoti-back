@@ -42,6 +42,9 @@ public class Sppoti {
     @Column
     private String tags;
 
+    @Column
+    private boolean deleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sport_id", nullable = false)
     @JsonIgnore
@@ -52,12 +55,12 @@ public class Sppoti {
     @JsonIgnore
     private Users userSppoti;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "team_adverse_id", nullable = false)
     @JsonIgnore
     private Team teamHost;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "team_guest_id")
     @JsonIgnore
     private Team teamGuest;
@@ -165,5 +168,13 @@ public class Sppoti {
 
     public void setUuid(int uuid) {
         this.uuid = uuid;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

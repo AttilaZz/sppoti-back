@@ -120,4 +120,18 @@ public class SppotiController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteSppoti(@PathVariable int id) {
+
+        try {
+            sppotiControllerService.deleteSppoti(id);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (RuntimeException e) {
+            LOGGER.error("Impossible de supprimer le sppoti: " + e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 }
