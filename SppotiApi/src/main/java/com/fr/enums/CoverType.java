@@ -8,7 +8,7 @@ package com.fr.enums;
  */
 public enum CoverType {
 
-    IMAGE(0), VIDEO(1);
+    IMAGE(1), VIDEO(2);
 
     private int type;
 

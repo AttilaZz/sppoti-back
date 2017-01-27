@@ -29,7 +29,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     private static final String TEAM_ID_NOT_FOUND = "Team id not found";
 
     /**
-     *
      * @param memberIdList
      * @param team
      * @return
@@ -58,7 +57,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     }
 
     /**
-     *
      * @param newSppoti
      * @param sppotiCreator
      */
@@ -160,12 +158,11 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppoti.setMaxMembersCount(newSppoti.getMaxTeamCount());
 
         Sppoti sppoti1 = sppotiRepository.save(sppoti);
-        return  new SppotiResponse(sppoti1.getUuid());
+        return new SppotiResponse(sppoti1.getUuid());
 
     }
 
     /**
-     *
      * @param uuid
      * @return
      */
@@ -191,7 +188,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         User user_cover_avatar = getUserCoverAndAvatar(sppoti.getUserSppoti());
 
-        User sppotiOwner = new User(sppoti.getUserSppoti().getFirstName(), sppoti.getUserSppoti().getLastName(), sppoti.getUserSppoti().getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType());
+        User sppotiOwner = new User(sppoti.getUserSppoti().getUuid(), sppoti.getUserSppoti().getFirstName(), sppoti.getUserSppoti().getLastName(), sppoti.getUserSppoti().getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType());
 
         sppotiResponse.setUserSppoti(sppotiOwner);
 
@@ -206,7 +203,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     }
 
     /**
-     *
      * @param team
      * @return a teamResponse object from Team entity
      */
@@ -219,7 +215,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         for (Users user : team.getTeamMembers()) {
             User user_cover_avatar = getUserCoverAndAvatar(user);
 
-            teamUsers.add(new User(user.getFirstName(), user.getLastName(), user.getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType()));
+            teamUsers.add(new User(user.getUuid(), user.getFirstName(), user.getLastName(), user.getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType()));
 
         }
 
@@ -234,7 +230,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         for (Users user : team.getAdmins()) {
             User user_cover_avatar = getUserCoverAndAvatar(user);
 
-            adminUsers.add(new User(user.getFirstName(), user.getLastName(), user.getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType()));
+            adminUsers.add(new User(user.getUuid(), user.getFirstName(), user.getLastName(), user.getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType()));
 
         }
 

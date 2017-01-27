@@ -3,6 +3,7 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.entities.Sport;
 
 import java.util.Date;
@@ -31,12 +32,15 @@ public class SppotiResponse {
 
     private String tags;
 
+    @JsonProperty("sport")
     private Sport relatedSport;
 
+    @JsonProperty("admin")
     private User userSppoti;
 
     private TeamResponse teamHost;
 
+    @JsonProperty("teamAdverse")
     private TeamResponse teamGuest;
 
     public SppotiResponse() {
