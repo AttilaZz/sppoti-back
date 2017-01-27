@@ -23,16 +23,16 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         teamToSave.setName(team.getName());
 
-        if(team.getCoverPath() != null && !team.getCoverPath().isEmpty()){
+        if (team.getCoverPath() != null && !team.getCoverPath().isEmpty()) {
             teamToSave.setCoverPath(team.getCoverPath());
         }
 
-        if(team.getLogoPath() != null && !team.getLogoPath().isEmpty()){
+        if (team.getLogoPath() != null && !team.getLogoPath().isEmpty()) {
             teamToSave.setLogoPath(team.getLogoPath());
         }
 
         try {
-            teamToSave.setTeamMembers(getTeamMembersEntityFromDto(teamToSave, team.getMemberIdList()));
+            teamToSave.setTeamMembers(getTeamMembersEntityFromDto(team.getMemberIdList(), teamToSave));
         } catch (RuntimeException e) {
             LOGGER.error("One of the team id not found: " + e.getMessage());
             throw new HostMemberNotFoundException("TeamRequest (members) one of the team dosn't exist");
@@ -53,24 +53,4 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
-    private Set<Users> getTeamMembersEntityFromDto(Team teamToSave, int[] memberIdList) {
-        Set<Users> teamUsers = new HashSet<Users>();
-        Set<Team> teams = new HashSet<Team>();
-        teams.add(teamToSave);
-
-        for (int userId : memberIdList) {
-
-            Users u = userRepository.getByUuid(userId);
-
-            if (u != null) {
-                u.setTeam(teams);
-                teamUsers.add(u);
-            } else {
-                throw new EntityNotFoundException();
-            }
-
-        }
-
-        return teamUsers;
-    }
 }

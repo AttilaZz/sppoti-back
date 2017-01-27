@@ -29,34 +29,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     private static final String TEAM_ID_NOT_FOUND = "Team id not found";
 
     /**
-     * @param memberIdList
-     * @param team
-     * @return
-     */
-    private Set<Users> getTeamMembersEntityFromDto(int[] memberIdList, Team team) {
-
-        Set<Users> teamUsers = new HashSet<Users>();
-        Set<Team> teams = new HashSet<Team>();
-        teams.add(team);
-
-        for (int userId : memberIdList) {
-
-            Users u = userRepository.getByUuid(userId);
-
-            if (u != null) {
-                u.setTeam(teams);
-                teamUsers.add(u);
-            } else {
-                throw new EntityNotFoundException();
-            }
-
-        }
-
-        return teamUsers;
-
-    }
-
-    /**
      * @param newSppoti
      * @param sppotiCreator
      */
@@ -171,6 +143,13 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         Sppoti sppoti = sppotiRepository.findByUuid(uuid);
 
+        SppotiResponse sppotiResponse = getSppotiResponse(sppoti);
+
+        return sppotiResponse;
+
+    }
+
+    private SppotiResponse getSppotiResponse(Sppoti sppoti) {
         if (sppoti == null) {
             throw new EntityNotFoundException("Sppoti not found");
         }
@@ -197,8 +176,26 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         sppotiResponse.setTeamHost(teamHostResponse);
         sppotiResponse.setTeamGuest(teamGuestResponse);
-
         return sppotiResponse;
+    }
+
+    /**
+     *
+     * @param id
+     * @return all sppoties created by a user
+     */
+    @Override
+    public List<SppotiResponse> getAllUserSppoties(int id) {
+
+        List<Sppoti> sppoties = sppotiRepository.findByUserSppotiUuid(id);
+
+        List<SppotiResponse> sppotiResponses = new ArrayList<SppotiResponse>();
+
+        for (Sppoti sppoti : sppoties) {
+            sppotiResponses.add(getSppotiResponse(sppoti));
+        }
+
+        return sppotiResponses;
 
     }
 

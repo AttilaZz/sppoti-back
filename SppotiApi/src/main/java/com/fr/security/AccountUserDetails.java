@@ -48,6 +48,11 @@ public class AccountUserDetails implements MyUserDetails {
     }
 
     @Override
+    public int getUuid() {
+        return account.getUuid();
+    }
+
+    @Override
     public String getPassword() {
         return account.getPassword();
     }

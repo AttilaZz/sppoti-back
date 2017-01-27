@@ -40,13 +40,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("no user found with: " + loginUser);
         }
 
-        Date aujourdhui = new Date();
+        Date date = new Date();
 
         DateFormat mediumDateFormat = DateFormat.getDateTimeInstance(
                 DateFormat.MEDIUM,
                 DateFormat.MEDIUM);
 
-        LOGGER.info("Trying to log user : " + loginUser + " with id=" + account.getId() + " - at: " + mediumDateFormat.format(aujourdhui));
+        LOGGER.info("Trying to log user : " + loginUser + " with id=" + account.getId() + " - at: " + mediumDateFormat.format(date));
         return new AccountUserDetails(account);
     }
 

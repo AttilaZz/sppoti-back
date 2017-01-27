@@ -4,6 +4,8 @@ import com.fr.commons.dto.SppotiRequest;
 import com.fr.commons.dto.SppotiResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
  */
@@ -16,4 +18,5 @@ public interface SppotiControllerService extends AbstractControllerService {
 
     SppotiResponse getSppotiByUuid(int uuid);
 
+    List<SppotiResponse> getAllUserSppoties(int id);
 }

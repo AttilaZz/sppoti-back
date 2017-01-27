@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.commons.dto.SppotiResponse;
 import com.fr.controllers.service.SppotiControllerService;
 import com.fr.commons.dto.SppotiRequest;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -106,7 +107,20 @@ public class SppotiController {
     @GetMapping("/all")
     public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(Authentication authentication, HttpServletRequest request) {
 
-        return null;
+        List<SppotiResponse> response;
+
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+
+
+        try {
+            response = sppotiControllerService.getAllUserSppoties(accountUserDetails.getUuid());
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            LOGGER.error("Sppoties not found: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

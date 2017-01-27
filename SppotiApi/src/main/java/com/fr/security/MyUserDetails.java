@@ -13,5 +13,7 @@ public interface MyUserDetails extends UserDetails {
 
     Long getId();
 
+    int getUuid();
+
     Users getConnectedUserDetails();
 }

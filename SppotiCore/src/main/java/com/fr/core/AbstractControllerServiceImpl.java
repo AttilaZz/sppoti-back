@@ -18,10 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import javax.persistence.EntityNotFoundException;
+import java.util.*;
 
 @Component("abstractService")
 public abstract class AbstractControllerServiceImpl implements AbstractControllerService {
@@ -385,4 +383,31 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return user;
     }
 
+    /**
+     * @param memberIdList
+     * @param team
+     * @return
+     */
+    protected Set<Users> getTeamMembersEntityFromDto(int[] memberIdList, Team team) {
+
+        Set<Users> teamUsers = new HashSet<Users>();
+        Set<Team> teams = new HashSet<Team>();
+        teams.add(team);
+
+        for (int userId : memberIdList) {
+
+            Users u = userRepository.getByUuid(userId);
+
+            if (u != null) {
+                u.setTeam(teams);
+                teamUsers.add(u);
+            } else {
+                throw new EntityNotFoundException();
+            }
+
+        }
+
+        return teamUsers;
+
+    }
 }
