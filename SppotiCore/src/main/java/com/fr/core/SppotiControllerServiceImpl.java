@@ -150,10 +150,10 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     }
 
     private SppotiResponse getSppotiResponse(Sppoti sppoti) {
+
         if (sppoti == null) {
             throw new EntityNotFoundException("Sppoti not found");
         }
-
 
         SppotiResponse sppotiResponse = new SppotiResponse(sppoti.getTitre(), sppoti.getDatetimeCreated(), sppoti.getDateTimeStart(), sppoti.getLocation(), sppoti.getMaxMembersCount(), sppoti.getRelatedSport());
 
@@ -172,15 +172,16 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppotiResponse.setUserSppoti(sppotiOwner);
 
         TeamResponse teamHostResponse = fillTeamResponse(sppoti.getTeamHost());
-        TeamResponse teamGuestResponse = fillTeamResponse(sppoti.getTeamGuest());
+        if (sppoti.getTeamGuest() != null) {
+            TeamResponse teamGuestResponse = fillTeamResponse(sppoti.getTeamGuest());
+            sppotiResponse.setTeamGuest(teamGuestResponse);
+        }
 
         sppotiResponse.setTeamHost(teamHostResponse);
-        sppotiResponse.setTeamGuest(teamGuestResponse);
         return sppotiResponse;
     }
 
     /**
-     *
      * @param id
      * @return all sppoties created by a user
      */
