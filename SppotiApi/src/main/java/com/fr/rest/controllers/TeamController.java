@@ -1,7 +1,9 @@
 package com.fr.rest.controllers;
 
 import com.fr.commons.dto.TeamRequest;
+import com.fr.commons.dto.TeamResponse;
 import com.fr.rest.service.TeamControllerService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ public class TeamController {
     private static final String ATT_USER_ID = "USER_ID";
 
     private TeamControllerService teamControllerService;
+    private Logger LOGGER = Logger.getLogger(SppotiController.class);
 
     @Autowired
     public void setTeamControllerService(TeamControllerService teamControllerService) {
@@ -71,4 +74,27 @@ public class TeamController {
 
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @GetMapping("/{teamId}")
+    public ResponseEntity<TeamResponse> getTeamById(@PathVariable int teamId) {
+
+        TeamResponse teamResponse;
+
+        try {
+            teamResponse = teamControllerService.getTeamById(teamId);
+        } catch (RuntimeException e) {
+            LOGGER.error("Error retreiving team: " + e.getMessage());
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(teamResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/{page}")
+    public ResponseEntity getAllTeams(@PathVariable int userId, @PathVariable int page) {
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }

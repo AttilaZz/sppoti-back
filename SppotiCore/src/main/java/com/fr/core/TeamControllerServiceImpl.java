@@ -1,6 +1,7 @@
 package com.fr.core;
 
 import com.fr.commons.dto.TeamRequest;
+import com.fr.commons.dto.TeamResponse;
 import com.fr.rest.service.TeamControllerService;
 import com.fr.entities.Team;
 import com.fr.entities.Users;
@@ -50,6 +51,11 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         teamRepository.save(teamToSave);
 
+    }
+
+    @Override
+    public TeamResponse getTeamById(int teamId) {
+        return null;
     }
 
 }
