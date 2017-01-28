@@ -1,13 +1,12 @@
 package com.fr.core;
 
 import com.fr.commons.dto.TeamRequest;
-import com.fr.controllers.service.TeamControllerService;
+import com.fr.rest.service.TeamControllerService;
 import com.fr.entities.Team;
 import com.fr.entities.Users;
 import com.fr.exceptions.HostMemberNotFoundException;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 

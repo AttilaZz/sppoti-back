@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.fr.controllers.service.MessageControllerService;
+import com.fr.rest.service.MessageControllerService;
 import com.fr.entities.Messages;
 
 /**

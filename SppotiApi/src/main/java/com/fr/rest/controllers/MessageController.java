@@ -1,13 +1,13 @@
 /**
  *
  */
-package com.fr.controllers;
+package com.fr.rest.controllers;
 
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.fr.controllers.service.MessageControllerService;
+import com.fr.rest.service.MessageControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.fr.controllers;
+package com.fr.rest.controllers;
 
 import java.security.Principal;
 

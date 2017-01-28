@@ -1,7 +1,7 @@
-package com.fr.controllers;
+package com.fr.rest.controllers;
 
 import com.fr.aop.TraceAuthentification;
-import com.fr.controllers.service.PostControllerService;
+import com.fr.rest.service.PostControllerService;
 import com.fr.entities.*;
 import com.fr.exceptions.PostContentMissingException;
 import com.fr.commons.dto.ContentEditedResponse;

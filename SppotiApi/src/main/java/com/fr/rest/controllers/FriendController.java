@@ -1,7 +1,7 @@
-package com.fr.controllers;
+package com.fr.rest.controllers;
 
-import com.fr.controllers.service.AccountControllerService;
-import com.fr.controllers.service.FriendControllerService;
+import com.fr.rest.service.AccountControllerService;
+import com.fr.rest.service.FriendControllerService;
 import com.fr.entities.FriendShip;
 import com.fr.entities.Users;
 import com.fr.commons.dto.FriendResponse;

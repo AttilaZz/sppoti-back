@@ -1,6 +1,6 @@
 package com.fr.core;
 
-import com.fr.controllers.service.AccountControllerService;
+import com.fr.rest.service.AccountControllerService;
 import com.fr.entities.*;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;

@@ -1,6 +1,6 @@
 package com.fr.core;
 
-import com.fr.controllers.service.LoginService;
+import com.fr.rest.service.LoginService;
 import com.fr.entities.Users;
 import org.springframework.stereotype.Component;
 

@@ -3,7 +3,7 @@
  */
 package com.fr.core;
 
-import com.fr.controllers.service.CommentControllerService;
+import com.fr.rest.service.CommentControllerService;
 import com.fr.entities.Comment;
 import com.fr.entities.EditHistory;
 import com.fr.commons.dto.CommentModel;

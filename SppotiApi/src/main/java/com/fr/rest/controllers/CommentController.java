@@ -1,7 +1,7 @@
-package com.fr.controllers;
+package com.fr.rest.controllers;
 
-import com.fr.controllers.service.CommentControllerService;
-import com.fr.controllers.service.PostControllerService;
+import com.fr.rest.service.CommentControllerService;
+import com.fr.rest.service.PostControllerService;
 import com.fr.entities.Comment;
 import com.fr.entities.EditHistory;
 import com.fr.entities.Post;

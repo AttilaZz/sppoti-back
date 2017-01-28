@@ -1,6 +1,6 @@
-package com.fr.controllers;
+package com.fr.rest.controllers;
 
-import com.fr.controllers.service.AccountControllerService;
+import com.fr.rest.service.AccountControllerService;
 import com.fr.entities.FriendShip;
 import com.fr.entities.Users;
 import com.fr.models.FriendStatus;

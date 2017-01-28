@@ -1,6 +1,6 @@
 package com.fr.core;
 
-import com.fr.controllers.service.LikeControllerService;
+import com.fr.rest.service.LikeControllerService;
 import com.fr.entities.Comment;
 import com.fr.entities.LikeContent;
 import com.fr.entities.Post;

@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.fr.controllers;
+package com.fr.rest.controllers;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fr.aop.TraceAuthentification;
-import com.fr.controllers.service.MessageControllerService;
+import com.fr.rest.service.MessageControllerService;
 import com.fr.entities.Messages;
 
 /**

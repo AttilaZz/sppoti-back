@@ -1,10 +1,9 @@
-package com.fr.controllers;
+package com.fr.rest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.commons.dto.SppotiResponse;
-import com.fr.controllers.service.SppotiControllerService;
+import com.fr.rest.service.SppotiControllerService;
 import com.fr.commons.dto.SppotiRequest;
-import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -104,13 +103,13 @@ public class SppotiController {
 
     }
 
-    @GetMapping("/all/{id}")
-    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable int id, Authentication authentication, HttpServletRequest request) {
+    @GetMapping("/all/{id}/{page}")
+    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable int id, Authentication authentication, @PathVariable int page,  HttpServletRequest request) {
 
         List<SppotiResponse> response;
 
         try {
-            response = sppotiControllerService.getAllUserSppoties(id);
+            response = sppotiControllerService.getAllUserSppoties(id, page);
         } catch (RuntimeException e) {
             e.printStackTrace();
             LOGGER.error("Sppoties not found: " + e.getMessage());

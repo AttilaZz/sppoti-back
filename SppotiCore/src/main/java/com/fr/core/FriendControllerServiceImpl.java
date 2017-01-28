@@ -1,6 +1,6 @@
 package com.fr.core;
 
-import com.fr.controllers.service.FriendControllerService;
+import com.fr.rest.service.FriendControllerService;
 import com.fr.entities.FriendShip;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.fr.controllers.service;
+package com.fr.rest.service;
 
 import com.fr.entities.Users;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
-package com.fr.controllers;
+package com.fr.rest.controllers;
 
-import com.fr.controllers.service.SportControllerService;
+import com.fr.rest.service.SportControllerService;
 import com.fr.entities.Sport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

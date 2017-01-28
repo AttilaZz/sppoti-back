@@ -3,7 +3,7 @@
  */
 package com.fr.core;
 
-import com.fr.controllers.service.PostControllerService;
+import com.fr.rest.service.PostControllerService;
 import com.fr.entities.*;
 import com.fr.commons.dto.CommentModel;
 import com.fr.commons.dto.ContentEditedResponse;

@@ -4,13 +4,16 @@ import com.fr.commons.dto.SppotiRequest;
 import com.fr.commons.dto.SppotiResponse;
 import com.fr.commons.dto.TeamResponse;
 import com.fr.commons.dto.User;
-import com.fr.controllers.service.SppotiControllerService;
+import com.fr.rest.service.SppotiControllerService;
 import com.fr.entities.Sport;
 import com.fr.entities.Sppoti;
 import com.fr.entities.Team;
 import com.fr.entities.Users;
 import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.exceptions.SportNotFoundException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
@@ -27,6 +30,9 @@ import java.util.Set;
 public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService {
 
     private static final String TEAM_ID_NOT_FOUND = "Team id not found";
+
+    @Value("${key.sppotiesPerPage}")
+    private int sppoti_size;
 
     /**
      * @param newSppoti
@@ -188,9 +194,11 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
      * @return all sppoties created by a user
      */
     @Override
-    public List<SppotiResponse> getAllUserSppoties(int id) {
+    public List<SppotiResponse> getAllUserSppoties(int id, int page) {
 
-        List<Sppoti> sppoties = sppotiRepository.findByUserSppotiUuid(id);
+        Pageable pageable = new PageRequest(page, sppoti_size);
+
+        List<Sppoti> sppoties = sppotiRepository.findByUserSppotiUuid(id, pageable);
 
         List<SppotiResponse> sppotiResponses = new ArrayList<SppotiResponse>();
 

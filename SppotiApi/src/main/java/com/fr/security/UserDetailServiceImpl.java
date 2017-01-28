@@ -1,10 +1,9 @@
 package com.fr.security;
 
 import com.fr.aop.TraceControllers;
-import com.fr.controllers.service.LoginService;
+import com.fr.rest.service.LoginService;
 import com.fr.entities.Users;
 import org.apache.log4j.Logger;
-import org.hibernate.service.spi.InjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

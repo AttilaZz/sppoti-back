@@ -1,4 +1,4 @@
-package com.fr.controllers.service;
+package com.fr.rest.service;
 
 import com.fr.commons.dto.SppotiRequest;
 import com.fr.commons.dto.SppotiResponse;
@@ -18,7 +18,7 @@ public interface SppotiControllerService extends AbstractControllerService {
 
     SppotiResponse getSppotiByUuid(int uuid);
 
-    List<SppotiResponse> getAllUserSppoties(int id);
+    List<SppotiResponse> getAllUserSppoties(int id, int page);
 
     void deleteSppoti(int id);
 }

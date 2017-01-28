@@ -1,6 +1,6 @@
 package com.fr.core;
 
-import com.fr.controllers.service.SportControllerService;
+import com.fr.rest.service.SportControllerService;
 import com.fr.entities.Sport;
 import org.springframework.stereotype.Component;
 
