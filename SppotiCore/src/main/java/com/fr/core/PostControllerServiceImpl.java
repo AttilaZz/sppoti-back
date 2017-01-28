@@ -244,7 +244,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                 if (!commentsListTemp.isEmpty()) {
                     Comment comment = commentsListTemp.get(comments.size() - 1);
 
-                    CommentModel commentModel = new CommentModel(comment);
+                    CommentModel commentModel = new CommentModel(comment, getUserCoverAndAvatar(comment.getUser()));
                     commentModel.setMyComment(comment.getUser().getId().equals(userId));
                     commentModel.setLikedByUser(isContentLikedByUser(comment, userId));
                     commentModel.setLikeCount(comment.getLikes().size());

@@ -38,10 +38,10 @@ public class CommentModel {
     public CommentModel() {
     }
 
-    public CommentModel(Comment comment) {
+    public CommentModel(Comment comment, User authorComment) {
         this.id = comment.getUuid();
 
-//        this.authorAvatar = comment.getUser().getAvatars();
+        this.authorAvatar = authorComment.getAvatar();
         this.authorFirstName = comment.getUser().getFirstName();
         this.authorUsername = comment.getUser().getUsername();
         this.authorLastName = comment.getUser().getLastName();
