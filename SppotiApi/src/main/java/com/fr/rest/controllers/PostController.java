@@ -108,7 +108,7 @@ public class PostController {
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
         if (posts != null && posts.isEmpty()) {
-            LOGGER.error("GET-ALL-POSTS: No content found !");
+            LOGGER.warn("GET-ALL-POSTS: No content found !");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         }
@@ -297,7 +297,7 @@ public class PostController {
 
             newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUseruuid());
             postRep.setTargetUser(targetUser.getFirstName(), targetUser.getLastName(), targetUser.getUsername(), targetUser.getUuid(), false);
-        } else if (requestTargetUserId != 0 && targetUser == null) {
+        } else if (requestTargetUserId != 0) {
             LOGGER.error("ADD-POST: Target user id not found !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -496,7 +496,7 @@ public class PostController {
 
         if (!postDataService.editPostVisibility(id, visibility)) {
             LOGGER.info("POST_EDIT_VISIBILITY: Can't update visibility!!");
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
 

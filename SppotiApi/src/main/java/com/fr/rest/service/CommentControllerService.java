@@ -28,4 +28,5 @@ public interface CommentControllerService extends AbstractControllerService {
     List<CommentModel> getPostCommentsFromLastId(int postId, int page, Long userId);
 
     List<ContentEditedResponse> getAllCommentHistory(int id, int page);
+
 }

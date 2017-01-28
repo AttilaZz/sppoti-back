@@ -342,7 +342,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return user;
     }
 
-    protected User getUserCoverAndAvatar(Users targetUser) {
+    @Override
+    public User getUserCoverAndAvatar(Users targetUser) {
 
         User user = new User();
         Set<Resources> resources = targetUser.getRessources();
@@ -388,7 +389,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @param team
      * @return
      */
-    protected Set<Users> getTeamMembersEntityFromDto(int[] memberIdList, Team team) {
+    @Override
+    public Set<Users> getTeamMembersEntityFromDto(int[] memberIdList, Team team) {
 
         Set<Users> teamUsers = new HashSet<Users>();
         Set<Team> teams = new HashSet<Team>();

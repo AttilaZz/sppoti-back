@@ -123,13 +123,14 @@ public class CommentController {
             newComment.setAuthorFirstName(user.getFirstName());
             newComment.setAuthorLastName(user.getLastName());
             newComment.setAuthorUsername(user.getUsername());
+            newComment.setAuthorAvatar(commentDataService.getUserCoverAndAvatar(user).getAvatar());
 
             try {
                 Comment c = commentDataService.saveComment(commentToSave);
                 newComment.setId(c.getUuid());
                 newComment.setMyComment(true);
                 newComment.setCreationDate(c.getDatetimeCreated());
-                LOGGER.info("COMMENT: post has been saved");
+                LOGGER.info("COMMENT: post has been saved: \n" + newComment);
                 return new ResponseEntity<>(newComment, HttpStatus.CREATED);
             } catch (Exception e) {
                 e.printStackTrace();
