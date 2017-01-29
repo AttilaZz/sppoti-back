@@ -315,7 +315,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         User user_cover_avatar = getUserCoverAndAvatar(targetUser);
         user.setCover(user_cover_avatar.getCover());
         user.setAvatar(user_cover_avatar.getAvatar());
-
+        user.setCoverType(user_cover_avatar.getCoverType());
 
         /*
         End resource manager

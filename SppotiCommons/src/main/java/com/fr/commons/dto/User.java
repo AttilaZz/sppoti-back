@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by djenanewail on 12/16/16.
  */
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class User {
 
     private int id;
@@ -29,13 +29,14 @@ public class User {
 
     private String cover;
     private String avatar;
+
     private int coverType;
 
     @SerializedName("friend_id")
     @JsonProperty("friend_id")
     private int friendUuid;
     @SerializedName("friend_status")
-    @JsonProperty("friend_status")
+    @JsonProperty(value = "friend_status")
     private int friendStatus = FriendStatus.PUBLIC_RELATION.getValue();
 
     private String datetimeCreated;
