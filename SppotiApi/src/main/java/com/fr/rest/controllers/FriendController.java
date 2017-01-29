@@ -262,18 +262,28 @@ public class FriendController {
         /*
         Check if friendship exist
          */
-        if (friendControllerService.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid()) != null) {
+        FriendShip tempFriendShip = friendControllerService.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid());
+        if (tempFriendShip != null && !tempFriendShip.getStatus().equals(FriendStatus.PUBLIC_RELATION.name())) {
             LOGGER.error("ADD-FRIEND: You are already friends");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        FriendShip friendShip = new FriendShip();
+
+        //friendship aleady exist in a different status
+        if(tempFriendShip != null && tempFriendShip.getStatus().equals(FriendStatus.PUBLIC_RELATION.name())){
+            friendShip = tempFriendShip;
+            friendShip.setStatus(FriendStatus.PENDING.name());
+        }else{
+            Users u = friendControllerService.getUserByUuId(user.getFriendUuid());
+            friendShip.setFriend(u);
+            friendShip.setUser(connectedUser.getUuid());
         }
 
         /*
         Prepare friendship for saving
          */
-        FriendShip friendShip = new FriendShip();
-        Users u = friendControllerService.getUserByUuId(user.getFriendUuid());
-        friendShip.setFriend(u);
-        friendShip.setUser(connectedUser.getUuid());
+
 
         try {
             friendControllerService.saveFriendShip(friendShip);

@@ -4,6 +4,7 @@ import com.fr.models.FriendStatus;
 import org.joda.time.DateTime;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by: Wail DJENANE on Jul 3, 2016
@@ -17,7 +18,7 @@ public class FriendShip {
     private Long id;
 
     @Column(nullable = false)
-    private String datetime = new DateTime().toString();
+    private Date datetime = new Date();
 
     @Column(nullable = false)
     private String status = FriendStatus.PENDING.name();
@@ -29,6 +30,9 @@ public class FriendShip {
     @Column(name = "user_id")
     private int user;
 
+    @Column(columnDefinition = "false")
+    private boolean deleted;
+
     public Long getId() {
         return id;
     }
@@ -37,11 +41,11 @@ public class FriendShip {
         this.id = id;
     }
 
-    public String getDatetime() {
+    public Date getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(String datetime) {
+    public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
 
@@ -67,5 +71,13 @@ public class FriendShip {
 
     public void setUser(int user) {
         this.user = user;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

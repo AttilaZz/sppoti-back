@@ -1,16 +1,18 @@
 package com.fr.commons.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.models.FriendStatus;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by djenanewail on 12/16/16.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 
     private int id;
@@ -39,7 +41,8 @@ public class User {
     @JsonProperty(value = "friend_status")
     private int friendStatus = FriendStatus.PUBLIC_RELATION.getValue();
 
-    private String datetimeCreated;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
+    private Date datetimeCreated;
 
     private boolean myProfile;
 
@@ -176,11 +179,11 @@ public class User {
         this.myProfile = myProfile;
     }
 
-    public String getDatetimeCreated() {
+    public Date getDatetimeCreated() {
         return datetimeCreated;
     }
 
-    public void setDatetimeCreated(String datetimeCreated) {
+    public void setDatetimeCreated(Date datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
     }
 }

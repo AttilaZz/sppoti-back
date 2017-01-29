@@ -276,7 +276,13 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 /*
                 manage requests sent to me
                  */
-                FriendShip friendShip = friendShipRepository.getByFriendUuidAndUser(targetUser.getUuid(), connected_user.getUuid());
+                FriendShip friendShip;
+
+                friendShip = friendShipRepository.findByFriendUuidAndUserAndDeletedFalse(connected_user.getUuid(), targetUser.getUuid());
+
+                if (friendShip == null) {
+                    friendShip = friendShipRepository.findByFriendUuidAndUserAndDeletedFalse(targetUser.getUuid(), connected_user.getUuid());
+                }
 
                 if (friendShip == null) {
                     user.setFriendStatus(FriendStatus.PUBLIC_RELATION.getValue());
@@ -300,7 +306,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 /*
                 Manage request sent by me
                  */
-                if (!friendShipRepository.getByUserAndFriendUuidAndStatus(targetUser.getUuid(), connected_user.getUuid(), FriendStatus.PENDING.name()).isEmpty()) {
+                if (!friendShipRepository.findByUserAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connected_user.getUuid(), FriendStatus.PENDING.name()).isEmpty()) {
                     user.setFriendStatus(FriendStatus.PENDING_SENT.getValue());
                 }
             }
