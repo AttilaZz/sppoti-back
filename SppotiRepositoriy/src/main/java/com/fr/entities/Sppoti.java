@@ -63,7 +63,7 @@ public class Sppoti {
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "team_guest_id")
     @JsonIgnore
-    private Team teamGuest;
+    private Team teamAdverse;
 
     public Long getId() {
         return id;
@@ -154,12 +154,12 @@ public class Sppoti {
         this.teamHost = teamHost;
     }
 
-    public Team getTeamGuest() {
-        return teamGuest;
+    public Team getTeamAdverse() {
+        return teamAdverse;
     }
 
-    public void setTeamGuest(Team teamGuest) {
-        this.teamGuest = teamGuest;
+    public void setTeamAdverse(Team teamAdverse) {
+        this.teamAdverse = teamAdverse;
     }
 
     public int getUuid() {

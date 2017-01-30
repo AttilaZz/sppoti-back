@@ -127,7 +127,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                 throw new EntityNotFoundException(TEAM_ID_NOT_FOUND);
 
             }
-            sppoti.setTeamGuest(team);
+            sppoti.setTeamAdverse(team);
         }
 
         sppoti.setLocation(newSppoti.getAddress());
@@ -180,8 +180,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppotiResponse.setUserSppoti(sppotiOwner);
 
         TeamResponse teamHostResponse = fillTeamResponse(sppoti.getTeamHost());
-        if (sppoti.getTeamGuest() != null) {
-            TeamResponse teamGuestResponse = fillTeamResponse(sppoti.getTeamGuest());
+        if (sppoti.getTeamAdverse() != null) {
+            TeamResponse teamGuestResponse = fillTeamResponse(sppoti.getTeamAdverse());
             sppotiResponse.setTeamGuest(teamGuestResponse);
         }
 
@@ -224,6 +224,49 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         } else {
             throw new EntityNotFoundException("Trying to delete non existing sppoti");
         }
+
+    }
+
+    @Override
+    public SppotiResponse updateSppoti(SppotiRequest sppotiRequest, int id) {
+
+        Sppoti sppoti = sppotiRepository.findByUuid(id);
+
+        if (sppoti == null) {
+            throw new EntityNotFoundException("Sppoti not found with id: " + id);
+        }
+
+        if (sppotiRequest.getTags() != null) {
+            sppoti.setTags(sppotiRequest.getTags());
+        }
+
+        if (sppotiRequest.getDescription() != null) {
+            sppoti.setDescription(sppotiRequest.getDescription());
+        }
+
+        if (sppotiRequest.getDatetimeStart() != null) {
+            sppoti.setDateTimeStart(sppotiRequest.getDatetimeStart());
+        }
+
+        if (sppotiRequest.getTitre() != null) {
+            sppoti.setTitre(sppotiRequest.getTitre());
+        }
+
+        if(sppotiRequest.getAddress() != null){
+            sppoti.setLocation(sppotiRequest.getAddress());
+        }
+
+        if (sppotiRequest.getVsTeam() != 0) {
+            Team adverseTeam = teamRepository.findByUuid(sppotiRequest.getVsTeam());
+            if (adverseTeam == null) {
+                throw new EntityNotFoundException("Team id not found: " + sppotiRequest.getVsTeam());
+            }
+            sppoti.setTeamAdverse(adverseTeam);
+        }
+
+        Sppoti updatedSppoti = sppotiRepository.save(sppoti);
+
+        return getSppotiResponse(updatedSppoti);
 
     }
 

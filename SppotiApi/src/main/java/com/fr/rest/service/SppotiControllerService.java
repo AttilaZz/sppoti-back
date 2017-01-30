@@ -21,4 +21,6 @@ public interface SppotiControllerService extends AbstractControllerService {
     List<SppotiResponse> getAllUserSppoties(int id, int page);
 
     void deleteSppoti(int id);
+
+    SppotiResponse updateSppoti(SppotiRequest sppotiRequest, int id);
 }

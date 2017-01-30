@@ -2,6 +2,7 @@ package com.fr.rest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.commons.dto.SppotiResponse;
+import com.fr.entities.Sppoti;
 import com.fr.rest.service.SppotiControllerService;
 import com.fr.commons.dto.SppotiRequest;
 import org.apache.log4j.Logger;
@@ -35,6 +36,13 @@ public class SppotiController {
 
     private static final String ATT_USER_ID = "USER_ID";
 
+    /**
+     * @param newSppoti
+     * @param response
+     * @param request
+     * @return 201 status && Sppoti object with the inserted data, 400 status otherwise.
+     * @throws IOException
+     */
     @PostMapping
     public ResponseEntity addPost(@RequestBody SppotiRequest newSppoti, HttpServletResponse response, HttpServletRequest request) throws IOException {
 
@@ -86,6 +94,10 @@ public class SppotiController {
 
     }
 
+    /**
+     * @param id
+     * @return 200 status with the target sppoti, 400 status otherwise.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<SppotiResponse> getSppotiById(@PathVariable int id) {
 
@@ -103,8 +115,15 @@ public class SppotiController {
 
     }
 
+    /**
+     * @param id
+     * @param authentication
+     * @param page
+     * @param request
+     * @return All user sppoties and 200 status, 400 status otherwise.
+     */
     @GetMapping("/all/{id}/{page}")
-    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable int id, Authentication authentication, @PathVariable int page,  HttpServletRequest request) {
+    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable int id, Authentication authentication, @PathVariable int page, HttpServletRequest request) {
 
         List<SppotiResponse> response;
 
@@ -119,6 +138,10 @@ public class SppotiController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /**
+     * @param id
+     * @return 200 status if deleted, 400 status otherwise.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteSppoti(@PathVariable int id) {
 
@@ -133,10 +156,54 @@ public class SppotiController {
 
     }
 
+    /**
+     * @param id
+     * @param sppotiRequest
+     * @return 200 status with the updated sppoti, 400 status otherwise.
+     */
     @PutMapping("/{id}")
-    public ResponseEntity updateSppoti(@PathVariable int id, @RequestBody SppotiRequest sppotiRequest) {
+    public ResponseEntity<SppotiResponse> updateSppoti(@PathVariable int id, @RequestBody SppotiRequest sppotiRequest) {
 
-        return new ResponseEntity(HttpStatus.OK);
+        boolean canUpdate = false;
+
+        if (sppotiRequest.getTags() != null && !sppotiRequest.getTags().isEmpty()) {
+            canUpdate = true;
+        }
+
+        if (sppotiRequest.getDescription() != null && !sppotiRequest.getDescription().isEmpty()) {
+            canUpdate = true;
+        }
+
+        if (sppotiRequest.getAddress() != null && !sppotiRequest.getAddress().isEmpty()) {
+            canUpdate = true;
+        }
+
+        if (sppotiRequest.getDatetimeStart() != null) {
+            canUpdate = true;
+        }
+
+        if (sppotiRequest.getTitre() != null && !sppotiRequest.getTitre().isEmpty()) {
+            canUpdate = true;
+        }
+
+        if (sppotiRequest.getVsTeam() != 0) {
+            canUpdate = true;
+        }
+
+        try {
+
+            if (canUpdate) {
+                sppotiControllerService.updateSppoti(sppotiRequest, id);
+            } else {
+                throw new IllegalArgumentException("Update not acceptable");
+            }
+
+        } catch (RuntimeException e) {
+            LOGGER.error("Update not acceptable due to an illegal argument or database problem: \n " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
