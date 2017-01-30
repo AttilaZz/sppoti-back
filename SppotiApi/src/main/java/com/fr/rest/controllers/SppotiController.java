@@ -190,6 +190,10 @@ public class SppotiController {
             canUpdate = true;
         }
 
+        if(sppotiRequest.getMaxTeamCount() != 0){
+            canUpdate = true;
+        }
+
         try {
 
             if (canUpdate) {

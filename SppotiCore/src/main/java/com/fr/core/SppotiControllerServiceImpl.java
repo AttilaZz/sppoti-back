@@ -256,6 +256,10 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             sppoti.setLocation(sppotiRequest.getAddress());
         }
 
+        if(sppotiRequest.getMaxTeamCount() != 0){
+            sppoti.setMaxMembersCount(sppotiRequest.getMaxTeamCount());
+        }
+
         if (sppotiRequest.getVsTeam() != 0) {
             Team adverseTeam = teamRepository.findByUuid(sppotiRequest.getVsTeam());
             if (adverseTeam == null) {
