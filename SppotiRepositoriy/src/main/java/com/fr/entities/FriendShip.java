@@ -30,7 +30,7 @@ public class FriendShip {
     @Column(name = "user_id")
     private int user;
 
-    @Column(columnDefinition = "false")
+    @Column
     private boolean deleted;
 
     public Long getId() {

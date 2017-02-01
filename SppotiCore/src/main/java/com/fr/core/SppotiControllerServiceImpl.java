@@ -186,6 +186,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         sppotiResponse.setTeamHost(teamHostResponse);
+        sppotiResponse.setId(sppoti.getUuid());
         return sppotiResponse;
     }
 
