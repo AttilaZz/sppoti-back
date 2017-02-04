@@ -15,4 +15,5 @@ public interface TeamControllerService extends AbstractControllerService{
 
     TeamResponse getTeamById(int teamId);
 
+    void updateTeamMembers(TeamRequest request, int memberId, int teamId);
 }

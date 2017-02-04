@@ -1,13 +1,20 @@
 package com.fr.commons.dto;
 
+import java.util.List;
+
 /**
  * Created by djenanewail on 1/23/17.
  */
 public class TeamRequest {
+
     private String name;
     private String logoPath;
     private String coverPath;
-    private int[] memberIdList;
+    private List<User> members;
+
+    private Integer status;
+    private Integer xPosition;
+    private Integer yPosition;
 
     public String getName() {
         return name;
@@ -33,11 +40,35 @@ public class TeamRequest {
         this.coverPath = coverPath;
     }
 
-    public int[] getMemberIdList() {
-        return memberIdList;
+    public List<User> getMembers() {
+        return members;
     }
 
-    public void setMemberIdList(int[] memberIdList) {
-        this.memberIdList = memberIdList;
+    public void setMembers(List<User> members) {
+        this.members = members;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getxPosition() {
+        return xPosition;
+    }
+
+    public void setxPosition(Integer xPosition) {
+        this.xPosition = xPosition;
+    }
+
+    public Integer getyPosition() {
+        return yPosition;
+    }
+
+    public void setyPosition(Integer yPosition) {
+        this.yPosition = yPosition;
     }
 }

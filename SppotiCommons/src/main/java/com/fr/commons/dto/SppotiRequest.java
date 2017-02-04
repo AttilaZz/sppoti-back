@@ -11,7 +11,7 @@ import java.util.Date;
  * Created by: Wail DJENANE on Jul 11, 2016
  */
 
-@JsonInclude(Include.NON_EMPTY)
+@JsonInclude(Include.NON_NULL)
 public class SppotiRequest {
 
     private String titre;

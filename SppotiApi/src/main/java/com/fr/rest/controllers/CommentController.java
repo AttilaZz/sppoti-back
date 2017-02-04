@@ -144,8 +144,8 @@ public class CommentController {
         }
     }
 
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable("postId") int id) {
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable("commentId") int id) {
         Comment commentToDelete = commentDataService.findComment(id);
 
         if (commentToDelete == null) {

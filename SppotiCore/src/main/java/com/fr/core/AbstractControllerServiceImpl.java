@@ -38,6 +38,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected FriendShipRepository friendShipRepository;
     protected SppotiRepository sppotiRepository;
     protected TeamRepository teamRepository;
+    protected TeamMembersRepository teamMembersRepository;
+
+    @Autowired
+    public void setTeamMembersRepository(TeamMembersRepository teamMembersRepository) {
+        this.teamMembersRepository = teamMembersRepository;
+    }
 
     @Autowired
     public void setTeamRepository(TeamRepository teamRepository) {
@@ -313,6 +319,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
             user.setMyProfile(connected_user.getId().equals(targetUser.getId()));
 
+        } else {
+            user.setMyProfile(true);
         }
 
         /*
@@ -322,7 +330,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         user.setCover(user_cover_avatar.getCover());
         user.setAvatar(user_cover_avatar.getAvatar());
         user.setCoverType(user_cover_avatar.getCoverType());
-
         /*
         End resource manager
          */
@@ -391,26 +398,34 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param memberIdList
+     * @param users
      * @param team
-     * @return
+     * @return array of USERS_TEAM
      */
     @Override
-    public Set<Users_team> getTeamMembersEntityFromDto(int[] memberIdList, Team team) {
+    public Set<Users_team> getTeamMembersEntityFromDto(List<User> users, Team team) {
 
         Set<Users_team> teamUsers = new HashSet<Users_team>();
         Set<Team> teams = new HashSet<Team>();
         teams.add(team);
 
-        for (int userId : memberIdList) {
+        for (User user : users) {
 
-            Users u = userRepository.getByUuid(userId);
+            Users u = userRepository.getByUuid(user.getId());
             Users_team users_team = new Users_team();
 
             if (u != null) {
 
                 users_team.setTeams(team);
                 users_team.setUsers(u);
+
+                if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
+                    users_team.setxPosition(user.getxPosition());
+                }
+
+                if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
+                    users_team.setyPosition(user.getyPosition());
+                }
 
                 teamUsers.add(users_team);
 

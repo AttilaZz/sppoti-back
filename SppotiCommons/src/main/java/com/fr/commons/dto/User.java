@@ -15,11 +15,14 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
 
-    private int id;
+    private Integer id;
     private String firstName;
     private String lastName;
     private String username;
     private String address;
+
+    private Integer xPosition;
+    private Integer yPosition;
 
     @SerializedName("sports")
     @JsonProperty("sports")
@@ -32,14 +35,15 @@ public class User {
     private String cover;
     private String avatar;
 
-    private int coverType;
+    private Integer coverType;
 
     @SerializedName("friend_id")
     @JsonProperty("friend_id")
-    private int friendUuid;
+    private Integer friendUuid;
+
     @SerializedName("friend_status")
     @JsonProperty(value = "friend_status")
-    private int friendStatus = GlobalAppStatus.PUBLIC_RELATION.getValue();
+    private Integer friendStatus = GlobalAppStatus.PUBLIC_RELATION.getValue();
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
     private Date datetimeCreated;
@@ -59,19 +63,11 @@ public class User {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -91,12 +87,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public String getUsername() {
+        return username;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getAddress() {
@@ -107,12 +103,36 @@ public class User {
         this.address = address;
     }
 
-    public String getCover() {
-        return cover;
+    public Integer getxPosition() {
+        return xPosition;
     }
 
-    public void setCover(String cover) {
-        this.cover = cover;
+    public void setxPosition(Integer xPosition) {
+        this.xPosition = xPosition;
+    }
+
+    public Integer getyPosition() {
+        return yPosition;
+    }
+
+    public void setyPosition(Integer yPosition) {
+        this.yPosition = yPosition;
+    }
+
+    public List<SportModel> getSportModels() {
+        return sportModels;
+    }
+
+    public void setSportModels(List<SportModel> sportModels) {
+        this.sportModels = sportModels;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPhone() {
@@ -131,52 +151,44 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getCover() {
+        return cover;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 
-    public int getCoverType() {
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public Integer getCoverType() {
         return coverType;
     }
 
-    public void setCoverType(int coverType) {
+    public void setCoverType(Integer coverType) {
         this.coverType = coverType;
     }
 
-    public List<SportModel> getSportModels() {
-        return sportModels;
-    }
-
-    public void setSportModels(List<SportModel> sportModels) {
-        this.sportModels = sportModels;
-    }
-
-    public int getFriendUuid() {
+    public Integer getFriendUuid() {
         return friendUuid;
     }
 
-    public void setFriendUuid(int friendUuid) {
+    public void setFriendUuid(Integer friendUuid) {
         this.friendUuid = friendUuid;
     }
 
-    public int getFriendStatus() {
+    public Integer getFriendStatus() {
         return friendStatus;
     }
 
-    public void setFriendStatus(int friendStatus) {
+    public void setFriendStatus(Integer friendStatus) {
         this.friendStatus = friendStatus;
-    }
-
-    public boolean isMyProfile() {
-        return myProfile;
-    }
-
-    public void setMyProfile(boolean myProfile) {
-        this.myProfile = myProfile;
     }
 
     public Date getDatetimeCreated() {
@@ -185,5 +197,13 @@ public class User {
 
     public void setDatetimeCreated(Date datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
+    }
+
+    public boolean isMyProfile() {
+        return myProfile;
+    }
+
+    public void setMyProfile(boolean myProfile) {
+        this.myProfile = myProfile;
     }
 }

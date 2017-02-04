@@ -26,8 +26,6 @@ public class Team {
 
     private String logoPath;
     private String coverPath;
-    private String xPosition;
-    private String yPosition;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teams")
@@ -106,19 +104,4 @@ public class Team {
         this.sport = sport;
     }
 
-    public String getyPosition() {
-        return yPosition;
-    }
-
-    public void setyPosition(String yPosition) {
-        this.yPosition = yPosition;
-    }
-
-    public String getxPosition() {
-        return xPosition;
-    }
-
-    public void setxPosition(String xPosition) {
-        this.xPosition = xPosition;
-    }
 }

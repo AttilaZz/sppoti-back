@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by: Wail DJENANE on Jul 12, 2016
  */
-@JsonInclude(Include.NON_DEFAULT)
+@JsonInclude(Include.NON_NULL)
 public class SppotiResponse {
 
     private int id;

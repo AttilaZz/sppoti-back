@@ -4,6 +4,7 @@ import com.fr.models.GlobalAppStatus;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by djenanewail on 2/4/17.
@@ -16,11 +17,16 @@ public class Users_team {
     @GeneratedValue
     private Long id;
 
+    private int uuid = UUID.randomUUID().variant();
+
     private String status = GlobalAppStatus.PENDING.name();
 
     private Date joinDate;
 
     private Date invitationDate = new Date();
+
+    private Integer xPosition;
+    private Integer yPosition;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
@@ -76,5 +82,29 @@ public class Users_team {
 
     public void setUsers(Users users) {
         this.users = users;
+    }
+
+    public Integer getxPosition() {
+        return xPosition;
+    }
+
+    public void setxPosition(Integer xPosition) {
+        this.xPosition = xPosition;
+    }
+
+    public Integer getyPosition() {
+        return yPosition;
+    }
+
+    public void setyPosition(Integer yPosition) {
+        this.yPosition = yPosition;
+    }
+
+    public int getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(int uuid) {
+        this.uuid = uuid;
     }
 }

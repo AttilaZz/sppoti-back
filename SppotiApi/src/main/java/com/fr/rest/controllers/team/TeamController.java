@@ -1,7 +1,8 @@
-package com.fr.rest.controllers;
+package com.fr.rest.controllers.team;
 
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
+import com.fr.rest.controllers.SppotiController;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class TeamController {
     }
 
     @PostMapping
-    public void createTeam(@RequestBody TeamRequest team, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public ResponseEntity<Void> createTeam(@RequestBody TeamRequest team, HttpServletResponse response, HttpServletRequest request) {
 
 //        if (team.getCoverPath() == null || team.getCoverPath().isEmpty()) {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (cover path) not found");
@@ -42,39 +43,62 @@ public class TeamController {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (logo path) not found");
 //
 //        }
+
         if (team.getName() == null || team.getName().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (name) not found");
-
+            LOGGER.error("Team (name) not found");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        if (team.getMemberIdList() == null || team.getMemberIdList().length == 0) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (members) not found");
-
+        if (team.getMembers() == null || team.getMembers().isEmpty()) {
+            LOGGER.error("Team (members) not found");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         Long teamCreator = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
-
         try {
             teamControllerService.saveTeam(team, teamCreator);
         } catch (RuntimeException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+            LOGGER.error("Problème de création de la team: \n" + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        response.setStatus(HttpServletResponse.SC_CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("{/id}")
-    public ResponseEntity updateTeam(@PathVariable int id, @RequestBody TeamRequest teamRequest) {
+    /**
+     * This methos update general team informations,
+     * Title, Logos, Cover
+     *
+     * @param id
+     * @param teamRequest
+     * @return The updated team
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<TeamResponse> updateTeam(@PathVariable int id, @RequestBody TeamRequest teamRequest) {
 
-        return new ResponseEntity(HttpStatus.OK);
+
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * This method delete a team
+     *
+     * @param id
+     * @return 200 status if team was deleted, 400 status otherwise
+     */
     @DeleteMapping("{/id}")
     public ResponseEntity deleteTeam(@PathVariable int id) {
 
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    /**
+     * Get team data from an id
+     *
+     * @param teamId
+     * @return target team
+     */
     @GetMapping("/{teamId}")
     public ResponseEntity<TeamResponse> getTeamById(@PathVariable int teamId) {
 
@@ -91,6 +115,12 @@ public class TeamController {
         return new ResponseEntity<>(teamResponse, HttpStatus.OK);
     }
 
+    /**
+     *
+     * @param userId
+     * @param page
+     * @return All teams for a giver user Id
+     */
     @GetMapping("/{userId}/{page}")
     public ResponseEntity getAllTeams(@PathVariable int userId, @PathVariable int page) {
 

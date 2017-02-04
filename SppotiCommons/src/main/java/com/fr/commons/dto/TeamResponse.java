@@ -58,4 +58,5 @@ public class TeamResponse {
     public void setTeamAdmin(List<User> teamAdmin) {
         this.teamAdmin = teamAdmin;
     }
+
 }
