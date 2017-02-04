@@ -32,7 +32,9 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         }
 
         try {
-            teamToSave.setTeamMembers(getTeamMembersEntityFromDto(team.getMemberIdList(), teamToSave));
+
+            teamToSave.setUsers_teams(getTeamMembersEntityFromDto(team.getMemberIdList(), teamToSave));
+
         } catch (RuntimeException e) {
             LOGGER.error("One of the team id not found: " + e.getMessage());
             throw new HostMemberNotFoundException("TeamRequest (members) one of the team dosn't exist");
@@ -42,7 +44,6 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         Users owner = userRepository.findOne(adminId);
         Set<Users> admins = new HashSet<Users>();
         admins.add(owner);
-
         teamToSave.setAdmins(admins);
 
         Set<Team> teams = new HashSet<Team>();

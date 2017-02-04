@@ -20,11 +20,7 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
-
     private int uuid = UUID.randomUUID().hashCode();
-
-//    @ElementCollection
-//    private Map<String, String> avatars = new TreeMap<String, String>();
 
     @Column(nullable = false)
     private String lastName;
@@ -105,15 +101,17 @@ public class Users {
     @OrderBy("dateTime DESC")
     private SortedSet<Address> addresses;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "team_id")
-    @JsonIgnore
-    private Set<Team> team;
+//    @ManyToMany(cascade = CascadeType.PERSIST)
+//    @JoinColumn(name = "team_id")
+//    @JsonIgnore
+//    private Set<Team> team;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "team_admin_id")
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "admins")
     @JsonIgnore
     private Set<Team> teamAdmin;
+
+//    @ElementCollection
+//    private Map<Team, Boolean> teamStatus = new TreeMap<Team, Boolean>();
 
     public boolean isDeleted() {
         return deleted;
@@ -131,8 +129,7 @@ public class Users {
         this.confirmed = confirmed;
     }
 
-    public Users() {
-    }
+    public Users() {}
 
     public Set<Post> getUserPosts() {
         return userPosts;
@@ -318,14 +315,6 @@ public class Users {
         this.username = username;
     }
 
-    public Set<Team> getTeam() {
-        return team;
-    }
-
-    public void setTeam(Set<Team> team) {
-        this.team = team;
-    }
-
     public Set<Team> getTeamAdmin() {
         return teamAdmin;
     }
@@ -333,4 +322,5 @@ public class Users {
     public void setTeamAdmin(Set<Team> teamAdmin) {
         this.teamAdmin = teamAdmin;
     }
+
 }

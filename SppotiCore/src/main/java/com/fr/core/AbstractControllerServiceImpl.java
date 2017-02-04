@@ -285,20 +285,20 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 }
 
                 if (friendShip == null) {
-                    user.setFriendStatus(FriendStatus.PUBLIC_RELATION.getValue());
+                    user.setFriendStatus(GlobalAppStatus.PUBLIC_RELATION.getValue());
                 } else {
 
                     //We are friend
-                    if (friendShip.getStatus().equals(FriendStatus.CONFIRMED.name())) {
-                        user.setFriendStatus(FriendStatus.CONFIRMED.getValue());
+                    if (friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED.name())) {
+                        user.setFriendStatus(GlobalAppStatus.CONFIRMED.getValue());
 
                         //Friend request waiting to be accepted by me
-                    } else if (friendShip.getStatus().equals(FriendStatus.PENDING.name())) {
-                        user.setFriendStatus(FriendStatus.PENDING.getValue());
+                    } else if (friendShip.getStatus().equals(GlobalAppStatus.PENDING.name())) {
+                        user.setFriendStatus(GlobalAppStatus.PENDING.getValue());
 
                         //Friend request refused by me
-                    } else if (friendShip.getStatus().equals(FriendStatus.REFUSED.name())) {
-                        user.setFriendStatus(FriendStatus.REFUSED.getValue());
+                    } else if (friendShip.getStatus().equals(GlobalAppStatus.REFUSED.name())) {
+                        user.setFriendStatus(GlobalAppStatus.REFUSED.getValue());
 
                     }
 
@@ -306,8 +306,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 /*
                 Manage request sent by me
                  */
-                if (!friendShipRepository.findByUserAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connected_user.getUuid(), FriendStatus.PENDING.name()).isEmpty()) {
-                    user.setFriendStatus(FriendStatus.PENDING_SENT.getValue());
+                if (!friendShipRepository.findByUserAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connected_user.getUuid(), GlobalAppStatus.PENDING.name()).isEmpty()) {
+                    user.setFriendStatus(GlobalAppStatus.PENDING_SENT.getValue());
                 }
             }
 
@@ -396,19 +396,24 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @return
      */
     @Override
-    public Set<Users> getTeamMembersEntityFromDto(int[] memberIdList, Team team) {
+    public Set<Users_team> getTeamMembersEntityFromDto(int[] memberIdList, Team team) {
 
-        Set<Users> teamUsers = new HashSet<Users>();
+        Set<Users_team> teamUsers = new HashSet<Users_team>();
         Set<Team> teams = new HashSet<Team>();
         teams.add(team);
 
         for (int userId : memberIdList) {
 
             Users u = userRepository.getByUuid(userId);
+            Users_team users_team = new Users_team();
 
             if (u != null) {
-                u.setTeam(teams);
-                teamUsers.add(u);
+
+                users_team.setTeams(team);
+                users_team.setUsers(u);
+
+                teamUsers.add(users_team);
+
             } else {
                 throw new EntityNotFoundException();
             }

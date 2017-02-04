@@ -58,7 +58,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             }
 
             try {
-                hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMemberIdList(), hostTeam));
+                //TODO:
+//                hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMemberIdList(), hostTeam));
             } catch (RuntimeException e) {
                 LOGGER.error("One of the team id not found: " + e.getMessage());
                 throw new HostMemberNotFoundException("Host-TeamRequest (members) one of the team dosn't exist");
@@ -285,12 +286,12 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         List<User> teamUsers = new ArrayList<User>();
 
-        for (Users user : team.getTeamMembers()) {
-            User user_cover_avatar = getUserCoverAndAvatar(user);
-
-            teamUsers.add(new User(user.getUuid(), user.getFirstName(), user.getLastName(), user.getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType()));
-
-        }
+//        for (Users user : team.getTeamMembers()) {
+//            User user_cover_avatar = getUserCoverAndAvatar(user);
+//
+//            teamUsers.add(new User(user.getUuid(), user.getFirstName(), user.getLastName(), user.getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType()));
+//
+//        }
 
         teamResponse.setTeamMembers(teamUsers);
 

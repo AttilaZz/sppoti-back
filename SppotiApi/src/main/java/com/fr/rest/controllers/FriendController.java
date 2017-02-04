@@ -5,7 +5,7 @@ import com.fr.rest.service.FriendControllerService;
 import com.fr.entities.FriendShip;
 import com.fr.entities.Users;
 import com.fr.commons.dto.FriendResponse;
-import com.fr.models.FriendStatus;
+import com.fr.models.GlobalAppStatus;
 import com.fr.commons.dto.User;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +65,7 @@ public class FriendController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.CONFIRMED.name(), pageable);
+        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.CONFIRMED.name(), pageable);
 
         List<User> friendList = new ArrayList<>();
 
@@ -104,7 +104,7 @@ public class FriendController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.REFUSED.name(), pageable);
+        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.REFUSED.name(), pageable);
 
         List<User> friendList = new ArrayList<>();
 
@@ -142,7 +142,7 @@ public class FriendController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
+        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING.name(), pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_SENT: No sent friend request found !");
@@ -186,7 +186,7 @@ public class FriendController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendControllerService.getByFriendUuidAndStatus(connectedUser.getUuid(), FriendStatus.PENDING.name(), pageable);
+        List<FriendShip> friendShips = friendControllerService.getByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING.name(), pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_RECEIVED: No received request friend found !");
@@ -263,7 +263,7 @@ public class FriendController {
         Check if friendship exist
          */
         FriendShip tempFriendShip = friendControllerService.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid());
-        if (tempFriendShip != null && !tempFriendShip.getStatus().equals(FriendStatus.PUBLIC_RELATION.name())) {
+        if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatus.PUBLIC_RELATION.name())) {
             LOGGER.error("ADD-FRIEND: You are already friends");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -271,9 +271,9 @@ public class FriendController {
         FriendShip friendShip = new FriendShip();
 
         //friendship aleady exist in a different status
-        if(tempFriendShip != null && tempFriendShip.getStatus().equals(FriendStatus.PUBLIC_RELATION.name())){
+        if(tempFriendShip != null && tempFriendShip.getStatus().equals(GlobalAppStatus.PUBLIC_RELATION.name())){
             friendShip = tempFriendShip;
-            friendShip.setStatus(FriendStatus.PENDING.name());
+            friendShip.setStatus(GlobalAppStatus.PENDING.name());
         }else{
             Users u = friendControllerService.getUserByUuId(user.getFriendUuid());
             friendShip.setFriend(u);
@@ -329,9 +329,9 @@ public class FriendController {
         /*
         prepare update
          */
-        for (FriendStatus friendStatus : FriendStatus.values()) {
-            if (friendStatus.getValue() == user.getFriendStatus()) {
-                friendShip.setStatus(friendStatus.name());
+        for (GlobalAppStatus globalAppStatus : GlobalAppStatus.values()) {
+            if (globalAppStatus.getValue() == user.getFriendStatus()) {
+                friendShip.setStatus(globalAppStatus.name());
             }
         }
 

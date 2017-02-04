@@ -3,6 +3,8 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import java.util.Date;
+
 /**
  * Created by: Wail DJENANE on Oct 17, 2016
  */
@@ -11,9 +13,11 @@ public class Notification {
 
     // Notif informations
     private String picture;
-    private String dateTime;
+    private Date dateTime;
     private String notifFromFirstName;
     private String notifFromLastName;
+    private String notifMessage;
+    private int notifType;
 
     // Notif type
     private boolean isTag;
@@ -27,12 +31,28 @@ public class Notification {
         this.picture = picture;
     }
 
-    public String getDateTime() {
+    public Date getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String dateTime) {
+    public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public int getNotifType() {
+        return notifType;
+    }
+
+    public void setNotifType(int notifType) {
+        this.notifType = notifType;
+    }
+
+    public String getNotifMessage() {
+        return notifMessage;
+    }
+
+    public void setNotifMessage(String notifMessage) {
+        this.notifMessage = notifMessage;
     }
 
     public String getNotifFromFirstName() {

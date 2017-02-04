@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.fr.commons.dto.User;
 import com.fr.entities.Team;
+import com.fr.entities.Users_team;
 import org.springframework.stereotype.Service;
 
 import com.fr.entities.Users;
@@ -26,5 +27,5 @@ public interface AbstractControllerService {
 
     User getUserCoverAndAvatar(Users targetUser);
 
-    Set<Users> getTeamMembersEntityFromDto(int[] memberIdList, Team team);
+    Set<Users_team> getTeamMembersEntityFromDto(int[] memberIdList, Team team);
 }

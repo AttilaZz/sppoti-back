@@ -3,7 +3,7 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.models.FriendStatus;
+import com.fr.models.GlobalAppStatus;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
@@ -39,7 +39,7 @@ public class User {
     private int friendUuid;
     @SerializedName("friend_status")
     @JsonProperty(value = "friend_status")
-    private int friendStatus = FriendStatus.PUBLIC_RELATION.getValue();
+    private int friendStatus = GlobalAppStatus.PUBLIC_RELATION.getValue();
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
     private Date datetimeCreated;

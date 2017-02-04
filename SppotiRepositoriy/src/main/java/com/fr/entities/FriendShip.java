@@ -1,7 +1,6 @@
 package com.fr.entities;
 
-import com.fr.models.FriendStatus;
-import org.joda.time.DateTime;
+import com.fr.models.GlobalAppStatus;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -21,7 +20,7 @@ public class FriendShip {
     private Date datetime = new Date();
 
     @Column(nullable = false)
-    private String status = FriendStatus.PENDING.name();
+    private String status = GlobalAppStatus.PENDING.name();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "friend_id")

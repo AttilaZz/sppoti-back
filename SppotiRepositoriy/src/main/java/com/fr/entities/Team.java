@@ -23,18 +23,24 @@ public class Team {
 
     @Column(nullable = false)
     private String name;
-    @Column
+
     private String logoPath;
-    @Column
     private String coverPath;
+    private String xPosition;
+    private String yPosition;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "team")
-    private Set<Users> teamMembers;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teams")
+    private Set<Users_team> users_teams;
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, mappedBy = "teamAdmin")
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "team_id")
     private Set<Users> admins;
+
+    @OneToOne
+    @JoinColumn(name = "sport_id")
+    private Sport sport;
 
     public Long getId() {
         return id;
@@ -68,14 +74,6 @@ public class Team {
         this.coverPath = coverPath;
     }
 
-    public Set<Users> getTeamMembers() {
-        return teamMembers;
-    }
-
-    public void setTeamMembers(Set<Users> teamMembers) {
-        this.teamMembers = teamMembers;
-    }
-
     public Set<Users> getAdmins() {
         return admins;
     }
@@ -90,5 +88,37 @@ public class Team {
 
     public void setUuid(int uuid) {
         this.uuid = uuid;
+    }
+
+    public Set<Users_team> getUsers_teams() {
+        return users_teams;
+    }
+
+    public void setUsers_teams(Set<Users_team> users_teams) {
+        this.users_teams = users_teams;
+    }
+
+    public Sport getSport() {
+        return sport;
+    }
+
+    public void setSport(Sport sport) {
+        this.sport = sport;
+    }
+
+    public String getyPosition() {
+        return yPosition;
+    }
+
+    public void setyPosition(String yPosition) {
+        this.yPosition = yPosition;
+    }
+
+    public String getxPosition() {
+        return xPosition;
+    }
+
+    public void setxPosition(String xPosition) {
+        this.xPosition = xPosition;
     }
 }
