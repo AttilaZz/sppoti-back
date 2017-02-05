@@ -5,6 +5,7 @@ import com.fr.commons.dto.TeamResponse;
 import com.fr.entities.Team;
 import com.fr.entities.TeamMembers;
 import com.fr.exceptions.HostMemberNotFoundException;
+import com.fr.exceptions.MemberNotInAdminTeamException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.TeamControllerService;
 import org.springframework.beans.factory.annotation.Value;
@@ -106,6 +107,12 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
+    /**
+     * Accept friend invitation
+     *
+     * @param teamId
+     * @param userId
+     */
     @Override
     public void acceptTeam(int teamId, int userId) {
 
@@ -121,6 +128,12 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
+    /**
+     * Refuse an invitation for a given team;
+     *
+     * @param teamId
+     * @param userId
+     */
     @Override
     public void refuseTeam(int teamId, int userId) {
 
@@ -134,6 +147,37 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         teamMembersRepository.save(teamMembers);
 
+    }
+
+    /**
+     * Delete member from a given team.
+     * user who delete must be admin of the team
+     *
+     * @param teamId
+     * @param memberId
+     */
+    @Override
+    public void deleteMemberFromTeam(int teamId, int memberId, int adminId) {
+
+        //User deleting the member is admin of the team
+        TeamMembers adminTeamMembers = teamMembersRepository.findByUsersUuidAndTeamsUuidAndAdminTrue(adminId, teamId);
+
+        if (adminTeamMembers == null) {
+            throw new EntityNotFoundException("Delete not permitted - User is not an admin");
+        }
+
+        TeamMembers targetTeamMember = teamMembersRepository.findByUsersUuidAndTeamsUuid(memberId, teamId);
+
+        if (targetTeamMember == null) {
+            throw new EntityNotFoundException("Member to delete not foundn");
+        }
+
+        //Admin and memeber to delete are in the same team
+        if (adminTeamMembers.getTeams().getId().equals(targetTeamMember.getTeams().getId())) {
+            teamMembersRepository.delete(targetTeamMember);
+        } else {
+            throw new MemberNotInAdminTeamException("permission denied for admin with id(" + adminId + ") to delete the memeber with id (" + memberId + ")");
+        }
     }
 
 }

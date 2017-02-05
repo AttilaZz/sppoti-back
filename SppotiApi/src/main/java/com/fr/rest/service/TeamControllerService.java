@@ -24,4 +24,6 @@ public interface TeamControllerService extends AbstractControllerService{
     void acceptTeam(int teamId, int uuid);
 
     void refuseTeam(int teamId, int uuid);
+
+    void deleteMemberFromTeam(int teamId, int memberId, int adminId);
 }
