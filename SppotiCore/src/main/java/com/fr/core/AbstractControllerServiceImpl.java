@@ -476,4 +476,47 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return teamUsers;
 
     }
+
+
+    /**
+     * @param team
+     * @return a teamResponse object from Team entity
+     */
+    protected TeamResponse fillTeamResponse(Team team, Long sppotiAdmin) {
+
+        TeamResponse teamResponse = new TeamResponse();
+
+        List<User> teamUsers = new ArrayList<User>();
+
+        for (TeamMembers user : team.getTeamMemberss()) {
+
+            Integer sppoterStatus = null;
+            //get status for the selected sppoti
+            for (SppotiMembers sppoter : user.getSppotiMemberss()) {
+                if (sppoter.getUsersTeam().getId().equals(user.getId())) {
+                    sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
+                }
+            }
+
+            //get avatar and cover
+            User userCoverAndAvatar = getUserCoverAndAvatar(user.getUsers());
+
+            //fill sppoter data
+            teamUsers.add(new User(user.getUuid(), user.getUsers().getFirstName(), user.getUsers().getLastName(), user.getUsers().getUsername(),
+                    userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
+                    userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
+                    userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null,
+                    user.getAdmin(), sppotiAdmin != null && user.getUsers().getId().equals(sppotiAdmin) ? true : null,
+                    GlobalAppStatus.valueOf(user.getStatus()).getValue(), sppotiAdmin != null ? sppoterStatus : null));
+        }
+
+        teamResponse.setTeamMembers(teamUsers);
+
+        teamResponse.setCoverPath(team.getCoverPath());
+        teamResponse.setLogoPath(team.getLogoPath());
+        teamResponse.setName(team.getName());
+
+        return teamResponse;
+
+    }
 }

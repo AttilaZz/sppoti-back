@@ -92,38 +92,4 @@ public class TeamController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    /**
-     * Get team data from an id
-     *
-     * @param teamId
-     * @return target team
-     */
-    @GetMapping("/{teamId}")
-    public ResponseEntity<TeamResponse> getTeamById(@PathVariable int teamId) {
-
-        TeamResponse teamResponse;
-
-        try {
-            teamResponse = teamControllerService.getTeamById(teamId);
-        } catch (RuntimeException e) {
-            LOGGER.error("Error retreiving team: " + e.getMessage());
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(teamResponse, HttpStatus.OK);
-    }
-
-    /**
-     *
-     * @param userId
-     * @param page
-     * @return All teams for a giver user Id
-     */
-    @GetMapping("/{userId}/{page}")
-    public ResponseEntity getAllTeams(@PathVariable int userId, @PathVariable int page) {
-
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
 }

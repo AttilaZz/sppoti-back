@@ -1,7 +1,9 @@
 package com.fr.core;
 
+import com.fr.commons.dto.SppotiResponse;
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
+import com.fr.entities.Sppoti;
 import com.fr.entities.Team;
 import com.fr.entities.TeamMembers;
 import com.fr.exceptions.HostMemberNotFoundException;
@@ -53,11 +55,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             throw new EntityNotFoundException("Team id not found");
         }
 
-        TeamResponse teamResponse = new TeamResponse();
-
-        //TODO: Fill response
-
-        return teamResponse;
+        return fillTeamResponse(team, null);
     }
 
     @Override
