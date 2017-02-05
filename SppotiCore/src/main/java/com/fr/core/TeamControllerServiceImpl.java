@@ -9,15 +9,24 @@ import com.fr.entities.TeamMembers;
 import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.TeamControllerService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by djenanewail on 1/22/17.
  */
 @Component
 public class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements TeamControllerService {
+
+    @Value("${key.teamsPerPage}")
+    private int teamPageSize;
 
     @Override
     public void saveTeam(TeamRequest team, Long adminId) {
@@ -48,17 +57,6 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public TeamResponse getTeamById(int teamId) {
-
-        Team team = teamRepository.findByUuid(teamId);
-        if (team == null) {
-            throw new EntityNotFoundException("Team id not found");
-        }
-
-        return fillTeamResponse(team, null);
-    }
-
-    @Override
     public void updateTeamMembers(TeamRequest request, int memberId, int teamId) {
 
         TeamMembers usersTeam = teamMembersRepository.findByUsersUuidAndTeamsUuid(memberId, teamId);
@@ -81,6 +79,34 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         }
 
         teamMembersRepository.save(usersTeam);
+    }
+
+    @Override
+    public TeamResponse getTeamById(int teamId) {
+
+        Team team = teamRepository.findByUuid(teamId);
+        if (team == null) {
+            throw new EntityNotFoundException("Team id not found");
+        }
+
+        return fillTeamResponse(team, null);
+    }
+
+    @Override
+    public List<TeamResponse> getAllTeamsByUserId(int userId, int page) {
+
+        Pageable pageable = new PageRequest(page, teamPageSize);
+
+        List<TeamMembers> myTeams = teamMembersRepository.findByUsersUuidAndAdminTrue(userId, pageable);
+        List<TeamResponse> teamResponses = new ArrayList<TeamResponse>();
+
+
+        for (TeamMembers myTeam : myTeams) {
+            teamResponses.add(fillTeamResponse(myTeam.getTeams(), null));
+        }
+
+        return teamResponses;
+
     }
 
 }

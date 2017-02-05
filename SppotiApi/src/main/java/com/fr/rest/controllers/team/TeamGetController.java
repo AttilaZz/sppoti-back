@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * Created by djenanewail on 2/5/17.
  */
@@ -53,15 +55,30 @@ public class TeamGetController {
     }
 
     /**
-     *
      * @param userId
      * @param page
      * @return All teams for a giver user Id
      */
-    @GetMapping("/{userId}/{page}")
+    @GetMapping("/all/{userId}/{page}")
     public ResponseEntity getAllTeams(@PathVariable int userId, @PathVariable int page) {
 
-        return new ResponseEntity(HttpStatus.OK);
+        List<TeamResponse> response;
+
+        try {
+            response = teamControllerService.getAllTeamsByUserId(userId, page);
+
+            if (response.isEmpty()) {
+                LOGGER.info("User id (" + userId + ") has no teams");
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            LOGGER.error("Error trying to get teams: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

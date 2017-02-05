@@ -65,9 +65,15 @@ public class SppotiGetController {
 
         try {
             response = sppotiControllerService.getAllUserSppoties(id, page);
+
+            if (response.isEmpty()) {
+                LOGGER.info("The user (" + id + ") has no sppoties");
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
         } catch (RuntimeException e) {
             e.printStackTrace();
-            LOGGER.error("Sppoties not found: " + e.getMessage());
+            LOGGER.error("Error getting sppoties: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

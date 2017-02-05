@@ -4,6 +4,8 @@ import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by djenanewail on 1/22/17.
  */
@@ -16,4 +18,6 @@ public interface TeamControllerService extends AbstractControllerService{
     TeamResponse getTeamById(int teamId);
 
     void updateTeamMembers(TeamRequest request, int memberId, int teamId);
+
+    List<TeamResponse> getAllTeamsByUserId(int userId, int page);
 }
