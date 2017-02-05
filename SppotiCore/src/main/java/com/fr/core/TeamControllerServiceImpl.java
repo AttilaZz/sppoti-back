@@ -1,9 +1,7 @@
 package com.fr.core;
 
-import com.fr.commons.dto.SppotiResponse;
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
-import com.fr.entities.Sppoti;
 import com.fr.entities.Team;
 import com.fr.entities.TeamMembers;
 import com.fr.exceptions.HostMemberNotFoundException;
@@ -15,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,6 +103,36 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         }
 
         return teamResponses;
+
+    }
+
+    @Override
+    public void acceptTeam(int teamId, int userId) {
+
+        TeamMembers teamMembers = teamMembersRepository.findByUsersUuidAndTeamsUuid(userId, teamId);
+
+        if (teamMembers == null) {
+            throw new EntityNotFoundException("Team not found");
+        }
+
+        teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
+
+        teamMembersRepository.save(teamMembers);
+
+    }
+
+    @Override
+    public void refuseTeam(int teamId, int userId) {
+
+        TeamMembers teamMembers = teamMembersRepository.findByUsersUuidAndTeamsUuid(userId, teamId);
+
+        if (teamMembers == null) {
+            throw new EntityNotFoundException("Team not found");
+        }
+
+        teamMembers.setStatus(GlobalAppStatus.REFUSED.name());
+
+        teamMembersRepository.save(teamMembers);
 
     }
 
