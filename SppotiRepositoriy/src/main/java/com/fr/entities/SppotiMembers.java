@@ -25,7 +25,7 @@ public class SppotiMembers {
 
     @ManyToOne
     @JoinColumn(name = "sppoti_id")
-    private Sppoti sppotis;
+    private Sppoti sppoti;
 
     @ManyToOne
     @JoinColumn(name = "sppoter_id")
@@ -63,12 +63,12 @@ public class SppotiMembers {
         this.invitationDate = invitationDate;
     }
 
-    public Sppoti getSppotis() {
-        return sppotis;
+    public Sppoti getSppoti() {
+        return sppoti;
     }
 
-    public void setSppotis(Sppoti sppotis) {
-        this.sppotis = sppotis;
+    public void setSppoti(Sppoti sppoti) {
+        this.sppoti = sppoti;
     }
 
     public Integer getxPosition() {

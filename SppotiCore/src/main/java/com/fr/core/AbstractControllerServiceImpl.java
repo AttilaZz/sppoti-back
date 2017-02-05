@@ -36,6 +36,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected SppotiRepository sppotiRepository;
     protected TeamRepository teamRepository;
     protected TeamMembersRepository teamMembersRepository;
+    protected SppotiMembersRepository sppotiMembersRepository;
+
+    @Autowired
+    public void setSppotiMembersRepository(SppotiMembersRepository sppotiMembersRepository) {
+        this.sppotiMembersRepository = sppotiMembersRepository;
+    }
 
     @Autowired
     public void setTeamMembersRepository(TeamMembersRepository teamMembersRepository) {
@@ -447,7 +453,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
                     Set<SppotiMembers> sppotiMembers = new HashSet<SppotiMembers>();
                     sppoter.setUsersTeam(teamMember);
-                    sppoter.setSppotis(sppoti);
+                    sppoter.setSppoti(sppoti);
                     sppotiMembers.add(sppoter);
 
                     teamMember.setSppotiMembers(sppotiMembers);

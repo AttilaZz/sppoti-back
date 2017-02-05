@@ -3,7 +3,6 @@ package com.fr.core;
 import com.fr.commons.dto.SppotiRequest;
 import com.fr.commons.dto.SppotiResponse;
 import com.fr.commons.dto.TeamResponse;
-import com.fr.commons.dto.User;
 import com.fr.entities.*;
 import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.exceptions.SportNotFoundException;
@@ -259,6 +258,50 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         Sppoti updatedSppoti = sppotiRepository.save(sppoti);
 
         return getSppotiResponse(updatedSppoti);
+
+    }
+
+    /**
+     * ACCEPT sppoti and add notification
+     *
+     * @param sppotiId
+     * @param userId
+     */
+    @Override
+    public void acceptSppoti(int sppotiId, int userId) {
+
+        SppotiMembers sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiUuid(userId, sppotiId);
+
+        if (sppotiMembers == null) {
+            throw new EntityNotFoundException("Sppoter not found");
+        }
+        sppotiMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
+        sppotiMembersRepository.save(sppotiMembers);
+
+        TeamMembers teamMembers = sppotiMembers.getUsersTeam();
+        teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
+
+        teamMembersRepository.save(teamMembers);
+
+    }
+
+    /**
+     * REFUSE sppoti and add notification
+     *
+     * @param sppotiId
+     * @param userId
+     */
+    @Override
+    public void refuseSppoti(int sppotiId, int userId) {
+
+        SppotiMembers sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiUuid(sppotiId, userId);
+
+        if (sppotiMembers == null) {
+            throw new EntityNotFoundException("Sppoter not found");
+        }
+
+        sppotiMembers.setStatus(GlobalAppStatus.REFUSED.name());
+        sppotiMembersRepository.save(sppotiMembers);
 
     }
 

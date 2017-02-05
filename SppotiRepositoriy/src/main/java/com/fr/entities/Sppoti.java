@@ -66,7 +66,7 @@ public class Sppoti {
     @JsonIgnore
     private Team teamAdverse;
 
-    @OneToMany(mappedBy = "sppotis", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMembers> sppotiMembers;
 
     public Long getId() {

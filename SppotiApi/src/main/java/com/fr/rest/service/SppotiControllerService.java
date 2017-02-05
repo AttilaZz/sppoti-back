@@ -23,4 +23,8 @@ public interface SppotiControllerService extends AbstractControllerService {
     void deleteSppoti(int id);
 
     SppotiResponse updateSppoti(SppotiRequest sppotiRequest, int id);
+
+    void acceptSppoti(int sppotiId, int userId);
+
+    void refuseSppoti(int sppotiId, int userId);
 }
