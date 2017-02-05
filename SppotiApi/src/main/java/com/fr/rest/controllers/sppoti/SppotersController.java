@@ -50,7 +50,7 @@ public class SppotersController {
 
         try {
 
-            sppotiControllerService.refuseSppoti(sppotiId, userId);
+            sppotiControllerService.refuseSppoti(userId, sppotiId);
 
         } catch (RuntimeException e) {
             LOGGER.error("Accept sppoti error: " + e.getMessage());
