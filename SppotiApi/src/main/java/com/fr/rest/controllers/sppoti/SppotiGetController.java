@@ -56,10 +56,10 @@ public class SppotiGetController {
      * @param id
      * @param page
      * @param request
-     * @return All user sppoties and 200 status, 400 status otherwise.
+     * @return All sppoties for a given user
      */
-    @GetMapping("/all/{id}/{page}")
-    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable int id, @PathVariable int page, HttpServletRequest request) {
+    @GetMapping("/all/{userId}/{page}")
+    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page, HttpServletRequest request) {
 
         List<SppotiResponse> response;
 
