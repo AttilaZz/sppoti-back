@@ -29,6 +29,8 @@ public class TeamMembers {
     private Integer xPosition;
     private Integer yPosition;
 
+    private Boolean admin = false;
+
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team teams;
@@ -117,6 +119,18 @@ public class TeamMembers {
     }
 
     public void setSppotiMembers(Set<SppotiMembers> sppotiMemberss) {
+        this.sppotiMemberss = sppotiMemberss;
+    }
+
+    public Boolean getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        this.admin = admin;
+    }
+
+    public void setSppotiMemberss(Set<SppotiMembers> sppotiMemberss) {
         this.sppotiMemberss = sppotiMemberss;
     }
 }

@@ -397,11 +397,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     /**
      * @param users
      * @param team
-     * @param sppoti
-     * @return array of USERS_TEAM
+     * @param adminId
+     * @param sppoti  @return array of USERS_TEAM
      */
     @Override
-    public Set<TeamMembers> getTeamMembersEntityFromDto(List<User> users, Team team, Sppoti sppoti) {
+    public Set<TeamMembers> getTeamMembersEntityFromDto(List<User> users, Team team, Long adminId, Sppoti sppoti) {
 
         Set<TeamMembers> teamUsers = new HashSet<TeamMembers>();
         Set<Team> teams = new HashSet<Team>();
@@ -414,6 +414,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             SppotiMembers sppoter = new SppotiMembers();
 
             if (u != null) {
+
+                if (u.getId().equals(adminId)) teamMember.setAdmin(true);
 
                 teamMember.setTeams(team);
                 teamMember.setUsers(u);

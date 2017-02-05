@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/sppoti")
-public class SppotiController {
+public class SppotiAddController {
 
     private SppotiControllerService sppotiControllerService;
 
@@ -30,7 +30,7 @@ public class SppotiController {
         this.sppotiControllerService = sppotiControllerService;
     }
 
-    private Logger LOGGER = Logger.getLogger(SppotiController.class);
+    private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
     private static final String ATT_USER_ID = "USER_ID";
 
@@ -87,48 +87,7 @@ public class SppotiController {
         }
     }
 
-    /**
-     * @param id
-     * @return 200 status with the target sppoti, 400 status otherwise.
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<SppotiResponse> getSppotiById(@PathVariable int id) {
 
-        SppotiResponse response;
-
-        try {
-            response = sppotiControllerService.getSppotiByUuid(id);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            LOGGER.error("Sppoti not found: " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-
-    }
-
-    /**
-     * @param id
-     * @param page
-     * @param request
-     * @return All user sppoties and 200 status, 400 status otherwise.
-     */
-    @GetMapping("/all/{id}/{page}")
-    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable int id, @PathVariable int page, HttpServletRequest request) {
-
-        List<SppotiResponse> response;
-
-        try {
-            response = sppotiControllerService.getAllUserSppoties(id, page);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            LOGGER.error("Sppoties not found: " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 
     /**
      * @param id
@@ -146,60 +105,6 @@ public class SppotiController {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-    }
-
-    /**
-     * @param id
-     * @param sppotiRequest
-     * @return 200 status with the updated sppoti, 400 status otherwise.
-     */
-    @PutMapping("/{id}")
-    public ResponseEntity<SppotiResponse> updateSppoti(@PathVariable int id, @RequestBody SppotiRequest sppotiRequest) {
-
-        boolean canUpdate = false;
-
-        if (sppotiRequest.getTags() != null && !sppotiRequest.getTags().isEmpty()) {
-            canUpdate = true;
-        }
-
-        if (sppotiRequest.getDescription() != null && !sppotiRequest.getDescription().isEmpty()) {
-            canUpdate = true;
-        }
-
-        if (sppotiRequest.getAddress() != null && !sppotiRequest.getAddress().isEmpty()) {
-            canUpdate = true;
-        }
-
-        if (sppotiRequest.getDatetimeStart() != null) {
-            canUpdate = true;
-        }
-
-        if (sppotiRequest.getTitre() != null && !sppotiRequest.getTitre().isEmpty()) {
-            canUpdate = true;
-        }
-
-        if (sppotiRequest.getVsTeam() != 0) {
-            canUpdate = true;
-        }
-
-        if(sppotiRequest.getMaxTeamCount() != 0){
-            canUpdate = true;
-        }
-
-        try {
-
-            if (canUpdate) {
-                sppotiControllerService.updateSppoti(sppotiRequest, id);
-            } else {
-                throw new IllegalArgumentException("Update not acceptable");
-            }
-
-        } catch (RuntimeException e) {
-            LOGGER.error("Update not acceptable due to an illegal argument or database problem: \n " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

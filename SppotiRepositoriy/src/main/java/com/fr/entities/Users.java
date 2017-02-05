@@ -106,10 +106,6 @@ public class Users {
 //    @JsonIgnore
 //    private Set<Team> team;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "admins")
-    @JsonIgnore
-    private Set<Team> teamAdmin;
-
 //    @ElementCollection
 //    private Map<Team, Boolean> teamStatus = new TreeMap<Team, Boolean>();
 
@@ -315,12 +311,5 @@ public class Users {
         this.username = username;
     }
 
-    public Set<Team> getTeamAdmin() {
-        return teamAdmin;
-    }
-
-    public void setTeamAdmin(Set<Team> teamAdmin) {
-        this.teamAdmin = teamAdmin;
-    }
 
 }

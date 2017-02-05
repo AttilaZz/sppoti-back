@@ -2,7 +2,7 @@ package com.fr.rest.controllers.team;
 
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
-import com.fr.rest.controllers.sppoti.SppotiController;
+import com.fr.rest.controllers.sppoti.SppotiAddController;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class TeamController {
     private static final String ATT_USER_ID = "USER_ID";
 
     private TeamControllerService teamControllerService;
-    private Logger LOGGER = Logger.getLogger(SppotiController.class);
+    private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
     @Autowired
     public void setTeamControllerService(TeamControllerService teamControllerService) {

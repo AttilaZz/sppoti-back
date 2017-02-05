@@ -1,4 +1,4 @@
-package com.fr.rest.controllers;
+package com.fr.rest.controllers.post;
 
 import com.fr.rest.service.CommentControllerService;
 import com.fr.rest.service.PostControllerService;

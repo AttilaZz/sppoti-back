@@ -28,5 +28,5 @@ public interface AbstractControllerService {
 
     User getUserCoverAndAvatar(Users targetUser);
 
-    Set<TeamMembers> getTeamMembersEntityFromDto(List<User> users, Team team, Sppoti sppoti);
+    Set<TeamMembers> getTeamMembersEntityFromDto(List<User> users, Team team, Long adminId, Sppoti sppoti);
 }

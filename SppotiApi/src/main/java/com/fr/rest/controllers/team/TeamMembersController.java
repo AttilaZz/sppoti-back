@@ -2,7 +2,7 @@ package com.fr.rest.controllers.team;
 
 import com.fr.commons.dto.TeamRequest;
 import com.fr.models.GlobalAppStatus;
-import com.fr.rest.controllers.sppoti.SppotiController;
+import com.fr.rest.controllers.sppoti.SppotiAddController;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class TeamMembersController {
         this.teamControllerService = teamControllerService;
     }
 
-    private Logger LOGGER = Logger.getLogger(SppotiController.class);
+    private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
     /**
      * Accept/Refuse team information

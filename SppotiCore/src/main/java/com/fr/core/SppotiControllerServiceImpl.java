@@ -5,9 +5,10 @@ import com.fr.commons.dto.SppotiResponse;
 import com.fr.commons.dto.TeamResponse;
 import com.fr.commons.dto.User;
 import com.fr.entities.*;
-import com.fr.rest.service.SppotiControllerService;
 import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.exceptions.SportNotFoundException;
+import com.fr.models.GlobalAppStatus;
+import com.fr.rest.service.SppotiControllerService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -56,7 +55,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             }
 
             try {
-                hostTeam.setUsers_teams(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMembers(), hostTeam, sppoti));
+                hostTeam.setTeamMemberss(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMembers(), hostTeam, sppotiCreator, sppoti));
 
             } catch (RuntimeException e) {
                 LOGGER.error("One of the team id not found: " + e.getMessage());
@@ -93,15 +92,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         sppoti.setRelatedSport(sport);
 
-        Set<Users> admins = new HashSet<Users>();
-        admins.add(owner);
         sppoti.setUserSppoti(owner);
 
-        Set<Team> teams = new HashSet<Team>();
-        teams.add(hostTeam);
-        owner.setTeamAdmin(teams);
-
-        hostTeam.setAdmins(admins);
         sppoti.setTeamHost(hostTeam);
 
         if (newSppoti.getTags() != null) {
@@ -149,7 +141,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         Sppoti sppoti = sppotiRepository.findByUuid(uuid);
 
-        if (sppoti.isDeleted()) {
+        if (sppoti != null && sppoti.isDeleted()) {
             throw new EntityNotFoundException("Trying to get a deleted sppoti");
         }
 
@@ -173,20 +165,15 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             sppotiResponse.setTags(sppoti.getTags());
         }
 
-        User user_cover_avatar = getUserCoverAndAvatar(sppoti.getUserSppoti());
-
-        User sppotiOwner = new User(sppoti.getUserSppoti().getUuid(), sppoti.getUserSppoti().getFirstName(), sppoti.getUserSppoti().getLastName(), sppoti.getUserSppoti().getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType());
-
-        sppotiResponse.setUserSppoti(sppotiOwner);
-
-        TeamResponse teamHostResponse = fillTeamResponse(sppoti.getTeamHost());
+        TeamResponse teamHostResponse = fillTeamResponse(sppoti.getTeamHost(), sppoti.getUserSppoti().getId());
         if (sppoti.getTeamAdverse() != null) {
-            TeamResponse teamGuestResponse = fillTeamResponse(sppoti.getTeamAdverse());
+            TeamResponse teamGuestResponse = fillTeamResponse(sppoti.getTeamAdverse(), null);
             sppotiResponse.setTeamGuest(teamGuestResponse);
         }
 
         sppotiResponse.setTeamHost(teamHostResponse);
         sppotiResponse.setId(sppoti.getUuid());
+
         return sppotiResponse;
     }
 
@@ -279,18 +266,32 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
      * @param team
      * @return a teamResponse object from Team entity
      */
-    private TeamResponse fillTeamResponse(Team team) {
+    private TeamResponse fillTeamResponse(Team team, Long sppotiAdmin) {
 
         TeamResponse teamResponse = new TeamResponse();
 
         List<User> teamUsers = new ArrayList<User>();
 
-        for (TeamMembers user : team.getUsers_teams()) {
+        for (TeamMembers user : team.getTeamMemberss()) {
 
+            Integer sppoterStatus = null;
+            //get status for the selected sppoti
+            for (SppotiMembers sppoter : user.getSppotiMemberss()) {
+                if (sppoter.getUsersTeam().getId().equals(user.getId())) {
+                    sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
+                }
+            }
+
+            //get avatar and cover
             User userCoverAndAvatar = getUserCoverAndAvatar(user.getUsers());
 
-            teamUsers.add(new User(user.getUuid(), user.getUsers().getFirstName(), user.getUsers().getLastName(), user.getUsers().getUsername(), userCoverAndAvatar.getCover(), userCoverAndAvatar.getAvatar(), userCoverAndAvatar.getCoverType()));
-
+            //fill sppoter data
+            teamUsers.add(new User(user.getUuid(), user.getUsers().getFirstName(), user.getUsers().getLastName(), user.getUsers().getUsername(),
+                    userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
+                    userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
+                    userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null,
+                    user.getAdmin(), sppotiAdmin != null && user.getUsers().getId().equals(sppotiAdmin),
+                    GlobalAppStatus.valueOf(user.getStatus()).getValue(), sppoterStatus));
         }
 
         teamResponse.setTeamMembers(teamUsers);
@@ -298,17 +299,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         teamResponse.setCoverPath(team.getCoverPath());
         teamResponse.setLogoPath(team.getLogoPath());
         teamResponse.setName(team.getName());
-
-        List<User> adminUsers = new ArrayList<User>();
-
-        for (Users user : team.getAdmins()) {
-            User user_cover_avatar = getUserCoverAndAvatar(user);
-
-            adminUsers.add(new User(user.getUuid(), user.getFirstName(), user.getLastName(), user.getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType()));
-
-        }
-
-        teamResponse.setTeamAdmin(adminUsers);
 
         return teamResponse;
 

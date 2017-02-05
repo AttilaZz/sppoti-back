@@ -35,9 +35,6 @@ public class SppotiResponse {
     @JsonProperty("sport")
     private Sport relatedSport;
 
-    @JsonProperty("admin")
-    private User userSppoti;
-
     private TeamResponse teamHost;
 
     @JsonProperty("teamAdverse")
@@ -137,14 +134,6 @@ public class SppotiResponse {
 
     public void setTeamGuest(TeamResponse teamGuest) {
         this.teamGuest = teamGuest;
-    }
-
-    public User getUserSppoti() {
-        return userSppoti;
-    }
-
-    public void setUserSppoti(User userSppoti) {
-        this.userSppoti = userSppoti;
     }
 
     public int getId() {

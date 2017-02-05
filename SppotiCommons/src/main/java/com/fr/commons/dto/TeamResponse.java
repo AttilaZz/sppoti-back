@@ -17,7 +17,6 @@ public class TeamResponse {
     private String coverPath;
 
     private List<User> teamMembers;
-    private List<User> teamAdmin;
 
     public String getName() {
         return name;
@@ -49,14 +48,6 @@ public class TeamResponse {
 
     public void setTeamMembers(List<User> teamMembers) {
         this.teamMembers = teamMembers;
-    }
-
-    public List<User> getTeamAdmin() {
-        return teamAdmin;
-    }
-
-    public void setTeamAdmin(List<User> teamAdmin) {
-        this.teamAdmin = teamAdmin;
     }
 
 }

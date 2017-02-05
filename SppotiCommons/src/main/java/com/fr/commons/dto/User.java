@@ -3,7 +3,6 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.models.GlobalAppStatus;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
@@ -43,7 +42,7 @@ public class User {
 
     @SerializedName("friend_status")
     @JsonProperty(value = "friend_status")
-    private Integer friendStatus = GlobalAppStatus.PUBLIC_RELATION.getValue();
+    private Integer friendStatus;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
     private Date datetimeCreated;
@@ -51,18 +50,36 @@ public class User {
     private Boolean myProfile;
 
     private Boolean teamAdmin;
+    private Boolean sppotiAdmin;
+
+    private Integer teamStatus;
+    private Integer sppotiStatus;
 
     public User() {
     }
 
-    public User(int id, String firstName, String lastName, String username, String cover, String avatar, int coverType) {
+    public User(int id, String firstName, String lastName, String username, String cover, String avatar, Integer coverType, Boolean isTeamAdmin, Boolean isSppotiAdmin, Integer teamStatus, Integer sppotiStatus) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.cover = cover;
         this.avatar = avatar;
         this.coverType = coverType;
+        this.teamAdmin = isTeamAdmin;
+        this.sppotiAdmin = isSppotiAdmin;
         this.id = id;
+        this.teamStatus = teamStatus;
+        this.sppotiStatus = sppotiStatus;
+    }
+
+    public User(int uuid, String firstName, String lastName, String username, String cover, String avatar, Integer coverType) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.cover = cover;
+        this.avatar = avatar;
+        this.coverType = coverType;
+        this.id = uuid;
     }
 
     public Integer getId() {
@@ -215,5 +232,29 @@ public class User {
 
     public void setTeamAdmin(Boolean teamAdmin) {
         this.teamAdmin = teamAdmin;
+    }
+
+    public Boolean getSppotiAdmin() {
+        return sppotiAdmin;
+    }
+
+    public void setSppotiAdmin(Boolean sppotiAdmin) {
+        this.sppotiAdmin = sppotiAdmin;
+    }
+
+    public Integer getTeamStatus() {
+        return teamStatus;
+    }
+
+    public void setTeamStatus(Integer teamStatus) {
+        this.teamStatus = teamStatus;
+    }
+
+    public Integer getSppotiStatus() {
+        return sppotiStatus;
+    }
+
+    public void setSppotiStatus(Integer sppotiStatus) {
+        this.sppotiStatus = sppotiStatus;
     }
 }

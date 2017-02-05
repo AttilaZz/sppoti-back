@@ -2,17 +2,14 @@ package com.fr.core;
 
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
+import com.fr.entities.Team;
 import com.fr.entities.TeamMembers;
+import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.TeamControllerService;
-import com.fr.entities.Team;
-import com.fr.entities.Users;
-import com.fr.exceptions.HostMemberNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by djenanewail on 1/22/17.
@@ -36,22 +33,13 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         try {
 
-            teamToSave.setUsers_teams(getTeamMembersEntityFromDto(team.getMembers(), teamToSave, null));
+            teamToSave.setTeamMemberss(getTeamMembersEntityFromDto(team.getMembers(), teamToSave, adminId, null));
 
         } catch (RuntimeException e) {
             LOGGER.error("One of the team id not found: " + e.getMessage());
             throw new HostMemberNotFoundException("TeamRequest (members) one of the team dosn't exist");
 
         }
-
-        Users owner = userRepository.findOne(adminId);
-        Set<Users> admins = new HashSet<Users>();
-        admins.add(owner);
-        teamToSave.setAdmins(admins);
-
-        Set<Team> teams = new HashSet<Team>();
-        teams.add(teamToSave);
-        owner.setTeamAdmin(teams);
 
         teamRepository.save(teamToSave);
 

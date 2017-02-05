@@ -29,12 +29,7 @@ public class Team {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teams")
-    private Set<TeamMembers> users_teams;
-
-    @JsonIgnore
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "team_id")
-    private Set<Users> admins;
+    private Set<TeamMembers> teamMemberss;
 
     @OneToOne
     @JoinColumn(name = "sport_id")
@@ -72,14 +67,6 @@ public class Team {
         this.coverPath = coverPath;
     }
 
-    public Set<Users> getAdmins() {
-        return admins;
-    }
-
-    public void setAdmins(Set<Users> admins) {
-        this.admins = admins;
-    }
-
     public int getUuid() {
         return uuid;
     }
@@ -88,12 +75,12 @@ public class Team {
         this.uuid = uuid;
     }
 
-    public Set<TeamMembers> getUsers_teams() {
-        return users_teams;
+    public Set<TeamMembers> getTeamMemberss() {
+        return teamMemberss;
     }
 
-    public void setUsers_teams(Set<TeamMembers> users_teams) {
-        this.users_teams = users_teams;
+    public void setTeamMemberss(Set<TeamMembers> teamMemberss) {
+        this.teamMemberss = teamMemberss;
     }
 
     public Sport getSport() {
