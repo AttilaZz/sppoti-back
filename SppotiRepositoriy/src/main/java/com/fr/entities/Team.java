@@ -29,7 +29,7 @@ public class Team {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teams")
-    private Set<Users_team> users_teams;
+    private Set<TeamMembers> users_teams;
 
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.PERSIST)
@@ -88,11 +88,11 @@ public class Team {
         this.uuid = uuid;
     }
 
-    public Set<Users_team> getUsers_teams() {
+    public Set<TeamMembers> getUsers_teams() {
         return users_teams;
     }
 
-    public void setUsers_teams(Set<Users_team> users_teams) {
+    public void setUsers_teams(Set<TeamMembers> users_teams) {
         this.users_teams = users_teams;
     }
 

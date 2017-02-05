@@ -2,7 +2,7 @@ package com.fr.core;
 
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
-import com.fr.entities.Users_team;
+import com.fr.entities.TeamMembers;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.TeamControllerService;
 import com.fr.entities.Team;
@@ -36,7 +36,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         try {
 
-            teamToSave.setUsers_teams(getTeamMembersEntityFromDto(team.getMembers(), teamToSave));
+            teamToSave.setUsers_teams(getTeamMembersEntityFromDto(team.getMembers(), teamToSave, null));
 
         } catch (RuntimeException e) {
             LOGGER.error("One of the team id not found: " + e.getMessage());
@@ -75,7 +75,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public void updateTeamMembers(TeamRequest request, int memberId, int teamId) {
 
-        Users_team usersTeam = teamMembersRepository.findByUsersUuidAndTeamsUuid(memberId, teamId);
+        TeamMembers usersTeam = teamMembersRepository.findByUsersUuidAndTeamsUuid(memberId, teamId);
 
         if (usersTeam == null) {
             throw new EntityNotFoundException("Member not found");

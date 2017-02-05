@@ -4,37 +4,32 @@ import com.fr.models.GlobalAppStatus;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by djenanewail on 2/4/17.
  */
 @Entity
 @Table
-public class Users_team {
+public class SppotiMembers {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    private int uuid = UUID.randomUUID().variant();
-
     private String status = GlobalAppStatus.PENDING.name();
-
-    private Date joinDate;
-
     private Date invitationDate = new Date();
 
+    private Date acceptationDate;
     private Integer xPosition;
     private Integer yPosition;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team teams;
+    @JoinColumn(name = "sppoti_id")
+    private Sppoti sppotis;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Users users;
+    @JoinColumn(name = "sppoter_id")
+    private TeamMembers usersTeam;
 
     public Long getId() {
         return id;
@@ -52,12 +47,12 @@ public class Users_team {
         this.status = status;
     }
 
-    public Date getJoinDate() {
-        return joinDate;
+    public Date getAcceptationDate() {
+        return acceptationDate;
     }
 
-    public void setJoinDate(Date joinDate) {
-        this.joinDate = joinDate;
+    public void setAcceptationDate(Date acceptationDate) {
+        this.acceptationDate = acceptationDate;
     }
 
     public Date getInvitationDate() {
@@ -68,20 +63,12 @@ public class Users_team {
         this.invitationDate = invitationDate;
     }
 
-    public Team getTeams() {
-        return teams;
+    public Sppoti getSppotis() {
+        return sppotis;
     }
 
-    public void setTeams(Team teams) {
-        this.teams = teams;
-    }
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
+    public void setSppotis(Sppoti sppotis) {
+        this.sppotis = sppotis;
     }
 
     public Integer getxPosition() {
@@ -100,11 +87,11 @@ public class Users_team {
         this.yPosition = yPosition;
     }
 
-    public int getUuid() {
-        return uuid;
+    public TeamMembers getUsersTeam() {
+        return usersTeam;
     }
 
-    public void setUuid(int uuid) {
-        this.uuid = uuid;
+    public void setUsersTeam(TeamMembers usersTeam) {
+        this.usersTeam = usersTeam;
     }
 }

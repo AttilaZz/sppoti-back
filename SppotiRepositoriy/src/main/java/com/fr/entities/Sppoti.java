@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -64,6 +65,9 @@ public class Sppoti {
     @JoinColumn(name = "team_guest_id")
     @JsonIgnore
     private Team teamAdverse;
+
+    @OneToMany(mappedBy = "sppotis", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<SppotiMembers> sppotiMembers;
 
     public Long getId() {
         return id;
@@ -176,5 +180,13 @@ public class Sppoti {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Set<SppotiMembers> getSppotiMembers() {
+        return sppotiMembers;
+    }
+
+    public void setSppotiMembers(Set<SppotiMembers> sppotiMembers) {
+        this.sppotiMembers = sppotiMembers;
     }
 }

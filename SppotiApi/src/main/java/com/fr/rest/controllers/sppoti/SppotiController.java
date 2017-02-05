@@ -1,15 +1,13 @@
-package com.fr.rest.controllers;
+package com.fr.rest.controllers.sppoti;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fr.commons.dto.SppotiResponse;
-import com.fr.entities.Sppoti;
 import com.fr.rest.service.SppotiControllerService;
 import com.fr.commons.dto.SppotiRequest;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,13 +67,10 @@ public class SppotiController {
         }
         if (newSppoti.getMyTeamId() == 0 && newSppoti.getMyTeam() == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "TeamHostModel && TeamHostId not found");
-
         }
-
 //        if (newSppoti.getVsTeam() == 0) {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Adverse team id not found");
 //        }
-
         Long sppotiCreator = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
         try {
@@ -89,9 +84,7 @@ public class SppotiController {
             e.printStackTrace();
             LOGGER.error("Ajout de sppoti imposssible: " + e.getMessage());
             return ResponseEntity.badRequest().body("Ajout de sppoti imposssible");
-
         }
-
     }
 
     /**

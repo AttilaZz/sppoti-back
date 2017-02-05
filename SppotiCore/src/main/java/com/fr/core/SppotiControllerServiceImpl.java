@@ -4,11 +4,8 @@ import com.fr.commons.dto.SppotiRequest;
 import com.fr.commons.dto.SppotiResponse;
 import com.fr.commons.dto.TeamResponse;
 import com.fr.commons.dto.User;
+import com.fr.entities.*;
 import com.fr.rest.service.SppotiControllerService;
-import com.fr.entities.Sport;
-import com.fr.entities.Sppoti;
-import com.fr.entities.Team;
-import com.fr.entities.Users;
 import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.exceptions.SportNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +39,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     public SppotiResponse saveSppoti(SppotiRequest newSppoti, Long sppotiCreator) {
 
         Team hostTeam = new Team();
+        Sppoti sppoti = new Sppoti();
 
         if (newSppoti.getMyTeam() != null) {
 
@@ -58,8 +56,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             }
 
             try {
-                //TODO:
-//                hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMemberIdList(), hostTeam));
+                hostTeam.setUsers_teams(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMembers(), hostTeam, sppoti));
+
             } catch (RuntimeException e) {
                 LOGGER.error("One of the team id not found: " + e.getMessage());
                 throw new HostMemberNotFoundException("Host-TeamRequest (members) one of the team dosn't exist");
@@ -91,7 +89,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Stored used id in session has not been found in database");
         }
 
-        Sppoti sppoti = new Sppoti();
+        hostTeam.setSport(sport);
+
         sppoti.setRelatedSport(sport);
 
         Set<Users> admins = new HashSet<Users>();
@@ -117,7 +116,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         if (newSppoti.getVsTeam() != 0) {
             Team team = null;
             try {
-                team = teamRepository.findByUuid(newSppoti.getMyTeamId());
+                team = teamRepository.findByUuid(newSppoti.getVsTeam());
 
             } catch (RuntimeException e) {
                 e.printStackTrace();
@@ -254,11 +253,11 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             sppoti.setTitre(sppotiRequest.getTitre());
         }
 
-        if(sppotiRequest.getAddress() != null){
+        if (sppotiRequest.getAddress() != null) {
             sppoti.setLocation(sppotiRequest.getAddress());
         }
 
-        if(sppotiRequest.getMaxTeamCount() != 0){
+        if (sppotiRequest.getMaxTeamCount() != 0) {
             sppoti.setMaxMembersCount(sppotiRequest.getMaxTeamCount());
         }
 
@@ -286,12 +285,13 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         List<User> teamUsers = new ArrayList<User>();
 
-//        for (Users user : team.getTeamMembers()) {
-//            User user_cover_avatar = getUserCoverAndAvatar(user);
-//
-//            teamUsers.add(new User(user.getUuid(), user.getFirstName(), user.getLastName(), user.getUsername(), user_cover_avatar.getCover(), user_cover_avatar.getAvatar(), user_cover_avatar.getCoverType()));
-//
-//        }
+        for (TeamMembers user : team.getUsers_teams()) {
+
+            User userCoverAndAvatar = getUserCoverAndAvatar(user.getUsers());
+
+            teamUsers.add(new User(user.getUuid(), user.getUsers().getFirstName(), user.getUsers().getLastName(), user.getUsers().getUsername(), userCoverAndAvatar.getCover(), userCoverAndAvatar.getAvatar(), userCoverAndAvatar.getCoverType()));
+
+        }
 
         teamResponse.setTeamMembers(teamUsers);
 

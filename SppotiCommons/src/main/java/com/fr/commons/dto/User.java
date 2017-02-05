@@ -48,7 +48,9 @@ public class User {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
     private Date datetimeCreated;
 
-    private boolean myProfile;
+    private Boolean myProfile;
+
+    private Boolean teamAdmin;
 
     public User() {
     }
@@ -199,11 +201,19 @@ public class User {
         this.datetimeCreated = datetimeCreated;
     }
 
-    public boolean isMyProfile() {
+    public Boolean getMyProfile() {
         return myProfile;
     }
 
-    public void setMyProfile(boolean myProfile) {
+    public void setMyProfile(Boolean myProfile) {
         this.myProfile = myProfile;
+    }
+
+    public Boolean getTeamAdmin() {
+        return teamAdmin;
+    }
+
+    public void setTeamAdmin(Boolean teamAdmin) {
+        this.teamAdmin = teamAdmin;
     }
 }

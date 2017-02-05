@@ -1,9 +1,6 @@
 package com.fr.core;
 
-import com.fr.commons.dto.CommentModel;
-import com.fr.commons.dto.ContentEditedResponse;
-import com.fr.commons.dto.SportModel;
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.*;
 import com.fr.rest.controllers.AccountController;
 import com.fr.rest.service.AbstractControllerService;
 import com.fr.entities.*;
@@ -400,34 +397,73 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     /**
      * @param users
      * @param team
+     * @param sppoti
      * @return array of USERS_TEAM
      */
     @Override
-    public Set<Users_team> getTeamMembersEntityFromDto(List<User> users, Team team) {
+    public Set<TeamMembers> getTeamMembersEntityFromDto(List<User> users, Team team, Sppoti sppoti) {
 
-        Set<Users_team> teamUsers = new HashSet<Users_team>();
+        Set<TeamMembers> teamUsers = new HashSet<TeamMembers>();
         Set<Team> teams = new HashSet<Team>();
         teams.add(team);
 
         for (User user : users) {
 
             Users u = userRepository.getByUuid(user.getId());
-            Users_team users_team = new Users_team();
+            TeamMembers teamMember = new TeamMembers();
+            SppotiMembers sppoter = new SppotiMembers();
 
             if (u != null) {
 
-                users_team.setTeams(team);
-                users_team.setUsers(u);
+                teamMember.setTeams(team);
+                teamMember.setUsers(u);
 
-                if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
-                    users_team.setxPosition(user.getxPosition());
+                if (sppoti != null) {
+                    TeamMembers sppoterMember = teamMembersRepository.findByUsersUuidAndTeamsUuid(user.getId(), team.getUuid());
+
+                    //if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter
+                    if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
+                        sppoter.setxPosition(user.getxPosition());
+                    }
+
+                    if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
+                        sppoter.setyPosition(user.getyPosition());
+                    }
+
+                    //if the sppoter already exist - default coordinate doesn't change
+                    if (sppoterMember == null) {
+
+                        if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
+                            teamMember.setxPosition(user.getxPosition());
+                        }
+
+                        if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
+                            teamMember.setyPosition(user.getyPosition());
+                        }
+
+                    }
+
+                    Set<SppotiMembers> sppotiMembers = new HashSet<SppotiMembers>();
+                    sppoter.setUsersTeam(teamMember);
+                    sppoter.setSppotis(sppoti);
+                    sppotiMembers.add(sppoter);
+
+                    teamMember.setSppotiMembers(sppotiMembers);
+                    sppoti.setSppotiMembers(sppotiMembers);
+
+                } else {
+                    //if request comming from add team - add members only in (users_team)
+                    if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
+                        teamMember.setxPosition(user.getxPosition());
+                    }
+
+                    if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
+                        teamMember.setyPosition(user.getyPosition());
+                    }
                 }
 
-                if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
-                    users_team.setyPosition(user.getyPosition());
-                }
 
-                teamUsers.add(users_team);
+                teamUsers.add(teamMember);
 
             } else {
                 throw new EntityNotFoundException();

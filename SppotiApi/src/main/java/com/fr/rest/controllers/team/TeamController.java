@@ -2,7 +2,7 @@ package com.fr.rest.controllers.team;
 
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
-import com.fr.rest.controllers.SppotiController;
+import com.fr.rest.controllers.sppoti.SppotiController;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Created by djenanewail on 1/22/17.

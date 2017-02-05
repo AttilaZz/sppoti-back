@@ -1,16 +1,16 @@
 package com.fr.repositories;
 
-import com.fr.entities.Users_team;
+import com.fr.entities.TeamMembers;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created by djenanewail on 2/4/17.
  */
-public interface TeamMembersRepository extends JpaRepository<Users_team, Long> {
+public interface TeamMembersRepository extends JpaRepository<TeamMembers, Long> {
 
-    Users_team findByUuid(int memberId);
+    TeamMembers findByUuid(int memberId);
 
-    Users_team findByUsersUuid(int memberId);
+    TeamMembers findByUsersUuid(int memberId);
 
-    Users_team findByUsersUuidAndTeamsUuid(int memberId, int teamId);
+    TeamMembers findByUsersUuidAndTeamsUuid(int memberId, int teamId);
 }
