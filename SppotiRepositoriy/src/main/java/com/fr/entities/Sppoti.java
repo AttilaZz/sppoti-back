@@ -49,7 +49,7 @@ public class Sppoti {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sport_id", nullable = false)
     @JsonIgnore
-    private Sport relatedSport;
+    private Sport sport;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", nullable = false)
@@ -67,7 +67,7 @@ public class Sppoti {
     private Team teamAdverse;
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SppotiMembers> sppotiMembers;
+    private Set<SppotiMember> sppotiMembers;
 
     public Long getId() {
         return id;
@@ -93,12 +93,12 @@ public class Sppoti {
         this.location = location;
     }
 
-    public Sport getRelatedSport() {
-        return relatedSport;
+    public Sport getSport() {
+        return sport;
     }
 
-    public void setRelatedSport(Sport relatedSport) {
-        this.relatedSport = relatedSport;
+    public void setSport(Sport sport) {
+        this.sport = sport;
     }
 
     public Users getUserSppoti() {
@@ -182,11 +182,11 @@ public class Sppoti {
         this.deleted = deleted;
     }
 
-    public Set<SppotiMembers> getSppotiMembers() {
+    public Set<SppotiMember> getSppotiMembers() {
         return sppotiMembers;
     }
 
-    public void setSppotiMembers(Set<SppotiMembers> sppotiMembers) {
+    public void setSppotiMembers(Set<SppotiMember> sppotiMembers) {
         this.sppotiMembers = sppotiMembers;
     }
 }

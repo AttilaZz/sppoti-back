@@ -40,7 +40,7 @@ public class Sport {
     @JsonIgnore
     private Set<Post> post;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "relatedSport")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport")
     @JsonIgnore
     private Set<Sppoti> game;
 

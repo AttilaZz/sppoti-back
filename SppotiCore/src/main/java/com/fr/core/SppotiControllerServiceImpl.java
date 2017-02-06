@@ -89,7 +89,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         hostTeam.setSport(sport);
 
-        sppoti.setRelatedSport(sport);
+        sppoti.setSport(sport);
 
         sppoti.setUserSppoti(owner);
 
@@ -154,7 +154,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Sppoti not found");
         }
 
-        SppotiResponse sppotiResponse = new SppotiResponse(sppoti.getTitre(), sppoti.getDatetimeCreated(), sppoti.getDateTimeStart(), sppoti.getLocation(), sppoti.getMaxMembersCount(), sppoti.getRelatedSport());
+        SppotiResponse sppotiResponse = new SppotiResponse(sppoti.getTitre(), sppoti.getDatetimeCreated(), sppoti.getDateTimeStart(), sppoti.getLocation(), sppoti.getMaxMembersCount(), sppoti.getSport());
 
         if (sppoti.getDescription() != null) {
             sppotiResponse.setDescription(sppoti.getDescription());
@@ -172,6 +172,10 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         sppotiResponse.setTeamHost(teamHostResponse);
         sppotiResponse.setId(sppoti.getUuid());
+
+        List<SppotiMember> sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiSportId(sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId());
+
+        sppotiResponse.setSppotiCounter(sppotiMembers.size());
 
         return sppotiResponse;
     }
@@ -270,7 +274,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public void acceptSppoti(int sppotiId, int userId) {
 
-        SppotiMembers sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiUuid(userId, sppotiId);
+        SppotiMember sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiUuid(userId, sppotiId);
 
         if (sppotiMembers == null) {
             throw new EntityNotFoundException("Sppoter not found");
@@ -294,7 +298,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public void refuseSppoti(int sppotiId, int userId) {
 
-        SppotiMembers sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiUuid(sppotiId, userId);
+        SppotiMember sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiUuid(sppotiId, userId);
 
         if (sppotiMembers == null) {
             throw new EntityNotFoundException("Sppoter not found");

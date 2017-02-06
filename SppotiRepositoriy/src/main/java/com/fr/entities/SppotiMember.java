@@ -10,7 +10,7 @@ import java.util.Date;
  */
 @Entity
 @Table
-public class SppotiMembers {
+public class SppotiMember {
 
     @Id
     @GeneratedValue

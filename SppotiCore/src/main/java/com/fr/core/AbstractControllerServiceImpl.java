@@ -417,7 +417,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
             Users u = userRepository.getByUuid(user.getId());
             TeamMembers teamMember = new TeamMembers();
-            SppotiMembers sppoter = new SppotiMembers();
+            SppotiMember sppoter = new SppotiMember();
 
             if (u != null) {
 
@@ -451,7 +451,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
                     }
 
-                    Set<SppotiMembers> sppotiMembers = new HashSet<SppotiMembers>();
+                    Set<SppotiMember> sppotiMembers = new HashSet<SppotiMember>();
                     sppoter.setUsersTeam(teamMember);
                     sppoter.setSppoti(sppoti);
                     sppotiMembers.add(sppoter);
@@ -498,7 +498,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
             Integer sppoterStatus = null;
             //get status for the selected sppoti
-            for (SppotiMembers sppoter : user.getSppotiMemberss()) {
+            for (SppotiMember sppoter : user.getSppotiMemberss()) {
                 if (sppoter.getUsersTeam().getId().equals(user.getId())) {
                     sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
                 }

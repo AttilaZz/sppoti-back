@@ -40,6 +40,8 @@ public class SppotiResponse {
     @JsonProperty("teamAdverse")
     private TeamResponse teamGuest;
 
+    private Integer sppotiCounter;
+
     public SppotiResponse() {
     }
 
@@ -142,5 +144,13 @@ public class SppotiResponse {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Integer getSppotiCounter() {
+        return sppotiCounter;
+    }
+
+    public void setSppotiCounter(Integer sppotiCounter) {
+        this.sppotiCounter = sppotiCounter;
     }
 }
