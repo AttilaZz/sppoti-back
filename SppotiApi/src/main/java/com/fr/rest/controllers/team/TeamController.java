@@ -76,7 +76,6 @@ public class TeamController {
     public ResponseEntity<TeamResponse> updateTeam(@PathVariable int id, @RequestBody TeamRequest teamRequest) {
 
 
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -88,6 +87,15 @@ public class TeamController {
      */
     @DeleteMapping("{/id}")
     public ResponseEntity deleteTeam(@PathVariable int id) {
+
+        try {
+
+            teamControllerService.deleteTeam(id);
+
+        } catch (RuntimeException e) {
+            LOGGER.error("Error deleting team id:" + id);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity(HttpStatus.OK);
     }

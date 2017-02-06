@@ -18,7 +18,7 @@ public class Team {
     @GeneratedValue
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private int uuid = UUID.randomUUID().hashCode();
 
     @Column(nullable = false)
@@ -34,6 +34,8 @@ public class Team {
     @OneToOne
     @JoinColumn(name = "sport_id")
     private Sport sport;
+
+    private boolean deleted = false;
 
     public Long getId() {
         return id;
@@ -91,4 +93,11 @@ public class Team {
         this.sport = sport;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

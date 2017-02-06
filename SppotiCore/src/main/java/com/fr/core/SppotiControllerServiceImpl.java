@@ -64,11 +64,13 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         } else if (newSppoti.getMyTeamId() != 0) {
             try {
-                hostTeam = teamRepository.findByUuid(newSppoti.getMyTeamId());
+                List<Team> tempTeams = teamRepository.findByUuid(newSppoti.getMyTeamId());
 
-                if (hostTeam == null) {
+                if (tempTeams == null || tempTeams.isEmpty()) {
                     throw new EntityNotFoundException("Host team not found in the request");
                 }
+
+                hostTeam = tempTeams.get(0);
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 throw new EntityNotFoundException("Host team cannot be found in the request");
@@ -107,7 +109,11 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         if (newSppoti.getVsTeam() != 0) {
             Team team = null;
             try {
-                team = teamRepository.findByUuid(newSppoti.getVsTeam());
+                List<Team> tempTeams = teamRepository.findByUuid(newSppoti.getVsTeam());
+
+                if(!tempTeams.isEmpty()){
+                    team = tempTeams.get(0);
+                }
 
             } catch (RuntimeException e) {
                 e.printStackTrace();
@@ -252,11 +258,13 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         if (sppotiRequest.getVsTeam() != 0) {
-            Team adverseTeam = teamRepository.findByUuid(sppotiRequest.getVsTeam());
-            if (adverseTeam == null) {
+            List<Team> adverseTeam = teamRepository.findByUuid(sppotiRequest.getVsTeam());
+
+            if (adverseTeam == null || adverseTeam.isEmpty()) {
                 throw new EntityNotFoundException("Team id not found: " + sppotiRequest.getVsTeam());
             }
-            sppoti.setTeamAdverse(adverseTeam);
+
+            sppoti.setTeamAdverse(adverseTeam.get(0));
         }
 
         Sppoti updatedSppoti = sppotiRepository.save(sppoti);

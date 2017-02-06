@@ -82,12 +82,13 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public TeamResponse getTeamById(int teamId) {
 
-        Team team = teamRepository.findByUuid(teamId);
-        if (team == null) {
+        List<Team> team = teamRepository.findByUuid(teamId);
+
+        if (team == null || team.isEmpty()) {
             throw new EntityNotFoundException("Team id not found");
         }
 
-        return fillTeamResponse(team, null);
+        return fillTeamResponse(team.get(0), null);
     }
 
     @Override
@@ -178,6 +179,20 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         } else {
             throw new MemberNotInAdminTeamException("permission denied for admin with id(" + adminId + ") to delete the memeber with id (" + memberId + ")");
         }
+    }
+
+    @Override
+    public void deleteTeam(int id) {
+
+        List<Team> team = teamRepository.findByUuid(id);
+
+        if (team == null || team.isEmpty()) {
+            throw new EntityNotFoundException("Team not found");
+        }
+
+        team.get(0).setDeleted(true);
+        teamRepository.save(team);
+
     }
 
 }
