@@ -80,6 +80,17 @@ public class TeamMembersController {
     @PostMapping
     public ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody User user) {
 
+        if (user.getId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+
+            teamControllerService.addMember(teamId, user);
+
+        } catch (RuntimeException e) {
+            LOGGER.error("Error adding user: " + e.getMessage() + "\n Member Id:" + user.getId());
+        }
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

@@ -1,12 +1,12 @@
 package com.fr.core;
 
 import com.fr.commons.dto.*;
-import com.fr.rest.controllers.AccountController;
-import com.fr.rest.service.AbstractControllerService;
 import com.fr.entities.*;
 import com.fr.mail.ApplicationMailer;
-import com.fr.models.*;
+import com.fr.models.GlobalAppStatus;
 import com.fr.repositories.*;
+import com.fr.rest.controllers.AccountController;
+import com.fr.rest.service.AbstractControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -170,12 +170,20 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     @Override
     public Users getUserById(Long id) {
-        return userRepository.getById(id);
+        return userRepository.getByIdAndDeletedFalse(id);
     }
 
     @Override
     public Users getUserByUuId(int id) {
-        return userRepository.getByUuid(id);
+
+        List<Users> usersList = userRepository.getByUuid(id);
+
+        if (usersList == null && usersList.isEmpty()) {
+            return null;
+        }
+
+        return usersList.get(0);
+
     }
 
     protected Properties globalAddressConfigProperties() {
@@ -211,6 +219,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 //            if (!userDaoService.getLastAvatar(userId).isEmpty())
 //                cm.setAuthorAvatar(userDaoService.getLastAvatar(userId).get(0).getUrl());
 
+            User userCoverAndAvatar = getUserCoverAndAvatar(comment.getUser());
+            cm.setAuthorAvatar(userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null);
             cm.setAuthorFirstName(comment.getUser().getFirstName());
             cm.setAuthorLastName(comment.getUser().getLastName());
             cm.setCreationDate(comment.getDatetimeCreated());
@@ -223,6 +233,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             cm.setLikeCount(comment.getLikes().size());
 
             List<EditHistory> editHistory = editHistoryRepository.getByCommentUuidOrderByDatetimeEditedDesc(commentId);
+
             if (!editHistory.isEmpty()) {
                 cm.setEdited(true);
 
@@ -278,6 +289,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         user.setEmail(targetUser.getEmail());
         user.setPhone(targetUser.getTelephone());
         user.setId(targetUser.getUuid());
+        user.setBirthDate(targetUser.getDateBorn());
 
         if (connected_user != null) {
 
@@ -415,16 +427,18 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
         for (User user : users) {
 
-            Users u = userRepository.getByUuid(user.getId());
+            List<Users> u = userRepository.getByUuid(user.getId());
+
+
             TeamMembers teamMember = new TeamMembers();
             SppotiMember sppoter = new SppotiMember();
 
-            if (u != null) {
+            if (u != null && !u.isEmpty()) {
 
-                if (u.getId().equals(adminId)) teamMember.setAdmin(true);
+                if (u.get(0).getId().equals(adminId)) teamMember.setAdmin(true);
 
                 teamMember.setTeams(team);
-                teamMember.setUsers(u);
+                teamMember.setUsers(u.get(0));
 
                 if (sppoti != null) {
                     TeamMembers sppoterMember = teamMembersRepository.findByUsersUuidAndTeamsUuid(user.getId(), team.getUuid());
@@ -521,6 +535,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         teamResponse.setCoverPath(team.getCoverPath());
         teamResponse.setLogoPath(team.getLogoPath());
         teamResponse.setName(team.getName());
+
+        teamResponse.setSportId(team.getSport().getId());
 
         return teamResponse;
 

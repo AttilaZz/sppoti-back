@@ -2,8 +2,10 @@ package com.fr.core;
 
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
+import com.fr.commons.dto.User;
 import com.fr.entities.Team;
 import com.fr.entities.TeamMembers;
+import com.fr.entities.Users;
 import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.exceptions.MemberNotInAdminTeamException;
 import com.fr.models.GlobalAppStatus;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
@@ -27,7 +30,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     private int teamPageSize;
 
     @Override
-    public void saveTeam(TeamRequest team, Long adminId) {
+    public TeamResponse saveTeam(TeamRequest team, Long adminId) {
         Team teamToSave = new Team();
 
         teamToSave.setName(team.getName());
@@ -50,7 +53,9 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         }
 
-        teamRepository.save(teamToSave);
+        Team addedTeam = teamRepository.save(teamToSave);
+
+        return fillTeamResponse(addedTeam, null);
 
     }
 
@@ -192,6 +197,49 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         team.get(0).setDeleted(true);
         teamRepository.save(team);
+
+    }
+
+    @Override
+    public User addMember(int teamId, User userParam) {
+
+        List<Users> usersList = userRepository.getByUuid(userParam.getId());
+        Users user;
+
+        if (usersList == null || usersList.isEmpty()) {
+            throw new EntityNotFoundException("User with id (" + userParam.getId() + ") Not found");
+        }
+
+        user = usersList.get(0);
+
+        List<Team> teamList = teamRepository.findByUuid(teamId);
+
+        if (teamList == null || teamList.isEmpty()) {
+            throw new EntityNotFoundException("Team with id (" + teamId + ") Not found");
+        }
+
+        Team team = teamList.get(0);
+
+        TeamMembers teamMembers = new TeamMembers();
+        teamMembers.setTeams(team);
+        teamMembers.setUsers(user);
+
+        if (StringUtils.isEmpty(userParam.getxPosition())) {
+            teamMembers.setxPosition(userParam.getxPosition());
+        }
+
+        if (StringUtils.isEmpty(userParam.getyPosition())) {
+            teamMembers.setyPosition(userParam.getyPosition());
+        }
+
+        TeamMembers newMember = teamMembersRepository.save(teamMembers);
+
+        User userCoverAndAvatar = getUserCoverAndAvatar(user);
+
+        return new User(newMember.getUuid(), user.getFirstName(), user.getLastName(), user.getUsername(),
+                userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
+                userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
+                userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null);
 
     }
 

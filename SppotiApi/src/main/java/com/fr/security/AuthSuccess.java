@@ -66,7 +66,8 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
-        Users users = userRepository.getById(accountUserDetails.getId());
+        Users users = userRepository.getByIdAndDeletedFalse(accountUserDetails.getId());
+
         String username = users.getUsername();
         int uid = users.getUuid();
 

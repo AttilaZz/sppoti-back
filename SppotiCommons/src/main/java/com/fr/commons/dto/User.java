@@ -20,6 +20,9 @@ public class User {
     private String username;
     private String address;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private Date birthDate;
+
     private Integer xPosition;
     private Integer yPosition;
 
@@ -256,5 +259,13 @@ public class User {
 
     public void setSppotiStatus(Integer sppotiStatus) {
         this.sppotiStatus = sppotiStatus;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
     }
 }

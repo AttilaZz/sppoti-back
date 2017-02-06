@@ -32,7 +32,7 @@ public class TeamController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createTeam(@RequestBody TeamRequest team, HttpServletResponse response, HttpServletRequest request) {
+    public ResponseEntity<TeamResponse> createTeam(@RequestBody TeamRequest team, HttpServletResponse response, HttpServletRequest request) {
 
 //        if (team.getCoverPath() == null || team.getCoverPath().isEmpty()) {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (cover path) not found");
@@ -54,14 +54,19 @@ public class TeamController {
 
         Long teamCreator = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
+        TeamResponse teamResponse;
         try {
-            teamControllerService.saveTeam(team, teamCreator);
+
+            teamResponse = teamControllerService.saveTeam(team, teamCreator);
+
         } catch (RuntimeException e) {
+
             LOGGER.error("Problème de création de la team: \n" + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         }
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(teamResponse, HttpStatus.CREATED);
     }
 
     /**

@@ -23,9 +23,9 @@ public interface UserRepository extends JpaRepository<Users, Long> {
 
     Users getByConfirmationCode(String code);
 
-    Users getById(Long id);
+    Users getByIdAndDeletedFalse(Long id);
 
-    Users getByUuid(int id);
+    List<Users> getByUuid(int id);
 
     @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
     @Query("SELECT u from Users u WHERE u.username LIKE CONCAT('%',:prefix,'%') OR u.firstName LIKE CONCAT('%',:prefix,'%') OR u.lastName LIKE CONCAT('%',:prefix,'%') ")

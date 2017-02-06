@@ -365,7 +365,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public boolean addNotification(Long userId, int postId, String content) {
 
-        Users connectedUser = userRepository.getById(userId);
+        Users connectedUser = userRepository.getByIdAndDeletedFalse(userId);
         Post concernedePostTag;
 
         try {

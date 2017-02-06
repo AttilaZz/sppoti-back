@@ -2,6 +2,7 @@ package com.fr.rest.service;
 
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
+import com.fr.commons.dto.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Service
 public interface TeamControllerService extends AbstractControllerService{
 
-    void saveTeam(TeamRequest team, Long adminId);
+    TeamResponse saveTeam(TeamRequest team, Long adminId);
 
     TeamResponse getTeamById(int teamId);
 
@@ -28,4 +29,6 @@ public interface TeamControllerService extends AbstractControllerService{
     void deleteMemberFromTeam(int teamId, int memberId, int adminId);
 
     void deleteTeam(int id);
+
+    User addMember(int teamId, User userParam);
 }

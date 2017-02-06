@@ -15,6 +15,7 @@ public class TeamResponse {
     private String name;
     private String logoPath;
     private String coverPath;
+    private Long sportId;
 
     private List<User> teamMembers;
 
@@ -50,4 +51,11 @@ public class TeamResponse {
         this.teamMembers = teamMembers;
     }
 
+    public Long getSportId() {
+        return sportId;
+    }
+
+    public void setSportId(Long sportId) {
+        this.sportId = sportId;
+    }
 }
