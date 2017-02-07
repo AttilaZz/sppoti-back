@@ -49,7 +49,6 @@ public class TeamController {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (logo path) not found");
 //
 //        }
-
         if (team.getName() == null || team.getName().isEmpty()) {
             LOGGER.error("Team (name) not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

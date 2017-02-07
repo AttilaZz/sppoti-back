@@ -1,12 +1,15 @@
 package com.fr.rest.controllers;
 
-import com.fr.rest.service.AccountControllerService;
+import com.fr.commons.dto.TeamResponse;
+import com.fr.commons.dto.User;
 import com.fr.entities.FriendShip;
 import com.fr.entities.Users;
 import com.fr.models.GlobalAppStatus;
-import com.fr.commons.dto.User;
 import com.fr.repositories.FriendShipRepository;
 import com.fr.repositories.UserRepository;
+import com.fr.rest.service.AccountControllerService;
+import com.fr.rest.service.TeamControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,49 +34,40 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/find")
-public class SearchController {
+public class FindController {
 
     @Value("${key.friendShipPerPage}")
     private int friend_size;
 
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private FriendShipRepository friendShipRepository;
-
+    @Autowired
     private AccountControllerService accountControllerService;
-
     @Autowired
-    public void setFriendShipRepository(FriendShipRepository friendShipRepository) {
-        this.friendShipRepository = friendShipRepository;
-    }
+    private TeamControllerService teamControllerService;
 
-    @Autowired
-    public void setAccountControllerService(AccountControllerService accountControllerService) {
-        this.accountControllerService = accountControllerService;
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    private Logger LOGGER = Logger.getLogger(SearchController.class);
-
-    private static final String ATT_USER_ID = "USER_ID";
+    private Logger LOGGER = Logger.getLogger(FindController.class);
 
     /**
-     * Find users
+     * @param userPrefix
+     * @param page
+     * @param request
+     * @return List of all users containing the STRING in request
      */
     @GetMapping(value = "/users/{user}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<User>> searchUser(@PathVariable("user") String userPrefix,
                                                  @PathVariable("page") int page, HttpServletRequest request) {
 
+        //TODO: move implementation to CORE MODULE
 
         if (userPrefix.isEmpty()) {
             LOGGER.error("SEARCH-USER: Prefix not valid !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        List<Users> foundUsers = null;
+        List<Users> foundUsers;
         Pageable pageable = new PageRequest(page, friend_size);
 
         String[] parts = userPrefix.split(" ");
@@ -102,7 +97,9 @@ public class SearchController {
     }
 
     /**
-     * Find confirmed friends friends
+     * @param userPrefix
+     * @param page
+     * @return All confirmed friends of connected user
      */
     @GetMapping(value = "/friends/{motif}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<User>> searchConfimedFriend(@PathVariable("motif") String userPrefix,
@@ -142,15 +139,34 @@ public class SearchController {
         LOGGER.info("SEARCH-CONFIRMED-FRIEND: friends has been returned !");
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-    /**
-     * Find spooties
-     */
 
     /**
-     * Find posts
+     * @param team
+     * @param page
+     * @param authentication
+     * @return All found teams containing the String (team).
      */
+    @GetMapping("/team/{team}/{page}")
+    public ResponseEntity<List<TeamResponse>> findTeam(@PathVariable String team, @PathVariable int page, Authentication authentication) {
 
-    /**
-     * Find comments
-     */
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+
+        List<TeamResponse> teamResponses;
+        try {
+
+            teamResponses = teamControllerService.findAllTeams(team, accountUserDetails.getUuid(), page);
+
+            if (teamResponses.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+            }
+
+        } catch (RuntimeException e) {
+            LOGGER.error("Find All teams error: " + e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        }
+
+        return new ResponseEntity<>(teamResponses, HttpStatus.OK);
+    }
 }

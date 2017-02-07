@@ -253,4 +253,19 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
+    @Override
+    public List<TeamResponse> findAllTeams(String team, int id, int page) {
+        Pageable pageable = new PageRequest(page, teamPageSize);
+
+        List<TeamMembers> myTeams = teamMembersRepository.findByUsersUuidAndAdminFalseAndTeamsNameContaining(id, team, pageable);
+        List<TeamResponse> teamResponses = new ArrayList<TeamResponse>();
+
+
+        for (TeamMembers myTeam : myTeams) {
+            teamResponses.add(fillTeamResponse(myTeam.getTeams(), null));
+        }
+
+        return teamResponses;
+    }
+
 }

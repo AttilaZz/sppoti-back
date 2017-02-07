@@ -221,7 +221,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 //                cm.setAuthorAvatar(userDaoService.getLastAvatar(userId).get(0).getUrl());
 
             User userCoverAndAvatar = getUserCoverAndAvatar(comment.getUser());
-            cm.setAuthorAvatar(userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null);
+            cm.setAuthorAvatar(userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null);
             cm.setAuthorFirstName(comment.getUser().getFirstName());
             cm.setAuthorLastName(comment.getUser().getLastName());
             cm.setCreationDate(comment.getDatetimeCreated());
