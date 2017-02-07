@@ -16,6 +16,8 @@ public class TeamRequest {
     private Integer xPosition;
     private Integer yPosition;
 
+    private Long sportId;
+
     public String getName() {
         return name;
     }
@@ -70,5 +72,13 @@ public class TeamRequest {
 
     public void setyPosition(Integer yPosition) {
         this.yPosition = yPosition;
+    }
+
+    public Long getSportId() {
+        return sportId;
+    }
+
+    public void setSportId(Long sportId) {
+        this.sportId = sportId;
     }
 }

@@ -12,6 +12,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class TeamResponse {
 
+    private int id;
     private String name;
     private String logoPath;
     private String coverPath;
@@ -57,5 +58,13 @@ public class TeamResponse {
 
     public void setSportId(Long sportId) {
         this.sportId = sportId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

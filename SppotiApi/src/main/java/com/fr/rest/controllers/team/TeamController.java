@@ -2,7 +2,6 @@ package com.fr.rest.controllers.team;
 
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
-import com.fr.rest.controllers.sppoti.SppotiAddController;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +23,21 @@ public class TeamController {
     private static final String ATT_USER_ID = "USER_ID";
 
     private TeamControllerService teamControllerService;
-    private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
+    private Logger LOGGER = Logger.getLogger(TeamController.class);
 
     @Autowired
     public void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
     }
 
+    /**
+     * This service create team
+     *
+     * @param team
+     * @param response
+     * @param request
+     * @return Created team data
+     */
     @PostMapping
     public ResponseEntity<TeamResponse> createTeam(@RequestBody TeamRequest team, HttpServletResponse response, HttpServletRequest request) {
 
@@ -47,8 +54,14 @@ public class TeamController {
             LOGGER.error("Team (name) not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
         if (team.getMembers() == null || team.getMembers().isEmpty()) {
             LOGGER.error("Team (members) not found");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if(team.getSportId() == null){
+            LOGGER.error("Team (sport id) not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -59,9 +72,9 @@ public class TeamController {
 
             teamResponse = teamControllerService.saveTeam(team, teamCreator);
 
-        } catch (RuntimeException e) {
-
-            LOGGER.error("Problème de création de la team: \n" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("Problème de création de la team: " + e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
@@ -98,7 +111,7 @@ public class TeamController {
             teamControllerService.deleteTeam(id);
 
         } catch (RuntimeException e) {
-            LOGGER.error("Error deleting team id:" + id);
+            LOGGER.error("Error deleting team id:" + id + " - " + e);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 

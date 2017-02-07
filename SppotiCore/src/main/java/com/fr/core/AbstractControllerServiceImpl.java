@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
@@ -505,6 +506,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected TeamResponse fillTeamResponse(Team team, Long sppotiAdmin) {
 
         TeamResponse teamResponse = new TeamResponse();
+        teamResponse.setId(team.getUuid());
 
         List<User> teamUsers = new ArrayList<User>();
 
@@ -512,9 +514,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
             Integer sppoterStatus = null;
             //get status for the selected sppoti
-            for (SppotiMember sppoter : user.getSppotiMemberss()) {
-                if (sppoter.getUsersTeam().getId().equals(user.getId())) {
-                    sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
+            if (!StringUtils.isEmpty(user.getSppotiMemberss())) {
+                for (SppotiMember sppoter : user.getSppotiMemberss()) {
+                    if (sppoter.getUsersTeam().getId().equals(user.getId())) {
+                        sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
+                    }
                 }
             }
 

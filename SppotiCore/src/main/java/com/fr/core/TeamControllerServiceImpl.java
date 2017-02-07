@@ -3,6 +3,7 @@ package com.fr.core;
 import com.fr.commons.dto.TeamRequest;
 import com.fr.commons.dto.TeamResponse;
 import com.fr.commons.dto.User;
+import com.fr.entities.Sport;
 import com.fr.entities.Team;
 import com.fr.entities.TeamMembers;
 import com.fr.entities.Users;
@@ -31,6 +32,13 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     @Override
     public TeamResponse saveTeam(TeamRequest team, Long adminId) {
+
+        Sport sport = sportRepository.findOne(team.getSportId());
+
+        if (sport == null) {
+            throw new EntityNotFoundException("Sport id not foud");
+        }
+
         Team teamToSave = new Team();
 
         teamToSave.setName(team.getName());
@@ -43,6 +51,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             teamToSave.setLogoPath(team.getLogoPath());
         }
 
+
         try {
 
             teamToSave.setTeamMemberss(getTeamMembersEntityFromDto(team.getMembers(), teamToSave, adminId, null));
@@ -53,6 +62,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         }
 
+        teamToSave.setSport(sport);
         Team addedTeam = teamRepository.save(teamToSave);
 
         return fillTeamResponse(addedTeam, null);
