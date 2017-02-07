@@ -18,7 +18,7 @@ public class SppotiRequest {
     private Long sportId;
     private String description;
     @JsonProperty("sppotiDatetime")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private Date datetimeStart;
 
     @JsonProperty("teamHost")
