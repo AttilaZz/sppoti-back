@@ -88,7 +88,6 @@ public class SppotiAddController {
     }
 
 
-
     /**
      * @param id
      * @return 200 status if deleted, 400 status otherwise.
