@@ -16,13 +16,13 @@ public interface SppotiControllerService extends AbstractControllerService {
 
     SppotiResponse saveSppoti(SppotiRequest newSppoti, Long sppotiCreator);
 
-    SppotiResponse getSppotiByUuid(int uuid);
+    SppotiResponse getSppotiByUuid(Integer uuid, Integer connectedUSer);
 
-    List<SppotiResponse> getAllUserSppoties(int id, int page);
+    List<SppotiResponse> getAllUserSppoties(Integer id, int page, Integer connectedUser);
 
     void deleteSppoti(int id);
 
-    SppotiResponse updateSppoti(SppotiRequest sppotiRequest, int id);
+    SppotiResponse updateSppoti(SppotiRequest sppotiRequest, int id, Integer connectedUser);
 
     void acceptSppoti(int sppotiId, int userId);
 

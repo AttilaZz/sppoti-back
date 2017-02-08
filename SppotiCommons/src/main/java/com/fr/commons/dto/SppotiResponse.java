@@ -14,7 +14,7 @@ import java.util.Date;
 @JsonInclude(Include.NON_NULL)
 public class SppotiResponse {
 
-    private int id;
+    private Integer id;
 
     private String titre;
 
@@ -28,7 +28,7 @@ public class SppotiResponse {
 
     private String location;
 
-    private int maxMembersCount;
+    private Integer maxMembersCount;
 
     private String tags;
 
@@ -42,10 +42,12 @@ public class SppotiResponse {
 
     private Integer sppotiCounter;
 
+    private Boolean mySppoti;
+
     public SppotiResponse() {
     }
 
-    public SppotiResponse(String titre, Date datetimeCreated, Date dateTimeStart, String location, int maxMembersCount, Sport relatedSport) {
+    public SppotiResponse(String titre, Date datetimeCreated, Date dateTimeStart, String location, Integer maxMembersCount, Sport relatedSport) {
         this.titre = titre;
         this.datetimeCreated = datetimeCreated;
         this.dateTimeStart = dateTimeStart;
@@ -54,7 +56,15 @@ public class SppotiResponse {
         this.relatedSport = relatedSport;
     }
 
-    public SppotiResponse(int id) {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public SppotiResponse(Integer id) {
         this.id = id;
     }
 
@@ -98,11 +108,11 @@ public class SppotiResponse {
         this.location = location;
     }
 
-    public int getMaxMembersCount() {
+    public Integer getMaxMembersCount() {
         return maxMembersCount;
     }
 
-    public void setMaxMembersCount(int maxMembersCount) {
+    public void setMaxMembersCount(Integer maxMembersCount) {
         this.maxMembersCount = maxMembersCount;
     }
 
@@ -138,19 +148,19 @@ public class SppotiResponse {
         this.teamGuest = teamGuest;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public Integer getSppotiCounter() {
         return sppotiCounter;
     }
 
     public void setSppotiCounter(Integer sppotiCounter) {
         this.sppotiCounter = sppotiCounter;
+    }
+
+    public Boolean getMySppoti() {
+        return mySppoti;
+    }
+
+    public void setMySppoti(Boolean mySppoti) {
+        this.mySppoti = mySppoti;
     }
 }

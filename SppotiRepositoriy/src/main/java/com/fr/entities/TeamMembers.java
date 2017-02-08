@@ -18,6 +18,7 @@ public class TeamMembers {
     @GeneratedValue
     private Long id;
 
+    @Column(unique = true)
     private int uuid = UUID.randomUUID().hashCode();
 
     private String status = GlobalAppStatus.PENDING.name();

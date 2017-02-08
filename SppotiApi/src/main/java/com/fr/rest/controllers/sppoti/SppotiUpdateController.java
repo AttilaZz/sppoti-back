@@ -3,10 +3,12 @@ package com.fr.rest.controllers.sppoti;
 import com.fr.commons.dto.SppotiRequest;
 import com.fr.commons.dto.SppotiResponse;
 import com.fr.rest.service.SppotiControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -34,7 +36,9 @@ public class SppotiUpdateController {
      * @return 200 status with the updated sppoti, 400 status otherwise.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<SppotiResponse> updateSppoti(@PathVariable int id, @RequestBody SppotiRequest sppotiRequest) {
+    public ResponseEntity<SppotiResponse> updateSppoti(@PathVariable int id, @RequestBody SppotiRequest sppotiRequest, Authentication authentication) {
+
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
         boolean canUpdate = false;
 
@@ -69,7 +73,7 @@ public class SppotiUpdateController {
         try {
 
             if (canUpdate) {
-                sppotiControllerService.updateSppoti(sppotiRequest, id);
+                sppotiControllerService.updateSppoti(sppotiRequest, id, accountUserDetails.getUuid());
             } else {
                 throw new IllegalArgumentException("Update not acceptable");
             }

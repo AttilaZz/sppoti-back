@@ -29,6 +29,7 @@ public class Post implements Comparable<Post> {
     @GeneratedValue
     private Long id;
 
+    @Column(unique = true)
     private int uuid = UUID.randomUUID().hashCode();
 
     @Column(length = 500)

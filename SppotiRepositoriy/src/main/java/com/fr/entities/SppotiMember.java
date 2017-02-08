@@ -18,7 +18,6 @@ public class SppotiMember {
 
     private String status = GlobalAppStatus.PENDING.name();
     private Date invitationDate = new Date();
-
     private Date acceptationDate;
     private Integer xPosition;
     private Integer yPosition;

@@ -20,6 +20,7 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
+    @Column(unique = true)
     private int uuid = UUID.randomUUID().hashCode();
 
     @Column(nullable = false)

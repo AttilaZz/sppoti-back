@@ -111,7 +111,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             try {
                 List<Team> tempTeams = teamRepository.findByUuid(newSppoti.getVsTeam());
 
-                if(!tempTeams.isEmpty()){
+                if (!tempTeams.isEmpty()) {
                     team = tempTeams.get(0);
                 }
 
@@ -142,7 +142,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
      * @return
      */
     @Override
-    public SppotiResponse getSppotiByUuid(int uuid) {
+    public SppotiResponse getSppotiByUuid(Integer uuid, Integer connectedUSer) {
 
         Sppoti sppoti = sppotiRepository.findByUuid(uuid);
 
@@ -150,11 +150,11 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Trying to get a deleted sppoti");
         }
 
-        return getSppotiResponse(sppoti);
+        return getSppotiResponse(sppoti, connectedUSer);
 
     }
 
-    private SppotiResponse getSppotiResponse(Sppoti sppoti) {
+    private SppotiResponse getSppotiResponse(Sppoti sppoti, Integer connectedUser) {
 
         if (sppoti == null) {
             throw new EntityNotFoundException("Sppoti not found");
@@ -182,6 +182,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         List<SppotiMember> sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiSportId(sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId());
 
         sppotiResponse.setSppotiCounter(sppotiMembers.size());
+        sppotiResponse.setMySppoti(connectedUser.equals(sppoti.getUserSppoti().getUuid()));
 
         return sppotiResponse;
     }
@@ -191,7 +192,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
      * @return all sppoties created by a user
      */
     @Override
-    public List<SppotiResponse> getAllUserSppoties(int id, int page) {
+    public List<SppotiResponse> getAllUserSppoties(Integer id, int page, Integer connectedUser) {
 
         Pageable pageable = new PageRequest(page, sppoti_size);
 
@@ -200,7 +201,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         List<SppotiResponse> sppotiResponses = new ArrayList<SppotiResponse>();
 
         for (Sppoti sppoti : sppoties) {
-            sppotiResponses.add(getSppotiResponse(sppoti));
+            sppotiResponses.add(getSppotiResponse(sppoti, connectedUser));
         }
 
         return sppotiResponses;
@@ -225,7 +226,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     }
 
     @Override
-    public SppotiResponse updateSppoti(SppotiRequest sppotiRequest, int id) {
+    public SppotiResponse updateSppoti(SppotiRequest sppotiRequest, int id, Integer connectedUser) {
 
         Sppoti sppoti = sppotiRepository.findByUuid(id);
 
@@ -269,7 +270,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         Sppoti updatedSppoti = sppotiRepository.save(sppoti);
 
-        return getSppotiResponse(updatedSppoti);
+        return getSppotiResponse(updatedSppoti, connectedUser);
 
     }
 

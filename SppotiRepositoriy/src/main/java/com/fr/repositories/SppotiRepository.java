@@ -16,5 +16,5 @@ public interface SppotiRepository extends JpaRepository<Sppoti, Long> {
     Sppoti findByUuid(int uuid);
 
     @PostFilter("!filterObject.isDeleted() ")
-    List<Sppoti> findByUserSppotiUuid(int id, Pageable pageable);
+    List<Sppoti> findByUserSppotiUuid(Integer id, Pageable pageable);
 }

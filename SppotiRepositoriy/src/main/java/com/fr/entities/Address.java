@@ -18,6 +18,7 @@ public class Address implements Comparable<Address> {
     @JsonIgnore
     private Long id;
 
+    @Column(unique = true)
     private int uuid = UUID.randomUUID().hashCode();
 
     private String address;

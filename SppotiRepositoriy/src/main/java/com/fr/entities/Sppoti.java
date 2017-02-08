@@ -20,7 +20,8 @@ public class Sppoti {
     @GeneratedValue
     private Long id;
 
-    private int uuid = UUID.randomUUID().hashCode();
+    @Column(unique = true)
+    private Integer uuid = UUID.randomUUID().hashCode();
 
     @Column(nullable = false)
     private String titre;
@@ -125,6 +126,13 @@ public class Sppoti {
         this.description = description;
     }
 
+    public Integer getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(Integer uuid) {
+        this.uuid = uuid;
+    }
 
     public int getMaxMembersCount() {
         return maxMembersCount;
@@ -166,13 +174,6 @@ public class Sppoti {
         this.teamAdverse = teamAdverse;
     }
 
-    public int getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(int uuid) {
-        this.uuid = uuid;
-    }
 
     public boolean isDeleted() {
         return deleted;

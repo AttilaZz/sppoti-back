@@ -2,10 +2,12 @@ package com.fr.rest.controllers.sppoti;
 
 import com.fr.commons.dto.SppotiResponse;
 import com.fr.rest.service.SppotiControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,12 +38,14 @@ public class SppotiGetController {
      * @return 200 status with the target sppoti, 400 status otherwise.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<SppotiResponse> getSppotiById(@PathVariable int id) {
+    public ResponseEntity<SppotiResponse> getSppotiById(@PathVariable Integer id, Authentication authentication) {
+
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
         SppotiResponse response;
 
         try {
-            response = sppotiControllerService.getSppotiByUuid(id);
+            response = sppotiControllerService.getSppotiByUuid(id, accountUserDetails.getUuid());
         } catch (RuntimeException e) {
             e.printStackTrace();
             LOGGER.error("Sppoti not found: " + e.getMessage());
@@ -55,16 +59,18 @@ public class SppotiGetController {
     /**
      * @param id
      * @param page
-     * @param request
+     * @param authentication
      * @return All sppoties for a given user
      */
     @GetMapping("/all/{userId}/{page}")
-    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page, Authentication authentication) {
+
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
         List<SppotiResponse> response;
 
         try {
-            response = sppotiControllerService.getAllUserSppoties(id, page);
+            response = sppotiControllerService.getAllUserSppoties(id, page, accountUserDetails.getUuid());
 
             if (response.isEmpty()) {
                 LOGGER.info("The user (" + id + ") has no sppoties");
