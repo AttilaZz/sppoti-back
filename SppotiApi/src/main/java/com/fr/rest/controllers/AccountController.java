@@ -239,14 +239,18 @@ public class AccountController {
         }
 
         if (update) {
-            if (accountControllerService.updateUser(connected_user)) {
+
+            try {
+                accountControllerService.updateUser(connected_user);
                 LOGGER.info("USER-UPDATE: User has been updated!");
                 return new ResponseEntity<>(user, HttpStatus.OK);
 
-            } else {
-                LOGGER.error("USER-UPDATE: ERROR updating user");
+            } catch (RuntimeException e) {
+                LOGGER.error("USER-UPDATE: ERROR updating user: " + e);
                 return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+
             }
+
         } else {
             LOGGER.error("USER-UPDATE: Nothing to update OR missigin parameter");
             return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);

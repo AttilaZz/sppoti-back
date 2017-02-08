@@ -291,6 +291,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         user.setPhone(targetUser.getTelephone());
         user.setId(targetUser.getUuid());
         user.setBirthDate(targetUser.getDateBorn());
+        user.setFriendStatus(GlobalAppStatus.PUBLIC_RELATION.getValue());
 
         if (connected_user != null) {
 

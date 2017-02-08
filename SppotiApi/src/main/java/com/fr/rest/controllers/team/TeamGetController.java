@@ -46,7 +46,7 @@ public class TeamGetController {
         try {
             teamResponse = teamControllerService.getTeamById(teamId);
         } catch (RuntimeException e) {
-            LOGGER.error("Error retreiving team: " + e.getMessage());
+            LOGGER.error("Error retrieving team: " + e);
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -74,7 +74,7 @@ public class TeamGetController {
 
         } catch (RuntimeException e) {
             e.printStackTrace();
-            LOGGER.error("Error trying to get teams: " + e.getMessage());
+            LOGGER.error("Error trying to get teams: " + e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

@@ -115,13 +115,9 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
 
     @Override
     public boolean updateUser(Users connected_user) {
-        try {
-            userRepository.save(connected_user);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+
+        userRepository.save(connected_user);
+        return true;
     }
 
     @Override
