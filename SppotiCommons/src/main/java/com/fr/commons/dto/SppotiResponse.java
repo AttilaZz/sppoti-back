@@ -43,6 +43,7 @@ public class SppotiResponse {
     private Integer sppotiCounter;
 
     private Boolean mySppoti;
+    private Integer adminId;
 
     public SppotiResponse() {
     }
@@ -162,5 +163,13 @@ public class SppotiResponse {
 
     public void setMySppoti(Boolean mySppoti) {
         this.mySppoti = mySppoti;
+    }
+
+    public Integer getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(Integer adminId) {
+        this.adminId = adminId;
     }
 }

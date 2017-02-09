@@ -78,6 +78,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/js/**");
         web.ignoring().antMatchers("/images/**");
         web.ignoring().antMatchers("/views/**");
+        web.ignoring().antMatchers("/upload/**");
     }
 
     @Autowired
@@ -104,8 +105,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .successHandler(savedRequestAwareAuthenticationSuccessHandler())
-                .loginPage("/login")
-                .usernameParameter("username")
+//                .loginPage("/login")
+                .usernameParameter("username")g
                 .passwordParameter("password")
                 .successHandler(authSuccess)
                 .failureHandler(authFailure)
@@ -117,7 +118,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .tokenValiditySeconds(86400)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/login", "/account/**", "/sport/**", "/csrf").permitAll()
+                .antMatchers("/", "/account/**", "/sport/**", "/csrf", "/upload/**").permitAll()
                 .antMatchers("/admin/**").hasRole(UserRoleType.ADMIN.getUserProfileType())
                 .antMatchers("/api/profile/**").hasAnyRole(UserRoleType.USER.getUserProfileType(),
                 UserRoleType.ADMIN.getUserProfileType())
