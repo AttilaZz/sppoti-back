@@ -43,7 +43,7 @@ public class SppotiResponse {
     private Integer sppotiCounter;
 
     private Boolean mySppoti;
-    private Integer adminId;
+    private Integer connectedUserId;
 
     public SppotiResponse() {
     }
@@ -165,11 +165,11 @@ public class SppotiResponse {
         this.mySppoti = mySppoti;
     }
 
-    public Integer getAdminId() {
-        return adminId;
+    public Integer getConnectedUserId() {
+        return connectedUserId;
     }
 
-    public void setAdminId(Integer adminId) {
-        this.adminId = adminId;
+    public void setConnectedUserId(Integer connectedUserId) {
+        this.connectedUserId = connectedUserId;
     }
 }

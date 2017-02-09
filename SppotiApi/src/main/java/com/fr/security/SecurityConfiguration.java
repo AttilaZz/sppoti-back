@@ -106,7 +106,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .successHandler(savedRequestAwareAuthenticationSuccessHandler())
 //                .loginPage("/login")
-                .usernameParameter("username")g
+                .usernameParameter("username")
                 .passwordParameter("password")
                 .successHandler(authSuccess)
                 .failureHandler(authFailure)
