@@ -183,7 +183,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         sppotiResponse.setSppotiCounter(sppotiMembers.size());
         sppotiResponse.setMySppoti(connectedUser.equals(sppoti.getUserSppoti().getUuid()));
-        sppotiResponse.setConnectedUserId(connectedUser);
+        sppotiResponse.setConnectedUserId(teamMembersRepository.findByUsersUuid(sppoti.getUserSppoti().getUuid()).getUuid());
 
         return sppotiResponse;
     }
