@@ -437,7 +437,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
             if (u != null && !u.isEmpty()) {
 
-                if (u.get(0).getId().equals(adminId)) teamMember.setAdmin(true);
+                if (u.get(0).getId().equals(adminId)) {
+                    teamMember.setAdmin(true);
+                    teamMember.setStatus(GlobalAppStatus.CONFIRMED.name());
+                }
 
                 teamMember.setTeams(team);
                 teamMember.setUsers(u.get(0));
@@ -452,6 +455,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
                     if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
                         sppoter.setyPosition(user.getyPosition());
+                    }
+
+                    if (teamMember.getAdmin() != null && teamMember.getAdmin()) {
+                        sppoter.setStatus(GlobalAppStatus.CONFIRMED.name());
                     }
 
                     //if the sppoter already exist - default coordinate doesn't change
@@ -514,6 +521,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         for (TeamMembers user : team.getTeamMemberss()) {
 
             Integer sppoterStatus = null;
+
             //get status for the selected sppoti
             if (!StringUtils.isEmpty(user.getSppotiMemberss())) {
                 for (SppotiMember sppoter : user.getSppotiMemberss()) {
@@ -532,7 +540,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
                     userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null,
                     user.getAdmin(), sppotiAdmin != null && user.getUsers().getId().equals(sppotiAdmin) ? true : null,
-                    GlobalAppStatus.valueOf(user.getStatus()).getValue(), sppotiAdmin != null ? sppoterStatus : null));
+                    GlobalAppStatus.valueOf(user.getStatus()).getValue(),
+                    sppotiAdmin != null ? sppoterStatus : null));
         }
 
         teamResponse.setTeamMembers(teamUsers);

@@ -57,7 +57,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                 hostTeam.setTeamMemberss(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMembers(), hostTeam, sppotiCreator, sppoti));
 
             } catch (RuntimeException e) {
-                LOGGER.error("One of the team id not found: " + e.getMessage());
+                LOGGER.error("Error when trying to get USERS from team members list: " + e);
                 throw new HostMemberNotFoundException("Host-TeamRequest (members) one of the team dosn't exist");
 
             }
@@ -90,11 +90,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         hostTeam.setSport(sport);
-
         sppoti.setSport(sport);
-
         sppoti.setUserSppoti(owner);
-
         sppoti.setTeamHost(hostTeam);
 
         if (newSppoti.getTags() != null) {
@@ -104,7 +101,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         if (newSppoti.getDescription() != null) {
             sppoti.setDescription(newSppoti.getDescription());
         }
-
 
         if (newSppoti.getVsTeam() != 0) {
             Team team = null;

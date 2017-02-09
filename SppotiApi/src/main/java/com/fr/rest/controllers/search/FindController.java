@@ -1,4 +1,4 @@
-package com.fr.rest.controllers;
+package com.fr.rest.controllers.search;
 
 import com.fr.commons.dto.TeamResponse;
 import com.fr.commons.dto.User;

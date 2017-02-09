@@ -101,9 +101,7 @@ public class PostController {
             posts = postDataService.findAllPosts(requestUser.getId(), user_unique_id, visibility, page);
         }
 
-
         //if user_unique_id is not the connected user
-
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
