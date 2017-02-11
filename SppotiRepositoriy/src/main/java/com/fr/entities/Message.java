@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 // @JsonIgnoreProperties( { "hibernateLazyInitializer", "handler" } )
 @JsonInclude(Include.NON_EMPTY)
-public class Messages {
+public class Message {
 
     @Id
     @GeneratedValue
@@ -42,11 +42,11 @@ public class Messages {
     @JsonIgnore
     private Users userMessage;
 
-    public Messages() {
+    public Message() {
         super();
     }
 
-    public Messages(Messages msg) {
+    public Message(Message msg) {
         this.content = msg.getContent();
         this.datetime = msg.getDatetime();
         this.receiver_id = msg.getReceiver_id();

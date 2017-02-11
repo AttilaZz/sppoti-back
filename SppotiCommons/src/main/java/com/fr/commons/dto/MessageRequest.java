@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.entities.Messages;
+import com.fr.entities.Message;
 import com.fr.entities.Users;
 
 /**
@@ -17,13 +17,13 @@ public class MessageRequest {
     private Long userId;
     private Long receivedId;
 
-    private Messages msg;
+    private Message msg;
 
     private Users sender;
     private Users receiver;
 
-    private List<Messages> sentMessages;
-    private List<Messages> receivedMessages;
+    private List<Message> sentMessages;
+    private List<Message> receivedMessages;
 
     public Long getUserId() {
         return userId;
@@ -41,11 +41,11 @@ public class MessageRequest {
         this.receivedId = receivedId;
     }
 
-    public Messages getMsg() {
+    public Message getMsg() {
         return msg;
     }
 
-    public void setMsg(Messages msg) {
+    public void setMsg(Message msg) {
         this.msg = msg;
     }
 
@@ -65,19 +65,19 @@ public class MessageRequest {
         this.receiver = receiver;
     }
 
-    public List<Messages> getSentMessages() {
+    public List<Message> getSentMessages() {
         return sentMessages;
     }
 
-    public void setSentMessages(List<Messages> sentMessages) {
+    public void setSentMessages(List<Message> sentMessages) {
         this.sentMessages = sentMessages;
     }
 
-    public List<Messages> getReceivedMessages() {
+    public List<Message> getReceivedMessages() {
         return receivedMessages;
     }
 
-    public void setReceivedMessages(List<Messages> receivedMessages) {
+    public void setReceivedMessages(List<Message> receivedMessages) {
         this.receivedMessages = receivedMessages;
     }
 

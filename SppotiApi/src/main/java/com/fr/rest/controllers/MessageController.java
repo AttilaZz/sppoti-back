@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fr.entities.Message;
 import com.fr.rest.service.MessageControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fr.aop.TraceAuthentification;
 import com.fr.commons.dto.MessageRequest;
-import com.fr.entities.Messages;
 import com.fr.entities.Users;
 
 /**
@@ -51,7 +51,7 @@ public class MessageController {
         }
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        List<Messages> sentMessages = messageControllerService.getSentUserMessages(userId, bottomMajId);
+        List<Message> sentMessages = messageControllerService.getSentUserMessages(userId, bottomMajId);
 
         if (sentMessages.isEmpty()) {
             return new ResponseEntity<MessageRequest>(HttpStatus.NO_CONTENT);
@@ -75,7 +75,7 @@ public class MessageController {
         }
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        List<Messages> receivedMessages = messageControllerService.getReceivedUserMessages(userId, bottomMajId);
+        List<Message> receivedMessages = messageControllerService.getReceivedUserMessages(userId, bottomMajId);
 
         response.setReceivedMessages(receivedMessages);
 
@@ -88,21 +88,21 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/send", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Messages> addPost(@RequestBody MessageRequest newMessage, UriComponentsBuilder ucBuilder,
-                                            HttpServletRequest request) {
+    public ResponseEntity<Message> addPost(@RequestBody MessageRequest newMessage, UriComponentsBuilder ucBuilder,
+                                           HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
         Users user = messageControllerService.getUserById(userId);
         LOGGER.info("LOGGED Message for User: => " + userId);
 
-        Messages newMsg = null;
+        Message newMsg = null;
 
         if (newMessage.getMsg() == null) {
             LOGGER.info("ADD: Message content is empty");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        newMsg = new Messages(newMessage.getMsg());
+        newMsg = new Message(newMessage.getMsg());
         newMsg.setUserMessage(user);
 
         if (newMessage.getReceivedId() == null) {
@@ -114,7 +114,7 @@ public class MessageController {
 
         if (messageControllerService.saveMessage(newMsg)) {
             LOGGER.info("ADD: Message has been saved: => " + newMsg);
-            return new ResponseEntity<Messages>(newMsg, HttpStatus.CREATED);
+            return new ResponseEntity<Message>(newMsg, HttpStatus.CREATED);
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -49,7 +49,7 @@ public interface PostControllerService extends AbstractControllerService {
 
     boolean editPostVisibility(int id, int visibility);
 
-    boolean addNotification(Long userId, int postId, String content);
+    void addNotification(Long userId, int postId, String content);
 
     List<Post> findAllPosts(Long userLongId, int userIntId, List visibility, int page);
 

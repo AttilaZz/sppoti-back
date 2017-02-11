@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.entities.Messages;
+import com.fr.entities.Message;
 import com.fr.entities.Sport;
 
 /**
@@ -28,7 +28,7 @@ public class ProfilePage {
 
     private List<PostResponse> userPosts;
     private Set<Sport> userSports;
-    private List<Messages> userMessages;
+    private List<Message> userMessages;
     private Set<String> userAddresses;
 
     // when switching to another profile
@@ -139,11 +139,11 @@ public class ProfilePage {
         this.userSports = sportSet;
     }
 
-    public List<Messages> getUserMessages() {
+    public List<Message> getUserMessages() {
         return userMessages;
     }
 
-    public void setUserMessages(List<Messages> userMessages) {
+    public void setUserMessages(List<Message> userMessages) {
         this.userMessages = userMessages;
     }
 

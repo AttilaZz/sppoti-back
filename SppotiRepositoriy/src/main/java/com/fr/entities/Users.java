@@ -72,16 +72,13 @@ public class Users {
     private Set<Sppoti> userSppoties;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userMessage")
-    private Set<Messages> userMessages;
+    private Set<Message> userMessages;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Comment> comments;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private Set<LikeContent> likes;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "notifSender")
-    private Set<Notifications> notifications;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
@@ -144,11 +141,11 @@ public class Users {
         this.userSppoties = userSppoties;
     }
 
-    public Set<Messages> getUserMessages() {
+    public Set<Message> getUserMessages() {
         return userMessages;
     }
 
-    public void setUserMessages(Set<Messages> userMessages) {
+    public void setUserMessages(Set<Message> userMessages) {
         this.userMessages = userMessages;
     }
 
@@ -174,14 +171,6 @@ public class Users {
 
     public void setRessources(Set<Resources> ressources) {
         this.ressources = ressources;
-    }
-
-    public Set<Notifications> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(Set<Notifications> notifications) {
-        this.notifications = notifications;
     }
 
     public String getConfirmationCode() {

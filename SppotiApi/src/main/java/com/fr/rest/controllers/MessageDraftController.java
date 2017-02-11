@@ -3,6 +3,7 @@
  */
 package com.fr.rest.controllers;
 
+import com.fr.entities.Message;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fr.aop.TraceAuthentification;
 import com.fr.rest.service.MessageControllerService;
-import com.fr.entities.Messages;
 
 /**
  * Created by: Wail DJENANE on Jun 25, 2016
@@ -34,12 +34,12 @@ public class MessageDraftController {
     // private static final String ATT_USER_ID = "USER_ID";
 
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Messages> updateUser(@PathVariable("id") Long id, @RequestBody Messages newMsg) {
+    public ResponseEntity<Message> updateUser(@PathVariable("id") Long id, @RequestBody Message newMsg) {
 
         if (id > 0) {
-            Messages oldMsg = messageControllerService.findMessageById(id);
+            Message oldMsg = messageControllerService.findMessageById(id);
             if (oldMsg != null) {
-                Messages updated = new Messages();
+                Message updated = new Message();
                 // prepare data for update
                 if (newMsg.getContent() != null) {
                     updated.setContent(newMsg.getContent());
@@ -50,15 +50,15 @@ public class MessageDraftController {
 
                 // if (messageControllerService.updateMessage(updated)) {
                 // LOGGER.info("UPDATE: success");
-                // return new ResponseEntity<Messages>(updated, HttpStatus.OK);
+                // return new ResponseEntity<Message>(updated, HttpStatus.OK);
                 // }
 
             }
-            return new ResponseEntity<Messages>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<Message>(HttpStatus.NO_CONTENT);
         }
 
         // BAD MESSAGE ID
         LOGGER.info("UPDATE: bad argument");
-        return new ResponseEntity<Messages>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<Message>(HttpStatus.BAD_REQUEST);
     }
 }

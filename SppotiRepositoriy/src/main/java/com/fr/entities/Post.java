@@ -50,9 +50,6 @@ public class Post implements Comparable<Post> {
     @Column(nullable = false)
     private boolean isDeleted = false;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "postTag")
-    private Set<Notifications> notifications;
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     @OrderBy("dateTime DESC")
     private SortedSet<Address> addresses = new TreeSet<Address>();
@@ -184,14 +181,6 @@ public class Post implements Comparable<Post> {
 
     public void setDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
-    }
-
-    public Set<Notifications> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(Set<Notifications> notifications) {
-        this.notifications = notifications;
     }
 
     public int getUuid() {

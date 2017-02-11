@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -281,10 +282,10 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             List<Resources> resources = new ArrayList<Resources>();
             resources.addAll(owner.getRessources());
 
-            if(!resources.isEmpty()){
-                if(resources.get(0) != null && resources.get(0).getType() == 1){
+            if (!resources.isEmpty()) {
+                if (resources.get(0) != null && resources.get(0).getType() == 1) {
                     pres.setAvatar(resources.get(0).getUrl());
-                }else if(resources.get(1) != null && resources.get(1).getType() == 1){
+                } else if (resources.get(1) != null && resources.get(1).getType() == 1) {
                     pres.setAvatar(resources.get(1).getUrl());
                 }
             }
@@ -357,29 +358,25 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             postRepository.save(post);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
 
     @Override
-    public boolean addNotification(Long userId, int postId, String content) {
+    public void addNotification(Long userId, int postId, String content) {
 
         Users connectedUser = userRepository.getByIdAndDeletedFalse(userId);
         Post concernedePostTag;
 
-        try {
-            List<Post> posts = postRepository.getByUuid(postId);
 
-            if (posts == null) {
-                throw new IllegalArgumentException("Incorrect post id passed in parameters");
-            } else {
-                concernedePostTag = posts.get(0);
-            }
+        List<Post> posts = postRepository.getByUuid(postId);
 
-        } catch (Exception e) {
-            return false;
+        if (posts == null) {
+            throw new IllegalArgumentException("Incorrect post id passed in parameters");
+        } else {
+            concernedePostTag = posts.get(0);
         }
+
 
         /**
          * All words starting with DOLLAR, followed by Letter or accented Letter
@@ -404,50 +401,24 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 		 */
 
         for (String username : tags) {
+
             Users userToNotify;
-            try {
-                userToNotify = userRepository.getByUsername(username);
-            } catch (Exception e) {
-                LOGGER.info("POST-ADD: Username tag" + username + " is not valid !");
-                return false;
-            }
+
+            userToNotify = userRepository.getByUsername(username);
+
             if (userToNotify != null) {
 
-                Notifications notif = new Notifications();
-                notif.setTag(true);
-                notif.setContentShared(false);
-                notif.setViewed(false);
-                notif.setNotifSender(connectedUser);
-                notif.setNotifiedUserId(userToNotify.getId());
-                notif.setPostTag(concernedePostTag);
+                //TODO: ADD NOTIFICATION - TAG
 
-                try {
-                    notificationRepository.save(notif);
-                } catch (Exception e) {
-                    return false;
-                }
-
-                LOGGER.info("POST-ADD-NOTIF:" + notif.toString());
             }
         }
 
-        return true;
     }
 
     @Override
     public List<Post> findAllPosts(Long userLongId, int userIntId, List visibility, int page) {
 
         Pageable pageable = new PageRequest(page, post_size, Sort.Direction.DESC, "datetimeCreated");
-
-//        List<Sport> sports = sportRepository.getBySubscribedUsersUuid(uuid);
-//
-//        c
-//
-//        int index = 0;
-//        for (Sport sport : sports) {
-//            sportIdTemp[index] = sport.getId();
-//            index++;
-//        }
 
         return postRepository.getAllPosts(userIntId, userLongId, visibility, pageable);
     }
