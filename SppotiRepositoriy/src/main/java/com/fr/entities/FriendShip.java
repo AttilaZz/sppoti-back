@@ -27,7 +27,11 @@ public class FriendShip {
     private Users friend;
 
     @Column(name = "user_id")
-    private int user;
+    private Integer user;
+
+    @Version
+    @Column(nullable = false)
+    private Integer version;
 
     @Column
     private boolean deleted;
@@ -64,12 +68,20 @@ public class FriendShip {
         this.friend = friend;
     }
 
-    public int getUser() {
+    public Integer getUser() {
         return user;
     }
 
-    public void setUser(int user) {
+    public void setUser(Integer user) {
         this.user = user;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public boolean isDeleted() {
