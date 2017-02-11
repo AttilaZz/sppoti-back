@@ -541,7 +541,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null,
                     user.getAdmin(), sppotiAdmin != null && user.getUsers().getId().equals(sppotiAdmin) ? true : null,
                     GlobalAppStatus.valueOf(user.getStatus()).getValue(),
-                    sppotiAdmin != null ? sppoterStatus : null));
+                    sppotiAdmin != null ? sppoterStatus : null, user.getUsers().getUuid()));
         }
 
         teamResponse.setTeamMembers(teamUsers);

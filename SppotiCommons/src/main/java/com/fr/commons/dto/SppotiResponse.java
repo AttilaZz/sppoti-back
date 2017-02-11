@@ -43,6 +43,9 @@ public class SppotiResponse {
     private Integer sppotiCounter;
 
     private Boolean mySppoti;
+
+    private Integer adminUserId;
+    private Integer adminTeamId;
     private Integer connectedUserId;
 
     public SppotiResponse() {
@@ -163,6 +166,22 @@ public class SppotiResponse {
 
     public void setMySppoti(Boolean mySppoti) {
         this.mySppoti = mySppoti;
+    }
+
+    public Integer getAdminUserId() {
+        return adminUserId;
+    }
+
+    public void setAdminUserId(Integer adminUserId) {
+        this.adminUserId = adminUserId;
+    }
+
+    public Integer getAdminTeamId() {
+        return adminTeamId;
+    }
+
+    public void setAdminTeamId(Integer adminTeamId) {
+        this.adminTeamId = adminTeamId;
     }
 
     public Integer getConnectedUserId() {

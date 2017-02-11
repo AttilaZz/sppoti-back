@@ -57,11 +57,12 @@ public class User {
 
     private Integer teamStatus;
     private Integer sppotiStatus;
+    private Integer userId;
 
     public User() {
     }
 
-    public User(int id, String firstName, String lastName, String username, String cover, String avatar, Integer coverType, Boolean isTeamAdmin, Boolean isSppotiAdmin, Integer teamStatus, Integer sppotiStatus) {
+    public User(int id, String firstName, String lastName, String username, String cover, String avatar, Integer coverType, Boolean isTeamAdmin, Boolean isSppotiAdmin, Integer teamStatus, Integer sppotiStatus, Integer userId) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -73,6 +74,7 @@ public class User {
         this.id = id;
         this.teamStatus = teamStatus;
         this.sppotiStatus = sppotiStatus;
+        this.userId = userId;
     }
 
     public User(int uuid, String firstName, String lastName, String username, String cover, String avatar, Integer coverType) {
@@ -267,5 +269,13 @@ public class User {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }
