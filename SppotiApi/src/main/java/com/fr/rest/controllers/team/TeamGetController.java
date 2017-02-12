@@ -1,6 +1,6 @@
 package com.fr.rest.controllers.team;
 
-import com.fr.commons.dto.TeamResponse;
+import com.fr.commons.dto.TeamResponseDTO;
 import com.fr.rest.controllers.sppoti.SppotiAddController;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;
@@ -39,19 +39,19 @@ public class TeamGetController {
      * @return target team
      */
     @GetMapping("/{teamId}")
-    public ResponseEntity<TeamResponse> getTeamById(@PathVariable int teamId) {
+    public ResponseEntity<TeamResponseDTO> getTeamById(@PathVariable int teamId) {
 
-        TeamResponse teamResponse;
+        TeamResponseDTO teamResponseDTO;
 
         try {
-            teamResponse = teamControllerService.getTeamById(teamId);
+            teamResponseDTO = teamControllerService.getTeamById(teamId);
         } catch (RuntimeException e) {
             LOGGER.error("Error retrieving team: " + e);
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(teamResponse, HttpStatus.OK);
+        return new ResponseEntity<>(teamResponseDTO, HttpStatus.OK);
     }
 
     /**
@@ -62,13 +62,13 @@ public class TeamGetController {
     @GetMapping("/all/{userId}/{page}")
     public ResponseEntity getAllTeams(@PathVariable int userId, @PathVariable int page) {
 
-        List<TeamResponse> response;
+        List<TeamResponseDTO> response;
 
         try {
             response = teamControllerService.getAllTeamsByUserId(userId, page);
 
             if (response.isEmpty()) {
-                LOGGER.info("User id (" + userId + ") has no teams");
+                LOGGER.info("UserDTO id (" + userId + ") has no teams");
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 

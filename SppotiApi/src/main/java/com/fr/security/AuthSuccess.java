@@ -1,9 +1,9 @@
 package com.fr.security;
 
+import com.fr.commons.dto.SportModelDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.entities.Sport;
-import com.fr.entities.Users;
-import com.fr.commons.dto.SportModel;
-import com.fr.commons.dto.User;
+import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
@@ -46,7 +46,7 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        LOGGER.info("User has been logged :-)");
+        LOGGER.info("UserDTO has been logged :-)");
 
         request.getSession().setAttribute(ATT_USER_ID, getAuthenticationId());
 
@@ -66,27 +66,27 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
-        Users users = userRepository.getByIdAndDeletedFalse(accountUserDetails.getId());
+        UserEntity users = userRepository.getByIdAndDeletedFalse(accountUserDetails.getId());
 
         String username = users.getUsername();
         int uid = users.getUuid();
 
-        User user = new User();
+        UserDTO user = new UserDTO();
         user.setUsername(username);
         user.setId(uid);
 
         Set<Sport> sports = users.getRelatedSports();
-        List<SportModel> sportModels = new ArrayList<>();
+        List<SportModelDTO> sportModelDTOs = new ArrayList<>();
 
         for (Sport sport : sports) {
-            SportModel sportModel = new SportModel();
-            sportModel.setId(sport.getId());
-            sportModel.setName(sport.getName());
+            SportModelDTO sportModelDTO = new SportModelDTO();
+            sportModelDTO.setId(sport.getId());
+            sportModelDTO.setName(sport.getName());
 
-            sportModels.add(sportModel);
+            sportModelDTOs.add(sportModelDTO);
         }
 
-        user.setSportModels(sportModels);
+        user.setSportModelDTOs(sportModelDTOs);
 
         Gson gson = new Gson();
         response.getWriter().write(gson.toJson(user));

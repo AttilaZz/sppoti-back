@@ -1,6 +1,6 @@
 package com.fr.rest.service;
 
-import com.fr.entities.Users;
+import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 @Component
 public interface LoginService extends AbstractControllerService{
 
-    Users getByEmail(String username);
+    UserEntity getByEmail(String username);
 
-    Users getByTelephone(String username);
+    UserEntity getByTelephone(String username);
 
-    Users getByUsername(String username);
+    UserEntity getByUsername(String username);
 }

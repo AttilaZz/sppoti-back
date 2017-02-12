@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import org.hibernate.annotations.Where;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -38,7 +37,7 @@ public class Resources {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private Users user;
+    private UserEntity user;
 
     public Long getId() {
         return id;
@@ -88,11 +87,11 @@ public class Resources {
         this.isSelected = isSelected;
     }
 
-    public Users getUserRessources() {
+    public UserEntity getUserRessources() {
         return user;
     }
 
-    public void setUserRessources(Users userRessources) {
+    public void setUserRessources(UserEntity userRessources) {
         this.user = userRessources;
     }
 
@@ -104,11 +103,11 @@ public class Resources {
         this.typeExtension = typeExtension;
     }
 
-    public Users getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 

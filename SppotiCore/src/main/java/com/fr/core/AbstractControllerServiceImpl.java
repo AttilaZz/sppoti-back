@@ -5,7 +5,6 @@ import com.fr.entities.*;
 import com.fr.mail.ApplicationMailer;
 import com.fr.models.GlobalAppStatus;
 import com.fr.repositories.*;
-import com.fr.rest.controllers.AccountController;
 import com.fr.rest.service.AbstractControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import utils.EntitytoDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
@@ -28,7 +28,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected SportRepository sportRepository;
     protected RoleRepository roleRepository;
     protected PostRepository postRepository;
-    protected NotificationRepository notificationRepository;
     protected EditHistoryRepository editHistoryRepository;
     protected LikeRepository likeRepository;
     protected ResourceRepository resourceRepository;
@@ -38,6 +37,9 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected TeamRepository teamRepository;
     protected TeamMembersRepository teamMembersRepository;
     protected SppotiMembersRepository sppotiMembersRepository;
+    protected NotificationRepository notificationRepository;
+
+
 
     @Autowired
     public void setSppotiMembersRepository(SppotiMembersRepository sppotiMembersRepository) {
@@ -115,7 +117,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     @Autowired
     private Environment environment;
 
-    protected Logger LOGGER = Logger.getLogger(AccountController.class);
+    private Logger LOGGER = Logger.getLogger(AbstractControllerServiceImpl.class);
 
     @SuppressWarnings("unchecked")
     @Override
@@ -149,7 +151,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     @Override
-    public Users getUserFromUsernameType(String loginUser) {
+    public UserEntity getUserFromUsernameType(String loginUser) {
         return null;
     }
 
@@ -170,14 +172,14 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     @Override
-    public Users getUserById(Long id) {
+    public UserEntity getUserById(Long id) {
         return userRepository.getByIdAndDeletedFalse(id);
     }
 
     @Override
-    public Users getUserByUuId(int id) {
+    public UserEntity getUserByUuId(int id) {
 
-        List<Users> usersList = userRepository.getByUuid(id);
+        List<UserEntity> usersList = userRepository.getByUuid(id);
 
         if (usersList == null && usersList.isEmpty()) {
             return null;
@@ -194,12 +196,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return properties;
     }
 
-    protected List<ContentEditedResponse> fillEditContentResponse(List<EditHistory> dsHistoryList) {
-        List<ContentEditedResponse> editHistoryResponse = new ArrayList<ContentEditedResponse>();
+    protected List<ContentEditedResponseDTO> fillEditContentResponse(List<EditHistory> dsHistoryList) {
+        List<ContentEditedResponseDTO> editHistoryResponse = new ArrayList<ContentEditedResponseDTO>();
         editHistoryResponse.clear();
         for (EditHistory editContent : dsHistoryList) {
 
-            ContentEditedResponse cer = new ContentEditedResponse();
+            ContentEditedResponseDTO cer = new ContentEditedResponseDTO();
             cer.setDateTime(editContent.getDatetimeEdited());
             cer.setId(editContent.getId());
             cer.setText(editContent.getText());
@@ -210,28 +212,29 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return editHistoryResponse;
     }
 
-    protected List<CommentModel> fillCommentModelList(List<Comment> dbCommentList, Long userId) {
-        List<CommentModel> myList = new ArrayList<CommentModel>();
+    protected List<CommentDTO> fillCommentModelList(List<CommentEntity> dbCommentEntityList, Long userId) {
+        List<CommentDTO> myList = new ArrayList<CommentDTO>();
 
-        for (Comment comment : dbCommentList) {
-            int commentId = comment.getUuid();
-            CommentModel cm = new CommentModel();
+        for (CommentEntity commentEntity : dbCommentEntityList) {
+            int commentId = commentEntity.getUuid();
+            CommentDTO cm = new CommentDTO();
 
 //            if (!userDaoService.getLastAvatar(userId).isEmpty())
 //                cm.setAuthorAvatar(userDaoService.getLastAvatar(userId).get(0).getUrl());
 
-            User userCoverAndAvatar = getUserCoverAndAvatar(comment.getUser());
+            UserDTO userCoverAndAvatar = EntitytoDtoTransformer.getUserCoverAndAvatar(
+                    commentEntity.getUser());
             cm.setAuthorAvatar(userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null);
-            cm.setAuthorFirstName(comment.getUser().getFirstName());
-            cm.setAuthorLastName(comment.getUser().getLastName());
-            cm.setCreationDate(comment.getDatetimeCreated());
+            cm.setAuthorFirstName(commentEntity.getUser().getFirstName());
+            cm.setAuthorLastName(commentEntity.getUser().getLastName());
+            cm.setCreationDate(commentEntity.getDatetimeCreated());
             cm.setId(commentId);
-            cm.setImageLink(comment.getImageLink());
-            cm.setMyComment(comment.getUser().getId().equals(userId));
+            cm.setImageLink(commentEntity.getImageLink());
+            cm.setMyComment(commentEntity.getUser().getId().equals(userId));
 
-            boolean isCommentLikedByMe = isContentLikedByUser(comment, userId);
+            boolean isCommentLikedByMe = isContentLikedByUser(commentEntity, userId);
             cm.setLikedByUser(isCommentLikedByMe);
-            cm.setLikeCount(comment.getLikes().size());
+            cm.setLikeCount(commentEntity.getLikes().size());
 
             List<EditHistory> editHistory = editHistoryRepository.getByCommentUuidOrderByDatetimeEditedDesc(commentId);
 
@@ -243,11 +246,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 cm.setCreationDate(ec.getDatetimeEdited());
                 cm.setText(ec.getText());
             } else {
-                cm.setText(comment.getContent());
-                cm.setCreationDate(comment.getDatetimeCreated());
+                cm.setText(commentEntity.getContent());
+                cm.setCreationDate(commentEntity.getDatetimeCreated());
             }
 
-            cm.setLikeCount(comment.getLikes().size());
+            cm.setLikeCount(commentEntity.getLikes().size());
 
             myList.add(cm);
         }
@@ -261,13 +264,13 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
         List<LikeContent> lp = new ArrayList<LikeContent>();
         Post p;
-        Comment c;
+        CommentEntity c;
 
         if (o instanceof Post) {
             p = (Post) o;
             lp.addAll(p.getLikes());
-        } else if (o instanceof Comment) {
-            c = (Comment) o;
+        } else if (o instanceof CommentEntity) {
+            c = (CommentEntity) o;
             lp.addAll(c.getLikes());
         }
 
@@ -281,9 +284,9 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     }
 
-    protected User fillUserResponse(Users targetUser, Users connected_user) {
+    protected UserDTO fillUserResponse(UserEntity targetUser, UserEntity connected_user) {
 
-        User user = new User();
+        UserDTO user = new UserDTO();
         user.setLastName(targetUser.getLastName());
         user.setFirstName(targetUser.getFirstName());
         user.setUsername(targetUser.getUsername());
@@ -343,7 +346,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         /*
         Manage resources
          */
-        User user_cover_avatar = getUserCoverAndAvatar(targetUser);
+        UserDTO user_cover_avatar = EntitytoDtoTransformer.getUserCoverAndAvatar(targetUser);
         user.setCover(user_cover_avatar.getCover());
         user.setAvatar(user_cover_avatar.getAvatar());
         user.setCoverType(user_cover_avatar.getCoverType());
@@ -351,64 +354,22 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         End resource manager
          */
 
-        List<SportModel> sportModels = new ArrayList<SportModel>();
+        List<SportModelDTO> sportModelDTOs = new ArrayList<SportModelDTO>();
 
         for (Sport sport : targetUser.getRelatedSports()) {
-            SportModel sportModel = new SportModel();
-            sportModel.setId(sport.getId());
-            sportModel.setName(sport.getName());
+            SportModelDTO sportModelDTO = new SportModelDTO();
+            sportModelDTO.setId(sport.getId());
+            sportModelDTO.setName(sport.getName());
 
-            sportModels.add(sportModel);
+            sportModelDTOs.add(sportModelDTO);
         }
 
-        user.setSportModels(sportModels);
+        user.setSportModelDTOs(sportModelDTOs);
 
         try {
             user.setAddress(targetUser.getAddresses().first().getAddress());
         } catch (Exception e) {
-            LOGGER.warn("User has no address yet !");
-        }
-
-        return user;
-    }
-
-    @Override
-    public User getUserCoverAndAvatar(Users targetUser) {
-
-        User user = new User();
-        Set<Resources> resources = targetUser.getRessources();
-
-        List<Resources> resources_temp = new ArrayList<Resources>();
-        resources_temp.addAll(resources);
-
-        if (!resources_temp.isEmpty()) {
-            if (resources_temp.size() == 2) {
-                //cover and avatar found
-                Resources resource1 = resources_temp.get(0);
-                Resources resource2 = resources_temp.get(1);
-
-                if (resource1.getType() == 1 && resource2.getType() == 2) {
-                    user.setAvatar(resource1.getUrl());
-
-                    user.setCover(resource2.getUrl());
-                    user.setCoverType(resource2.getTypeExtension());
-                } else if (resource1.getType() == 2 && resource2.getType() == 1) {
-                    user.setAvatar(resource2.getUrl());
-
-                    user.setCover(resource1.getUrl());
-                    user.setCoverType(resource1.getTypeExtension());
-                }
-
-            } else {
-                // size is = 1 -> cover or avatar
-                Resources resource = resources_temp.get(0);
-                if (resource.getType() == 1) {//acatar
-                    user.setAvatar(resource.getUrl());
-                } else {
-                    user.setCover(resource.getUrl());
-                    user.setCoverType(resource.getTypeExtension());
-                }
-            }
+            LOGGER.warn("UserDTO has no address yet !");
         }
 
         return user;
@@ -421,15 +382,15 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @param sppoti  @return array of USERS_TEAM
      */
     @Override
-    public Set<TeamMembers> getTeamMembersEntityFromDto(List<User> users, Team team, Long adminId, Sppoti sppoti) {
+    public Set<TeamMembers> getTeamMembersEntityFromDto(List<UserDTO> users, Team team, Long adminId, Sppoti sppoti) {
 
         Set<TeamMembers> teamUsers = new HashSet<TeamMembers>();
         Set<Team> teams = new HashSet<Team>();
         teams.add(team);
 
-        for (User user : users) {
+        for (UserDTO user : users) {
 
-            List<Users> u = userRepository.getByUuid(user.getId());
+            List<UserEntity> u = userRepository.getByUuid(user.getId());
 
 
             TeamMembers teamMember = new TeamMembers();
@@ -511,12 +472,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @param team
      * @return a teamResponse object from Team entity
      */
-    protected TeamResponse fillTeamResponse(Team team, Long sppotiAdmin) {
+    protected TeamResponseDTO fillTeamResponse(Team team, Long sppotiAdmin) {
 
-        TeamResponse teamResponse = new TeamResponse();
-        teamResponse.setId(team.getUuid());
+        TeamResponseDTO teamResponseDTO = new TeamResponseDTO();
+        teamResponseDTO.setId(team.getUuid());
 
-        List<User> teamUsers = new ArrayList<User>();
+        List<UserDTO> teamUsers = new ArrayList<UserDTO>();
 
         for (TeamMembers user : team.getTeamMemberss()) {
 
@@ -532,10 +493,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             }
 
             //get avatar and cover
-            User userCoverAndAvatar = getUserCoverAndAvatar(user.getUsers());
+            UserDTO userCoverAndAvatar = EntitytoDtoTransformer.getUserCoverAndAvatar(user.getUsers());
 
             //fill sppoter data
-            teamUsers.add(new User(user.getUuid(), user.getUsers().getFirstName(), user.getUsers().getLastName(), user.getUsers().getUsername(),
+            teamUsers.add(new UserDTO(user.getUuid(), user.getUsers().getFirstName(), user.getUsers().getLastName(), user.getUsers().getUsername(),
                     userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
                     userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
                     userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null,
@@ -544,15 +505,15 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     sppotiAdmin != null ? sppoterStatus : null, user.getUsers().getUuid()));
         }
 
-        teamResponse.setTeamMembers(teamUsers);
+        teamResponseDTO.setTeamMembers(teamUsers);
 
-        teamResponse.setCoverPath(team.getCoverPath());
-        teamResponse.setLogoPath(team.getLogoPath());
-        teamResponse.setName(team.getName());
+        teamResponseDTO.setCoverPath(team.getCoverPath());
+        teamResponseDTO.setLogoPath(team.getLogoPath());
+        teamResponseDTO.setName(team.getName());
 
-        teamResponse.setSportId(team.getSport().getId());
+        teamResponseDTO.setSportId(team.getSport().getId());
 
-        return teamResponse;
+        return teamResponseDTO;
 
     }
 }

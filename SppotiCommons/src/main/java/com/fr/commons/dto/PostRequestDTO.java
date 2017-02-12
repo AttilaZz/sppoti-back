@@ -12,7 +12,7 @@ import java.util.Set;
  * Created by: Wail DJENANE on Jun 13, 2016
  */
 @JsonInclude(Include.NON_ABSENT)
-public class PostRequest {
+public class PostRequestDTO {
 
     private Long sportId;
 
@@ -29,7 +29,7 @@ public class PostRequest {
     private int visibility;
 
     @JsonProperty("targetUser")
-    private int targetUseruuid;
+    private int targetUserUuid;
 
     public int getVisibility() {
         return visibility;
@@ -95,15 +95,16 @@ public class PostRequest {
         this.address = address;
     }
 
-    public int getTargetUseruuid() {
-        return targetUseruuid;
+    public int getTargetUserUuid() {
+        return targetUserUuid;
     }
 
-    public void setTargetUseruuid(int targetUseruuid) {
-        this.targetUseruuid = targetUseruuid;
+    public void setTargetUserUuid(int targetUserUuid) {
+        this.targetUserUuid = targetUserUuid;
     }
 
     public class Data {
+
         @SerializedName("text")
         @JsonProperty("text")
         private String content;

@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @JsonInclude(Include.NON_EMPTY)
-public class Comment implements Comparable<Comment> {
+public class CommentEntity implements Comparable<CommentEntity> {
 
     @Id
     @GeneratedValue
@@ -48,7 +48,7 @@ public class Comment implements Comparable<Comment> {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    private Users user;
+    private UserEntity user;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "post_id", nullable = false)
@@ -101,11 +101,11 @@ public class Comment implements Comparable<Comment> {
         this.datetimeCreated = datetimeCreated;
     }
 
-    public Users getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
@@ -151,7 +151,7 @@ public class Comment implements Comparable<Comment> {
 
     @SuppressWarnings("unused")
     @Override
-    public int compareTo(Comment o) {
+    public int compareTo(CommentEntity o) {
 
         if (this != null) {
             if (o != null) {

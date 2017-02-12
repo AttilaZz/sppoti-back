@@ -12,7 +12,7 @@ import java.util.List;
  * Created by djenanewail on 12/16/16.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User {
+public class UserDTO {
 
     private Integer id;
     private String firstName;
@@ -28,7 +28,7 @@ public class User {
 
     @SerializedName("sports")
     @JsonProperty("sports")
-    private List<SportModel> sportModels;
+    private List<SportModelDTO> sportModelDTOs;
 
     private String password;
     private String phone;
@@ -59,10 +59,10 @@ public class User {
     private Integer sppotiStatus;
     private Integer userId;
 
-    public User() {
+    public UserDTO() {
     }
 
-    public User(int id, String firstName, String lastName, String username, String cover, String avatar, Integer coverType, Boolean isTeamAdmin, Boolean isSppotiAdmin, Integer teamStatus, Integer sppotiStatus, Integer userId) {
+    public UserDTO(int id, String firstName, String lastName, String username, String cover, String avatar, Integer coverType, Boolean isTeamAdmin, Boolean isSppotiAdmin, Integer teamStatus, Integer sppotiStatus, Integer userId) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -77,7 +77,7 @@ public class User {
         this.userId = userId;
     }
 
-    public User(int uuid, String firstName, String lastName, String username, String cover, String avatar, Integer coverType) {
+    public UserDTO(int uuid, String firstName, String lastName, String username, String cover, String avatar, Integer coverType) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -143,12 +143,12 @@ public class User {
         this.yPosition = yPosition;
     }
 
-    public List<SportModel> getSportModels() {
-        return sportModels;
+    public List<SportModelDTO> getSportModelDTOs() {
+        return sportModelDTOs;
     }
 
-    public void setSportModels(List<SportModel> sportModels) {
-        this.sportModels = sportModels;
+    public void setSportModelDTOs(List<SportModelDTO> sportModelDTOs) {
+        this.sportModelDTOs = sportModelDTOs;
     }
 
     public String getPassword() {

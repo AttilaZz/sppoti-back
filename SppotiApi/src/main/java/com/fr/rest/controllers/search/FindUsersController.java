@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.search;
 
-import com.fr.commons.dto.User;
-import com.fr.entities.Users;
+import com.fr.commons.dto.UserDTO;
+import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
 import com.fr.rest.service.AccountControllerService;
 import org.apache.log4j.Logger;
@@ -50,8 +50,8 @@ public class FindUsersController {
      * @return List of all users containing the STRING in request
      */
     @GetMapping(value = "/{user}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<User>> searchUser(@PathVariable("user") String userPrefix,
-                                                 @PathVariable("page") int page, HttpServletRequest request) {
+    public ResponseEntity<List<UserDTO>> searchUser(@PathVariable("user") String userPrefix,
+                                                    @PathVariable("page") int page, HttpServletRequest request) {
 
         //TODO: move implementation to CORE MODULE
 
@@ -60,7 +60,7 @@ public class FindUsersController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        List<Users> foundUsers;
+        List<UserEntity> foundUsers;
         Pageable pageable = new PageRequest(page, friend_size);
 
         String[] parts = userPrefix.split(" ");
@@ -78,14 +78,14 @@ public class FindUsersController {
         }
 
 
-        List<User> users = new ArrayList<>();
+        List<UserDTO> users = new ArrayList<>();
 
-        for (Users users1 : foundUsers) {
+        for (UserEntity users1 : foundUsers) {
 
             users.add(accountControllerService.fillUserResponse(users1, null));
         }
 
-        LOGGER.info("PROFILE SEARCH-USER: Users has been returned !");
+        LOGGER.info("PROFILE SEARCH-USER: UserEntity has been returned !");
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

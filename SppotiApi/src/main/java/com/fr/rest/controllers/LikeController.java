@@ -1,14 +1,14 @@
 package com.fr.rest.controllers;
 
+import com.fr.commons.dto.PostResponseDTO;
+import com.fr.entities.CommentEntity;
+import com.fr.entities.UserEntity;
 import com.fr.rest.service.CommentControllerService;
 import com.fr.rest.service.LikeControllerService;
 import com.fr.rest.service.PostControllerService;
-import com.fr.entities.Comment;
 import com.fr.entities.LikeContent;
 import com.fr.entities.Post;
-import com.fr.entities.Users;
-import com.fr.commons.dto.HeaderData;
-import com.fr.commons.dto.PostResponse;
+import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +67,7 @@ public class LikeController {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
-        Users user = likeControllerService.getUserById(userId);
+        UserEntity user = likeControllerService.getUserById(userId);
 
         if (postToLike == null || user == null) {
 
@@ -116,7 +116,7 @@ public class LikeController {
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-        Users user = accountUserDetails.getConnectedUserDetails();
+        UserEntity user = accountUserDetails.getConnectedUserDetails();
 
         if (postToUnlike == null) {
 
@@ -136,7 +136,7 @@ public class LikeController {
 
             if (likeControllerService.unLikePost(postToUnlike)) {
                 // delete success
-                LOGGER.info("UNLIKE_POST: Comment with id:" + id + " has been liked by: " + user.getFirstName() + " "
+                LOGGER.info("UNLIKE_POST: CommentEntity with id:" + id + " has been liked by: " + user.getFirstName() + " "
                         + user.getLastName());
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
@@ -155,7 +155,7 @@ public class LikeController {
      * @return list of people who liked the post
      */
     @GetMapping(value = "/post/{id}/{page}")
-    public ResponseEntity<PostResponse> getPostLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
+    public ResponseEntity<PostResponseDTO> getPostLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
 
         Post currentPost = postDataService.findPost(id);
 
@@ -165,14 +165,14 @@ public class LikeController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        List<HeaderData> likersList = likeControllerService.getPostLikersList(id, page);
+        List<HeaderDataDTO> likersList = likeControllerService.getPostLikersList(id, page);
 
         if (likersList.isEmpty()) {
             LOGGER.info("POST_LIKERS_LIST: No likers found fot the post id:" + id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        PostResponse pr = new PostResponse();
+        PostResponseDTO pr = new PostResponseDTO();
         pr.setLikers(likersList);
         pr.setLikeCount(currentPost.getLikes().size());
 
@@ -192,32 +192,32 @@ public class LikeController {
     @PutMapping(value = "/comment/{id}")
     public ResponseEntity<Void> likeComment(@PathVariable("id") int id, HttpServletRequest request) {
 
-        Comment commentToLike = commentControllerService.findComment(id);
+        CommentEntity commentEntityToLike = commentControllerService.findComment(id);
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = likeControllerService.getUserById(userId);
+        UserEntity user = likeControllerService.getUserById(userId);
 
-        if (commentToLike == null || user == null) {
+        if (commentEntityToLike == null || user == null) {
 
-            if (commentToLike == null) {
+            if (commentEntityToLike == null) {
                 // post not found
-                LOGGER.info("LIKE_COMMENT: Failed to retreive the Comment id" + id);
+                LOGGER.info("LIKE_COMMENT: Failed to retreive the CommentEntity id" + id);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
-                LOGGER.info("LIKE_COMMENT: trying to like a non existing Comment id" + id);
+                LOGGER.info("LIKE_COMMENT: trying to like a non existing CommentEntity id" + id);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
         }
 
         LikeContent likeToSave = new LikeContent();
-        likeToSave.setComment(commentToLike);
+        likeToSave.setComment(commentEntityToLike);
         likeToSave.setUser(user);
 
         if (!likeControllerService.isCommentAlreadyLikedByUser(id, userId)) {
             if (likeControllerService.likeComment(likeToSave)) {
                 // delete success
-                LOGGER.info("LIKE_COMMENT: Comment with id:" + id + " has been liked by: " + user.getFirstName() + " "
+                LOGGER.info("LIKE_COMMENT: CommentEntity with id:" + id + " has been liked by: " + user.getFirstName() + " "
                         + user.getLastName());
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
@@ -225,7 +225,7 @@ public class LikeController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            LOGGER.error("LIKE_COMMENT: Comment already liked by: " + user.getFirstName() + " " + user.getLastName());
+            LOGGER.error("LIKE_COMMENT: CommentEntity already liked by: " + user.getFirstName() + " " + user.getLastName());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -239,14 +239,14 @@ public class LikeController {
     @DeleteMapping(value = "/comment/{id}")
     public ResponseEntity<Void> unLikeComment(@PathVariable("id") int id, HttpServletRequest request) {
 
-        Comment commentToLike = commentControllerService.findComment(id);
+        CommentEntity commentEntityToLike = commentControllerService.findComment(id);
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = postDataService.getUserById(userId);
+        UserEntity user = postDataService.getUserById(userId);
 
-        if (commentToLike == null || user == null) {
+        if (commentEntityToLike == null || user == null) {
 
-            if (commentToLike == null) {
+            if (commentEntityToLike == null) {
                 // post not fount
                 LOGGER.info("UNLIKE_COMMENT: Failed to retreive the comment id:" + id);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -260,9 +260,9 @@ public class LikeController {
         //post must be liked before unlike
         if (likeControllerService.isCommentAlreadyLikedByUser(id, userId)) {
 
-            if (likeControllerService.unLikeComment(commentToLike)) {
+            if (likeControllerService.unLikeComment(commentEntityToLike)) {
                 // delete success
-                LOGGER.info("UNLIKE_COMMENT: Comment with id:" + id + " has been liked by: " + user.getFirstName() + " "
+                LOGGER.info("UNLIKE_COMMENT: CommentEntity with id:" + id + " has been liked by: " + user.getFirstName() + " "
                         + user.getLastName());
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
@@ -270,7 +270,7 @@ public class LikeController {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
-            LOGGER.error("UNLIKE_COMMENT: Comment id:" + id + "- NOT liked by: " + user.getFirstName() + " " + user.getLastName());
+            LOGGER.error("UNLIKE_COMMENT: CommentEntity id:" + id + "- NOT liked by: " + user.getFirstName() + " " + user.getLastName());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -281,26 +281,26 @@ public class LikeController {
      * @return list of likers for a comment
      */
     @GetMapping(value = "/comment/{id}/{page}")
-    public ResponseEntity<PostResponse> getCommentLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
+    public ResponseEntity<PostResponseDTO> getCommentLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
 
-        Comment currentComment = commentControllerService.findComment(id);
+        CommentEntity currentCommentEntity = commentControllerService.findComment(id);
 
-        if (currentComment == null) {
+        if (currentCommentEntity == null) {
             // post not fount
             LOGGER.info("COMMENT_LIKERS_LIST: Failed to retreive the comment id:" + id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        List<HeaderData> likersList = likeControllerService.getCommentLikersList(id, page);
+        List<HeaderDataDTO> likersList = likeControllerService.getCommentLikersList(id, page);
 
         if (likersList.isEmpty()) {
             LOGGER.info("COMMENT_LIKERS_LIST: No like for comment id:" + id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        PostResponse pr = new PostResponse();
+        PostResponseDTO pr = new PostResponseDTO();
         pr.setLikers(likersList);
-        pr.setLikeCount(currentComment.getLikes().size());
+        pr.setLikeCount(currentCommentEntity.getLikes().size());
 
         return new ResponseEntity<>(pr, HttpStatus.OK);
     }

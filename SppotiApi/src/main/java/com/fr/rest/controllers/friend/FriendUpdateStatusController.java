@@ -1,8 +1,8 @@
 package com.fr.rest.controllers.friend;
 
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShip;
-import com.fr.entities.Users;
+import com.fr.entities.UserEntity;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.FriendControllerService;
 import org.apache.log4j.Logger;
@@ -43,7 +43,7 @@ public class FriendUpdateStatusController {
      * @return 200 http status if updated, 400 otherwise
      */
     @PutMapping
-    public ResponseEntity updateFriend(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity updateFriend(@RequestBody UserDTO user, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
@@ -55,7 +55,7 @@ public class FriendUpdateStatusController {
         /*
         Prepare friendShip
          */
-        Users connectedUser = friendControllerService.getUserById(userId);
+        UserEntity connectedUser = friendControllerService.getUserById(userId);
 
          /*
         Check if i received a friend request from the USER in the request

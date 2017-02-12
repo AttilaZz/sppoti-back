@@ -32,7 +32,7 @@ public class Address implements Comparable<Address> {
     @ManyToOne
     @JoinColumn(columnDefinition = "userid")
     @JsonIgnore
-    private Users users;
+    private UserEntity users;
 
     public Address() {
     }
@@ -81,11 +81,11 @@ public class Address implements Comparable<Address> {
         this.uuid = uuid;
     }
 
-    public Users getUsers() {
+    public UserEntity getUsers() {
         return users;
     }
 
-    public void setUsers(Users users) {
+    public void setUsers(UserEntity users) {
         this.users = users;
     }
 

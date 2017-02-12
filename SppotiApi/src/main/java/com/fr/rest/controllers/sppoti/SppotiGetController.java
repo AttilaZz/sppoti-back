@@ -1,6 +1,6 @@
 package com.fr.rest.controllers.sppoti;
 
-import com.fr.commons.dto.SppotiResponse;
+import com.fr.commons.dto.SppotiResponseDTO;
 import com.fr.rest.service.SppotiControllerService;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -38,11 +37,11 @@ public class SppotiGetController {
      * @return 200 status with the target sppoti, 400 status otherwise.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<SppotiResponse> getSppotiById(@PathVariable Integer id, Authentication authentication) {
+    public ResponseEntity<SppotiResponseDTO> getSppotiById(@PathVariable Integer id, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
-        SppotiResponse response;
+        SppotiResponseDTO response;
 
         try {
             response = sppotiControllerService.getSppotiByUuid(id, accountUserDetails.getUuid());
@@ -63,11 +62,11 @@ public class SppotiGetController {
      * @return All sppoties for a given user
      */
     @GetMapping("/all/{userId}/{page}")
-    public ResponseEntity<List<SppotiResponse>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page, Authentication authentication) {
+    public ResponseEntity<List<SppotiResponseDTO>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
-        List<SppotiResponse> response;
+        List<SppotiResponseDTO> response;
 
         try {
             response = sppotiControllerService.getAllUserSppoties(id, page, accountUserDetails.getUuid());

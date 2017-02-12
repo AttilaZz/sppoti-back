@@ -1,6 +1,6 @@
 package com.fr.rest.controllers.search;
 
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShip;
 import com.fr.models.GlobalAppStatus;
 import com.fr.repositories.FriendShipRepository;
@@ -50,8 +50,8 @@ public class FindFriendController {
      * @return All confirmed friends of connected user
      */
     @GetMapping(value = "/{motif}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<User>> searchConfimedFriend(@PathVariable("motif") String userPrefix,
-                                                           @PathVariable("page") int page) {
+    public ResponseEntity<List<UserDTO>> searchConfimedFriend(@PathVariable("motif") String userPrefix,
+                                                              @PathVariable("page") int page) {
 
 
         if (userPrefix.isEmpty()) {
@@ -77,7 +77,7 @@ public class FindFriendController {
             }
 
 
-        List<User> users = new ArrayList<>();
+        List<UserDTO> users = new ArrayList<>();
 
         for (FriendShip friendShip : foundFriends) {
 

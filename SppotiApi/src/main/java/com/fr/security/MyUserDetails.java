@@ -3,7 +3,7 @@
  */
 package com.fr.security;
 
-import com.fr.entities.Users;
+import com.fr.entities.UserEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -15,5 +15,5 @@ public interface MyUserDetails extends UserDetails {
 
     int getUuid();
 
-    Users getConnectedUserDetails();
+    UserEntity getConnectedUserDetails();
 }

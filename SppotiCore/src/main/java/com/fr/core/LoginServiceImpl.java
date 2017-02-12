@@ -1,7 +1,7 @@
 package com.fr.core;
 
+import com.fr.entities.UserEntity;
 import com.fr.rest.service.LoginService;
-import com.fr.entities.Users;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginServiceImpl extends AbstractControllerServiceImpl implements LoginService {
     @Override
-    public Users getByEmail(String username) {
+    public UserEntity getByEmail(String username) {
         return userRepository.getByEmail(username);
     }
 
     @Override
-    public Users getByTelephone(String username) {
+    public UserEntity getByTelephone(String username) {
         return userRepository.getByTelephone(username);
     }
 
     @Override
-    public Users getByUsername(String username) {
+    public UserEntity getByUsername(String username) {
         return userRepository.getByUsername(username);
     }
 }

@@ -2,9 +2,8 @@ package com.fr.security;
 
 import com.fr.aop.TraceAuthentification;
 import com.fr.entities.Roles;
-import com.fr.entities.Users;
+import com.fr.entities.UserEntity;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -16,11 +15,11 @@ import java.util.Collection;
  */
 public class AccountUserDetails implements MyUserDetails {
 
-    private final Users account;
+    private final UserEntity account;
 
     private static Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
-    public AccountUserDetails(Users account) {
+    public AccountUserDetails(UserEntity account) {
         this.account = account;
     }
 
@@ -94,7 +93,7 @@ public class AccountUserDetails implements MyUserDetails {
     }
 
     @Override
-    public Users getConnectedUserDetails() {
+    public UserEntity getConnectedUserDetails() {
         return account;
     }
 }

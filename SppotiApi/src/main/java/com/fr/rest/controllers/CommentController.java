@@ -1,17 +1,17 @@
 package com.fr.rest.controllers;
 
+import com.fr.entities.CommentEntity;
 import com.fr.rest.service.CommentControllerService;
 import com.fr.rest.service.PostControllerService;
-import com.fr.entities.Comment;
 import com.fr.entities.EditHistory;
 import com.fr.entities.Post;
-import com.fr.entities.Users;
-import com.fr.commons.dto.CommentModel;
-import com.fr.commons.dto.ContentEditedResponse;
+import com.fr.commons.dto.CommentDTO;
+import com.fr.commons.dto.ContentEditedResponseDTO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,22 +47,22 @@ public class CommentController {
 
         Long userId = (Long) httpServletRequest.getSession().getAttribute(ATT_USER_ID);
 
-        List<CommentModel> commentModelList = commentDataService.getPostCommentsFromLastId(postId, page, userId);
+        List<CommentDTO> commentModelDTOList = commentDataService.getPostCommentsFromLastId(postId, page, userId);
 
-        if (commentModelList.isEmpty()) {
+        if (commentModelDTOList.isEmpty()) {
             LOGGER.info("COMMENT_LIST: No comment has been found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         LOGGER.info("COMMENT_LIST: All comments have been returned");
-        return new ResponseEntity<>(commentModelList, HttpStatus.OK);
+        return new ResponseEntity<>(commentModelDTOList, HttpStatus.OK);
 
     }
 
     @PostMapping
-    public ResponseEntity<CommentModel> addComment(@RequestBody CommentModel newComment, HttpServletRequest request) {
+    public ResponseEntity<CommentDTO> addComment(@RequestBody CommentDTO newComment, HttpServletRequest request) {
 
-        Comment commentToSave = new Comment();
+        CommentEntity commentEntityToSave = new CommentEntity();
 
         if (newComment != null) {
 
@@ -81,7 +81,7 @@ public class CommentController {
                     LOGGER.info("COMMENT: Content value is empty");
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
-                commentToSave.setContent(content);
+                commentEntityToSave.setContent(content);
             }
 
             if (image != null && video != null) {
@@ -94,7 +94,7 @@ public class CommentController {
                     LOGGER.info("COMMENT: imageLink value is empty");
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
-                commentToSave.setImageLink(image);
+                commentEntityToSave.setImageLink(image);
             }
 
             if (video != null) {
@@ -102,39 +102,30 @@ public class CommentController {
                     LOGGER.info("COMMENT: videoLink value is empty");
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
-                commentToSave.setVideoLink(video);
+                commentEntityToSave.setVideoLink(video);
             }
 
             // get post postId to link the comment
             Post p = postControllerService.findPost(postId);
 
             if (p != null) {
-                commentToSave.setPost(p);
+                commentEntityToSave.setPost(p);
             } else {
                 LOGGER.info("COMMENT: post postId is invalid");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            // get comment author
             Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-            Users user = commentDataService.getUserById(userId);
-            commentToSave.setUser(user);
-
-            newComment.setAuthorFirstName(user.getFirstName());
-            newComment.setAuthorLastName(user.getLastName());
-            newComment.setAuthorUsername(user.getUsername());
-            newComment.setAuthorAvatar(commentDataService.getUserCoverAndAvatar(user).getAvatar());
 
             try {
-                Comment c = commentDataService.saveComment(commentToSave);
-                newComment.setId(c.getUuid());
-                newComment.setMyComment(true);
-                newComment.setCreationDate(c.getDatetimeCreated());
+                CommentDTO savedComment = commentDataService.saveComment(commentEntityToSave, userId);
+
+                savedComment.setMyComment(true);
+
                 LOGGER.info("COMMENT: post has been saved: \n" + newComment);
-                return new ResponseEntity<>(newComment, HttpStatus.CREATED);
+                return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
             } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error("COMMENT: Failed to save comment");
+                LOGGER.error("COMMENT: Failed to save comment", e);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
@@ -145,19 +136,21 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable("commentId") int id) {
-        Comment commentToDelete = commentDataService.findComment(id);
+    public ResponseEntity<Void> deleteComment(@PathVariable("commentId") int id, Authentication authentication) {
 
-        if (commentToDelete == null) {
+
+        CommentEntity commentEntityToDelete = commentDataService.findComment(id);
+
+        if (commentEntityToDelete == null) {
             // post not fount
             LOGGER.error("POST: Failed to retreive the comment");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
 
-        if (commentDataService.deleteComment(commentToDelete)) {
+        if (commentDataService.deleteComment(commentEntityToDelete)) {
             // delete success
-            LOGGER.info("DELETE: Comment with postId:" + id + " has been deleted");
+            LOGGER.info("DELETE: CommentEntity with postId:" + id + " has been deleted");
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
@@ -167,19 +160,20 @@ public class CommentController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CommentModel> updateComment(@PathVariable int id, @RequestBody CommentModel newComment) {
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable int id, @RequestBody CommentDTO newComment) {
 
-        Comment commentToEdit = commentDataService.findComment(id);
+        CommentEntity commentEntityToEdit = commentDataService.findComment(id);
+
         EditHistory commentEditRow = new EditHistory();
-        ContentEditedResponse edit = new ContentEditedResponse();
+        ContentEditedResponseDTO edit = new ContentEditedResponseDTO();
 
         // Required attributes
-        if (commentToEdit == null) {
+        if (commentEntityToEdit == null) {
             LOGGER.info("COMMENT_UPDATE: Failed to retreive the comment");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        commentEditRow.setComment(commentToEdit);
+        commentEditRow.setComment(commentEntityToEdit);
 
         // test the received attributes content
         if (newComment.getText() != null && newComment.getText().trim().length() > 0) {
@@ -192,7 +186,7 @@ public class CommentController {
         // if all argument are correctly assigned - edit post
         if (commentDataService.updateComment(commentEditRow)) {
 
-            edit.setId(commentToEdit.getId());
+            edit.setId(commentEntityToEdit.getId());
             edit.setDateTime(commentEditRow.getDatetimeEdited());
             edit.setText(commentEditRow.getText());
 
@@ -214,7 +208,7 @@ public class CommentController {
 
         Long userId = (Long) httpServletRequest.getSession().getAttribute(ATT_USER_ID);
 
-        List<ContentEditedResponse> commentModelList = commentDataService.getAllCommentHistory(id, page);
+        List<ContentEditedResponseDTO> commentModelList = commentDataService.getAllCommentHistory(id, page);
 
         if (commentModelList.isEmpty()) {
             LOGGER.info("COMMENT_HISTORY_LIST: No comment has been found");

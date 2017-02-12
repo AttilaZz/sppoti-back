@@ -3,19 +3,19 @@
  */
 package com.fr.core;
 
+import com.fr.commons.dto.PostResponseDTO;
 import com.fr.rest.service.PostControllerService;
 import com.fr.entities.*;
-import com.fr.commons.dto.CommentModel;
-import com.fr.commons.dto.ContentEditedResponse;
-import com.fr.commons.dto.PostResponse;
+import com.fr.commons.dto.CommentDTO;
+import com.fr.commons.dto.ContentEditedResponseDTO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import utils.EntitytoDtoTransformer;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 public class PostControllerServiceImpl extends AbstractControllerServiceImpl implements PostControllerService {
 
     @Value("${key.postsPerPage}")
-    private int post_size;
+    private int postSize;
 
     @Override
     public Post savePost(Post post) {
@@ -114,26 +114,26 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<PostResponse> getPhotoGallery(Long userId, int page) {
+    public List<PostResponseDTO> getPhotoGallery(Long userId, int page) {
         return fillPostResponseFromDbPost(page, userId, 1, null);
 
     }
 
     @Override
-    public List<PostResponse> getVideoGallery(Long userId, int page) {
+    public List<PostResponseDTO> getVideoGallery(Long userId, int page) {
         return fillPostResponseFromDbPost(page, userId, 2, null);
     }
 
     @Override
-    public PostResponse fillPostToSend(Post post, Long userId) {
+    public PostResponseDTO fillPostToSend(Post post, Long userId) {
 
         return fillPostResponseFromDbPost(0, userId, 3, post).get(0);
 
     }
 
-    private List<PostResponse> fillPostResponseFromDbPost(int page, Long userId, int operationType, Post post_param) {
+    private List<PostResponseDTO> fillPostResponseFromDbPost(int page, Long userId, int operationType, Post post_param) {
 
-        Pageable pageable = new PageRequest(page, post_size);
+        Pageable pageable = new PageRequest(page, postSize);
 
         List<Post> dbContent = new ArrayList<Post>();
 
@@ -157,13 +157,13 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                 break;
         }
 
-        List<PostResponse> mContentResponse = new ArrayList<PostResponse>();
+        List<PostResponseDTO> mContentResponse = new ArrayList<PostResponseDTO>();
 
         for (Post post : dbContent) {
 
-            PostResponse pres = new PostResponse();
+            PostResponseDTO pres = new PostResponseDTO();
 
-            Users owner = post.getUser();
+            UserEntity owner = post.getUser();
 
             if (post.getId() != null)
                 pres.setId(post.getUuid());
@@ -232,36 +232,36 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             }
 
             /*
-            Manage comments count + last comment
+            Manage commentEntities count + last comment
              */
-            Set<Comment> comments = post.getComments();
-            pres.setCommentsCount(comments.size());
+            Set<CommentEntity> commentEntities = post.getCommentEntities();
+            pres.setCommentsCount(commentEntities.size());
 
             try {
-                List<Comment> commentsListTemp = new ArrayList<Comment>();
-                commentsListTemp.addAll(comments);
+                List<CommentEntity> commentsListTemp = new ArrayList<CommentEntity>();
+                commentsListTemp.addAll(commentEntities);
 
-                List<CommentModel> commentList = new ArrayList<CommentModel>();
+                List<CommentDTO> commentList = new ArrayList<CommentDTO>();
                 if (!commentsListTemp.isEmpty()) {
-                    Comment comment = commentsListTemp.get(comments.size() - 1);
+                    CommentEntity commentEntity = commentsListTemp.get(commentEntities.size() - 1);
 
-                    CommentModel commentModel = new CommentModel(comment, getUserCoverAndAvatar(comment.getUser()));
-                    commentModel.setMyComment(comment.getUser().getId().equals(userId));
-                    commentModel.setLikedByUser(isContentLikedByUser(comment, userId));
-                    commentModel.setLikeCount(comment.getLikes().size());
+                    CommentDTO commentModelDTO = new CommentDTO(commentEntity, EntitytoDtoTransformer.getUserCoverAndAvatar(commentEntity.getUser()));
+                    commentModelDTO.setMyComment(commentEntity.getUser().getId().equals(userId));
+                    commentModelDTO.setLikedByUser(isContentLikedByUser(commentEntity, userId));
+                    commentModelDTO.setLikeCount(commentEntity.getLikes().size());
 
-                    commentList.add(commentModel);
+                    commentList.add(commentModelDTO);
                 }
 
                 pres.setComment(commentList);
 
             } catch (Exception e) {
                 e.printStackTrace();
-                LOGGER.error("Error  asting set<Comment> to List<Comment>");
+                LOGGER.error("Error  asting set<CommentEntity> to List<CommentEntity>");
             }
 
             /*
-            End managing comments
+            End managing commentEntities
              */
 
             /*
@@ -295,7 +295,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
              */
             if (post.getTargetUserProfileUuid() != 0) {
 
-                Users target = getUserByUuId(post.getTargetUserProfileUuid());
+                UserEntity target = getUserByUuId(post.getTargetUserProfileUuid());
 
                 try {
                     pres.setTargetUser(target.getFirstName(), target.getLastName(), target.getUsername(), target.getUuid(), userId.equals(target.getId()));
@@ -323,9 +323,9 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<ContentEditedResponse> getAllPostHistory(int id, int page) {
+    public List<ContentEditedResponseDTO> getAllPostHistory(int id, int page) {
 
-        Pageable pageable = new PageRequest(page, post_size);
+        Pageable pageable = new PageRequest(page, postSize);
 
         List<EditHistory> postHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(id, pageable);
 
@@ -365,7 +365,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public void addNotification(Long userId, int postId, String content) {
 
-        Users connectedUser = userRepository.getByIdAndDeletedFalse(userId);
+        UserEntity connectedUser = userRepository.getByIdAndDeletedFalse(userId);
         Post concernedePostTag;
 
 
@@ -402,7 +402,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         for (String username : tags) {
 
-            Users userToNotify;
+            UserEntity userToNotify;
 
             userToNotify = userRepository.getByUsername(username);
 
@@ -418,7 +418,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public List<Post> findAllPosts(Long userLongId, int userIntId, List visibility, int page) {
 
-        Pageable pageable = new PageRequest(page, post_size, Sort.Direction.DESC, "datetimeCreated");
+        Pageable pageable = new PageRequest(page, postSize, Sort.Direction.DESC, "datetimeCreated");
 
         return postRepository.getAllPosts(userIntId, userLongId, visibility, pageable);
     }

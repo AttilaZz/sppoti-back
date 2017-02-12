@@ -12,7 +12,7 @@ import java.util.Date;
  */
 
 @JsonInclude(Include.NON_NULL)
-public class SppotiRequest {
+public class SppotiRequestDTO {
 
     private String titre;
     private Long sportId;
@@ -22,7 +22,7 @@ public class SppotiRequest {
     private Date datetimeStart;
 
     @JsonProperty("teamHost")
-    private TeamRequest myTeam;
+    private TeamRequestDTO myTeam;
 
     @JsonProperty("teamHostId")
     private int myTeamId;
@@ -66,11 +66,11 @@ public class SppotiRequest {
         this.datetimeStart = datetimeStart;
     }
 
-    public TeamRequest getMyTeam() {
+    public TeamRequestDTO getMyTeam() {
         return myTeam;
     }
 
-    public void setMyTeam(TeamRequest myTeam) {
+    public void setMyTeam(TeamRequestDTO myTeam) {
         this.myTeam = myTeam;
     }
 

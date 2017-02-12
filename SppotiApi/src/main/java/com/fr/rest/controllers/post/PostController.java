@@ -1,12 +1,12 @@
 package com.fr.rest.controllers.post;
 
 import com.fr.aop.TraceAuthentification;
+import com.fr.commons.dto.PostResponseDTO;
 import com.fr.rest.service.PostControllerService;
 import com.fr.entities.*;
 import com.fr.exceptions.PostContentMissingException;
-import com.fr.commons.dto.ContentEditedResponse;
-import com.fr.commons.dto.PostRequest;
-import com.fr.commons.dto.PostResponse;
+import com.fr.commons.dto.ContentEditedResponseDTO;
+import com.fr.commons.dto.PostRequestDTO;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +45,12 @@ public class PostController {
      * @return all post details
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<PostResponse> detailsPost(@PathVariable int id, HttpServletRequest request) {
+    public ResponseEntity<PostResponseDTO> detailsPost(@PathVariable int id, HttpServletRequest request) {
 
         Post mPost = postDataService.findPost(id);
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = postDataService.getUserById(userId);
+        UserEntity user = postDataService.getUserById(userId);
 
         if (mPost == null || user == null) {
 
@@ -65,7 +65,7 @@ public class PostController {
 
         }
 
-        PostResponse prep = postDataService.fillPostToSend(mPost, userId);
+        PostResponseDTO prep = postDataService.fillPostToSend(mPost, userId);
         LOGGER.info("DETAILS_POST: Post details has been returned for postId: " + id);
         return new ResponseEntity<>(prep, HttpStatus.OK);
 
@@ -80,10 +80,10 @@ public class PostController {
 
         List<Post> posts;
 
-        Users requestUser = postDataService.getUserByUuId(user_unique_id);
+        UserEntity requestUser = postDataService.getUserByUuId(user_unique_id);
 
         if (requestUser == null) {
-            LOGGER.error("GET-ALL-POSTS: User id is invalid");
+            LOGGER.error("GET-ALL-POSTS: UserDTO id is invalid");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -111,16 +111,16 @@ public class PostController {
 
         }
 
-        List<PostResponse> postResponses = new ArrayList<>();
+        List<PostResponseDTO> postResponseDTOs = new ArrayList<>();
 
         for (Post post : posts) {
-//            PostResponse postResponse = new PostResponse(post);
-            postResponses.add(postDataService.fillPostToSend(post, userId));
+//            PostResponseDTO postResponse = new PostResponseDTO(post);
+            postResponseDTOs.add(postDataService.fillPostToSend(post, userId));
         }
 
-//        PostResponse prep = postDataService.fillPostToSend(postResponses, userId);
+//        PostResponseDTO prep = postDataService.fillPostToSend(postResponseDTOs, userId);
         LOGGER.info("ALL_POST: All post have been returned");
-        return new ResponseEntity<>(postResponses, HttpStatus.OK);
+        return new ResponseEntity<>(postResponseDTOs, HttpStatus.OK);
 
     }
 
@@ -131,12 +131,12 @@ public class PostController {
      */
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<PostResponse> addPost(@RequestBody PostRequest newPostReq, HttpServletRequest request) {
+    public ResponseEntity<PostResponseDTO> addPost(@RequestBody PostRequestDTO newPostReq, HttpServletRequest request) {
 
         // get current logged user
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = postDataService.getUserById(userId);
-        LOGGER.info("POST-ADD: LOGGED User: => " + userId);
+        UserEntity user = postDataService.getUserById(userId);
+        LOGGER.info("POST-ADD: LOGGED UserDTO: => " + userId);
 
         boolean canAdd = false;
 
@@ -148,7 +148,7 @@ public class PostController {
         Post newPostToSave = new Post(); // Object to save in database
         newPostToSave.setUser(user);
 
-        PostResponse postRep = new PostResponse();// object to send on success
+        PostResponseDTO postRep = new PostResponseDTO();// object to send on success
 
         // Sport is required
         if (newPostReq.getSportId() != null) {
@@ -160,7 +160,7 @@ public class PostController {
                 newPostToSave.setSport(targedSport);
                 postRep.setSportId(sportId);
             } else {
-                LOGGER.info("POST-ADD: The received SportModel ID is not valid");
+                LOGGER.info("POST-ADD: The received SportModelDTO ID is not valid");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
@@ -289,11 +289,11 @@ public class PostController {
         /*
         Check target user
          */
-        int requestTargetUserId = newPostReq.getTargetUseruuid();
-        Users targetUser = postDataService.getUserByUuId(requestTargetUserId);
+        int requestTargetUserId = newPostReq.getTargetUserUuid();
+        UserEntity targetUser = postDataService.getUserByUuId(requestTargetUserId);
         if (requestTargetUserId != 0 && targetUser != null) {
 
-            newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUseruuid());
+            newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUserUuid());
             postRep.setTargetUser(targetUser.getFirstName(), targetUser.getLastName(), targetUser.getUsername(), targetUser.getUuid(), false);
         } else if (requestTargetUserId != 0) {
             LOGGER.error("ADD-POST: Target user id not found !");
@@ -347,8 +347,8 @@ public class PostController {
      * @return Update post data
      */
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ContentEditedResponse> updatePost(@PathVariable("id") int postId,
-                                                            @RequestBody ContentEditedResponse newData) {
+    public ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("id") int postId,
+                                                               @RequestBody ContentEditedResponseDTO newData) {
 
         Post postToEdit = postDataService.findPost(postId);
 
@@ -383,7 +383,7 @@ public class PostController {
             postEditRow.setText(newData.getText());
 
             /*
-             related SportModel can be modified
+             related SportModelDTO can be modified
              */
             if (isAlreadyEdited) {
                 postEditRow.setSport(lastPostEdit.getSport());
@@ -392,7 +392,7 @@ public class PostController {
             }
 
         } else if (newData.getSportId() != null) {
-            // SportModel modification
+            // SportModelDTO modification
             Sport sp = postDataService.getSportById(newData.getSportId());
             if (sp != null) {
                 postEditRow.setSport(sp);
@@ -402,7 +402,7 @@ public class PostController {
                 }
 
             } else {
-                LOGGER.info("POST_UPDATE: Failed to retreive the SportModel to update");
+                LOGGER.info("POST_UPDATE: Failed to retreive the SportModelDTO to update");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
@@ -414,7 +414,7 @@ public class PostController {
         if (postDataService.updatePost(postEditRow, postEditAddress, postId)) {
             LOGGER.info("POST_UPDATE: success");
 
-            ContentEditedResponse edit = new ContentEditedResponse();
+            ContentEditedResponseDTO edit = new ContentEditedResponseDTO();
             edit.setId(postToEdit.getId());
             edit.setDateTime(postEditRow.getDatetimeEdited());
             edit.setText(postEditRow.getText());
@@ -462,7 +462,7 @@ public class PostController {
      * @return List of post history edition
      */
     @GetMapping(value = "/history/{id}/{page}")
-    public ResponseEntity<List<ContentEditedResponse>> editHistory(@PathVariable int id, @PathVariable int page) {
+    public ResponseEntity<List<ContentEditedResponseDTO>> editHistory(@PathVariable int id, @PathVariable int page) {
 
         Post postToLike = postDataService.findPost(id);
 

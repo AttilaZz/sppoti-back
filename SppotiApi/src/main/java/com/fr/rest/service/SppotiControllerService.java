@@ -1,7 +1,7 @@
 package com.fr.rest.service;
 
-import com.fr.commons.dto.SppotiRequest;
-import com.fr.commons.dto.SppotiResponse;
+import com.fr.commons.dto.SppotiRequestDTO;
+import com.fr.commons.dto.SppotiResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,15 +14,15 @@ import java.util.List;
 public interface SppotiControllerService extends AbstractControllerService {
 
 
-    SppotiResponse saveSppoti(SppotiRequest newSppoti, Long sppotiCreator);
+    SppotiResponseDTO saveSppoti(SppotiRequestDTO newSppoti, Long sppotiCreator);
 
-    SppotiResponse getSppotiByUuid(Integer uuid, Integer connectedUSer);
+    SppotiResponseDTO getSppotiByUuid(Integer uuid, Integer connectedUSer);
 
-    List<SppotiResponse> getAllUserSppoties(Integer id, int page, Integer connectedUser);
+    List<SppotiResponseDTO> getAllUserSppoties(Integer id, int page, Integer connectedUser);
 
     void deleteSppoti(int id);
 
-    SppotiResponse updateSppoti(SppotiRequest sppotiRequest, int id, Integer connectedUser);
+    SppotiResponseDTO updateSppoti(SppotiRequestDTO sppotiRequest, int id, Integer connectedUser);
 
     void acceptSppoti(int sppotiId, int userId);
 

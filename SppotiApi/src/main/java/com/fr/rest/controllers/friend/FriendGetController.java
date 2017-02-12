@@ -1,9 +1,9 @@
 package com.fr.rest.controllers.friend;
 
-import com.fr.commons.dto.FriendResponse;
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.FriendResponseDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShip;
-import com.fr.entities.Users;
+import com.fr.entities.UserEntity;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.AccountControllerService;
 import com.fr.rest.service.FriendControllerService;
@@ -60,16 +60,16 @@ public class FriendGetController {
      * @return confirmed friend lis
      */
     @GetMapping("/confirmed/{userId}/{page}")
-    public ResponseEntity<FriendResponse> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<FriendResponseDTO> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
 
         Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = friendControllerService.getUserById(connected_user);
+        UserEntity connectedUser = friendControllerService.getUserById(connected_user);
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
         List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.CONFIRMED.name(), pageable);
 
-        FriendResponse friendResponse = getFriendResponse(friendShips);
+        FriendResponseDTO friendResponse = getFriendResponse(friendShips);
 
         LOGGER.info("FRIEND_LIST: user friend list has been returned");
         return new ResponseEntity<>(friendResponse, HttpStatus.OK);
@@ -83,10 +83,10 @@ public class FriendGetController {
      * @return
      */
     @GetMapping("/refused/{userId}/{page}")
-    public ResponseEntity<FriendResponse> getRefusedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<FriendResponseDTO> getRefusedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
 
         Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = friendControllerService.getUserById(connected_user);
+        UserEntity connectedUser = friendControllerService.getUserById(connected_user);
 
 
         Pageable pageable = new PageRequest(page, friend_list_size);
@@ -98,7 +98,7 @@ public class FriendGetController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        FriendResponse friendResponse = getFriendResponse(friendShips);
+        FriendResponseDTO friendResponse = getFriendResponse(friendShips);
 
         LOGGER.info("FRIEND_LIST: user friend list has been returned");
         return new ResponseEntity<>(friendResponse, HttpStatus.OK);
@@ -112,10 +112,10 @@ public class FriendGetController {
      * @return
      */
     @GetMapping("/pending/sent/{page}")
-    public ResponseEntity<FriendResponse> getSentPendingFriendList(@PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<FriendResponseDTO> getSentPendingFriendList(@PathVariable int page, HttpServletRequest request) {
 
         Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = friendControllerService.getUserById(connected_user);
+        UserEntity connectedUser = friendControllerService.getUserById(connected_user);
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
@@ -126,7 +126,7 @@ public class FriendGetController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        FriendResponse friendResponse = getFriendResponse(friendShips);
+        FriendResponseDTO friendResponse = getFriendResponse(friendShips);
 
         LOGGER.info("FRIEND_LIST: user friend list has been returned");
         return new ResponseEntity<>(friendResponse, HttpStatus.OK);
@@ -140,10 +140,10 @@ public class FriendGetController {
      * @return
      */
     @GetMapping("/pending/received/{page}")
-    public ResponseEntity<FriendResponse> getREceivedPendingFriendList(@PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<FriendResponseDTO> getREceivedPendingFriendList(@PathVariable int page, HttpServletRequest request) {
 
         Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = friendControllerService.getUserById(connected_user);
+        UserEntity connectedUser = friendControllerService.getUserById(connected_user);
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
@@ -155,7 +155,7 @@ public class FriendGetController {
         }
 
 
-        FriendResponse friendResponse = getFriendResponse(friendShips);
+        FriendResponseDTO friendResponse = getFriendResponse(friendShips);
 
         LOGGER.info("FRIEND_LIST: user friend list has been returned");
         return new ResponseEntity<>(friendResponse, HttpStatus.OK);
@@ -163,19 +163,19 @@ public class FriendGetController {
     }
 
 
-    private FriendResponse getFriendResponse(List<FriendShip> friendShips) {
-        List<User> friendList = new ArrayList<>();
+    private FriendResponseDTO getFriendResponse(List<FriendShip> friendShips) {
+        List<UserDTO> friendList = new ArrayList<>();
 
         for (FriendShip friendShip : friendShips) {
-            Users userdb = friendShip.getFriend();
+            UserEntity userdb = friendShip.getFriend();
 
-            User user = accountControllerService.fillUserResponse(userdb, null);
+            UserDTO user = accountControllerService.fillUserResponse(userdb, null);
 
             friendList.add(user);
 
         }
 
-        FriendResponse friendResponse = new FriendResponse();
+        FriendResponseDTO friendResponse = new FriendResponseDTO();
         friendResponse.setPendingList(friendList);
 
         return friendResponse;

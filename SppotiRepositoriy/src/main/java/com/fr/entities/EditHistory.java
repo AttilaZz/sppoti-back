@@ -26,24 +26,24 @@ public class EditHistory {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = true, length = 500)
+    @Column(length = 500)
     private String text;
 
     @Column(nullable = false)
     private String datetimeEdited = new DateTime().toString();
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "post_id", nullable = true)
+    @JoinColumn(name = "post_id")
     @JsonIgnore
     private Post post;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "comment_id", nullable = true)
+    @JoinColumn(name = "comment_id")
     @JsonIgnore
-    private Comment comment;
+    private CommentEntity comment;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "sport_id", nullable = true)
+    @JoinColumn(name = "sport_id")
     @JsonIgnore
     private Sport sport;
 
@@ -63,11 +63,11 @@ public class EditHistory {
         this.post = post;
     }
 
-    public Comment getComment() {
+    public CommentEntity getComment() {
         return comment;
     }
 
-    public void setComment(Comment comment) {
+    public void setComment(CommentEntity comment) {
         this.comment = comment;
     }
 

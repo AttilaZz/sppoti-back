@@ -9,7 +9,7 @@ import java.util.List;
  * Created by: Wail DJENANE on Oct 17, 2016
  */
 @JsonInclude(value = Include.NON_DEFAULT)
-public class HeaderData {
+public class HeaderDataDTO {
 
     private String firstName;
     private String lastName;
@@ -28,10 +28,10 @@ public class HeaderData {
 
     private int confirmedFriendRequestCount;
 
-    private List<Notification> notifList;//post-comment like + content share + tag
+    private List<NotificationDTO> notifList;//post-comment like + content share + tag
     private int notifListCount;
 
-    public HeaderData() {
+    public HeaderDataDTO() {
         super();
     }
 
@@ -122,12 +122,20 @@ public class HeaderData {
         this.confirmedFriendRequestCount = confirmedFriendRequestCount;
     }
 
-    public List<Notification> getNotifList() {
+    public List<NotificationDTO> getNotifList() {
         return notifList;
     }
 
-    public void setNotifList(List<Notification> notifList) {
+    public void setNotifList(List<NotificationDTO> notifList) {
         this.notifList = notifList;
+    }
+
+    public int getNotifListCount() {
+        return notifListCount;
+    }
+
+    public void setNotifListCount(int notifListCount) {
+        this.notifListCount = notifListCount;
     }
 
     public int getNotifListcount() {

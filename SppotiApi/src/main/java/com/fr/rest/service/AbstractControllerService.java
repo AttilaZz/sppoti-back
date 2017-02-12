@@ -3,13 +3,12 @@ package com.fr.rest.service;
 import java.util.List;
 import java.util.Set;
 
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.UserDTO;
 import com.fr.entities.Sppoti;
 import com.fr.entities.Team;
 import com.fr.entities.TeamMembers;
+import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Service;
-
-import com.fr.entities.Users;
 
 @Service
 public interface AbstractControllerService {
@@ -18,15 +17,13 @@ public interface AbstractControllerService {
 
     String getAuthenticationUsername();
 
-    Users getUserFromUsernameType(String loginUser);
+    UserEntity getUserFromUsernameType(String loginUser);
 
     int getUserLoginType(String username);
 
-    Users getUserById(Long id);
+    UserEntity getUserById(Long id);
 
-    Users getUserByUuId(int id);
+    UserEntity getUserByUuId(int id);
 
-    User getUserCoverAndAvatar(Users targetUser);
-
-    Set<TeamMembers> getTeamMembersEntityFromDto(List<User> users, Team team, Long adminId, Sppoti sppoti);
+    Set<TeamMembers> getTeamMembersEntityFromDto(List<UserDTO> users, Team team, Long adminId, Sppoti sppoti);
 }

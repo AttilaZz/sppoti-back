@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.friend;
 
 import com.fr.entities.FriendShip;
-import com.fr.entities.Users;
+import com.fr.entities.UserEntity;
 import com.fr.rest.service.FriendControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class FriendDeleteController {
     public ResponseEntity deleteFriend(@PathVariable("friend_id") int friendId, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connectedUser = friendControllerService.getUserById(userId);
+        UserEntity connectedUser = friendControllerService.getUserById(userId);
 
         /*
         Check if friendship exist

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import com.fr.entities.Message;
+import com.fr.entities.UserEntity;
 import com.fr.rest.service.MessageControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fr.aop.TraceAuthentification;
-import com.fr.commons.dto.MessageRequest;
-import com.fr.entities.Users;
+import com.fr.commons.dto.MessageRequestDTO;
 
 /**
  * Created by: Wail DJENANE on Jun 25, 2016
@@ -40,10 +40,10 @@ public class MessageController {
     private static final String ATT_USER_ID = "USER_ID";
 
     @RequestMapping(value = "/sent/{bottomMajId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MessageRequest> getSentMessages(@PathVariable("bottomMajId") int bottomMajId,
-                                                          HttpServletRequest request) {
+    public ResponseEntity<MessageRequestDTO> getSentMessages(@PathVariable("bottomMajId") int bottomMajId,
+                                                             HttpServletRequest request) {
 
-        MessageRequest response = new MessageRequest();
+        MessageRequestDTO response = new MessageRequestDTO();
 
         // page number is not valid
         if (bottomMajId < 0) {
@@ -54,20 +54,20 @@ public class MessageController {
         List<Message> sentMessages = messageControllerService.getSentUserMessages(userId, bottomMajId);
 
         if (sentMessages.isEmpty()) {
-            return new ResponseEntity<MessageRequest>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<MessageRequestDTO>(HttpStatus.NO_CONTENT);
         }
 
         response.setSentMessages(sentMessages);
 
-        LOGGER.info("User DATA has been returned ");
-        return new ResponseEntity<MessageRequest>(response, HttpStatus.OK);
+        LOGGER.info("UserDTO DATA has been returned ");
+        return new ResponseEntity<MessageRequestDTO>(response, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/received/{bottomMajId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MessageRequest> getReceivedMessages(@PathVariable("bottomMajId") int bottomMajId,
-                                                              HttpServletRequest request) {
+    public ResponseEntity<MessageRequestDTO> getReceivedMessages(@PathVariable("bottomMajId") int bottomMajId,
+                                                                 HttpServletRequest request) {
 
-        MessageRequest response = new MessageRequest();
+        MessageRequestDTO response = new MessageRequestDTO();
 
         // page number is not valid
         if (bottomMajId < 0) {
@@ -80,20 +80,20 @@ public class MessageController {
         response.setReceivedMessages(receivedMessages);
 
         if (receivedMessages.isEmpty()) {
-            return new ResponseEntity<MessageRequest>(response, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<MessageRequestDTO>(response, HttpStatus.NO_CONTENT);
         }
 
-        LOGGER.info("User DATA has been returned ");
-        return new ResponseEntity<MessageRequest>(response, HttpStatus.OK);
+        LOGGER.info("UserDTO DATA has been returned ");
+        return new ResponseEntity<MessageRequestDTO>(response, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/send", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Message> addPost(@RequestBody MessageRequest newMessage, UriComponentsBuilder ucBuilder,
+    public ResponseEntity<Message> addPost(@RequestBody MessageRequestDTO newMessage, UriComponentsBuilder ucBuilder,
                                            HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = messageControllerService.getUserById(userId);
-        LOGGER.info("LOGGED Message for User: => " + userId);
+        UserEntity user = messageControllerService.getUserById(userId);
+        LOGGER.info("LOGGED Message for UserDTO: => " + userId);
 
         Message newMsg = null;
 

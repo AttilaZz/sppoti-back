@@ -5,12 +5,12 @@ import java.util.List;
 /**
  * Created by djenanewail on 1/23/17.
  */
-public class TeamRequest {
+public class TeamRequestDTO {
 
     private String name;
     private String logoPath;
     private String coverPath;
-    private List<User> members;
+    private List<UserDTO> members;
 
     private Integer status;
     private Integer xPosition;
@@ -42,11 +42,11 @@ public class TeamRequest {
         this.coverPath = coverPath;
     }
 
-    public List<User> getMembers() {
+    public List<UserDTO> getMembers() {
         return members;
     }
 
-    public void setMembers(List<User> members) {
+    public void setMembers(List<UserDTO> members) {
         this.members = members;
     }
 

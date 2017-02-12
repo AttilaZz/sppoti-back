@@ -40,7 +40,7 @@ public class Message {
     @JoinColumn(name = "sender_id")
     // @JsonBackReference(value = "user_messages")
     @JsonIgnore
-    private Users userMessage;
+    private UserEntity userMessage;
 
     public Message() {
         super();
@@ -93,11 +93,11 @@ public class Message {
         this.receiver_id = receiver_id;
     }
 
-    public Users getUserMessage() {
+    public UserEntity getUserMessage() {
         return userMessage;
     }
 
-    public void setUserMessage(Users userMessage) {
+    public void setUserMessage(UserEntity userMessage) {
         this.userMessage = userMessage;
     }
 

@@ -24,7 +24,7 @@ public class FriendShip {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "friend_id")
-    private Users friend;
+    private UserEntity friend;
 
     @Column(name = "user_id")
     private Integer user;
@@ -60,11 +60,11 @@ public class FriendShip {
         this.status = status;
     }
 
-    public Users getFriend() {
+    public UserEntity getFriend() {
         return friend;
     }
 
-    public void setFriend(Users friend) {
+    public void setFriend(UserEntity friend) {
         this.friend = friend;
     }
 

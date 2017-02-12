@@ -42,7 +42,7 @@ public class ApplicationMailer {
         // let's include the infamous windows Sample file (this time copied to
         // c:/)
         // FileSystemResource res = new FileSystemResource(new
-        // File("C:/Users/Moi/Desktop/dhak.jpg"));
+        // File("C:/UserEntity/Moi/Desktop/dhak.jpg"));
         // helper.addInline("identifier1234", res);
 
         sender.send(message);

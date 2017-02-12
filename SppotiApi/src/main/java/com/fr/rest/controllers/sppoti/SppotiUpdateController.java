@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.sppoti;
 
-import com.fr.commons.dto.SppotiRequest;
-import com.fr.commons.dto.SppotiResponse;
+import com.fr.commons.dto.SppotiRequestDTO;
+import com.fr.commons.dto.SppotiResponseDTO;
 import com.fr.rest.service.SppotiControllerService;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
@@ -36,7 +36,7 @@ public class SppotiUpdateController {
      * @return 200 status with the updated sppoti, 400 status otherwise.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<SppotiResponse> updateSppoti(@PathVariable int id, @RequestBody SppotiRequest sppotiRequest, Authentication authentication) {
+    public ResponseEntity<SppotiResponseDTO> updateSppoti(@PathVariable int id, @RequestBody SppotiRequestDTO sppotiRequest, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 

@@ -29,7 +29,7 @@ public class LikeContent {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    private Users user;
+    private UserEntity user;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "post_id")
@@ -39,7 +39,7 @@ public class LikeContent {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "comment_id")
     @JsonIgnore
-    private Comment comment;
+    private CommentEntity comment;
 
     @Column(nullable = false)
     private String datetimeCreated = new DateTime().toString();
@@ -52,11 +52,11 @@ public class LikeContent {
         this.id = id;
     }
 
-    public Users getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
@@ -68,11 +68,11 @@ public class LikeContent {
         this.post = post;
     }
 
-    public Comment getComment() {
+    public CommentEntity getComment() {
         return comment;
     }
 
-    public void setComment(Comment comment) {
+    public void setComment(CommentEntity comment) {
         this.comment = comment;
     }
 

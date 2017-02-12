@@ -1,10 +1,9 @@
 package com.fr.rest.controllers.friend;
 
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShip;
-import com.fr.entities.Users;
+import com.fr.entities.UserEntity;
 import com.fr.models.GlobalAppStatus;
-import com.fr.rest.controllers.CommentController;
 import com.fr.rest.service.FriendControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public class FriendAddController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<Object> addFriend(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<Object> addFriend(@RequestBody UserDTO user, HttpServletRequest request) {
 
         /*
         Chekck received data
@@ -61,8 +60,8 @@ public class FriendAddController {
         /*
         Prepare friendShip
          */
-        Users connectedUser = friendControllerService.getUserById(userId);
-        Users friend = friendControllerService.getUserByUuId(user.getFriendUuid());
+        UserEntity connectedUser = friendControllerService.getUserById(userId);
+        UserEntity friend = friendControllerService.getUserByUuId(user.getFriendUuid());
 
         /*
         Check if the friend id refers to an existing user account
@@ -96,7 +95,7 @@ public class FriendAddController {
             friendShip = tempFriendShip;
             friendShip.setStatus(GlobalAppStatus.PENDING.name());
         } else {
-            Users u = friendControllerService.getUserByUuId(user.getFriendUuid());
+            UserEntity u = friendControllerService.getUserByUuId(user.getFriendUuid());
             friendShip.setFriend(u);
             friendShip.setUser(connectedUser.getUuid());
         }

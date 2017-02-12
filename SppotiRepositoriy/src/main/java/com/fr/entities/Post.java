@@ -67,7 +67,7 @@ public class Post implements Comparable<Post> {
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
-    private Users user;
+    private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "sport_id")
@@ -75,7 +75,7 @@ public class Post implements Comparable<Post> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     @OrderBy("datetimeCreated DESC")
-    private SortedSet<Comment> Comments = new TreeSet<Comment>();
+    private SortedSet<CommentEntity> commentEntities = new TreeSet<CommentEntity>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     private Set<LikeContent> likes;
@@ -102,11 +102,11 @@ public class Post implements Comparable<Post> {
         this.content = content;
     }
 
-    public Users getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(Users user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
@@ -134,12 +134,12 @@ public class Post implements Comparable<Post> {
         this.datetimeCreated = datetimeCreated;
     }
 
-    public SortedSet<Comment> getComments() {
-        return Comments;
+    public SortedSet<CommentEntity> getCommentEntities() {
+        return commentEntities;
     }
 
-    public void setComments(SortedSet<Comment> comments) {
-        Comments = comments;
+    public void setCommentEntities(SortedSet<CommentEntity> commentEntities) {
+        this.commentEntities = commentEntities;
     }
 
     public Set<LikeContent> getLikes() {

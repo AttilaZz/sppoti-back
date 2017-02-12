@@ -13,8 +13,9 @@ import java.util.*;
  */
 
 @Entity
+@Table(name = "Users")
 @JsonInclude(Include.NON_EMPTY)
-public class Users {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
@@ -75,7 +76,7 @@ public class Users {
     private Set<Message> userMessages;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<Comment> comments;
+    private Set<CommentEntity> commentEntities;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private Set<LikeContent> likes;
@@ -123,7 +124,7 @@ public class Users {
         this.confirmed = confirmed;
     }
 
-    public Users() {}
+    public UserEntity() {}
 
     public Set<Post> getUserPosts() {
         return userPosts;
@@ -149,12 +150,12 @@ public class Users {
         this.userMessages = userMessages;
     }
 
-    public Set<Comment> getComments() {
-        return comments;
+    public Set<CommentEntity> getCommentEntities() {
+        return commentEntities;
     }
 
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
+    public void setCommentEntities(Set<CommentEntity> commentEntities) {
+        this.commentEntities = commentEntities;
     }
 
     public Set<LikeContent> getLikes() {

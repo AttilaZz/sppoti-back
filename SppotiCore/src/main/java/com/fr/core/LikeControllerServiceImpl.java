@@ -1,10 +1,10 @@
 package com.fr.core;
 
+import com.fr.entities.CommentEntity;
 import com.fr.rest.service.LikeControllerService;
-import com.fr.entities.Comment;
 import com.fr.entities.LikeContent;
 import com.fr.entities.Post;
-import com.fr.commons.dto.HeaderData;
+import com.fr.commons.dto.HeaderDataDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +21,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
 
 
     @Value("${key.likesPerPage}")
-    private int like_size;
+    private int likeSize;
 
     @Override
     public boolean likePost(LikeContent likeToSave) {
@@ -49,10 +49,10 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<HeaderData> getPostLikersList(int id, int page) {
+    public List<HeaderDataDTO> getPostLikersList(int id, int page) {
 
 
-        Pageable pageable1 = new PageRequest(page, like_size);
+        Pageable pageable1 = new PageRequest(page, likeSize);
 
         List<LikeContent> likersData = likeRepository.getByPostUuidOrderByDatetimeCreated(id, pageable1);
 
@@ -61,9 +61,9 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<HeaderData> getCommentLikersList(int id, int page) {
+    public List<HeaderDataDTO> getCommentLikersList(int id, int page) {
 
-        Pageable pageable1 = new PageRequest(page, like_size);
+        Pageable pageable1 = new PageRequest(page, likeSize);
 
         List<LikeContent> likersData = likeRepository.getByCommentUuidOrderByDatetimeCreated(id, pageable1);
 
@@ -72,9 +72,9 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public boolean unLikeComment(Comment commentToUnlike) {
+    public boolean unLikeComment(CommentEntity commentEntityToUnlike) {
         try {
-            LikeContent likeContent = likeRepository.getByCommentId(commentToUnlike.getId());
+            LikeContent likeContent = likeRepository.getByCommentId(commentEntityToUnlike.getId());
             likeRepository.delete(likeContent);
             return true;
         } catch (Exception e) {
@@ -94,7 +94,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
         return likeContent(likeToSave);
     }
 
-    //like content - Post or Comment
+    //like content - Post or CommentEntity
     private boolean likeContent(LikeContent likeContent) {
         try {
             likeRepository.save(likeContent);
@@ -107,12 +107,12 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     private List likersList(List<LikeContent> likersData) {
 
-        List<HeaderData> likers = new ArrayList<HeaderData>();
+        List<HeaderDataDTO> likers = new ArrayList<HeaderDataDTO>();
 
         if (!likersData.isEmpty()) {
             for (LikeContent row : likersData) {
                 // get liker data
-                HeaderData u = new HeaderData();
+                HeaderDataDTO u = new HeaderDataDTO();
 //                u.setAvatar(userDaoService.getLastAvatar(row.getUser().getId()).get(0).getUrl());
                 u.setFirstName(row.getUser().getFirstName());
                 u.setLastName(row.getUser().getLastName());

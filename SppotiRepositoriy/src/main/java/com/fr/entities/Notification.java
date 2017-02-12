@@ -6,6 +6,7 @@ import com.fr.models.NotificationType;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by: Wail DJENANE on Nov 10, 2016
@@ -18,16 +19,20 @@ public class Notification {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(targetEntity = Users.class)
-    @JoinColumn(name = "from_user_id", nullable = false)
-    private Users from;
+    @Column(nullable = false, unique = true, updatable = false)
+    private Integer uuid = UUID.randomUUID().hashCode();
 
-    @ManyToOne(targetEntity = Users.class)
+    @ManyToOne(targetEntity = UserEntity.class)
+    @JoinColumn(name = "from_user_id", nullable = false)
+    private UserEntity from;
+
+    @ManyToOne(targetEntity = UserEntity.class)
     @JoinColumn(name = "to_user_id", nullable = false)
-    private Users to;
+    private UserEntity to;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date creationDate;
+    @Column(nullable = false, updatable = false)
+    private Date creationDate = new Date();
 
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
@@ -40,19 +45,19 @@ public class Notification {
         this.id = id;
     }
 
-    public Users getFrom() {
+    public UserEntity getFrom() {
         return from;
     }
 
-    public void setFrom(Users from) {
+    public void setFrom(UserEntity from) {
         this.from = from;
     }
 
-    public Users getTo() {
+    public UserEntity getTo() {
         return to;
     }
 
-    public void setTo(Users to) {
+    public void setTo(UserEntity to) {
         this.to = to;
     }
 
@@ -70,5 +75,13 @@ public class Notification {
 
     public void setNotificationType(NotificationType notificationType) {
         this.notificationType = notificationType;
+    }
+
+    public Integer getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(Integer uuid) {
+        this.uuid = uuid;
     }
 }

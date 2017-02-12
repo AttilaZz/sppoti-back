@@ -1,6 +1,6 @@
 package com.fr.rest.controllers.search;
 
-import com.fr.commons.dto.TeamResponse;
+import com.fr.commons.dto.TeamResponseDTO;
 import com.fr.rest.service.TeamControllerService;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
@@ -38,16 +38,16 @@ public class FindTeamController {
      * @return All found teams containing the String (team).
      */
     @GetMapping("/team/{team}/{page}")
-    public ResponseEntity<List<TeamResponse>> findTeam(@PathVariable String team, @PathVariable int page, Authentication authentication) {
+    public ResponseEntity<List<TeamResponseDTO>> findTeam(@PathVariable String team, @PathVariable int page, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
-        List<TeamResponse> teamResponses;
+        List<TeamResponseDTO> teamResponseDTOs;
         try {
 
-            teamResponses = teamControllerService.findAllTeams(team, accountUserDetails.getUuid(), page);
+            teamResponseDTOs = teamControllerService.findAllTeams(team, accountUserDetails.getUuid(), page);
 
-            if (teamResponses.isEmpty()) {
+            if (teamResponseDTOs.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
             }
@@ -58,7 +58,7 @@ public class FindTeamController {
 
         }
 
-        return new ResponseEntity<>(teamResponses, HttpStatus.OK);
+        return new ResponseEntity<>(teamResponseDTOs, HttpStatus.OK);
     }
 
 }

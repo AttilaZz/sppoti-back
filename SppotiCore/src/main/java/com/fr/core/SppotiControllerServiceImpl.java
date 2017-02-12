@@ -1,13 +1,14 @@
 package com.fr.core;
 
-import com.fr.commons.dto.SppotiRequest;
-import com.fr.commons.dto.SppotiResponse;
-import com.fr.commons.dto.TeamResponse;
+import com.fr.commons.dto.SppotiRequestDTO;
+import com.fr.commons.dto.SppotiResponseDTO;
+import com.fr.commons.dto.TeamResponseDTO;
 import com.fr.entities.*;
 import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.exceptions.SportNotFoundException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.SppotiControllerService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,16 +26,17 @@ import java.util.List;
 public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService {
 
     private static final String TEAM_ID_NOT_FOUND = "Team id not found";
+    private Logger LOGGER = Logger.getLogger(SppotiControllerServiceImpl.class);
 
     @Value("${key.sppotiesPerPage}")
-    private int sppoti_size;
+    private int sppotiSize;
 
     /**
      * @param newSppoti
      * @param sppotiCreator
      */
     @Override
-    public SppotiResponse saveSppoti(SppotiRequest newSppoti, Long sppotiCreator) {
+    public SppotiResponseDTO saveSppoti(SppotiRequestDTO newSppoti, Long sppotiCreator) {
 
         Team hostTeam = new Team();
         Sppoti sppoti = new Sppoti();
@@ -58,7 +60,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
             } catch (RuntimeException e) {
                 LOGGER.error("Error when trying to get USERS from team members list: " + e);
-                throw new HostMemberNotFoundException("Host-TeamRequest (members) one of the team dosn't exist");
+                throw new HostMemberNotFoundException("Host-TeamRequestDTO (members) one of the team dosn't exist");
 
             }
 
@@ -84,7 +86,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new SportNotFoundException("Sport id is incorrect");
         }
 
-        Users owner = userRepository.findOne(sppotiCreator);
+        UserEntity owner = userRepository.findOne(sppotiCreator);
         if (owner == null) {
             throw new EntityNotFoundException("Stored used id in session has not been found in database");
         }
@@ -129,7 +131,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppoti.setMaxMembersCount(newSppoti.getMaxTeamCount());
 
         Sppoti sppoti1 = sppotiRepository.save(sppoti);
-        return new SppotiResponse(sppoti1.getUuid());
+        return new SppotiResponseDTO(sppoti1.getUuid());
 
     }
 
@@ -138,7 +140,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
      * @return
      */
     @Override
-    public SppotiResponse getSppotiByUuid(Integer uuid, Integer connectedUSer) {
+    public SppotiResponseDTO getSppotiByUuid(Integer uuid, Integer connectedUSer) {
 
         Sppoti sppoti = sppotiRepository.findByUuid(uuid);
 
@@ -150,41 +152,41 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     }
 
-    private SppotiResponse getSppotiResponse(Sppoti sppoti, Integer connectedUser) {
+    private SppotiResponseDTO getSppotiResponse(Sppoti sppoti, Integer connectedUser) {
 
         if (sppoti == null) {
             throw new EntityNotFoundException("Sppoti not found");
         }
 
-        SppotiResponse sppotiResponse = new SppotiResponse(sppoti.getTitre(), sppoti.getDatetimeCreated(), sppoti.getDateTimeStart(), sppoti.getLocation(), sppoti.getMaxMembersCount(), sppoti.getSport());
+        SppotiResponseDTO sppotiResponseDTO = new SppotiResponseDTO(sppoti.getTitre(), sppoti.getDatetimeCreated(), sppoti.getDateTimeStart(), sppoti.getLocation(), sppoti.getMaxMembersCount(), sppoti.getSport());
 
         if (sppoti.getDescription() != null) {
-            sppotiResponse.setDescription(sppoti.getDescription());
+            sppotiResponseDTO.setDescription(sppoti.getDescription());
         }
 
         if (sppoti.getTags() != null) {
-            sppotiResponse.setTags(sppoti.getTags());
+            sppotiResponseDTO.setTags(sppoti.getTags());
         }
 
-        TeamResponse teamHostResponse = fillTeamResponse(sppoti.getTeamHost(), sppoti.getUserSppoti().getId());
+        TeamResponseDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHost(), sppoti.getUserSppoti().getId());
         if (sppoti.getTeamAdverse() != null) {
-            TeamResponse teamGuestResponse = fillTeamResponse(sppoti.getTeamAdverse(), null);
-            sppotiResponse.setTeamGuest(teamGuestResponse);
+            TeamResponseDTO teamGuestResponse = fillTeamResponse(sppoti.getTeamAdverse(), null);
+            sppotiResponseDTO.setTeamGuest(teamGuestResponse);
         }
 
-        sppotiResponse.setTeamHost(teamHostResponse);
-        sppotiResponse.setId(sppoti.getUuid());
+        sppotiResponseDTO.setTeamHost(teamHostResponse);
+        sppotiResponseDTO.setId(sppoti.getUuid());
 
         List<SppotiMember> sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiSportId(sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId());
 
-        sppotiResponse.setSppotiCounter(sppotiMembers.size());
-        sppotiResponse.setMySppoti(connectedUser.equals(sppoti.getUserSppoti().getUuid()));
+        sppotiResponseDTO.setSppotiCounter(sppotiMembers.size());
+        sppotiResponseDTO.setMySppoti(connectedUser.equals(sppoti.getUserSppoti().getUuid()));
 
-        sppotiResponse.setAdminTeamId(teamMembersRepository.findByUsersUuid(sppoti.getUserSppoti().getUuid()).getUuid());
-        sppotiResponse.setAdminUserId(sppoti.getUserSppoti().getUuid());
-        sppotiResponse.setConnectedUserId(connectedUser);
+        sppotiResponseDTO.setAdminTeamId(teamMembersRepository.findByUsersUuid(sppoti.getUserSppoti().getUuid()).getUuid());
+        sppotiResponseDTO.setAdminUserId(sppoti.getUserSppoti().getUuid());
+        sppotiResponseDTO.setConnectedUserId(connectedUser);
 
-        return sppotiResponse;
+        return sppotiResponseDTO;
     }
 
     /**
@@ -192,19 +194,19 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
      * @return all sppoties created by a user
      */
     @Override
-    public List<SppotiResponse> getAllUserSppoties(Integer id, int page, Integer connectedUser) {
+    public List<SppotiResponseDTO> getAllUserSppoties(Integer id, int page, Integer connectedUser) {
 
-        Pageable pageable = new PageRequest(page, sppoti_size);
+        Pageable pageable = new PageRequest(page, sppotiSize);
 
         List<Sppoti> sppoties = sppotiRepository.findByUserSppotiUuid(id, pageable);
 
-        List<SppotiResponse> sppotiResponses = new ArrayList<SppotiResponse>();
+        List<SppotiResponseDTO> sppotiResponseDTOs = new ArrayList<SppotiResponseDTO>();
 
         for (Sppoti sppoti : sppoties) {
-            sppotiResponses.add(getSppotiResponse(sppoti, connectedUser));
+            sppotiResponseDTOs.add(getSppotiResponse(sppoti, connectedUser));
         }
 
-        return sppotiResponses;
+        return sppotiResponseDTOs;
 
     }
 
@@ -226,7 +228,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     }
 
     @Override
-    public SppotiResponse updateSppoti(SppotiRequest sppotiRequest, int id, Integer connectedUser) {
+    public SppotiResponseDTO updateSppoti(SppotiRequestDTO sppotiRequest, int id, Integer connectedUser) {
 
         Sppoti sppoti = sppotiRepository.findByUuid(id);
 

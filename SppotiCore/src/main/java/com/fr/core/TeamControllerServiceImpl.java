@@ -1,16 +1,17 @@
 package com.fr.core;
 
-import com.fr.commons.dto.TeamRequest;
-import com.fr.commons.dto.TeamResponse;
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.TeamRequestDTO;
+import com.fr.commons.dto.TeamResponseDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.entities.Sport;
 import com.fr.entities.Team;
 import com.fr.entities.TeamMembers;
-import com.fr.entities.Users;
+import com.fr.entities.UserEntity;
 import com.fr.exceptions.HostMemberNotFoundException;
 import com.fr.exceptions.MemberNotInAdminTeamException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.TeamControllerService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,17 +22,21 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static utils.EntitytoDtoTransformer.getUserCoverAndAvatar;
+
 /**
  * Created by djenanewail on 1/22/17.
  */
 @Component
 public class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements TeamControllerService {
 
+    private Logger LOGGER = Logger.getLogger(TeamControllerServiceImpl.class);
+
     @Value("${key.teamsPerPage}")
     private int teamPageSize;
 
     @Override
-    public TeamResponse saveTeam(TeamRequest team, Long adminId) {
+    public TeamResponseDTO saveTeam(TeamRequestDTO team, Long adminId) {
 
         Sport sport = sportRepository.findOne(team.getSportId());
 
@@ -58,7 +63,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         } catch (RuntimeException e) {
             LOGGER.error("One of the team id not found: " + e.getMessage());
-            throw new HostMemberNotFoundException("TeamRequest (members) one of the team dosn't exist");
+            throw new HostMemberNotFoundException("TeamRequestDTO (members) one of the team dosn't exist");
 
         }
 
@@ -70,7 +75,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public void updateTeamMembers(TeamRequest request, int memberId, int teamId) {
+    public void updateTeamMembers(TeamRequestDTO request, int memberId, int teamId) {
 
         TeamMembers usersTeam = teamMembersRepository.findByUsersUuidAndTeamsUuid(memberId, teamId);
 
@@ -95,7 +100,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public TeamResponse getTeamById(int teamId) {
+    public TeamResponseDTO getTeamById(int teamId) {
 
         List<Team> team = teamRepository.findByUuid(teamId);
 
@@ -107,19 +112,19 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<TeamResponse> getAllTeamsByUserId(int userId, int page) {
+    public List<TeamResponseDTO> getAllTeamsByUserId(int userId, int page) {
 
         Pageable pageable = new PageRequest(page, teamPageSize);
 
         List<TeamMembers> myTeams = teamMembersRepository.findByUsersUuidAndAdminTrue(userId, pageable);
-        List<TeamResponse> teamResponses = new ArrayList<TeamResponse>();
+        List<TeamResponseDTO> teamResponseDTOs = new ArrayList<TeamResponseDTO>();
 
 
         for (TeamMembers myTeam : myTeams) {
-            teamResponses.add(fillTeamResponse(myTeam.getTeams(), null));
+            teamResponseDTOs.add(fillTeamResponse(myTeam.getTeams(), null));
         }
 
-        return teamResponses;
+        return teamResponseDTOs;
 
     }
 
@@ -175,11 +180,11 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public void deleteMemberFromTeam(int teamId, int memberId, int adminId) {
 
-        //User deleting the member is admin of the team
+        //UserDTO deleting the member is admin of the team
         TeamMembers adminTeamMembers = teamMembersRepository.findByUsersUuidAndTeamsUuidAndAdminTrue(adminId, teamId);
 
         if (adminTeamMembers == null) {
-            throw new EntityNotFoundException("Delete not permitted - User is not an admin");
+            throw new EntityNotFoundException("Delete not permitted - UserDTO is not an admin");
         }
 
         TeamMembers targetTeamMember = teamMembersRepository.findByUsersUuidAndTeamsUuid(memberId, teamId);
@@ -211,13 +216,13 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public User addMember(int teamId, User userParam) {
+    public UserDTO addMember(int teamId, UserDTO userParam) {
 
-        List<Users> usersList = userRepository.getByUuid(userParam.getId());
-        Users user;
+        List<UserEntity> usersList = userRepository.getByUuid(userParam.getId());
+        UserEntity user;
 
         if (usersList == null || usersList.isEmpty()) {
-            throw new EntityNotFoundException("User with id (" + userParam.getId() + ") Not found");
+            throw new EntityNotFoundException("UserDTO with id (" + userParam.getId() + ") Not found");
         }
 
         user = usersList.get(0);
@@ -244,9 +249,9 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         TeamMembers newMember = teamMembersRepository.save(teamMembers);
 
-        User userCoverAndAvatar = getUserCoverAndAvatar(user);
+        UserDTO userCoverAndAvatar = getUserCoverAndAvatar(user);
 
-        return new User(newMember.getUuid(), user.getFirstName(), user.getLastName(), user.getUsername(),
+        return new UserDTO(newMember.getUuid(), user.getFirstName(), user.getLastName(), user.getUsername(),
                 userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
                 userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
                 userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null);
@@ -254,17 +259,17 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     @Override
-    public List<TeamResponse> findAllTeams(String team, int id, int page) {
+    public List<TeamResponseDTO> findAllTeams(String team, int id, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
         List<TeamMembers> myTeams = teamMembersRepository.findByUsersUuidAndTeamsNameContaining(id, team, pageable);
-        List<TeamResponse> teamResponses = new ArrayList<TeamResponse>();
+        List<TeamResponseDTO> teamResponseDTOs = new ArrayList<TeamResponseDTO>();
 
         for (TeamMembers myTeam : myTeams) {
-            teamResponses.add(fillTeamResponse(myTeam.getTeams(), null));
+            teamResponseDTOs.add(fillTeamResponse(myTeam.getTeams(), null));
         }
 
-        return teamResponses;
+        return teamResponseDTOs;
     }
 
 }

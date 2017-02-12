@@ -1,8 +1,8 @@
 package com.fr.security;
 
 import com.fr.aop.TraceControllers;
+import com.fr.entities.UserEntity;
 import com.fr.rest.service.LoginService;
-import com.fr.entities.Users;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +32,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String loginUser) throws UsernameNotFoundException {
 
         // database request
-        Users account = getUserByLogin(loginUser);
+        UserEntity account = getUserByLogin(loginUser);
 
         if (account == null) {
             LOGGER.info("The given login (" + loginUser + " was not found: " + ")");
@@ -49,7 +49,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return new AccountUserDetails(account);
     }
 
-    Users getUserByLogin(String username) {
+    UserEntity getUserByLogin(String username) {
         String numberRegex = "[0-9]+";
 
         if (username.contains("@")) {

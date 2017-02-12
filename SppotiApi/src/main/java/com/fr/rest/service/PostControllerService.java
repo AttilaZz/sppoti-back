@@ -3,8 +3,8 @@ package com.fr.rest.service;
 import java.util.List;
 import java.util.SortedSet;
 
-import com.fr.commons.dto.ContentEditedResponse;
-import com.fr.commons.dto.PostResponse;
+import com.fr.commons.dto.ContentEditedResponseDTO;
+import com.fr.commons.dto.PostResponseDTO;
 import com.fr.entities.*;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +35,13 @@ public interface PostControllerService extends AbstractControllerService {
 
     Sppoti getGameById(Long id);
 
-    List<PostResponse> getPhotoGallery(Long userId, int buttomMarker);
+    List<PostResponseDTO> getPhotoGallery(Long userId, int buttomMarker);
 
-    List<PostResponse> getVideoGallery(Long userId, int buttomMarker);
+    List<PostResponseDTO> getVideoGallery(Long userId, int buttomMarker);
 
-    PostResponse fillPostToSend(Post post, Long userId);
+    PostResponseDTO fillPostToSend(Post post, Long userId);
 
-    List<ContentEditedResponse> getAllPostHistory(int id, int page);
+    List<ContentEditedResponseDTO> getAllPostHistory(int id, int page);
 
     List<EditHistory> getLastModification(int postId);
 

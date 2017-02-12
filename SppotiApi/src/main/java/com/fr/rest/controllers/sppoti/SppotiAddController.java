@@ -1,9 +1,9 @@
 package com.fr.rest.controllers.sppoti;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fr.commons.dto.SppotiResponse;
+import com.fr.commons.dto.SppotiResponseDTO;
 import com.fr.rest.service.SppotiControllerService;
-import com.fr.commons.dto.SppotiRequest;
+import com.fr.commons.dto.SppotiRequestDTO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -42,7 +41,7 @@ public class SppotiAddController {
      * @throws IOException
      */
     @PostMapping
-    public ResponseEntity addPost(@RequestBody SppotiRequest newSppoti, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public ResponseEntity addPost(@RequestBody SppotiRequestDTO newSppoti, HttpServletResponse response, HttpServletRequest request) throws IOException {
 
         if (newSppoti.getAddress() == null || newSppoti.getAddress().isEmpty()) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Address not found");
@@ -51,7 +50,7 @@ public class SppotiAddController {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Description not found");
 //        }
         if (newSppoti.getMaxTeamCount() == 0) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Max-TeamRequest-Count not found");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Max-TeamRequestDTO-Count not found");
         }
         if (newSppoti.getSportId() == null) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Sport-Id not found");
@@ -74,10 +73,10 @@ public class SppotiAddController {
         Long sppotiCreator = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
         try {
-            SppotiResponse sppotiResponse = sppotiControllerService.saveSppoti(newSppoti, sppotiCreator);
+            SppotiResponseDTO sppotiResponseDTO = sppotiControllerService.saveSppoti(newSppoti, sppotiCreator);
 
             ObjectMapper mapper = new ObjectMapper();
-            String jsonInString = mapper.writeValueAsString(sppotiResponse);
+            String jsonInString = mapper.writeValueAsString(sppotiResponseDTO);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(jsonInString);
         } catch (RuntimeException e) {

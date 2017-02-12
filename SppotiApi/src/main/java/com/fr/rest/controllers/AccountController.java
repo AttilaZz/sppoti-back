@@ -6,8 +6,8 @@ import com.fr.enums.CoverType;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictPhoneException;
 import com.fr.exceptions.ConflictUsernameException;
-import com.fr.commons.dto.SignUpRequest;
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.SignUpRequestDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.models.UserRoleType;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
@@ -51,9 +51,9 @@ public class AccountController {
 
     @PostMapping(value = "/create")
     @ResponseBody
-    public void createUser(@RequestBody SignUpRequest user, HttpServletResponse response) {
+    public void createUser(@RequestBody SignUpRequestDTO user, HttpServletResponse response) {
 
-        Users newUser = new Users();
+        UserEntity newUser = new UserEntity();
 
 		/*
          * processing user Sports
@@ -83,12 +83,12 @@ public class AccountController {
         newUser.setUsername(uName);
 
         for (Long sportId : user.getSportId()) {
-            // if the parsed SportModel exist in database == correct request
+            // if the parsed SportModelDTO exist in database == correct request
             Sport mSport = accountControllerService.getSportById(sportId);
             if (mSport != null) {
                 userSports.add(mSport);
             } else {
-                LOGGER.info("INSCRIPTION: le nom de SportModel envoyé n'est pas reconnu");
+                LOGGER.info("INSCRIPTION: le nom de SportModelDTO envoyé n'est pas reconnu");
                 response.setStatus(400);
                 return;
             }
@@ -121,7 +121,7 @@ public class AccountController {
              * Send confirmation email
 			 */
 
-            LOGGER.info("User : " + user.getFirstName() + " " + user.getLastName() + " Has been saved !");
+            LOGGER.info("UserDTO : " + user.getFirstName() + " " + user.getLastName() + " Has been saved !");
             LOGGER.info("Confirmation code is => " + confirmationCode);
 
 			/*
@@ -178,10 +178,10 @@ public class AccountController {
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @PutMapping
-    public ResponseEntity<User> editUserInfo(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<UserDTO> editUserInfo(@RequestBody UserDTO user, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connected_user = accountControllerService.getUserById(userId);
+        UserEntity connected_user = accountControllerService.getUserById(userId);
 
         //detect which element uwer want to update
         Resources resource = new Resources();
@@ -242,7 +242,7 @@ public class AccountController {
 
             try {
                 accountControllerService.updateUser(connected_user);
-                LOGGER.info("USER-UPDATE: User has been updated!");
+                LOGGER.info("USER-UPDATE: UserDTO has been updated!");
                 return new ResponseEntity<>(user, HttpStatus.OK);
 
             } catch (RuntimeException e) {
@@ -261,10 +261,10 @@ public class AccountController {
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<User> connectedUserInfo(Authentication authentication) {
+    public ResponseEntity<UserDTO> connectedUserInfo(Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-        Users targetUser = accountControllerService.getUserById(accountUserDetails.getId());
+        UserEntity targetUser = accountControllerService.getUserById(accountUserDetails.getId());
 
 
         return new ResponseEntity<>(accountControllerService.fillUserResponse(targetUser, null), HttpStatus.OK);
@@ -274,7 +274,7 @@ public class AccountController {
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/other/{username}/**")
-    public ResponseEntity<User> otherUserInfo(@PathVariable("username") String username, HttpServletRequest request) {
+    public ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") String username, HttpServletRequest request) {
 
 //        String path = (String) httpServletRequest.getAttribute(
 //                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
@@ -283,9 +283,9 @@ public class AccountController {
 //        String finalPath = apm.extractPathWithinPattern(bestMatchPattern, path);
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users connected_user = accountControllerService.getUserById(userId);
+        UserEntity connected_user = accountControllerService.getUserById(userId);
 
-        Users targetUser = accountControllerService.getUserByUsername(username);
+        UserEntity targetUser = accountControllerService.getUserByUsername(username);
 
         if (targetUser == null) {
             LOGGER.error("ACCOUNT-OTHER: Username not found");

@@ -4,8 +4,8 @@ import com.fr.rest.service.AccountControllerService;
 import com.fr.entities.*;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;
-import com.fr.commons.dto.SignUpRequest;
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.SignUpRequestDTO;
+import com.fr.commons.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     private String rootAddress;
 
     @Override
-    public void saveNewUser(Users user) throws Exception {
+    public void saveNewUser(UserEntity user) throws Exception {
 
         if (userRepository.getByEmail(user.getEmail()) != null) {
             throw new ConflictEmailException("Email already exists");
@@ -35,7 +35,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
         } else {
             try {
 
-                Users u = userRepository.save(user);
+                UserEntity u = userRepository.save(user);
 
 //                Friend friend = new Friend(u);
 //                friendRepository.save(friend);
@@ -57,7 +57,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public boolean isReceivedDataNotEmpty(SignUpRequest user) {
+    public boolean isReceivedDataNotEmpty(SignUpRequestDTO user) {
 
         if (user.getFirstName() != null && !user.getFirstName().isEmpty() && user.getLastName() != null
                 && !user.getLastName().isEmpty() && user.getEmail() != null && !user.getEmail().isEmpty()
@@ -72,7 +72,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     @Override
     public boolean tryActivateAccount(String code) {
 
-        Users users = userRepository.getByConfirmationCode(code);
+        UserEntity users = userRepository.getByConfirmationCode(code);
 
         if (users.isConfirmed()) {
             return false;
@@ -114,7 +114,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public boolean updateUser(Users connected_user) {
+    public boolean updateUser(UserEntity connected_user) {
 
         userRepository.save(connected_user);
         return true;
@@ -130,12 +130,12 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public Users getUserByUsername(String username) {
+    public UserEntity getUserByUsername(String username) {
         return userRepository.getByUsername(username);
     }
 
     @Override
-    public User fillUserResponse(Users targetUser, Users connected_user) {
+    public UserDTO fillUserResponse(UserEntity targetUser, UserEntity connected_user) {
         return super.fillUserResponse(targetUser, connected_user);
     }
 }

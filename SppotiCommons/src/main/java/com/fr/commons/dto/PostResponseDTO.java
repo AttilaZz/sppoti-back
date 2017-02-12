@@ -15,7 +15,7 @@ import java.util.SortedSet;
  * Created by: Wail DJENANE on Aug 7, 2016
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class PostResponse {
+public class PostResponseDTO {
 
     private int id;
     private Long sportId;
@@ -33,7 +33,7 @@ public class PostResponse {
 
     private Sppoti game;
 
-    private List<CommentModel> comment;
+    private List<CommentDTO> comment;
     private int commentsCount;
 
     private int likeCount;
@@ -41,7 +41,7 @@ public class PostResponse {
 
     private boolean edited;
 
-    private List<HeaderData> likers;
+    private List<HeaderDataDTO> likers;
     private SortedSet<Address> addresses;
 
     private int visibility;
@@ -55,7 +55,7 @@ public class PostResponse {
 
     private boolean myPost;
 
-    public PostResponse(Post post) {
+    public PostResponseDTO(Post post) {
         this.content = post.getContent();
     }
 
@@ -83,7 +83,7 @@ public class PostResponse {
         this.username = username;
     }
 
-    public PostResponse() {
+    public PostResponseDTO() {
 
     }
 
@@ -95,11 +95,11 @@ public class PostResponse {
         this.visibility = visibility;
     }
 
-    public List<HeaderData> getLikers() {
+    public List<HeaderDataDTO> getLikers() {
         return likers;
     }
 
-    public void setLikers(List<HeaderData> likers) {
+    public void setLikers(List<HeaderDataDTO> likers) {
         this.likers = likers;
     }
 
@@ -208,11 +208,11 @@ public class PostResponse {
         this.datetimeCreated = datetimeCreated;
     }
 
-    public List<CommentModel> getComment() {
+    public List<CommentDTO> getComment() {
         return comment;
     }
 
-    public void setComment(List<CommentModel> comment) {
+    public void setComment(List<CommentDTO> comment) {
         this.comment = comment;
     }
 

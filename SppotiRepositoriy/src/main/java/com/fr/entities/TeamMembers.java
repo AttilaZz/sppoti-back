@@ -38,7 +38,7 @@ public class TeamMembers {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users users;
+    private UserEntity users;
 
     @OneToMany(mappedBy = "usersTeam", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMember> sppotiMemberss;
@@ -83,11 +83,11 @@ public class TeamMembers {
         this.teams = teams;
     }
 
-    public Users getUsers() {
+    public UserEntity getUsers() {
         return users;
     }
 
-    public void setUsers(Users users) {
+    public void setUsers(UserEntity users) {
         this.users = users;
     }
 

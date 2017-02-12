@@ -1,9 +1,9 @@
 package com.fr.rest.controllers.post;
 
+import com.fr.commons.dto.PostResponseDTO;
+import com.fr.entities.UserEntity;
 import com.fr.rest.service.CommentControllerService;
 import com.fr.rest.service.PostControllerService;
-import com.fr.entities.Users;
-import com.fr.commons.dto.PostResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,12 +47,12 @@ public class GalleryController {
      * @return List of all photos posted by a usert
      */
     @GetMapping(value = "/photo/{page}")
-    public ResponseEntity<List<PostResponse>> photoGallery(@PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<List<PostResponseDTO>> photoGallery(@PathVariable int page, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = postControllerService.getUserById(userId);
+        UserEntity user = postControllerService.getUserById(userId);
 
-        List<PostResponse> lpost = postControllerService.getPhotoGallery(userId, page);
+        List<PostResponseDTO> lpost = postControllerService.getPhotoGallery(userId, page);
 
         if (lpost.size() == 0) {
             LOGGER.info("PHOTO_GALLERY: Empty !!");
@@ -65,12 +65,12 @@ public class GalleryController {
     }
 
     @GetMapping(value = "/video/{page}")
-    public ResponseEntity<List<PostResponse>> videoGallery(@PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<List<PostResponseDTO>> videoGallery(@PathVariable int page, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        Users user = postControllerService.getUserById(userId);
+        UserEntity user = postControllerService.getUserById(userId);
 
-        List<PostResponse> lpost = postControllerService.getVideoGallery(userId, page);
+        List<PostResponseDTO> lpost = postControllerService.getVideoGallery(userId, page);
 
         if (lpost.size() == 0) {
             LOGGER.info("VIDEO_GALLERY: Empty !!");

@@ -12,7 +12,7 @@ import java.util.Date;
  * Created by: Wail DJENANE on Jul 12, 2016
  */
 @JsonInclude(Include.NON_NULL)
-public class SppotiResponse {
+public class SppotiResponseDTO {
 
     private Integer id;
 
@@ -35,10 +35,10 @@ public class SppotiResponse {
     @JsonProperty("sport")
     private Sport relatedSport;
 
-    private TeamResponse teamHost;
+    private TeamResponseDTO teamHost;
 
     @JsonProperty("teamAdverse")
-    private TeamResponse teamGuest;
+    private TeamResponseDTO teamGuest;
 
     private Integer sppotiCounter;
 
@@ -48,10 +48,10 @@ public class SppotiResponse {
     private Integer adminTeamId;
     private Integer connectedUserId;
 
-    public SppotiResponse() {
+    public SppotiResponseDTO() {
     }
 
-    public SppotiResponse(String titre, Date datetimeCreated, Date dateTimeStart, String location, Integer maxMembersCount, Sport relatedSport) {
+    public SppotiResponseDTO(String titre, Date datetimeCreated, Date dateTimeStart, String location, Integer maxMembersCount, Sport relatedSport) {
         this.titre = titre;
         this.datetimeCreated = datetimeCreated;
         this.dateTimeStart = dateTimeStart;
@@ -68,7 +68,7 @@ public class SppotiResponse {
         this.id = id;
     }
 
-    public SppotiResponse(Integer id) {
+    public SppotiResponseDTO(Integer id) {
         this.id = id;
     }
 
@@ -136,19 +136,19 @@ public class SppotiResponse {
         this.relatedSport = relatedSport;
     }
 
-    public TeamResponse getTeamHost() {
+    public TeamResponseDTO getTeamHost() {
         return teamHost;
     }
 
-    public void setTeamHost(TeamResponse teamHost) {
+    public void setTeamHost(TeamResponseDTO teamHost) {
         this.teamHost = teamHost;
     }
 
-    public TeamResponse getTeamGuest() {
+    public TeamResponseDTO getTeamGuest() {
         return teamGuest;
     }
 
-    public void setTeamGuest(TeamResponse teamGuest) {
+    public void setTeamGuest(TeamResponseDTO teamGuest) {
         this.teamGuest = teamGuest;
     }
 

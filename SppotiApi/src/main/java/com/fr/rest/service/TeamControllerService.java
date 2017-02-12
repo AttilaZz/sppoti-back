@@ -1,8 +1,8 @@
 package com.fr.rest.service;
 
-import com.fr.commons.dto.TeamRequest;
-import com.fr.commons.dto.TeamResponse;
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.TeamRequestDTO;
+import com.fr.commons.dto.TeamResponseDTO;
+import com.fr.commons.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +19,13 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param adminId
      * @return saved team data.
      */
-    TeamResponse saveTeam(TeamRequest team, Long adminId);
+    TeamResponseDTO saveTeam(TeamRequestDTO team, Long adminId);
 
     /**
      * @param teamId
      * @return team data.
      */
-    TeamResponse getTeamById(int teamId);
+    TeamResponseDTO getTeamById(int teamId);
 
     /**
      * Update memeber informations.
@@ -34,14 +34,14 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param memberId
      * @param teamId
      */
-    void updateTeamMembers(TeamRequest request, int memberId, int teamId);
+    void updateTeamMembers(TeamRequestDTO request, int memberId, int teamId);
 
     /**
      * @param userId
      * @param page
      * @return all team that user is admin
      */
-    List<TeamResponse> getAllTeamsByUserId(int userId, int page);
+    List<TeamResponseDTO> getAllTeamsByUserId(int userId, int page);
 
     /**
      * Member can accept team invitation
@@ -62,7 +62,7 @@ public interface TeamControllerService extends AbstractControllerService {
     /**
      * Delete a memeber from a team.
      * <p>
-     * User must be admin of team to delete members.
+     * UserDTO must be admin of team to delete members.
      *
      * @param teamId
      * @param memberId
@@ -73,7 +73,7 @@ public interface TeamControllerService extends AbstractControllerService {
     /**
      * Delete a team.
      * <p>
-     * User must be admin to delete the team
+     * UserDTO must be admin to delete the team
      *
      * @param id
      */
@@ -84,7 +84,7 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param userParam
      * @return Added memeber
      */
-    User addMember(int teamId, User userParam);
+    UserDTO addMember(int teamId, UserDTO userParam);
 
     /**
      * @param team
@@ -92,5 +92,5 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param page
      * @return List of all found teams with theirs members
      */
-    List<TeamResponse> findAllTeams(String team, int id, int page);
+    List<TeamResponseDTO> findAllTeams(String team, int id, int page);
 }

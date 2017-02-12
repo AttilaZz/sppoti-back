@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.team;
 
-import com.fr.commons.dto.TeamRequest;
-import com.fr.commons.dto.TeamResponse;
+import com.fr.commons.dto.TeamRequestDTO;
+import com.fr.commons.dto.TeamResponseDTO;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,14 +39,14 @@ public class TeamController {
      * @return Created team data
      */
     @PostMapping
-    public ResponseEntity<TeamResponse> createTeam(@RequestBody TeamRequest team, HttpServletResponse response, HttpServletRequest request) {
+    public ResponseEntity<TeamResponseDTO> createTeam(@RequestBody TeamRequestDTO team, HttpServletResponse response, HttpServletRequest request) {
 
 //        if (team.getCoverPath() == null || team.getCoverPath().isEmpty()) {
-//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (cover path) not found");
+//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequestDTO (cover path) not found");
 //
 //        }
 //        if (team.getLogoPath() == null || team.getLogoPath().isEmpty()) {
-//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequest (logo path) not found");
+//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequestDTO (logo path) not found");
 //
 //        }
         if (team.getName() == null || team.getName().isEmpty()) {
@@ -66,10 +66,10 @@ public class TeamController {
 
         Long teamCreator = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
-        TeamResponse teamResponse;
+        TeamResponseDTO teamResponseDTO;
         try {
 
-            teamResponse = teamControllerService.saveTeam(team, teamCreator);
+            teamResponseDTO = teamControllerService.saveTeam(team, teamCreator);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,7 +78,7 @@ public class TeamController {
 
         }
 
-        return new ResponseEntity<>(teamResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(teamResponseDTO, HttpStatus.CREATED);
     }
 
     /**
@@ -86,11 +86,11 @@ public class TeamController {
      * Title, Logos, Cover
      *
      * @param id
-     * @param teamRequest
+     * @param teamRequestDTO
      * @return The updated team
      */
     @PutMapping("/{id}")
-    public ResponseEntity<TeamResponse> updateTeam(@PathVariable int id, @RequestBody TeamRequest teamRequest) {
+    public ResponseEntity<TeamResponseDTO> updateTeam(@PathVariable int id, @RequestBody TeamRequestDTO teamRequestDTO) {
 
 
         return new ResponseEntity<>(HttpStatus.OK);

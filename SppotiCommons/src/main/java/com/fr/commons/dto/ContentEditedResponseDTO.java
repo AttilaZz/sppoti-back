@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by: Wail DJENANE on Aug 20, 2016
  */
 @JsonInclude(Include.NON_DEFAULT)
-public class ContentEditedResponse {
+public class ContentEditedResponseDTO {
 
     private Long id;
     private String dateTime = new Date().toString();

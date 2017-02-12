@@ -3,7 +3,7 @@ package com.fr.commons.dto;
 /**
  * Created by: Wail DJENANE on Aug 7, 2016
  */
-public class JsonPostRequest {
+public class JsonPostRequestDTO {
 
     private String json;
 

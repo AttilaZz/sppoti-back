@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class TeamResponse {
+public class TeamResponseDTO {
 
     private int id;
     private String name;
@@ -17,7 +17,7 @@ public class TeamResponse {
     private String coverPath;
     private Long sportId;
 
-    private List<User> teamMembers;
+    private List<UserDTO> teamMembers;
 
     public String getName() {
         return name;
@@ -43,11 +43,11 @@ public class TeamResponse {
         this.coverPath = coverPath;
     }
 
-    public List<User> getTeamMembers() {
+    public List<UserDTO> getTeamMembers() {
         return teamMembers;
     }
 
-    public void setTeamMembers(List<User> teamMembers) {
+    public void setTeamMembers(List<UserDTO> teamMembers) {
         this.teamMembers = teamMembers;
     }
 

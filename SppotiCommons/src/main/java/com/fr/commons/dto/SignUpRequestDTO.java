@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by: Wail DJENANE on Jun 15, 2016
  */
-public class SignUpRequest {
+public class SignUpRequestDTO {
 
     private String lastName;
     private String firstName;

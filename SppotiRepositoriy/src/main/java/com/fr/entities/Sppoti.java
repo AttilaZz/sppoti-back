@@ -55,7 +55,7 @@ public class Sppoti {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    private Users userSppoti;
+    private UserEntity userSppoti;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "team_host_id", nullable = false)
@@ -102,11 +102,11 @@ public class Sppoti {
         this.sport = sport;
     }
 
-    public Users getUserSppoti() {
+    public UserEntity getUserSppoti() {
         return userSppoti;
     }
 
-    public void setUserSppoti(Users userSppoti) {
+    public void setUserSppoti(UserEntity userSppoti) {
         this.userSppoti = userSppoti;
     }
 

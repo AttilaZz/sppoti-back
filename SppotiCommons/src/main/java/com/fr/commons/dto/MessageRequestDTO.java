@@ -5,22 +5,22 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fr.entities.Message;
-import com.fr.entities.Users;
+import com.fr.entities.UserEntity;
 
 /**
  * Created by: Wail DJENANE on Jun 25, 2016
  */
 
 @JsonInclude(Include.NON_EMPTY)
-public class MessageRequest {
+public class MessageRequestDTO {
 
     private Long userId;
     private Long receivedId;
 
     private Message msg;
 
-    private Users sender;
-    private Users receiver;
+    private UserEntity sender;
+    private UserEntity receiver;
 
     private List<Message> sentMessages;
     private List<Message> receivedMessages;
@@ -49,19 +49,19 @@ public class MessageRequest {
         this.msg = msg;
     }
 
-    public Users getSender() {
+    public UserEntity getSender() {
         return sender;
     }
 
-    public void setSender(Users sender) {
+    public void setSender(UserEntity sender) {
         this.sender = sender;
     }
 
-    public Users getReceiver() {
+    public UserEntity getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(Users receiver) {
+    public void setReceiver(UserEntity receiver) {
         this.receiver = receiver;
     }
 

@@ -12,7 +12,7 @@ import com.fr.entities.Sport;
  * Created by: Wail DJENANE on Jun 11, 2016
  */
 @JsonInclude(Include.NON_ABSENT)
-public class ProfilePage {
+public class ProfilePageDTO {
 
     private String lastName;
     private String firstName;
@@ -26,7 +26,7 @@ public class ProfilePage {
 
     private String profileName;
 
-    private List<PostResponse> userPosts;
+    private List<PostResponseDTO> userPosts;
     private Set<Sport> userSports;
     private List<Message> userMessages;
     private Set<String> userAddresses;
@@ -123,11 +123,11 @@ public class ProfilePage {
         this.profileName = profileName;
     }
 
-    public List<PostResponse> getUserPosts() {
+    public List<PostResponseDTO> getUserPosts() {
         return userPosts;
     }
 
-    public void setUserPosts(List<PostResponse> userPosts) {
+    public void setUserPosts(List<PostResponseDTO> userPosts) {
         this.userPosts = userPosts;
     }
 

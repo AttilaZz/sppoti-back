@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.team;
 
-import com.fr.commons.dto.TeamRequest;
-import com.fr.commons.dto.User;
+import com.fr.commons.dto.TeamRequestDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.controllers.sppoti.SppotiAddController;
 import com.fr.rest.service.TeamControllerService;
@@ -38,7 +38,7 @@ public class TeamMembersController {
      * @return The updated member information
      */
     @PutMapping("/{memberId}")
-    public ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamRequest request) {
+    public ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamRequestDTO request) {
 
         boolean canUpdate = false;
 
@@ -78,7 +78,7 @@ public class TeamMembersController {
      * @return 201 status if memeber has been added
      */
     @PostMapping
-    public ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody User user) {
+    public ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody UserDTO user) {
 
         if (user.getId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

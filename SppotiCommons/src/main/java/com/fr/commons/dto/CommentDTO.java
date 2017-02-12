@@ -4,13 +4,13 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.entities.Comment;
+import com.fr.entities.CommentEntity;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
  */
 @JsonInclude(Include.NON_EMPTY)
-public class CommentModel {
+public class CommentDTO {
 
     private int id;
     private int postId;
@@ -33,32 +33,32 @@ public class CommentModel {
 
     private boolean isEdited = false;
 
-    private List<HeaderData> commentLikers;
+    private List<HeaderDataDTO> commentLikers;
 
-    public CommentModel() {
+    public CommentDTO() {
     }
 
-    public CommentModel(Comment comment, User authorComment) {
-        this.id = comment.getUuid();
+    public CommentDTO(CommentEntity commentEntity, UserDTO authorComment) {
+        this.id = commentEntity.getUuid();
 
         this.authorAvatar = authorComment.getAvatar();
-        this.authorFirstName = comment.getUser().getFirstName();
-        this.authorUsername = comment.getUser().getUsername();
-        this.authorLastName = comment.getUser().getLastName();
+        this.authorFirstName = commentEntity.getUser().getFirstName();
+        this.authorUsername = commentEntity.getUser().getUsername();
+        this.authorLastName = commentEntity.getUser().getLastName();
 
-        this.creationDate = comment.getDatetimeCreated();
-        this.text = comment.getContent();
-        this.imageLink = comment.getImageLink();
-        this.videoLink = comment.getVideoLink();
+        this.creationDate = commentEntity.getDatetimeCreated();
+        this.text = commentEntity.getContent();
+        this.imageLink = commentEntity.getImageLink();
+        this.videoLink = commentEntity.getVideoLink();
 
-        this.isEdited = !comment.getEditList().isEmpty();
+        this.isEdited = !commentEntity.getEditList().isEmpty();
     }
 
-    public List<HeaderData> getCommentLikers() {
+    public List<HeaderDataDTO> getCommentLikers() {
         return commentLikers;
     }
 
-    public void setCommentLikers(List<HeaderData> commentLikers) {
+    public void setCommentLikers(List<HeaderDataDTO> commentLikers) {
         this.commentLikers = commentLikers;
     }
 
