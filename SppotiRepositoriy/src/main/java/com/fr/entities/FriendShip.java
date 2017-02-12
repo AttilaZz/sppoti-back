@@ -10,6 +10,7 @@ import java.util.Date;
  */
 
 @Entity
+@Table(name = "friend_ship")
 public class FriendShip {
 
     @Id
@@ -22,12 +23,13 @@ public class FriendShip {
     @Column(nullable = false)
     private String status = GlobalAppStatus.PENDING.name();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(targetEntity = UserEntity.class)
     @JoinColumn(name = "friend_id")
     private UserEntity friend;
 
-    @Column(name = "user_id")
-    private Integer user;
+    @OneToOne(targetEntity = UserEntity.class)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     @Version
     @Column(nullable = false)
@@ -68,11 +70,11 @@ public class FriendShip {
         this.friend = friend;
     }
 
-    public Integer getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(Integer user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 

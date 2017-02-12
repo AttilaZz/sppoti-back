@@ -1,4 +1,4 @@
-package com.fr.rest.controllers;
+package com.fr.rest.controllers.account;
 
 import com.fr.rest.service.AccountControllerService;
 import com.fr.entities.*;
@@ -258,42 +258,4 @@ public class AccountController {
 
     }
 
-
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping
-    public ResponseEntity<UserDTO> connectedUserInfo(Authentication authentication) {
-
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-        UserEntity targetUser = accountControllerService.getUserById(accountUserDetails.getId());
-
-
-        return new ResponseEntity<>(accountControllerService.fillUserResponse(targetUser, null), HttpStatus.OK);
-
-    }
-
-
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping("/other/{username}/**")
-    public ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") String username, HttpServletRequest request) {
-
-//        String path = (String) httpServletRequest.getAttribute(
-//                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-//        AntPathMatcher apm = new AntPathMatcher();
-//        String bestMatchPattern = (String ) httpServletRequest.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-//        String finalPath = apm.extractPathWithinPattern(bestMatchPattern, path);
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        UserEntity connected_user = accountControllerService.getUserById(userId);
-
-        UserEntity targetUser = accountControllerService.getUserByUsername(username);
-
-        if (targetUser == null) {
-            LOGGER.error("ACCOUNT-OTHER: Username not found");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        }
-
-        return new ResponseEntity<>(accountControllerService.fillUserResponse(targetUser, connected_user), HttpStatus.OK);
-
-    }
 }

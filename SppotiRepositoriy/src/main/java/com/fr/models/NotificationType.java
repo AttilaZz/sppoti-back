@@ -16,4 +16,7 @@ public enum NotificationType {
         this.notifType = notifType;
     }
 
+    public int getNotifType() {
+        return notifType;
+    }
 }

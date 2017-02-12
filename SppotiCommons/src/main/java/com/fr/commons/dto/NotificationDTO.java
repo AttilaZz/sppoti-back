@@ -16,7 +16,7 @@ public class NotificationDTO {
     private Integer id;
     private UserDTO from;
     private UserDTO to;
-    private NotificationType notificationType;
+    private Integer notificationType;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private Date datetime;
@@ -53,11 +53,13 @@ public class NotificationDTO {
         this.datetime = datetime;
     }
 
-    public NotificationType getNotificationType() {
+    public Integer getNotificationType() {
         return notificationType;
     }
 
-    public void setNotificationType(NotificationType notificationType) {
+    public void setNotificationType(Integer notificationType) {
         this.notificationType = notificationType;
     }
 }
+
+

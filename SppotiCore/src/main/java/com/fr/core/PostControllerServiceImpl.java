@@ -425,6 +425,6 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     @Override
     public boolean isTargetUserFriendOfMe(int connected_user_uuid, int friend_id) {
-        return friendShipRepository.findByFriendUuidAndUserAndDeletedFalse(friend_id, connected_user_uuid) != null;
+        return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friend_id, connected_user_uuid) != null;
     }
 }

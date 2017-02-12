@@ -12,8 +12,9 @@ import java.util.UUID;
  * Created by: Wail DJENANE on Nov 10, 2016
  */
 @Entity
+@Table(name = "notification")
 @JsonInclude(Include.NON_EMPTY)
-public class Notification {
+public class NotificationEntity {
 
     @Id
     @GeneratedValue

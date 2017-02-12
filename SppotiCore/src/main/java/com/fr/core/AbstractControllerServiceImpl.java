@@ -304,10 +304,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                  */
                 FriendShip friendShip;
 
-                friendShip = friendShipRepository.findByFriendUuidAndUserAndDeletedFalse(connected_user.getUuid(), targetUser.getUuid());
+                friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(connected_user.getUuid(), targetUser.getUuid());
 
                 if (friendShip == null) {
-                    friendShip = friendShipRepository.findByFriendUuidAndUserAndDeletedFalse(targetUser.getUuid(), connected_user.getUuid());
+                    friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(targetUser.getUuid(), connected_user.getUuid());
                 }
 
                 if (friendShip == null) {
@@ -332,7 +332,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 /*
                 Manage request sent by me
                  */
-                if (!friendShipRepository.findByUserAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connected_user.getUuid(), GlobalAppStatus.PENDING.name()).isEmpty()) {
+                if (!friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connected_user.getUuid(), GlobalAppStatus.PENDING.name()).isEmpty()) {
                     user.setFriendStatus(GlobalAppStatus.PENDING_SENT.getValue());
                 }
             }

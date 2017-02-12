@@ -1,5 +1,7 @@
 package com.fr.core;
 
+import com.fr.entities.NotificationEntity;
+import com.fr.models.NotificationType;
 import com.fr.rest.service.FriendControllerService;
 import com.fr.entities.FriendShip;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +14,10 @@ import java.util.List;
  */
 @Component
 public class FriendControllerServiceImpl extends AbstractControllerServiceImpl implements FriendControllerService {
+
     @Override
     public List<FriendShip> getByUserAndStatus(int uuid, String name, Pageable pageable) {
-        return friendShipRepository.findByUserAndStatusAndDeletedFalse(uuid, name, pageable);
+        return friendShipRepository.findByUserUuidAndStatusAndDeletedFalse(uuid, name, pageable);
     }
 
     @Override
@@ -24,13 +27,19 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
 
     @Override
     public FriendShip getByFriendUuidAndUser(int uuid, int uuid1) {
-        return friendShipRepository.findByFriendUuidAndUserAndDeletedFalse(uuid, uuid1);
+        return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(uuid, uuid1);
     }
 
     @Override
     public void saveFriendShip(FriendShip friendShip) {
 
-        friendShipRepository.save(friendShip);
+        if (friendShipRepository.save(friendShip) != null) {
+            NotificationEntity notification = new NotificationEntity();
+            notification.setNotificationType(NotificationType.FRIEND_REQUEST_SENT);
+            notification.setFrom(friendShip.getUser());
+            notification.setTo(friendShip.getFriend());
+            notificationRepository.save(notification);
+        }
 
     }
 

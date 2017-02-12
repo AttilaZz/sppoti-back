@@ -4,7 +4,7 @@ import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.NotificationDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.CommentEntity;
-import com.fr.entities.Notification;
+import com.fr.entities.NotificationEntity;
 import com.fr.entities.Resources;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
@@ -22,14 +22,14 @@ public class EntitytoDtoTransformer {
 
     /**
      * @param notification
-     * @return Notification DTO
+     * @return NotificationEntity DTO
      */
-    public static NotificationDTO notificationEntityToDto(Notification notification) {
+    public static NotificationDTO notificationEntityToDto(NotificationEntity notification) {
         NotificationDTO notificationDTO = new NotificationDTO();
         notificationDTO.setDatetime(notification.getCreationDate());
         notificationDTO.setFrom(notificationUserEntityToDto(notification.getFrom()));
         notificationDTO.setTo(notificationUserEntityToDto(notification.getTo()));
-        notificationDTO.setNotificationType(notification.getNotificationType());
+        notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
 
         return notificationDTO;
     }
@@ -56,7 +56,6 @@ public class EntitytoDtoTransformer {
     }
 
     /**
-     *
      * @param commentEntity
      * @param userEntity
      * @return comment dto

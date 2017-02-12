@@ -13,14 +13,13 @@ import java.util.List;
  */
 public interface FriendShipRepository extends CrudRepository<FriendShip, Long> {
 
-    FriendShip findByFriendUuidAndUserAndDeletedFalse(int friend_uuid, int connected_user);
+    FriendShip findByFriendUuidAndUserUuidAndDeletedFalse(int friend_uuid, int connected_user);
 
-    List<FriendShip> findByUserAndStatusAndDeletedFalse(int uuid, String name, Pageable pageable);
+    List<FriendShip> findByUserUuidAndStatusAndDeletedFalse(int uuid, String name, Pageable pageable);
 
     List<FriendShip> findByFriendUuidAndStatusAndDeletedFalse(int friend, String name, Pageable pageable);
 
-    List<FriendShip> findByUserAndFriendUuidAndStatusAndDeletedFalse(int connected_user, int uuid, String name);
-
+    List<FriendShip> findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(int connected_user, int uuid, String name);
 
     //    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
     @Query("SELECT f FROM FriendShip f WHERE (f.friend.firstName LIKE CONCAT('%',:part1,'%') AND f.friend.lastName LIKE CONCAT('%',:part2,'%')) OR (f.friend.firstName LIKE CONCAT('%',:part2,'%') AND f.friend.lastName LIKE CONCAT('%',:part1,'%')) AND f.status = :status AND f.deleted = false")

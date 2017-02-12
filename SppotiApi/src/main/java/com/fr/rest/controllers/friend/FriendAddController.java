@@ -97,7 +97,7 @@ public class FriendAddController {
         } else {
             UserEntity u = friendControllerService.getUserByUuId(user.getFriendUuid());
             friendShip.setFriend(u);
-            friendShip.setUser(connectedUser.getUuid());
+            friendShip.setUser(connectedUser);
         }
 
         /*

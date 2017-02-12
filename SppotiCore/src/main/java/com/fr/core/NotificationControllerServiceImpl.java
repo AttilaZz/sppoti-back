@@ -1,7 +1,7 @@
 package com.fr.core;
 
 import com.fr.commons.dto.NotificationDTO;
-import com.fr.entities.Notification;
+import com.fr.entities.NotificationEntity;
 import com.fr.rest.service.NotificationControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,7 @@ public class NotificationControllerServiceImpl extends AbstractControllerService
 
         Pageable pageable = new PageRequest(page, notificationSize);
 
-        List<Notification> notifications = notificationRepository.findByToUuid(userId, pageable);
+        List<NotificationEntity> notifications = notificationRepository.findByToUuid(userId, pageable);
 
         return notifications.stream()
                 .map(EntitytoDtoTransformer::notificationEntityToDto)
