@@ -1,6 +1,7 @@
 package com.fr.rest.controllers.account;
 
 import com.fr.rest.service.AccountControllerService;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/account")
 public class AccountValidateController {
+
+    private Logger LOGGER = Logger.getLogger(AccountValidateController.class);
 
     private AccountControllerService accountControllerService;
 
@@ -33,6 +36,7 @@ public class AccountValidateController {
 
         // if given code exist in database confirm registration
         if (accountControllerService.tryActivateAccount(code)) {
+            LOGGER.info("Account with code (" + code + ") has been confirmed");
             return new ResponseEntity<>(HttpStatus.OK);
         }
 

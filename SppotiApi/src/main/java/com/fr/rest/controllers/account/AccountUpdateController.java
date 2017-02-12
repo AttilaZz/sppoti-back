@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/account")
 public class AccountUpdateController {
 
-    private Logger LOGGER = Logger.getLogger(AccountAddController.class);
+    private Logger LOGGER = Logger.getLogger(AccountUpdateController.class);
     private static final String ATT_USER_ID = "USER_ID";
 
     private PasswordEncoder passwordEncoder;
