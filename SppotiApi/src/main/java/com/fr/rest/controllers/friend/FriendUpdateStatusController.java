@@ -27,9 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 public class FriendUpdateStatusController {
 
     private static final String ATT_USER_ID = "USER_ID";
-
     private Logger LOGGER = Logger.getLogger(FriendUpdateStatusController.class);
-
     private FriendControllerService friendControllerService;
 
     @Autowired
@@ -52,38 +50,13 @@ public class FriendUpdateStatusController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        /*
-        Prepare friendShip
-         */
-        UserEntity connectedUser = friendControllerService.getUserById(userId);
-
-         /*
-        Check if i received a friend request from the USER in the request
-         */
-        FriendShip friendShip = friendControllerService.getByFriendUuidAndUser(connectedUser.getUuid(), user.getFriendUuid());
-        if (friendShip == null) {
-            LOGGER.error("UPDATE-FRIEND: FriendShip not found !");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        /*
-        prepare update
-         */
-        for (GlobalAppStatus globalAppStatus : GlobalAppStatus.values()) {
-            if (globalAppStatus.getValue() == user.getFriendStatus()) {
-                friendShip.setStatus(globalAppStatus.name());
-            }
-        }
-
-        /*
-        Update
-         */
         try {
-            friendControllerService.updateFriendShip(friendShip);
-        } catch (Exception e) {
-            e.printStackTrace();
 
-            LOGGER.error("UPDATE-FRIEND: FriendShip failed to update");
+            friendControllerService.updateFriendShip(userId, user.getFriendUuid(), user.getFriendStatus());
+
+        } catch (Exception e) {
+
+            LOGGER.error("UPDATE-FRIEND: FriendShip failed to update", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

@@ -1,4 +1,4 @@
-package com.fr.rest.controllers;
+package com.fr.rest.controllers.comment;
 
 import com.fr.entities.CommentEntity;
 import com.fr.rest.service.CommentControllerService;
