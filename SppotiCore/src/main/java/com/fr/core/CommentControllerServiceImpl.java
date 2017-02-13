@@ -3,12 +3,12 @@
  */
 package com.fr.core;
 
-import com.fr.entities.UserEntity;
-import com.fr.rest.service.CommentControllerService;
-import com.fr.entities.CommentEntity;
-import com.fr.entities.EditHistory;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
+import com.fr.entities.CommentEntity;
+import com.fr.entities.EditHistory;
+import com.fr.models.NotificationType;
+import com.fr.rest.service.CommentControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +32,17 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
     @Override
     public CommentDTO saveComment(CommentEntity newCommentEntity, Long userId) {
 
-        return EntitytoDtoTransformer.commentEntityToDto(commentRepository.save(newCommentEntity), getUserById(userId));
+        CommentEntity commentEntity = commentRepository.save(newCommentEntity);
+
+        if (commentEntity != null) {
+
+            if (!commentEntity.getUser().equals(commentEntity.getPost().getUser())) {
+                addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.getUser(), commentEntity.getPost().getUser());
+            }
+
+        }
+
+        return EntitytoDtoTransformer.commentEntityToDto(commentEntity, getUserById(userId));
 
     }
 

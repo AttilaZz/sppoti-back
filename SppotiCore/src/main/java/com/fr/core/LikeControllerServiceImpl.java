@@ -1,6 +1,7 @@
 package com.fr.core;
 
 import com.fr.entities.CommentEntity;
+import com.fr.models.NotificationType;
 import com.fr.rest.service.LikeControllerService;
 import com.fr.entities.LikeContent;
 import com.fr.entities.Post;
@@ -91,7 +92,13 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     @Override
     public boolean likeComment(LikeContent likeToSave) {
-        return likeContent(likeToSave);
+
+        if( likeContent(likeToSave)){
+//            addNotification(NotificationType.X_LIKED_YOUR_COMMENT, commentEntity.getUser(), commentEntity.getPost().getUser());
+            return true;
+        }
+        return false;
+
     }
 
     //like content - Post or CommentEntity

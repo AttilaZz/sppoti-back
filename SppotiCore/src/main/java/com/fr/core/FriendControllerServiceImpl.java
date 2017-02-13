@@ -1,7 +1,6 @@
 package com.fr.core;
 
 import com.fr.entities.FriendShip;
-import com.fr.entities.NotificationEntity;
 import com.fr.entities.UserEntity;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
@@ -52,7 +51,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
     public void saveFriendShip(FriendShip friendShip) {
 
         if (friendShipRepository.save(friendShip) != null) {
-            addFriendNotification(NotificationType.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend());
+            addNotification(NotificationType.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend());
         }
 
     }
@@ -90,27 +89,12 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
         FriendShip friendShip = friendShipRepository.save(tempFriendShip);
         if (friendShip != null) {
             if(friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED.name())){
-                addFriendNotification(NotificationType.FRIEND_REQUEST_ACCEPTED, friendShip.getUser(), friendShip.getFriend());
+                addNotification(NotificationType.FRIEND_REQUEST_ACCEPTED, friendShip.getUser(), friendShip.getFriend());
             }else if(friendShip.getStatus().equals(GlobalAppStatus.REFUSED.name())){
-                addFriendNotification(NotificationType.FRIEND_REQUEST_REFUSED, friendShip.getUser(), friendShip.getFriend());
+                addNotification(NotificationType.FRIEND_REQUEST_REFUSED, friendShip.getUser(), friendShip.getFriend());
             }
         }
 
-    }
-
-    /**
-     * Add notification
-     *
-     * @param friendRequestRefused
-     * @param user
-     * @param friend
-     */
-    private void addFriendNotification(NotificationType friendRequestRefused, UserEntity user, UserEntity friend) {
-        NotificationEntity notification = new NotificationEntity();
-        notification.setNotificationType(friendRequestRefused);
-        notification.setFrom(user);
-        notification.setTo(friend);
-        notificationRepository.save(notification);
     }
 
     /**

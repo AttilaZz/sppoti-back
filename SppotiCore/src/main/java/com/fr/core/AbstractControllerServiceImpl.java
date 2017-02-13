@@ -4,6 +4,7 @@ import com.fr.commons.dto.*;
 import com.fr.entities.*;
 import com.fr.mail.ApplicationMailer;
 import com.fr.models.GlobalAppStatus;
+import com.fr.models.NotificationType;
 import com.fr.repositories.*;
 import com.fr.rest.service.AbstractControllerService;
 import org.apache.log4j.Logger;
@@ -515,5 +516,21 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
         return teamResponseDTO;
 
+    }
+
+
+    /**
+     * Add notification
+     *
+     * @param friendRequestRefused
+     * @param userFrom
+     * @param userTo
+     */
+    protected void addNotification(NotificationType friendRequestRefused, UserEntity userFrom, UserEntity userTo) {
+        NotificationEntity notification = new NotificationEntity();
+        notification.setNotificationType(friendRequestRefused);
+        notification.setFrom(userFrom);
+        notification.setTo(userTo);
+        notificationRepository.save(notification);
     }
 }
