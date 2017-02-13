@@ -3,8 +3,7 @@ package com.fr.rest.service;
 import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.LikeContent;
-import com.fr.entities.Post;
-import com.fr.entities.UserEntity;
+import com.fr.entities.PostEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,21 +14,64 @@ import java.util.List;
 
 @Service
 public interface LikeControllerService extends AbstractControllerService{
-    boolean likePost(LikeContent likeToSave);
 
-    boolean unLikePost(Post post);
+    /**
+     * Like comment or post
+     *
+     * @param likeToSave
+     */
+    LikeContent likePost(LikeContent likeToSave);
 
+    /**
+     * unlike post
+     *
+     * @param post
+     */
+    void unLikePost(PostEntity post);
+
+    /**
+     *
+     * @param postId
+     * @param userId
+     * @return true if post already liked, false otherwise
+     */
     boolean isPostAlreadyLikedByUser(int postId, Long userId);
 
-    boolean unLikeComment(CommentEntity commentEntityToLike);
+    /**
+     * Unlike content, post or comment
+     *
+     * @param commentEntityToLike
+     */
+    void unLikeComment(CommentEntity commentEntityToLike);
 
+    /**
+     *
+     * @param id
+     * @param userId
+     * @return true if comment already liked, false otherwise
+     */
     boolean isCommentAlreadyLikedByUser(int id, Long userId);
 
-    boolean likeComment(LikeContent likeToSave);
+    /**
+     * Like comment
+     *
+     * @param likeToSave
+     */
+    void likeComment(LikeContent likeToSave);
 
-    UserEntity getUserById(Long userId);
-
+    /**
+     *
+     * @param id
+     * @param page
+     * @return All persons who likes the post
+     */
     List<HeaderDataDTO> getPostLikersList(int id, int page);
 
+    /**
+     *
+     * @param id
+     * @param page
+     * @return All persons who likes the comment
+     */
     List<HeaderDataDTO> getCommentLikersList(int id, int page);
 }

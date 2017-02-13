@@ -27,7 +27,7 @@ public class Address implements Comparable<Address> {
     @ManyToOne
     @JoinColumn(columnDefinition = "post_id")
     @JsonIgnore
-    private Post post;
+    private PostEntity post;
 
     @ManyToOne
     @JoinColumn(columnDefinition = "userid")
@@ -57,11 +57,11 @@ public class Address implements Comparable<Address> {
         this.dateTime = dateTime;
     }
 
-    public Post getPost() {
+    public PostEntity getPost() {
         return post;
     }
 
-    public void setPost(Post post) {
+    public void setPost(PostEntity post) {
         this.post = post;
     }
 

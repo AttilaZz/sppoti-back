@@ -13,7 +13,12 @@ public enum NotificationType {
     //COMMENT
     X_COMMENTED_ON_YOUR_POST(21),
     X_LIKED_YOUR_COMMENT(22),
-    X_TAGGED_YOU_IN_A_COMMENT(22);
+    X_TAGGED_YOU_IN_A_COMMENT(22),
+
+    //POST
+    X_POSTED_ON_YOUR_PROFILE(11),
+    X_LIKED_YOUR_POST(12),
+    X_TAGGED_YOU_IN_A_POST(13);
 
     private int notifType;
 

@@ -24,6 +24,7 @@ public class NotificationControllerServiceImpl extends AbstractControllerService
     @Value("${key.notificationsPerPage}")
     private int notificationSize;
 
+
     @Override
     public List<NotificationDTO> getAllReceivedNotifications(int userId, int page) {
 

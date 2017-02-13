@@ -1,13 +1,11 @@
-/**
- *
- */
 package com.fr.core;
 
-import com.fr.commons.dto.PostResponseDTO;
-import com.fr.rest.service.PostControllerService;
-import com.fr.entities.*;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
+import com.fr.commons.dto.PostResponseDTO;
+import com.fr.entities.*;
+import com.fr.models.NotificationType;
+import com.fr.rest.service.PostControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -16,9 +14,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import utils.EntitytoDtoTransformer;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
@@ -27,16 +26,27 @@ import java.util.regex.Pattern;
 @Component
 public class PostControllerServiceImpl extends AbstractControllerServiceImpl implements PostControllerService {
 
+    private static Logger LOGGER = Logger.getLogger(PostControllerServiceImpl.class);
+
     @Value("${key.postsPerPage}")
     private int postSize;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Post savePost(Post post) {
-        return postRepository.save(post);
+    public PostEntity savePost(PostEntity post) {
+        PostEntity postEntity = postRepository.save(post);
 
+        if (postEntity != null && post.getTargetUserProfileUuid() != getConnectedUser().getUuid()) {
+
+            addNotification(NotificationType.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(), getUserByUuId(postEntity.getTargetUserProfileUuid()));
+
+        }
+
+        addTagNotification(postEntity, null);
+        return postEntity;
     }
-
-    private static Logger LOGGER = Logger.getLogger(PostControllerServiceImpl.class);
 
     /*
      * The post update method is used to update the location (address) of the
@@ -45,12 +55,16 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      * That's why we check if the address is not null before persisting the new
      * content
      */
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean updatePost(EditHistory postEditRow, SortedSet<Address> postEditAddress, int postId) {
         if (postEditAddress != null) {
 
             try {
-                List<Post> post = postRepository.getByUuid(postId);
+                List<PostEntity> post = postRepository.getByUuid(postId);
                 if (post == null) {
                     throw new IllegalArgumentException("Trying to update non existing post");
                 } else {
@@ -74,8 +88,11 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean deletePost(Post p) {
+    public boolean deletePost(PostEntity p) {
 
         try {
             p.setDeleted(true);
@@ -88,10 +105,13 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Post findPost(int id) {
+    public PostEntity findPost(int id) {
 
-        List<Post> posts = postRepository.getByUuid(id);
+        List<PostEntity> posts = postRepository.getByUuid(id);
 
         if (posts == null || posts.isEmpty()) {
             return null;
@@ -101,41 +121,56 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Sport getSportToUse(Long id) {
 
         return sportRepository.getById(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Sppoti getGameById(Long id) {
+    public Sppoti getSppotiById(Long id) {
 
         return sppotiRepository.getOne(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<PostResponseDTO> getPhotoGallery(Long userId, int page) {
         return fillPostResponseFromDbPost(page, userId, 1, null);
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<PostResponseDTO> getVideoGallery(Long userId, int page) {
         return fillPostResponseFromDbPost(page, userId, 2, null);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public PostResponseDTO fillPostToSend(Post post, Long userId) {
+    public PostResponseDTO fillPostToSend(PostEntity post, Long userId) {
 
         return fillPostResponseFromDbPost(0, userId, 3, post).get(0);
 
     }
 
-    private List<PostResponseDTO> fillPostResponseFromDbPost(int page, Long userId, int operationType, Post post_param) {
+    private List<PostResponseDTO> fillPostResponseFromDbPost(int page, Long userId, int operationType, PostEntity post_param) {
 
         Pageable pageable = new PageRequest(page, postSize);
 
-        List<Post> dbContent = new ArrayList<Post>();
+        List<PostEntity> dbContent = new ArrayList<PostEntity>();
 
         switch (operationType) {
             case 1:
@@ -159,7 +194,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         List<PostResponseDTO> mContentResponse = new ArrayList<PostResponseDTO>();
 
-        for (Post post : dbContent) {
+        for (PostEntity post : dbContent) {
 
             PostResponseDTO pres = new PostResponseDTO();
 
@@ -322,6 +357,9 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ContentEditedResponseDTO> getAllPostHistory(int id, int page) {
 
@@ -332,26 +370,34 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
         return fillEditContentResponse(postHistory);
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<EditHistory> getLastModification(int postId) {
 //        return editContentDaoService.getLastEditedPost(postId);
         return editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(postId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Sport getSportById(Long sport_id) {
         return sportRepository.getOne(sport_id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean editPostVisibility(int id, int visibility) {
 
-        List<Post> posts = postRepository.getByUuidOrderByDatetimeCreatedDesc(id, null);
+        List<PostEntity> posts = postRepository.getByUuidOrderByDatetimeCreatedDesc(id, null);
 
         if (posts == null) return false;
 
-        Post post = posts.get(0);
+        PostEntity post = posts.get(0);
         post.setVisibility(visibility);
 
         try {
@@ -362,67 +408,20 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void addNotification(Long userId, int postId, String content) {
-
-        UserEntity connectedUser = userRepository.getByIdAndDeletedFalse(userId);
-        Post concernedePostTag;
-
-
-        List<Post> posts = postRepository.getByUuid(postId);
-
-        if (posts == null) {
-            throw new IllegalArgumentException("Incorrect post id passed in parameters");
-        } else {
-            concernedePostTag = posts.get(0);
-        }
-
-
-        /**
-         * All words starting with DOLLAR, followed by Letter or accented Letter
-         * and finishing with Letter, Number or Accented letter
-         */
-        String patternString1 = "(\\@+)([a-z|A-Z|\\p{javaLetter}][a-z\\d|A-Z\\d|\\p{javaLetter}]*)";
-
-        Pattern pattern = Pattern.compile(patternString1);
-        Matcher matcher = pattern.matcher(content);
-
-        // clean tags from dollar
-        List<String> tags = new ArrayList<String>();
-        while (matcher.find()) {
-            System.out.println(matcher.group());
-            String s = matcher.group().trim();
-            s = s.replaceAll("[@]", "");
-            tags.add(s);
-        }
-
-		/*
-         * process each tag
-		 */
-
-        for (String username : tags) {
-
-            UserEntity userToNotify;
-
-            userToNotify = userRepository.getByUsername(username);
-
-            if (userToNotify != null) {
-
-                //TODO: ADD NOTIFICATION - TAG
-
-            }
-        }
-
-    }
-
-    @Override
-    public List<Post> findAllPosts(Long userLongId, int userIntId, List visibility, int page) {
+    public List<PostEntity> findAllPosts(Long userLongId, int userIntId, List visibility, int page) {
 
         Pageable pageable = new PageRequest(page, postSize, Sort.Direction.DESC, "datetimeCreated");
 
         return postRepository.getAllPosts(userIntId, userLongId, visibility, pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isTargetUserFriendOfMe(int connected_user_uuid, int friend_id) {
         return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friend_id, connected_user_uuid) != null;

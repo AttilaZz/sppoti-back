@@ -2,7 +2,7 @@ package com.fr.rest.controllers.comment;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.entities.CommentEntity;
-import com.fr.entities.Post;
+import com.fr.entities.PostEntity;
 import com.fr.rest.service.CommentControllerService;
 import com.fr.rest.service.PostControllerService;
 import org.apache.log4j.Logger;
@@ -28,12 +28,6 @@ public class CommentAddController {
     private Logger LOGGER = Logger.getLogger(CommentAddController.class);
 
     private CommentControllerService commentDataService;
-    private PostControllerService postControllerService;
-
-    @Autowired
-    public void setPostControllerService(PostControllerService postControllerService) {
-        this.postControllerService = postControllerService;
-    }
 
     @Autowired
     public void setCommentDataService(CommentControllerService commentDataService) {
@@ -86,20 +80,10 @@ public class CommentAddController {
                 commentEntityToSave.setVideoLink(video);
             }
 
-            // get post postId to link the comment
-            Post p = postControllerService.findPost(postId);
-
-            if (p != null) {
-                commentEntityToSave.setPost(p);
-            } else {
-                LOGGER.info("COMMENT: post postId is invalid");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
             Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
             try {
-                CommentDTO savedComment = commentDataService.saveComment(commentEntityToSave, userId);
+                CommentDTO savedComment = commentDataService.saveComment(commentEntityToSave, userId, postId);
 
                 savedComment.setMyComment(true);
 

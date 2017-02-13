@@ -1,11 +1,12 @@
 package com.fr.core;
 
+import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.entities.CommentEntity;
+import com.fr.entities.LikeContent;
+import com.fr.entities.PostEntity;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.LikeControllerService;
-import com.fr.entities.LikeContent;
-import com.fr.entities.Post;
-import com.fr.commons.dto.HeaderDataDTO;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,28 +21,30 @@ import java.util.List;
 @Component
 public class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements LikeControllerService {
 
+    private Logger LOGGER = Logger.getLogger(LikeControllerServiceImpl.class);
 
     @Value("${key.likesPerPage}")
     private int likeSize;
 
     @Override
-    public boolean likePost(LikeContent likeToSave) {
+    public LikeContent likePost(LikeContent likeToSave) {
         return likeContent(likeToSave);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean unLikePost(Post post) {
-        try {
-            LikeContent likeContent = likeRepository.getByPostId(post.getId());
-            likeRepository.delete(likeContent);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void unLikePost(PostEntity post) {
+
+        LikeContent likeContent = likeRepository.getByPostId(post.getId());
+        likeRepository.delete(likeContent);
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isPostAlreadyLikedByUser(int postId, Long userId) {
 
@@ -49,6 +52,9 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<HeaderDataDTO> getPostLikersList(int id, int page) {
 
@@ -61,6 +67,9 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<HeaderDataDTO> getCommentLikersList(int id, int page) {
 
@@ -72,47 +81,69 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+
     @Override
-    public boolean unLikeComment(CommentEntity commentEntityToUnlike) {
-        try {
-            LikeContent likeContent = likeRepository.getByCommentId(commentEntityToUnlike.getId());
-            likeRepository.delete(likeContent);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+    public void unLikeComment(CommentEntity commentEntityToUnlike) {
+
+        LikeContent likeContent = likeRepository.getByCommentId(commentEntityToUnlike.getId());
+        likeRepository.delete(likeContent);
+
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isCommentAlreadyLikedByUser(int commentId, Long userId) {
         return likeRepository.getByUserIdAndCommentUuid(userId, commentId) != null;
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean likeComment(LikeContent likeToSave) {
+    public void likeComment(LikeContent likeToSave) {
 
-        if( likeContent(likeToSave)){
-//            addNotification(NotificationType.X_LIKED_YOUR_COMMENT, commentEntity.getUser(), commentEntity.getPost().getUser());
-            return true;
-        }
-        return false;
+        likeContent(likeToSave);
 
     }
 
-    //like content - Post or CommentEntity
-    private boolean likeContent(LikeContent likeContent) {
-        try {
-            likeRepository.save(likeContent);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+    /**
+     * like content - PostEntity or CommentEntity
+     *
+     * @param likeContent
+     * @return boolean
+     */
+    private LikeContent likeContent(LikeContent likeContent) {
+
+        if (likeContent != null) {
+
+            if (likeContent.getComment() != null && !likeContent.getComment().getUser().getId().equals(getConnectedUser().getId())) {
+                //Comment like
+                addNotification(NotificationType.X_LIKED_YOUR_COMMENT, likeContent.getUser(), likeContent.getComment().getUser());
+
+            } else if (likeContent.getPost() != null && !likeContent.getPost().getUser().getId().equals(getConnectedUser().getId())) {
+                //like post
+                addNotification(NotificationType.X_LIKED_YOUR_POST, likeContent.getUser(), likeContent.getPost().getUser());
+            }
+
         }
+
+        return likeRepository.save(likeContent);
+
     }
 
-    private List likersList(List<LikeContent> likersData) {
+    /**
+     * get likers list
+     *
+     * @param likersData
+     * @return list of HeaderDataDTO
+     */
+    private List<HeaderDataDTO> likersList(List<LikeContent> likersData) {
 
         List<HeaderDataDTO> likers = new ArrayList<HeaderDataDTO>();
 

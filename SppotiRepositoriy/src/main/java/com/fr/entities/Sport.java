@@ -38,7 +38,7 @@ public class Sport {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport")
     @JsonIgnore
-    private Set<Post> post;
+    private Set<PostEntity> post;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport")
     @JsonIgnore
@@ -72,7 +72,7 @@ public class Sport {
         return icon;
     }
 
-    public Set<Post> getPost() {
+    public Set<PostEntity> getPost() {
         return post;
     }
 
@@ -92,7 +92,7 @@ public class Sport {
         this.icon = icon;
     }
 
-    public void setPost(Set<Post> post) {
+    public void setPost(Set<PostEntity> post) {
         this.post = post;
     }
 

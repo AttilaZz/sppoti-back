@@ -67,7 +67,7 @@ public class UserEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("datetimeCreated DESC")
-    private SortedSet<Post> userPosts = new TreeSet<Post>();
+    private SortedSet<PostEntity> userPosts = new TreeSet<PostEntity>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userSppoti")
     private Set<Sppoti> userSppoties;
@@ -126,11 +126,11 @@ public class UserEntity {
 
     public UserEntity() {}
 
-    public Set<Post> getUserPosts() {
+    public Set<PostEntity> getUserPosts() {
         return userPosts;
     }
 
-    public void setUserPosts(SortedSet<Post> userPosts) {
+    public void setUserPosts(SortedSet<PostEntity> userPosts) {
         this.userPosts = userPosts;
     }
 

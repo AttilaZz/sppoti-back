@@ -34,7 +34,7 @@ public class LikeContent {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "post_id")
     @JsonIgnore
-    private Post post;
+    private PostEntity post;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "comment_id")
@@ -60,11 +60,11 @@ public class LikeContent {
         this.user = user;
     }
 
-    public Post getPost() {
+    public PostEntity getPost() {
         return post;
     }
 
-    public void setPost(Post post) {
+    public void setPost(PostEntity post) {
         this.post = post;
     }
 

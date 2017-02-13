@@ -47,7 +47,7 @@ public class PostController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<PostResponseDTO> detailsPost(@PathVariable int id, HttpServletRequest request) {
 
-        Post mPost = postDataService.findPost(id);
+        PostEntity mPost = postDataService.findPost(id);
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
         UserEntity user = postDataService.getUserById(userId);
@@ -66,7 +66,7 @@ public class PostController {
         }
 
         PostResponseDTO prep = postDataService.fillPostToSend(mPost, userId);
-        LOGGER.info("DETAILS_POST: Post details has been returned for postId: " + id);
+        LOGGER.info("DETAILS_POST: PostEntity details has been returned for postId: " + id);
         return new ResponseEntity<>(prep, HttpStatus.OK);
 
     }
@@ -78,7 +78,7 @@ public class PostController {
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
         Long connectedUserId = accountUserDetails.getId();
 
-        List<Post> posts;
+        List<PostEntity> posts;
 
         UserEntity requestUser = postDataService.getUserByUuId(user_unique_id);
 
@@ -113,7 +113,7 @@ public class PostController {
 
         List<PostResponseDTO> postResponseDTOs = new ArrayList<>();
 
-        for (Post post : posts) {
+        for (PostEntity post : posts) {
 //            PostResponseDTO postResponse = new PostResponseDTO(post);
             postResponseDTOs.add(postDataService.fillPostToSend(post, userId));
         }
@@ -121,223 +121,6 @@ public class PostController {
 //        PostResponseDTO prep = postDataService.fillPostToSend(postResponseDTOs, userId);
         LOGGER.info("ALL_POST: All post have been returned");
         return new ResponseEntity<>(postResponseDTOs, HttpStatus.OK);
-
-    }
-
-    /**
-     * @param newPostReq
-     * @param request
-     * @return Add post by user
-     */
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping
-    public ResponseEntity<PostResponseDTO> addPost(@RequestBody PostRequestDTO newPostReq, HttpServletRequest request) {
-
-        // get current logged user
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        UserEntity user = postDataService.getUserById(userId);
-        LOGGER.info("POST-ADD: LOGGED UserDTO: => " + userId);
-
-        boolean canAdd = false;
-
-        Sport targedSport;
-        Sppoti game;
-        Long sportId;
-        Long gameId;
-
-        Post newPostToSave = new Post(); // Object to save in database
-        newPostToSave.setUser(user);
-
-        PostResponseDTO postRep = new PostResponseDTO();// object to send on success
-
-        // Sport is required
-        if (newPostReq.getSportId() != null) {
-
-            sportId = newPostReq.getSportId();
-            targedSport = postDataService.getSportToUse(sportId);
-
-            if (targedSport != null) {
-                newPostToSave.setSport(targedSport);
-                postRep.setSportId(sportId);
-            } else {
-                LOGGER.info("POST-ADD: The received SportModelDTO ID is not valid");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-        } else {
-
-            LOGGER.info("POST-ADD: A sport_id must be defined ");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        }
-
-        // if post is about a game
-        if (newPostReq.getGameId() != null) {
-
-            gameId = newPostReq.getGameId();
-            game = postDataService.getGameById(gameId);
-
-            if (game == null) {
-                LOGGER.info("POST-ADD: Game id is not valid");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-//            newPostToSave.setSppoti(game);
-            postRep.setGame(game);
-            canAdd = true;
-
-        }
-
-        // visibility
-        int visibility = newPostReq.getVisibility();
-        newPostToSave.setVisibility(visibility);
-        postRep.setVisibility(visibility);
-
-        /*
-            ---- Manage address
-         */
-        Address address = newPostReq.getAddress();
-
-        if (address != null) {
-            address.setPost(newPostToSave);
-            SortedSet<Address> addresses = new TreeSet<>();
-            addresses.add(address);
-
-            newPostToSave.setAddresses(addresses);
-        }
-
-        /*
-            ---- End address
-         */
-        String content = null;
-        Set<String> image = new HashSet<>();
-        String video = null;
-
-        try {
-            content = newPostReq.getContent().getContent();
-            image = newPostReq.getContent().getImageLink();
-            video = newPostReq.getContent().getVideoLink();
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("ADD-POST: Data sent in json rrquest are incorrect");
-        }
-
-        // if post has only classic content - Text, Image, Video
-        if (newPostReq.getContent() != null) {
-
-            if (content == null && image == null && video == null) {
-                LOGGER.info("POST-ADD: missing attributes");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-            if (image != null && video != null) {
-                LOGGER.info("POST-ADD: image OR video, make a choice !!");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-            if (content != null) {
-                if (content.trim().length() <= 0) {
-                    LOGGER.info("POST-ADD: Content value is empty");
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                }
-
-                // base64 encode content
-                // Charset.forName("UTF-8").encode(content);
-                // Base64Utils.encode(content.getBytes())
-                postRep.setContent(content);
-                newPostToSave.setContent(content);
-
-            }
-
-            if (image != null) {
-                if (image.size() <= 0) {
-                    LOGGER.info("POST-ADD: image link value is empty");
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                }
-                postRep.setImageLink(image);
-                newPostToSave.setAlbum(image);
-            }
-
-            if (video != null) {
-                if (video.trim().length() <= 0) {
-                    LOGGER.info("POST-ADD: video link value is empty");
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                }
-                postRep.setVideoLink(video);
-                newPostToSave.setVideo(video);
-            }
-
-            canAdd = true;
-
-        }
-
-        postRep.setFirstName(user.getFirstName());
-        postRep.setLastName(user.getLastName());
-        postRep.setUsername(user.getUsername());
-
-        List<Resources> resources = new ArrayList<>();
-        resources.addAll(user.getRessources());
-
-        if (!resources.isEmpty()) {
-            if (resources.get(0) != null && resources.get(0).getType() == 1) {
-                postRep.setAvatar(resources.get(0).getUrl());
-            } else if (resources.get(1) != null && resources.get(1).getType() == 1) {
-                postRep.setAvatar(resources.get(1).getUrl());
-            }
-        }
-
-        /*
-        Check target user
-         */
-        int requestTargetUserId = newPostReq.getTargetUserUuid();
-        UserEntity targetUser = postDataService.getUserByUuId(requestTargetUserId);
-        if (requestTargetUserId != 0 && targetUser != null) {
-
-            newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUserUuid());
-            postRep.setTargetUser(targetUser.getFirstName(), targetUser.getLastName(), targetUser.getUsername(), targetUser.getUuid(), false);
-        } else if (requestTargetUserId != 0) {
-            LOGGER.error("ADD-POST: Target user id not found !");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        // if a game or one of the previous classic content has been assigned -
-        // save post
-
-        try {
-
-            if (!canAdd) throw new PostContentMissingException("At least a game or a post content must be assigned");
-            //Save and get the inserted id
-
-
-            int insertedPostId = postDataService.savePost(newPostToSave).getUuid();
-
-            //Fill the id in the response object
-            postRep.setId(insertedPostId);
-            postRep.setDatetimeCreated(newPostToSave.getDatetimeCreated());
-            LOGGER.info("POST-ADD: post has been saved");
-
-            /**
-             * prepare notifications
-             */
-            // check if logged user has been tagged
-            if (content != null) {
-                //postDataService.addNotification(userId, insertedPostId, content);
-            }
-
-            postRep.setMyPost(true);
-            LOGGER.info("UUID: " + postRep.getId());
-            return new ResponseEntity<>(postRep, HttpStatus.CREATED);
-
-        } catch (PostContentMissingException e1) {
-            e1.printStackTrace();
-            LOGGER.error("POST-ADD: At least a game or a post content must be assigned");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("POST-ADD: Unhandled problem has been found");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
 
     }
 
@@ -350,7 +133,7 @@ public class PostController {
     public ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("id") int postId,
                                                                @RequestBody ContentEditedResponseDTO newData) {
 
-        Post postToEdit = postDataService.findPost(postId);
+        PostEntity postToEdit = postDataService.findPost(postId);
 
         List<EditHistory> lastPostEditList = postDataService.getLastModification(postId);
         EditHistory lastPostEdit = null;
@@ -436,7 +219,7 @@ public class PostController {
      */
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable int id) {
-        Post postToDelete = postDataService.findPost(id);
+        PostEntity postToDelete = postDataService.findPost(id);
 
         if (postToDelete == null) {
             // post not fount
@@ -447,7 +230,7 @@ public class PostController {
 
         if (postDataService.deletePost(postToDelete)) {
             // delete success
-            LOGGER.info("POST_DELETE: Post with id: " + id + "-- has been deleted");
+            LOGGER.info("POST_DELETE: PostEntity with id: " + id + "-- has been deleted");
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
@@ -464,7 +247,7 @@ public class PostController {
     @GetMapping(value = "/history/{id}/{page}")
     public ResponseEntity<List<ContentEditedResponseDTO>> editHistory(@PathVariable int id, @PathVariable int page) {
 
-        Post postToLike = postDataService.findPost(id);
+        PostEntity postToLike = postDataService.findPost(id);
 
         if (postToLike == null) {
 
@@ -474,7 +257,7 @@ public class PostController {
 
         }
 
-        LOGGER.info("POST_EDIT_HISTORY: Post HISTORY has been returned for postId: " + id);
+        LOGGER.info("POST_EDIT_HISTORY: PostEntity HISTORY has been returned for postId: " + id);
         return new ResponseEntity<>(postDataService.getAllPostHistory(id, page), HttpStatus.OK);
 
     }
@@ -482,7 +265,7 @@ public class PostController {
     @PutMapping(value = "/{id}/{visibility}")
     public ResponseEntity<Void> editVisibility(@PathVariable int id, @PathVariable int visibility) {
 
-        Post postToEdit = postDataService.findPost(id);
+        PostEntity postToEdit = postDataService.findPost(id);
 
         if (postToEdit == null) {
 
@@ -498,7 +281,7 @@ public class PostController {
 
         }
 
-        LOGGER.info("POST_EDIT_VISIBILITY: Post VISIBILITY has been changed for postId: " + id);
+        LOGGER.info("POST_EDIT_VISIBILITY: PostEntity VISIBILITY has been changed for postId: " + id);
         return new ResponseEntity<>(HttpStatus.OK);
 
     }

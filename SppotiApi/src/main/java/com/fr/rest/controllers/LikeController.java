@@ -1,14 +1,14 @@
 package com.fr.rest.controllers;
 
+import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.commons.dto.PostResponseDTO;
 import com.fr.entities.CommentEntity;
+import com.fr.entities.LikeContent;
+import com.fr.entities.PostEntity;
 import com.fr.entities.UserEntity;
 import com.fr.rest.service.CommentControllerService;
 import com.fr.rest.service.LikeControllerService;
 import com.fr.rest.service.PostControllerService;
-import com.fr.entities.LikeContent;
-import com.fr.entities.Post;
-import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +63,7 @@ public class LikeController {
     @PutMapping(value = "/post/{id}")
     public ResponseEntity<Void> likePost(@PathVariable("id") int id, HttpServletRequest request) {
 
-        Post postToLike = postDataService.findPost(id);
+        PostEntity postToLike = postDataService.findPost(id);
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
@@ -87,17 +87,20 @@ public class LikeController {
         likeToSave.setUser(user);
 
         if (!likeControllerService.isPostAlreadyLikedByUser(id, userId)) {
-            if (likeControllerService.likePost(likeToSave)) {
-                // delete success
-                LOGGER.info("LIKE_POST: Post with id:" + id + " has been liked by: " + user.getFirstName() + " "
+            try {
+                likeControllerService.likePost(likeToSave);
+
+                LOGGER.info("LIKE_POST: PostEntity with id:" + id + " has been liked by: " + user.getFirstName() + " "
                         + user.getLastName());
                 return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                LOGGER.error("LIKE_POST: Database like problem !!");
+
+            } catch (Exception e) {
+                LOGGER.error("LIKE_POST: Database like problem !!", e);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+
         } else {
-            LOGGER.error("LIKE_POST: Post already liked by: " + user.getFirstName() + " " + user.getLastName());
+            LOGGER.error("LIKE_POST: PostEntity already liked by: " + user.getFirstName() + " " + user.getLastName());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -111,7 +114,7 @@ public class LikeController {
     @DeleteMapping(value = "/post/{id}")
     public ResponseEntity<Void> unLikePost(@PathVariable("id") int id, HttpServletRequest request, Authentication authentication) {
 
-        Post postToUnlike = postDataService.findPost(id);
+        PostEntity postToUnlike = postDataService.findPost(id);
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
@@ -134,17 +137,20 @@ public class LikeController {
         //post must be liked before unlike
         if (likeControllerService.isPostAlreadyLikedByUser(id, userId)) {
 
-            if (likeControllerService.unLikePost(postToUnlike)) {
-                // delete success
+            try {
+                likeControllerService.unLikePost(postToUnlike);
+
                 LOGGER.info("UNLIKE_POST: CommentEntity with id:" + id + " has been liked by: " + user.getFirstName() + " "
                         + user.getLastName());
                 return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                LOGGER.error("UNLIKE_POST: Problem founc when trying to unlike post id:" + id);
+            } catch (RuntimeException e) {
+
+                LOGGER.error("UNLIKE_POST: Problem founc when trying to unlike post id:" + id, e);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+
         } else {
-            LOGGER.error("UNLIKE_POST: Post NOT liked by: " + user.getFirstName() + " " + user.getLastName());
+            LOGGER.error("UNLIKE_POST: PostEntity NOT liked by: " + user.getFirstName() + " " + user.getLastName());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -157,7 +163,7 @@ public class LikeController {
     @GetMapping(value = "/post/{id}/{page}")
     public ResponseEntity<PostResponseDTO> getPostLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
 
-        Post currentPost = postDataService.findPost(id);
+        PostEntity currentPost = postDataService.findPost(id);
 
         if (currentPost == null) {
             // post not fount
@@ -215,13 +221,14 @@ public class LikeController {
         likeToSave.setUser(user);
 
         if (!likeControllerService.isCommentAlreadyLikedByUser(id, userId)) {
-            if (likeControllerService.likeComment(likeToSave)) {
-                // delete success
+            try {
+                likeControllerService.likeComment(likeToSave);
                 LOGGER.info("LIKE_COMMENT: CommentEntity with id:" + id + " has been liked by: " + user.getFirstName() + " "
                         + user.getLastName());
                 return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                LOGGER.info("LIKE_COMMENT: Failed to retreive the comment id:" + id);
+            } catch (RuntimeException e) {
+
+                LOGGER.error("LIKE_COMMENT: Failed to retreive the comment id:" + id, e);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
@@ -259,16 +266,17 @@ public class LikeController {
 
         //post must be liked before unlike
         if (likeControllerService.isCommentAlreadyLikedByUser(id, userId)) {
-
-            if (likeControllerService.unLikeComment(commentEntityToLike)) {
+            try {
+                likeControllerService.unLikeComment(commentEntityToLike);
                 // delete success
                 LOGGER.info("UNLIKE_COMMENT: CommentEntity with id:" + id + " has been liked by: " + user.getFirstName() + " "
                         + user.getLastName());
                 return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                LOGGER.error("UNLIKE_COMMENT: Problem found when trying to unlike comment id" + id);
+            } catch (RuntimeException e) {
+                LOGGER.error("UNLIKE_COMMENT: Problem found when trying to unlike comment id" + id, e);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
+
         } else {
             LOGGER.error("UNLIKE_COMMENT: CommentEntity id:" + id + "- NOT liked by: " + user.getFirstName() + " " + user.getLastName());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

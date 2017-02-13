@@ -4,7 +4,7 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.entities.Address;
-import com.fr.entities.Post;
+import com.fr.entities.PostEntity;
 import com.fr.entities.Sppoti;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class PostResponseDTO {
 
     private boolean myPost;
 
-    public PostResponseDTO(Post post) {
+    public PostResponseDTO(PostEntity post) {
         this.content = post.getContent();
     }
 

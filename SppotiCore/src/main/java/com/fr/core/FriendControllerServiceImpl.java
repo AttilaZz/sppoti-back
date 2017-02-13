@@ -88,10 +88,10 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
         //update and add notification
         FriendShip friendShip = friendShipRepository.save(tempFriendShip);
         if (friendShip != null) {
-            if(friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED.name())){
-                addNotification(NotificationType.FRIEND_REQUEST_ACCEPTED, friendShip.getUser(), friendShip.getFriend());
-            }else if(friendShip.getStatus().equals(GlobalAppStatus.REFUSED.name())){
-                addNotification(NotificationType.FRIEND_REQUEST_REFUSED, friendShip.getUser(), friendShip.getFriend());
+            if (friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED.name())) {
+                addNotification(NotificationType.FRIEND_REQUEST_ACCEPTED, friendShip.getFriend(), friendShip.getUser());
+            } else if (friendShip.getStatus().equals(GlobalAppStatus.REFUSED.name())) {
+                addNotification(NotificationType.FRIEND_REQUEST_REFUSED, friendShip.getFriend(), friendShip.getUser());
             }
         }
 

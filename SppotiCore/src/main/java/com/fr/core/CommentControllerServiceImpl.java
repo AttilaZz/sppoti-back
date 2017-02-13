@@ -7,6 +7,7 @@ import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistory;
+import com.fr.entities.PostEntity;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.CommentControllerService;
 import org.apache.log4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import utils.EntitytoDtoTransformer;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 /**
@@ -29,16 +31,33 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
     @Value("${key.commentsPerPage}")
     private int commentSize;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public CommentDTO saveComment(CommentEntity newCommentEntity, Long userId) {
+    public CommentDTO saveComment(CommentEntity newCommentEntity, Long userId, int postId) {
 
+
+        // get post postId to link the comment
+        List<PostEntity> postEntity = postRepository.getByUuid(postId);
+        if (!postEntity.isEmpty()) {
+            newCommentEntity.setPost(postEntity.get(0));
+        } else {
+            throw new EntityNotFoundException("Post not found (" + postId + ")");
+        }
+
+        newCommentEntity.setUser(userRepository.findOne(getConnectedUser().getId()));
         CommentEntity commentEntity = commentRepository.save(newCommentEntity);
 
         if (commentEntity != null) {
 
-            if (!commentEntity.getUser().equals(commentEntity.getPost().getUser())) {
-                addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.getUser(), commentEntity.getPost().getUser());
+            //comment on other posts not mine
+            if (commentEntity.getUser().getUuid() != commentEntity.getPost().getTargetUserProfileUuid()) {
+                addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.getUser(), getUserByUuId(commentEntity.getPost().getTargetUserProfileUuid()));
+
             }
+
+            addTagNotification(null, commentEntity);
 
         }
 
@@ -46,6 +65,9 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean deleteComment(CommentEntity commentEntity) {
         commentEntity.setDeleted(true);
@@ -58,11 +80,17 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CommentEntity findComment(int id) {
         return commentRepository.getByUuid(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean updateComment(EditHistory commentToEdit) {
 
@@ -76,6 +104,9 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CommentDTO> getPostCommentsFromLastId(int postId, int page, Long userId) {
 
@@ -87,6 +118,9 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
         return fillCommentModelList(lCommentEntity, userId);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ContentEditedResponseDTO> getAllCommentHistory(int id, int page) {
 

@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public interface CommentControllerService extends AbstractControllerService {
 
-    CommentDTO saveComment(CommentEntity newCommentEntity, Long userId);
+    CommentDTO saveComment(CommentEntity newCommentEntity, Long userId, int postId);
 
     boolean deleteComment(CommentEntity commentEntity);
 

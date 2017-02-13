@@ -7,6 +7,7 @@ import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.repositories.*;
 import com.fr.rest.service.AbstractControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -19,6 +20,8 @@ import utils.EntitytoDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component("abstractService")
 public abstract class AbstractControllerServiceImpl implements AbstractControllerService {
@@ -39,7 +42,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected TeamMembersRepository teamMembersRepository;
     protected SppotiMembersRepository sppotiMembersRepository;
     protected NotificationRepository notificationRepository;
-
 
 
     @Autowired
@@ -138,6 +140,9 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return userRoles;
     }
 
+    /**
+     * @return current authentication username
+     */
     @Override
     public String getAuthenticationUsername() {
         String userName;
@@ -151,11 +156,19 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return userName;
     }
 
+    /**
+     * @param loginUser
+     * @return user entity from username
+     */
     @Override
     public UserEntity getUserFromUsernameType(String loginUser) {
         return null;
     }
 
+    /**
+     * @param username
+     * @return login type
+     */
     @Override
     public int getUserLoginType(String username) {
         String numberRegex = "[0-9]+";
@@ -172,11 +185,19 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return loginType;
     }
 
+    /**
+     * @param id
+     * @return found userEntity
+     */
     @Override
     public UserEntity getUserById(Long id) {
         return userRepository.getByIdAndDeletedFalse(id);
     }
 
+    /**
+     * @param id
+     * @return found user entity
+     */
     @Override
     public UserEntity getUserByUuId(int id) {
 
@@ -197,6 +218,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return properties;
     }
 
+    /**
+     * @param dsHistoryList
+     * @return list of ContentEditedResponseDTO
+     */
     protected List<ContentEditedResponseDTO> fillEditContentResponse(List<EditHistory> dsHistoryList) {
         List<ContentEditedResponseDTO> editHistoryResponse = new ArrayList<ContentEditedResponseDTO>();
         editHistoryResponse.clear();
@@ -213,6 +238,19 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return editHistoryResponse;
     }
 
+    /**
+     * @return connected user entity
+     */
+    protected UserEntity getConnectedUser() {
+        AccountUserDetails accountUserDetails = (AccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return accountUserDetails.getConnectedUserDetails();
+    }
+
+    /**
+     * @param dbCommentEntityList
+     * @param userId
+     * @return list of Comment DTO
+     */
     protected List<CommentDTO> fillCommentModelList(List<CommentEntity> dbCommentEntityList, Long userId) {
         List<CommentDTO> myList = new ArrayList<CommentDTO>();
 
@@ -260,15 +298,20 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     }
 
+    /**
+     * @param o
+     * @param userId
+     * @return true if content has been liked by me, false otherwise
+     */
     // detect if post or comment has already been liked by user
     protected boolean isContentLikedByUser(Object o, Long userId) {
 
         List<LikeContent> lp = new ArrayList<LikeContent>();
-        Post p;
+        PostEntity p;
         CommentEntity c;
 
-        if (o instanceof Post) {
-            p = (Post) o;
+        if (o instanceof PostEntity) {
+            p = (PostEntity) o;
             lp.addAll(p.getLikes());
         } else if (o instanceof CommentEntity) {
             c = (CommentEntity) o;
@@ -285,6 +328,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     }
 
+    /**
+     * @param targetUser
+     * @param connected_user
+     * @return user DTO
+     */
     protected UserDTO fillUserResponse(UserEntity targetUser, UserEntity connected_user) {
 
         UserDTO user = new UserDTO();
@@ -532,5 +580,60 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         notification.setFrom(userFrom);
         notification.setTo(userTo);
         notificationRepository.save(notification);
+    }
+
+    /**
+     * Find tags in content and add notifications
+     *
+     * @param commentEntity
+     * @param postEntity
+     */
+    public void addTagNotification(PostEntity postEntity, CommentEntity commentEntity) {
+
+        String content = null;
+        if (postEntity != null) {
+            content = postEntity.getContent();
+        } else if (commentEntity != null) {
+            content = commentEntity.getContent();
+        }
+
+        /**
+         * All words starting with @, followed by Letter or accented Letter
+         * and finishing with Letter, Number or Accented letter
+         */
+        String patternString1 = "(\\$+)([a-z|A-Z|\\p{javaLetter}][a-z\\d|A-Z\\d|\\p{javaLetter}]*)";
+
+        Pattern pattern = Pattern.compile(patternString1);
+        Matcher matcher = pattern.matcher(content);
+
+        /**
+         *  clean tags from @
+         */
+        List<String> tags = new ArrayList<>();
+        while (matcher.find()) {
+            LOGGER.debug(matcher.group());
+            String s = matcher.group().trim();
+            s = s.replaceAll("[$]", "");
+            tags.add(s);
+        }
+
+        /**
+         * Process each tag
+         */
+        for (String username : tags) {
+            UserEntity userToNotify;
+
+            userToNotify = userRepository.getByUsername(username);
+
+            if (userToNotify != null) {
+                if (commentEntity != null) {
+                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(), userToNotify);
+                } else if (postEntity != null) {
+                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify);
+                }
+
+            }
+        }
+
     }
 }

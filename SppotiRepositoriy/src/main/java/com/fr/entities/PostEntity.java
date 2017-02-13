@@ -23,7 +23,7 @@ import com.google.gson.annotations.SerializedName;
 
 @Entity
 @JsonInclude(Include.NON_EMPTY)
-public class Post implements Comparable<Post> {
+public class PostEntity implements Comparable<PostEntity> {
 
     @Id
     @GeneratedValue
@@ -54,11 +54,11 @@ public class Post implements Comparable<Post> {
     @OrderBy("dateTime DESC")
     private SortedSet<Address> addresses = new TreeSet<Address>();
 
-    public Post() {
+    public PostEntity() {
         super();
     }
 
-    public Post(Post post) {
+    public PostEntity(PostEntity post) {
         this.content = post.getContent();
         this.album = post.getAlbum();
         this.video = post.getVideo();
@@ -209,7 +209,7 @@ public class Post implements Comparable<Post> {
 
     @SuppressWarnings("unused")
     @Override
-    public int compareTo(Post o) {
+    public int compareTo(PostEntity o) {
 
         if (this != null) {
             if (o != null) {
