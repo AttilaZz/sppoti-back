@@ -57,12 +57,12 @@ public class Sppoti {
     @JsonIgnore
     private UserEntity userSppoti;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_host_id", nullable = false)
     @JsonIgnore
     private Team teamHost;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_adverse_id")
     @JsonIgnore
     private Team teamAdverse;

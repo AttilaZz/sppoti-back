@@ -22,11 +22,11 @@ public class SppotiMember {
     private Integer xPosition;
     private Integer yPosition;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sppoti_id")
     private Sppoti sppoti;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sppoter_id")
     private TeamMembers usersTeam;
 

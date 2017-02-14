@@ -23,11 +23,11 @@ public class FriendShip {
     @Column(nullable = false)
     private String status = GlobalAppStatus.PENDING.name();
 
-    @OneToOne(targetEntity = UserEntity.class)
+    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "friend_id")
     private UserEntity friend;
 
-    @OneToOne(targetEntity = UserEntity.class)
+    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

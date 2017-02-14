@@ -24,21 +24,34 @@ public class NotificationControllerServiceImpl extends AbstractControllerService
     @Value("${key.notificationsPerPage}")
     private int notificationSize;
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<NotificationDTO> getAllReceivedNotifications(int userId, int page) {
 
         Pageable pageable = new PageRequest(page, notificationSize);
 
-        List<NotificationEntity> notifications = notificationRepository.findByToUuid(userId, pageable);
+        List<NotificationEntity> notifications = notificationRepository.findByToUuidAndOpenedFalse(userId, pageable);
 
         return notifications.stream()
                 .map(EntitytoDtoTransformer::notificationEntityToDto)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<NotificationDTO> getAllSentNotifications(int userId, int page) {
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void openNotification(int notifId) {
+        notificationRepository.findByUuid(notifId);
     }
 }

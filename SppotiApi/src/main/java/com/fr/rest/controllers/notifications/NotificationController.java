@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +27,12 @@ public class NotificationController {
         this.notificationControllerService = notificationControllerService;
     }
 
+    /**
+     * @param authentication
+     * @param userId
+     * @param page
+     * @return all unread user notifications.
+     */
     @GetMapping("/{page}")
     public ResponseEntity<List<NotificationDTO>> getAllUserNotifications(Authentication authentication, @PathVariable int userId, @PathVariable int page) {
 
@@ -44,4 +47,15 @@ public class NotificationController {
         return new ResponseEntity<>(notifications, HttpStatus.OK);
     }
 
+    @PutMapping("/{notifId}")
+    public ResponseEntity<Void> openNotification(@PathVariable int notifId) {
+
+        try {
+            notificationControllerService.openNotification(notifId);
+        } catch (RuntimeException e) {
+            LOGGER.error("Can not update notif open status! (" + notifId + ")", e);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

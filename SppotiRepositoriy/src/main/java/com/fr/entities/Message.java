@@ -1,12 +1,6 @@
 package com.fr.entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import org.joda.time.DateTime;
 
@@ -36,7 +30,7 @@ public class Message {
     @JsonIgnore
     private Long receiver_id;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id")
     // @JsonBackReference(value = "user_messages")
     @JsonIgnore

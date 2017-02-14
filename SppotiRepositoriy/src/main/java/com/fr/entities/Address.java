@@ -24,12 +24,12 @@ public class Address implements Comparable<Address> {
     private String address;
     private String dateTime = new DateTime().toString();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition = "post_id")
     @JsonIgnore
     private PostEntity post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(columnDefinition = "userid")
     @JsonIgnore
     private UserEntity users;

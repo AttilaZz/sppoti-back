@@ -24,4 +24,11 @@ public interface NotificationControllerService {
      * @return all sent notification by a given user id
      */
     List<NotificationDTO> getAllSentNotifications(int userId, int page);
+
+    /**
+     * Update open status to true
+     *
+     * @param notifId
+     */
+    void openNotification(int notifId);
 }

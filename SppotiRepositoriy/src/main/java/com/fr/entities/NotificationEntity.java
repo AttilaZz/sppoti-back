@@ -23,11 +23,11 @@ public class NotificationEntity {
     @Column(nullable = false, unique = true, updatable = false)
     private Integer uuid = UUID.randomUUID().hashCode();
 
-    @ManyToOne(targetEntity = UserEntity.class)
+    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "from_user_id", nullable = false)
     private UserEntity from;
 
-    @ManyToOne(targetEntity = UserEntity.class)
+    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "to_user_id", nullable = false)
     private UserEntity to;
 
@@ -37,6 +37,9 @@ public class NotificationEntity {
 
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
+
+    @Column(nullable = false)
+    private boolean opened = false;
 
     public Long getId() {
         return id;
@@ -84,5 +87,13 @@ public class NotificationEntity {
 
     public void setUuid(Integer uuid) {
         this.uuid = uuid;
+    }
+
+    public boolean isOpened() {
+        return opened;
+    }
+
+    public void setOpened(boolean opened) {
+        this.opened = opened;
     }
 }
