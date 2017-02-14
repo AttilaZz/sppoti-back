@@ -37,7 +37,7 @@ public class FindTeamController {
      * @param authentication
      * @return All found teams containing the String (team).
      */
-    @GetMapping("/team/{team}/{page}")
+    @GetMapping("/{team}/{page}")
     public ResponseEntity<List<TeamResponseDTO>> findTeam(@PathVariable String team, @PathVariable int page, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();

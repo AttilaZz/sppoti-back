@@ -11,7 +11,9 @@ import java.util.List;
  */
 public interface NotificationRepository extends JpaRepository <NotificationEntity, Long>{
 
-    List<NotificationEntity> findByToUuidAndOpenedFalse(int userId, Pageable pageable);
+    List<NotificationEntity> findByToUuid(int userId, Pageable pageable);
 
     NotificationEntity findByUuid(int notifId);
+
+    Integer countByToUuid(int userId);
 }

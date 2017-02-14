@@ -82,7 +82,7 @@ public class TeamController {
     }
 
     /**
-     * This methos update general team informations,
+     * This method update general team informations,
      * Title, Logos, Cover
      *
      * @param id

@@ -3,6 +3,7 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.models.NotificationType;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.Date;
 
@@ -17,6 +18,7 @@ public class NotificationDTO {
     private UserDTO from;
     private UserDTO to;
     private Integer notificationType;
+    private Boolean opened;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private Date datetime;
@@ -59,6 +61,14 @@ public class NotificationDTO {
 
     public void setNotificationType(Integer notificationType) {
         this.notificationType = notificationType;
+    }
+
+    public Boolean getOpened() {
+        return opened;
+    }
+
+    public void setOpened(Boolean opened) {
+        this.opened = opened;
     }
 }
 

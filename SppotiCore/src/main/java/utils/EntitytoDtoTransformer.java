@@ -26,10 +26,12 @@ public class EntitytoDtoTransformer {
      */
     public static NotificationDTO notificationEntityToDto(NotificationEntity notification) {
         NotificationDTO notificationDTO = new NotificationDTO();
+        notificationDTO.setId(notification.getUuid());
         notificationDTO.setDatetime(notification.getCreationDate());
         notificationDTO.setFrom(notificationUserEntityToDto(notification.getFrom()));
         notificationDTO.setTo(notificationUserEntityToDto(notification.getTo()));
         notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
+        notificationDTO.setOpened(notification.isOpened());
 
         return notificationDTO;
     }
