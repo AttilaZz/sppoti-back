@@ -46,11 +46,7 @@ public class FindTeamController {
         try {
 
             teamResponseDTOs = teamControllerService.findAllTeams(team, accountUserDetails.getUuid(), page);
-
-            if (teamResponseDTOs.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-            }
+            
 
         } catch (RuntimeException e) {
             LOGGER.error("Find All teams error: " + e);
