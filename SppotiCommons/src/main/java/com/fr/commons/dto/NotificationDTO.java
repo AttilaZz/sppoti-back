@@ -1,9 +1,6 @@
 package com.fr.commons.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fr.models.NotificationType;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.Date;
 
@@ -20,8 +17,12 @@ public class NotificationDTO {
     private Integer notificationType;
     private Boolean opened;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-    private Date datetime;
+    private Integer teamId;
+    private Integer sppotiId;
+    private Integer postId;
+
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private String datetime;
 
     public Integer getId() {
         return id;
@@ -47,11 +48,11 @@ public class NotificationDTO {
         this.to = to;
     }
 
-    public Date getDatetime() {
+    public String getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(Date datetime) {
+    public void setDatetime(String datetime) {
         this.datetime = datetime;
     }
 
@@ -69,6 +70,30 @@ public class NotificationDTO {
 
     public void setOpened(Boolean opened) {
         this.opened = opened;
+    }
+
+    public Integer getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Integer teamId) {
+        this.teamId = teamId;
+    }
+
+    public Integer getSppotiId() {
+        return sppotiId;
+    }
+
+    public void setSppotiId(Integer sppotiId) {
+        this.sppotiId = sppotiId;
+    }
+
+    public Integer getPostId() {
+        return postId;
+    }
+
+    public void setPostId(Integer postId) {
+        this.postId = postId;
     }
 }
 

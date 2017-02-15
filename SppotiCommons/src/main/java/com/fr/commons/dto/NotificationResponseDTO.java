@@ -2,6 +2,7 @@ package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,6 +13,7 @@ public class NotificationResponseDTO {
 
     private List<NotificationDTO> notifications;
     private Integer notifCounter;
+    private Date dateCreation;
 
     public List<NotificationDTO> getNotifications() {
         return notifications;

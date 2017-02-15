@@ -3,6 +3,7 @@ package com.fr.entities;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fr.models.NotificationType;
+import org.joda.time.DateTime;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -31,9 +32,9 @@ public class NotificationEntity {
     @JoinColumn(name = "to_user_id", nullable = false)
     private UserEntity to;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
-    private Date creationDate = new Date();
+    private String creationDate = new DateTime().toString();
 
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
@@ -65,11 +66,11 @@ public class NotificationEntity {
         this.to = to;
     }
 
-    public Date getCreationDate() {
+    public String getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 

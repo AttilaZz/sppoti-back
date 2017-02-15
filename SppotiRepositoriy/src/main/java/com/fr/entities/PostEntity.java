@@ -22,6 +22,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 @Entity
+//@Table(name = "post")
 @JsonInclude(Include.NON_EMPTY)
 public class PostEntity implements Comparable<PostEntity> {
 
