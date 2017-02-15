@@ -28,7 +28,7 @@ public class Team {
     private String coverPath;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "teams")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "team")
     private Set<TeamMembers> teamMemberss;
 
     @OneToOne

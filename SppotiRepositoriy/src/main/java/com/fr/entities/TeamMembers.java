@@ -34,7 +34,7 @@ public class TeamMembers {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
-    private Team teams;
+    private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -75,12 +75,12 @@ public class TeamMembers {
         this.invitationDate = invitationDate;
     }
 
-    public Team getTeams() {
-        return teams;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setTeams(Team teams) {
-        this.teams = teams;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
     public UserEntity getUsers() {

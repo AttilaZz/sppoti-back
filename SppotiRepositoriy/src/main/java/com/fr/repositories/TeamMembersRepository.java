@@ -1,6 +1,7 @@
 package com.fr.repositories;
 
 import com.fr.entities.TeamMembers;
+import com.fr.entities.UserEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,15 +16,13 @@ public interface TeamMembersRepository extends JpaRepository<TeamMembers, Long> 
 
     TeamMembers findByUsersUuid(int memberId);
 
-    TeamMembers findByUsersUuidAndTeamsUuid(int memberId, int teamId);
+    TeamMembers findByUsersUuidAndTeamUuid(int memberId, int teamId);
 
     List<TeamMembers> findByUsersUuidAndAdminTrue(int userId, Pageable pageable);
 
-    TeamMembers findByUsersUuidAndTeamsUuidAndAdminTrue(int memberId, int teamId);
+    TeamMembers findByUsersUuidAndTeamUuidAndAdminTrue(int memberId, int teamId);
 
-    List<TeamMembers> findByUsersUuidAndAdminFalseAndTeamsNameContaining(int id, String team, Pageable pageable);
+    List<TeamMembers> findByUsersUuidAndTeamNameContaining(int id, String team, Pageable pageable);
 
-    List<TeamMembers> findByUsersUuidAndAdminFalse(int id, Pageable pageable);
-
-    List<TeamMembers> findByUsersUuidAndTeamsNameContaining(int id, String team, Pageable pageable);
+    TeamMembers findByTeamUuidAndAdminTrue(int teamId);
 }

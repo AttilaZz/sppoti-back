@@ -2,6 +2,7 @@ package com.fr.core;
 
 import com.fr.commons.dto.*;
 import com.fr.entities.*;
+import com.fr.exceptions.TeamMemberNotFoundException;
 import com.fr.mail.ApplicationMailer;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import utils.EntitytoDtoTransformer;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -428,7 +428,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @param users
      * @param team
      * @param adminId
-     * @param sppoti  @return array of USERS_TEAM
+     * @param sppoti
+     * @return set of USERS_TEAM
      */
     @Override
     public Set<TeamMembers> getTeamMembersEntityFromDto(List<UserDTO> users, Team team, Long adminId, Sppoti sppoti) {
@@ -441,7 +442,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
             List<UserEntity> u = userRepository.getByUuid(user.getId());
 
-
             TeamMembers teamMember = new TeamMembers();
             SppotiMember sppoter = new SppotiMember();
 
@@ -449,16 +449,17 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
                 if (u.get(0).getId().equals(adminId)) {
                     teamMember.setAdmin(true);
+                    /** Admin is member of the team, status should be confirmed */
                     teamMember.setStatus(GlobalAppStatus.CONFIRMED.name());
                 }
 
-                teamMember.setTeams(team);
+                teamMember.setTeam(team);
                 teamMember.setUsers(u.get(0));
 
                 if (sppoti != null) {
-                    TeamMembers sppoterMember = teamMembersRepository.findByUsersUuidAndTeamsUuid(user.getId(), team.getUuid());
+                    TeamMembers sppoterMember = teamMembersRepository.findByUsersUuidAndTeamUuid(user.getId(), team.getUuid());
 
-                    //if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter
+                    /** if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter */
                     if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
                         sppoter.setxPosition(user.getxPosition());
                     }
@@ -467,11 +468,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                         sppoter.setyPosition(user.getyPosition());
                     }
 
+                    /** Admin is member of sppoti, status should be confirmed */
                     if (teamMember.getAdmin() != null && teamMember.getAdmin()) {
                         sppoter.setStatus(GlobalAppStatus.CONFIRMED.name());
                     }
 
-                    //if the sppoter already exist - default coordinate doesn't change
+                    /** if the sppoter already exist - default coordinate doesn't change */
                     if (sppoterMember == null) {
 
                         if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
@@ -492,8 +494,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     teamMember.setSppotiMembers(sppotiMembers);
                     sppoti.setSppotiMembers(sppotiMembers);
 
+                    /** send notification to the invited user */
+                    addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, u.get(0), getUserById(adminId));
+
                 } else {
-                    //if request comming from add team - add members only in (users_team)
+                    /** if request coming from add team - add members only in (users_team) */
                     if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
                         teamMember.setxPosition(user.getxPosition());
                     }
@@ -507,7 +512,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 teamUsers.add(teamMember);
 
             } else {
-                throw new EntityNotFoundException();
+                throw new TeamMemberNotFoundException("team member (" + user.getId() + ") not found");
             }
 
         }

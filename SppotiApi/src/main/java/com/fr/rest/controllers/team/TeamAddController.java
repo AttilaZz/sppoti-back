@@ -18,12 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/team")
-public class TeamController {
+public class TeamAddController {
 
     private static final String ATT_USER_ID = "USER_ID";
 
     private TeamControllerService teamControllerService;
-    private Logger LOGGER = Logger.getLogger(TeamController.class);
+    private Logger LOGGER = Logger.getLogger(TeamAddController.class);
 
     @Autowired
     public void setTeamControllerService(TeamControllerService teamControllerService) {
@@ -34,12 +34,11 @@ public class TeamController {
      * This service create team
      *
      * @param team
-     * @param response
      * @param request
      * @return Created team data
      */
     @PostMapping
-    public ResponseEntity<TeamResponseDTO> createTeam(@RequestBody TeamRequestDTO team, HttpServletResponse response, HttpServletRequest request) {
+    public ResponseEntity<TeamResponseDTO> createTeam(@RequestBody TeamRequestDTO team, HttpServletRequest request) {
 
 //        if (team.getCoverPath() == null || team.getCoverPath().isEmpty()) {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequestDTO (cover path) not found");
@@ -94,27 +93,6 @@ public class TeamController {
 
 
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    /**
-     * This method delete a team
-     *
-     * @param id
-     * @return 200 status if team was deleted, 400 status otherwise
-     */
-    @DeleteMapping("{/id}")
-    public ResponseEntity deleteTeam(@PathVariable int id) {
-
-        try {
-
-            teamControllerService.deleteTeam(id);
-
-        } catch (RuntimeException e) {
-            LOGGER.error("Error deleting team id:" + id + " - " + e);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

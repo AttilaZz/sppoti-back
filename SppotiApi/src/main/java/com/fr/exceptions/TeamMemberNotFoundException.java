@@ -5,13 +5,13 @@ import javax.persistence.EntityNotFoundException;
 /**
  * Created by djenanewail on 1/21/17.
  */
-public class HostMemberNotFoundException extends EntityNotFoundException {
+public class TeamMemberNotFoundException extends EntityNotFoundException {
 
-    public HostMemberNotFoundException() {
+    public TeamMemberNotFoundException() {
         super();
     }
 
-    public HostMemberNotFoundException(String message) {
+    public TeamMemberNotFoundException(String message) {
         super(message);
     }
 }

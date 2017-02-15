@@ -4,9 +4,10 @@ import com.fr.commons.dto.SppotiRequestDTO;
 import com.fr.commons.dto.SppotiResponseDTO;
 import com.fr.commons.dto.TeamResponseDTO;
 import com.fr.entities.*;
-import com.fr.exceptions.HostMemberNotFoundException;
+import com.fr.exceptions.TeamMemberNotFoundException;
 import com.fr.exceptions.SportNotFoundException;
 import com.fr.models.GlobalAppStatus;
+import com.fr.models.NotificationType;
 import com.fr.rest.service.SppotiControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -59,24 +60,21 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                 hostTeam.setTeamMemberss(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMembers(), hostTeam, sppotiCreator, sppoti));
 
             } catch (RuntimeException e) {
-                LOGGER.error("Error when trying to get USERS from team members list: " + e);
-                throw new HostMemberNotFoundException("Host-TeamRequestDTO (members) one of the team dosn't exist");
+                LOGGER.error("Error when trying to get USERS from team members list: ", e);
+                throw new TeamMemberNotFoundException("Host-TeamRequestDTO (members) one of the team dosn't exist");
 
             }
 
         } else if (newSppoti.getMyTeamId() != 0) {
-            try {
-                List<Team> tempTeams = teamRepository.findByUuid(newSppoti.getMyTeamId());
 
-                if (tempTeams == null || tempTeams.isEmpty()) {
-                    throw new EntityNotFoundException("Host team not found in the request");
-                }
+            List<Team> tempTeams = teamRepository.findByUuid(newSppoti.getMyTeamId());
 
-                hostTeam = tempTeams.get(0);
-            } catch (RuntimeException e) {
-                e.printStackTrace();
-                throw new EntityNotFoundException("Host team cannot be found in the request");
+            if (tempTeams == null || tempTeams.isEmpty()) {
+                throw new EntityNotFoundException("Host team not found in the request");
             }
+
+            hostTeam = tempTeams.get(0);
+
         } else {
             throw new EntityNotFoundException("Host team not found in the request");
         }
@@ -131,6 +129,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppoti.setMaxMembersCount(newSppoti.getMaxTeamCount());
 
         Sppoti sppoti1 = sppotiRepository.save(sppoti);
+
         return new SppotiResponseDTO(sppoti1.getUuid());
 
     }

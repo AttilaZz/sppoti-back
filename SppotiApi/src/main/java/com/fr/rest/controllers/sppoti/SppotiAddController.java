@@ -1,9 +1,8 @@
 package com.fr.rest.controllers.sppoti;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fr.commons.dto.SppotiRequestDTO;
 import com.fr.commons.dto.SppotiResponseDTO;
 import com.fr.rest.service.SppotiControllerService;
-import com.fr.commons.dto.SppotiRequestDTO;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -35,54 +32,56 @@ public class SppotiAddController {
 
     /**
      * @param newSppoti
-     * @param response
      * @param request
      * @return 201 status && Sppoti object with the inserted data, 400 status otherwise.
-     * @throws IOException
      */
     @PostMapping
-    public ResponseEntity addPost(@RequestBody SppotiRequestDTO newSppoti, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public ResponseEntity<SppotiResponseDTO> addPost(@RequestBody SppotiRequestDTO newSppoti, HttpServletRequest request) {
 
         if (newSppoti.getAddress() == null || newSppoti.getAddress().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Address not found");
+            LOGGER.error("Address not found");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 //        if (newSppoti.getDescription() == null || newSppoti.getDescription().isEmpty()) {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Description not found");
 //        }
         if (newSppoti.getMaxTeamCount() == 0) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Max-TeamRequestDTO-Count not found");
+            LOGGER.error("Max-TeamRequestDTO-Count not found");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
         }
         if (newSppoti.getSportId() == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Sport-Id not found");
+            LOGGER.error("Sport-Id not found");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 //        if (newSppoti.getTags() == null || newSppoti.getTags().isEmpty()) {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Tags not found");
 //        }
         if (newSppoti.getTitre() == null || newSppoti.getTitre().isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Title not found");
+            LOGGER.error("Title not found");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (newSppoti.getDatetimeStart() == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Date-start not found");
+            LOGGER.error("Date-start not found");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (newSppoti.getMyTeamId() == 0 && newSppoti.getMyTeam() == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "TeamHostModel && TeamHostId not found");
+            LOGGER.error("TeamHostModel && TeamHostId not found ");
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 //        if (newSppoti.getVsTeam() == 0) {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Adverse team id not found");
 //        }
+
         Long sppotiCreator = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
         try {
             SppotiResponseDTO sppotiResponseDTO = sppotiControllerService.saveSppoti(newSppoti, sppotiCreator);
 
-            ObjectMapper mapper = new ObjectMapper();
-            String jsonInString = mapper.writeValueAsString(sppotiResponseDTO);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(jsonInString);
+            return new ResponseEntity<>(sppotiResponseDTO, HttpStatus.CREATED);
         } catch (RuntimeException e) {
-            e.printStackTrace();
-            LOGGER.error("Ajout de sppoti imposssible: " + e.getMessage());
-            return ResponseEntity.badRequest().body("Ajout de sppoti imposssible");
+            LOGGER.error("Ajout de sppoti imposssible: ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -98,8 +97,7 @@ public class SppotiAddController {
             sppotiControllerService.deleteSppoti(id);
             return new ResponseEntity(HttpStatus.OK);
         } catch (RuntimeException e) {
-            LOGGER.error("Impossible de supprimer le sppoti: " + e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("Impossible de supprimer le sppoti: ", e);
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
