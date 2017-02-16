@@ -12,6 +12,10 @@
 
     <name>Sppoti Web Application</name>
 
+    <properties>
+        <org.apache.commons.version>3.0</org.apache.commons.version>
+    </properties>
+
     <modules>
         <module>SppotiApi</module>
         <module>SppotiRepositoriy</module>
@@ -48,6 +52,11 @@
                 <groupId>com.sppoti</groupId>
                 <artifactId>SppotiCore</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${org.apache.commons.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
