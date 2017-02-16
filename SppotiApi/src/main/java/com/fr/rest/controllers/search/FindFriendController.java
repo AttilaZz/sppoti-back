@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.search;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.FriendShip;
+import com.fr.entities.FriendShipEntity;
 import com.fr.models.GlobalAppStatus;
 import com.fr.repositories.FriendShipRepository;
 import com.fr.rest.service.AccountControllerService;
@@ -59,7 +59,7 @@ public class FindFriendController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        List<FriendShip> foundFriends;
+        List<FriendShipEntity> foundFriends;
         Pageable pageable = new PageRequest(page, friend_size);
 
         String[] parts = userPrefix.split(" ");
@@ -79,7 +79,7 @@ public class FindFriendController {
 
         List<UserDTO> users = new ArrayList<>();
 
-        for (FriendShip friendShip : foundFriends) {
+        for (FriendShipEntity friendShip : foundFriends) {
 
             users.add(accountControllerService.fillUserResponse(friendShip.getFriend(), null));
         }

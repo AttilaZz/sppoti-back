@@ -2,7 +2,7 @@ package com.fr.rest.service;
 
 import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.entities.CommentEntity;
-import com.fr.entities.LikeContent;
+import com.fr.entities.LikeContentEntity;
 import com.fr.entities.PostEntity;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ public interface LikeControllerService extends AbstractControllerService{
      *
      * @param likeToSave
      */
-    LikeContent likePost(LikeContent likeToSave);
+    LikeContentEntity likePost(LikeContentEntity likeToSave);
 
     /**
      * unlike post
@@ -57,7 +57,7 @@ public interface LikeControllerService extends AbstractControllerService{
      *
      * @param likeToSave
      */
-    void likeComment(LikeContent likeToSave);
+    void likeComment(LikeContentEntity likeToSave);
 
     /**
      *

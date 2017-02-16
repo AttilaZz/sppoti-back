@@ -3,9 +3,9 @@ package com.fr.core;
 import com.fr.commons.dto.TeamRequestDTO;
 import com.fr.commons.dto.TeamResponseDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.Sport;
-import com.fr.entities.Team;
-import com.fr.entities.TeamMembers;
+import com.fr.entities.SportEntity;
+import com.fr.entities.TeamEntity;
+import com.fr.entities.TeamMemberEntity;
 import com.fr.entities.UserEntity;
 import com.fr.exceptions.MemberNotInAdminTeamException;
 import com.fr.models.GlobalAppStatus;
@@ -41,13 +41,13 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public TeamResponseDTO saveTeam(TeamRequestDTO team, Long adminId) {
 
-        Sport sport = sportRepository.findOne(team.getSportId());
+        SportEntity sportEntity = sportRepository.findOne(team.getSportId());
 
-        if (sport == null) {
-            throw new EntityNotFoundException("Sport id not found");
+        if (sportEntity == null) {
+            throw new EntityNotFoundException("SportEntity id not found");
         }
 
-        Team teamToSave = new Team();
+        TeamEntity teamToSave = new TeamEntity();
 
         teamToSave.setName(team.getName());
 
@@ -61,8 +61,8 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         teamToSave.setTeamMemberss(getTeamMembersEntityFromDto(team.getMembers(), teamToSave, adminId, null));
 
-        teamToSave.setSport(sport);
-        Team addedTeam = teamRepository.save(teamToSave);
+        teamToSave.setSport(sportEntity);
+        TeamEntity addedTeam = teamRepository.save(teamToSave);
 
         return fillTeamResponse(addedTeam, null);
 
@@ -74,7 +74,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public void updateTeamMembers(TeamRequestDTO request, int memberId, int teamId) {
 
-        TeamMembers usersTeam = teamMembersRepository.findByUsersUuidAndTeamUuid(memberId, teamId);
+        TeamMemberEntity usersTeam = teamMembersRepository.findByUsersUuidAndTeamUuid(memberId, teamId);
 
         if (usersTeam == null) {
             throw new EntityNotFoundException("Member not found");
@@ -102,10 +102,10 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public TeamResponseDTO getTeamById(int teamId) {
 
-        List<Team> team = teamRepository.findByUuid(teamId);
+        List<TeamEntity> team = teamRepository.findByUuid(teamId);
 
         if (team == null || team.isEmpty()) {
-            throw new EntityNotFoundException("Team id not found");
+            throw new EntityNotFoundException("TeamEntity id not found");
         }
 
         return fillTeamResponse(team.get(0), null);
@@ -119,11 +119,11 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         Pageable pageable = new PageRequest(page, teamPageSize);
 
-        List<TeamMembers> myTeams = teamMembersRepository.findByUsersUuidAndAdminTrue(userId, pageable);
+        List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndAdminTrue(userId, pageable);
         List<TeamResponseDTO> teamResponseDTOs = new ArrayList<TeamResponseDTO>();
 
 
-        for (TeamMembers myTeam : myTeams) {
+        for (TeamMemberEntity myTeam : myTeams) {
             teamResponseDTOs.add(fillTeamResponse(myTeam.getTeam(), null));
         }
 
@@ -137,10 +137,10 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public void acceptTeam(int teamId, int userId) {
 
-        TeamMembers teamMembers = teamMembersRepository.findByUsersUuidAndTeamUuid(userId, teamId);
+        TeamMemberEntity teamMembers = teamMembersRepository.findByUsersUuidAndTeamUuid(userId, teamId);
 
         if (teamMembers == null) {
-            throw new EntityNotFoundException("Team not found");
+            throw new EntityNotFoundException("TeamEntity not found");
         }
 
         teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
@@ -157,10 +157,10 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public void refuseTeam(int teamId, int userId) {
 
-        TeamMembers teamMembers = teamMembersRepository.findByUsersUuidAndTeamUuid(userId, teamId);
+        TeamMemberEntity teamMembers = teamMembersRepository.findByUsersUuidAndTeamUuid(userId, teamId);
 
         if (teamMembers == null) {
-            throw new EntityNotFoundException("Team not found");
+            throw new EntityNotFoundException("TeamEntity not found");
         }
 
         teamMembers.setStatus(GlobalAppStatus.REFUSED.name());
@@ -179,13 +179,13 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     public void deleteMemberFromTeam(int teamId, int memberId, int adminId) {
 
         //UserDTO deleting the member is admin of the team
-        TeamMembers adminTeamMembers = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(adminId, teamId);
+        TeamMemberEntity adminTeamMembers = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(adminId, teamId);
 
         if (adminTeamMembers == null) {
             throw new EntityNotFoundException("Delete not permitted - UserDTO is not an admin");
         }
 
-        TeamMembers targetTeamMember = teamMembersRepository.findByUsersUuidAndTeamUuid(memberId, teamId);
+        TeamMemberEntity targetTeamMember = teamMembersRepository.findByUsersUuidAndTeamUuid(memberId, teamId);
 
         if (targetTeamMember == null) {
             throw new EntityNotFoundException("Member to delete not foundn");
@@ -205,10 +205,10 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public void deleteTeam(int id) {
 
-        List<Team> team = teamRepository.findByUuid(id);
+        List<TeamEntity> team = teamRepository.findByUuid(id);
 
         if (team == null || team.isEmpty()) {
-            throw new EntityNotFoundException("Team not found");
+            throw new EntityNotFoundException("TeamEntity not found");
         }
 
         team.get(0).setDeleted(true);
@@ -231,15 +231,15 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         user = usersList.get(0);
 
-        List<Team> teamList = teamRepository.findByUuid(teamId);
+        List<TeamEntity> teamList = teamRepository.findByUuid(teamId);
 
         if (teamList == null || teamList.isEmpty()) {
-            throw new EntityNotFoundException("Team with id (" + teamId + ") Not found");
+            throw new EntityNotFoundException("TeamEntity with id (" + teamId + ") Not found");
         }
 
-        Team team = teamList.get(0);
+        TeamEntity team = teamList.get(0);
 
-        TeamMembers teamMembers = new TeamMembers();
+        TeamMemberEntity teamMembers = new TeamMemberEntity();
         teamMembers.setTeam(team);
         teamMembers.setUsers(user);
 
@@ -251,7 +251,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             teamMembers.setyPosition(userParam.getyPosition());
         }
 
-        TeamMembers newMember = teamMembersRepository.save(teamMembers);
+        TeamMemberEntity newMember = teamMembersRepository.save(teamMembers);
 
         UserDTO userCoverAndAvatar = getUserCoverAndAvatar(user);
 
@@ -269,10 +269,10 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     public List<TeamResponseDTO> findAllTeams(String team, int id, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
-        List<TeamMembers> myTeams = teamMembersRepository.findByUsersUuidAndTeamNameContaining(id, team, pageable);
+        List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndTeamNameContaining(id, team, pageable);
         List<TeamResponseDTO> teamResponseDTOs = new ArrayList<TeamResponseDTO>();
 
-        for (TeamMembers myTeam : myTeams) {
+        for (TeamMemberEntity myTeam : myTeams) {
             teamResponseDTOs.add(fillTeamResponse(myTeam.getTeam(), null));
         }
 

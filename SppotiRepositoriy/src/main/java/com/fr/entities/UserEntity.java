@@ -13,7 +13,7 @@ import java.util.*;
  */
 
 @Entity
-@Table(name = "Users")
+@Table(name = "USER")
 @JsonInclude(Include.NON_EMPTY)
 public class UserEntity {
 
@@ -70,43 +70,43 @@ public class UserEntity {
     private SortedSet<PostEntity> userPosts = new TreeSet<PostEntity>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userSppoti")
-    private Set<Sppoti> userSppoties;
+    private Set<SppotiEntity> userSppoties;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userMessage")
-    private Set<Message> userMessages;
+    private Set<MessageEntity> userMessages;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private Set<CommentEntity> commentEntities;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
-    private Set<LikeContent> likes;
+    private Set<LikeContentEntity> likes;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     @Where(clause = "is_selected='1'")
-    private Set<Resources> ressources;
+    private Set<ResourcesEntity> ressources;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", nullable = false)
     @JsonIgnore
-    private Set<Roles> roles;
+    private Set<RoleEntity> roles;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "sport_id", nullable = false)
     @JsonIgnore
-    private Set<Sport> relatedSports;
+    private Set<SportEntity> relatedSports;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
     @OrderBy("dateTime DESC")
-    private SortedSet<Address> addresses;
+    private SortedSet<AddressEntity> addresses;
 
 //    @ManyToMany(cascade = CascadeType.PERSIST)
 //    @JoinColumn(name = "team_id")
 //    @JsonIgnore
-//    private Set<Team> team;
+//    private Set<TeamEntity> team;
 
 //    @ElementCollection
-//    private Map<Team, Boolean> teamStatus = new TreeMap<Team, Boolean>();
+//    private Map<TeamEntity, Boolean> teamStatus = new TreeMap<TeamEntity, Boolean>();
 
     public boolean isDeleted() {
         return deleted;
@@ -134,19 +134,19 @@ public class UserEntity {
         this.userPosts = userPosts;
     }
 
-    public Set<Sppoti> getUserSppoties() {
+    public Set<SppotiEntity> getUserSppoties() {
         return userSppoties;
     }
 
-    public void setUserSppoties(Set<Sppoti> userSppoties) {
+    public void setUserSppoties(Set<SppotiEntity> userSppoties) {
         this.userSppoties = userSppoties;
     }
 
-    public Set<Message> getUserMessages() {
+    public Set<MessageEntity> getUserMessages() {
         return userMessages;
     }
 
-    public void setUserMessages(Set<Message> userMessages) {
+    public void setUserMessages(Set<MessageEntity> userMessages) {
         this.userMessages = userMessages;
     }
 
@@ -158,19 +158,19 @@ public class UserEntity {
         this.commentEntities = commentEntities;
     }
 
-    public Set<LikeContent> getLikes() {
+    public Set<LikeContentEntity> getLikes() {
         return likes;
     }
 
-    public void setLikes(Set<LikeContent> likes) {
+    public void setLikes(Set<LikeContentEntity> likes) {
         this.likes = likes;
     }
 
-    public Set<Resources> getRessources() {
+    public Set<ResourcesEntity> getRessources() {
         return ressources;
     }
 
-    public void setRessources(Set<Resources> ressources) {
+    public void setRessources(Set<ResourcesEntity> ressources) {
         this.ressources = ressources;
     }
 
@@ -206,27 +206,27 @@ public class UserEntity {
         this.description = description;
     }
 
-    public Set<Roles> getRoles() {
+    public Set<RoleEntity> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Roles> roles) {
+    public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
     }
 
-    public Set<Sport> getRelatedSports() {
+    public Set<SportEntity> getRelatedSports() {
         return relatedSports;
     }
 
-    public void setRelatedSports(Set<Sport> relatedSports) {
+    public void setRelatedSports(Set<SportEntity> relatedSports) {
         this.relatedSports = relatedSports;
     }
 
-    public SortedSet<Address> getAddresses() {
+    public SortedSet<AddressEntity> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(SortedSet<Address> addresses) {
+    public void setAddresses(SortedSet<AddressEntity> addresses) {
         this.addresses = addresses;
     }
 

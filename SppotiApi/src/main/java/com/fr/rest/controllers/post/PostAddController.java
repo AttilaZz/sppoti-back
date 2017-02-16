@@ -56,8 +56,8 @@ public class PostAddController {
 
         boolean canAdd = false;
 
-        Sport targedSport;
-        Sppoti game;
+        SportEntity targedSport;
+        SppotiEntity game;
         Long sportId;
         Long gameId;
 
@@ -66,7 +66,7 @@ public class PostAddController {
 
         PostResponseDTO postRep = new PostResponseDTO();// object to send on success
 
-        // Sport is required
+        // SportEntity is required
         if (newPostReq.getSportId() != null) {
 
             sportId = newPostReq.getSportId();
@@ -112,11 +112,11 @@ public class PostAddController {
         /*
             ---- Manage address
          */
-        Address address = newPostReq.getAddress();
+        AddressEntity address = newPostReq.getAddress();
 
         if (address != null) {
             address.setPost(newPostToSave);
-            SortedSet<Address> addresses = new TreeSet<>();
+            SortedSet<AddressEntity> addresses = new TreeSet<>();
             addresses.add(address);
 
             newPostToSave.setAddresses(addresses);
@@ -191,7 +191,7 @@ public class PostAddController {
         postRep.setLastName(user.getLastName());
         postRep.setUsername(user.getUsername());
 
-        List<Resources> resources = new ArrayList<>();
+        List<ResourcesEntity> resources = new ArrayList<>();
         resources.addAll(user.getRessources());
 
         if (!resources.isEmpty()) {

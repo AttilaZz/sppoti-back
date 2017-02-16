@@ -5,7 +5,7 @@ import com.fr.commons.dto.NotificationDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.NotificationEntity;
-import com.fr.entities.Resources;
+import com.fr.entities.ResourcesEntity;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
@@ -84,16 +84,16 @@ public class EntitytoDtoTransformer {
     public static UserDTO getUserCoverAndAvatar(UserEntity targetUser) {
 
         UserDTO user = new UserDTO();
-        Set<Resources> resources = targetUser.getRessources();
+        Set<ResourcesEntity> resources = targetUser.getRessources();
 
-        List<Resources> resources_temp = new ArrayList<Resources>();
-        resources_temp.addAll(resources);
+        List<ResourcesEntity> resources_Entity_temp = new ArrayList<ResourcesEntity>();
+        resources_Entity_temp.addAll(resources);
 
-        if (!resources_temp.isEmpty()) {
-            if (resources_temp.size() == 2) {
+        if (!resources_Entity_temp.isEmpty()) {
+            if (resources_Entity_temp.size() == 2) {
                 //cover and avatar found
-                Resources resource1 = resources_temp.get(0);
-                Resources resource2 = resources_temp.get(1);
+                ResourcesEntity resource1 = resources_Entity_temp.get(0);
+                ResourcesEntity resource2 = resources_Entity_temp.get(1);
 
                 if (resource1.getType() == 1 && resource2.getType() == 2) {
                     user.setAvatar(resource1.getUrl());
@@ -109,7 +109,7 @@ public class EntitytoDtoTransformer {
 
             } else {
                 // size is = 1 -> cover or avatar
-                Resources resource = resources_temp.get(0);
+                ResourcesEntity resource = resources_Entity_temp.get(0);
                 if (resource.getType() == 1) {//acatar
                     user.setAvatar(resource.getUrl());
                 } else {

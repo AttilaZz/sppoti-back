@@ -13,7 +13,7 @@ import java.util.UUID;
  * Created by: Wail DJENANE on Nov 10, 2016
  */
 @Entity
-@Table(name = "notification")
+@Table(name = "NOTIFICATION")
 @JsonInclude(Include.NON_EMPTY)
 public class NotificationEntity {
 
@@ -32,9 +32,9 @@ public class NotificationEntity {
     @JoinColumn(name = "to_user_id", nullable = false)
     private UserEntity to;
 
-    //    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
-    private String creationDate = new DateTime().toString();
+    private Date creationDate = new Date();
 
     @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
@@ -66,14 +66,14 @@ public class NotificationEntity {
         this.to = to;
     }
 
-    public String getCreationDate() {
+    public Date getCreationDate()
+    {
         return creationDate;
     }
-
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Date creationDate)
+    {
         this.creationDate = creationDate;
     }
-
     public NotificationType getNotificationType() {
         return notificationType;
     }

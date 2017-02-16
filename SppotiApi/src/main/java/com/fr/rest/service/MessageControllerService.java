@@ -5,7 +5,7 @@ package com.fr.rest.service;
 
 import java.util.List;
 
-import com.fr.entities.Message;
+import com.fr.entities.MessageEntity;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,16 +15,16 @@ import org.springframework.stereotype.Service;
 @Service
  public interface MessageControllerService extends AbstractControllerService {
 
-     List<Message> getSentUserMessages(Long userId, int page);
+     List<MessageEntity> getSentUserMessages(Long userId, int page);
 
-     List<Message> getReceivedUserMessages(Long userId, int page);
+     List<MessageEntity> getReceivedUserMessages(Long userId, int page);
 
-     Boolean saveMessage(Message msg);
+     Boolean saveMessage(MessageEntity msg);
 
-     Boolean updateMessage(Message msg);
+     Boolean updateMessage(MessageEntity msg);
 
      Boolean deteleMessageById(Long msgId);
 
-     Message findMessageById(Long msgId);
+     MessageEntity findMessageById(Long msgId);
 
 }

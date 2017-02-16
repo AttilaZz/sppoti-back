@@ -36,7 +36,7 @@ public interface PostControllerService extends AbstractControllerService {
      * @param postId
      * @return true if post has been edited, false otherwise
      */
-    boolean updatePost(EditHistory postEditRow, SortedSet<Address> postEditAddress, int postId);
+    boolean updatePost(EditHistoryEntity postEditRow, SortedSet<AddressEntity> postEditAddress, int postId);
 
     /**
      * @param p
@@ -54,13 +54,13 @@ public interface PostControllerService extends AbstractControllerService {
      * @param id
      * @return sport
      */
-    Sport getSportToUse(Long id);
+    SportEntity getSportToUse(Long id);
 
     /**
      * @param id
-     * @return Sppoti
+     * @return SppotiEntity
      */
-    Sppoti getSppotiById(Long id);
+    SppotiEntity getSppotiById(Long id);
 
     /**
      * @param userId
@@ -94,13 +94,13 @@ public interface PostControllerService extends AbstractControllerService {
      * @param postId
      * @return las modification
      */
-    List<EditHistory> getLastModification(int postId);
+    List<EditHistoryEntity> getLastModification(int postId);
 
     /**
      * @param sport_id
      * @return sport
      */
-    Sport getSportById(Long sport_id);
+    SportEntity getSportById(Long sport_id);
 
     /**
      * @param id

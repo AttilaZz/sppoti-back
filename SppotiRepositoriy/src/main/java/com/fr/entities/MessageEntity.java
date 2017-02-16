@@ -12,9 +12,11 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * Created by: Wail DJENANE on May 22, 2016
  */
 @Entity
+@Table(name = "MESSAGE")
 // @JsonIgnoreProperties( { "hibernateLazyInitializer", "handler" } )
 @JsonInclude(Include.NON_EMPTY)
-public class Message {
+public class MessageEntity
+{
 
     @Id
     @GeneratedValue
@@ -36,11 +38,11 @@ public class Message {
     @JsonIgnore
     private UserEntity userMessage;
 
-    public Message() {
+    public MessageEntity() {
         super();
     }
 
-    public Message(Message msg) {
+    public MessageEntity(MessageEntity msg) {
         this.content = msg.getContent();
         this.datetime = msg.getDatetime();
         this.receiver_id = msg.getReceiver_id();

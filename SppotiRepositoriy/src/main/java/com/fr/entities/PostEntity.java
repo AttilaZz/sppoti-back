@@ -22,7 +22,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 @Entity
-//@Table(name = "post")
+@Table(name = "POST")
 @JsonInclude(Include.NON_EMPTY)
 public class PostEntity implements Comparable<PostEntity> {
 
@@ -53,7 +53,7 @@ public class PostEntity implements Comparable<PostEntity> {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     @OrderBy("dateTime DESC")
-    private SortedSet<Address> addresses = new TreeSet<Address>();
+    private SortedSet<AddressEntity> addresses = new TreeSet<AddressEntity>();
 
     public PostEntity() {
         super();
@@ -72,17 +72,17 @@ public class PostEntity implements Comparable<PostEntity> {
 
     @ManyToOne
     @JoinColumn(name = "sport_id")
-    private Sport sport;
+    private SportEntity sport;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     @OrderBy("datetimeCreated DESC")
     private SortedSet<CommentEntity> commentEntities = new TreeSet<CommentEntity>();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-    private Set<LikeContent> likes;
+    private Set<LikeContentEntity> likes;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-    private Set<EditHistory> editList;
+    private Set<EditHistoryEntity> editList;
 
     @Column(name = "target_user")
     private int targetUserProfileUuid;
@@ -119,11 +119,11 @@ public class PostEntity implements Comparable<PostEntity> {
         this.video = video;
     }
 
-    public Sport getSport() {
+    public SportEntity getSport() {
         return sport;
     }
 
-    public void setSport(Sport sport) {
+    public void setSport(SportEntity sport) {
         this.sport = sport;
     }
 
@@ -143,19 +143,19 @@ public class PostEntity implements Comparable<PostEntity> {
         this.commentEntities = commentEntities;
     }
 
-    public Set<LikeContent> getLikes() {
+    public Set<LikeContentEntity> getLikes() {
         return likes;
     }
 
-    public void setLikes(Set<LikeContent> likes) {
+    public void setLikes(Set<LikeContentEntity> likes) {
         this.likes = likes;
     }
 
-    public Set<EditHistory> getEditList() {
+    public Set<EditHistoryEntity> getEditList() {
         return editList;
     }
 
-    public void setEditList(Set<EditHistory> editList) {
+    public void setEditList(Set<EditHistoryEntity> editList) {
         this.editList = editList;
     }
 
@@ -192,11 +192,11 @@ public class PostEntity implements Comparable<PostEntity> {
         this.uuid = uuid;
     }
 
-    public SortedSet<Address> getAddresses() {
+    public SortedSet<AddressEntity> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(SortedSet<Address> addresses) {
+    public void setAddresses(SortedSet<AddressEntity> addresses) {
         this.addresses = addresses;
     }
 

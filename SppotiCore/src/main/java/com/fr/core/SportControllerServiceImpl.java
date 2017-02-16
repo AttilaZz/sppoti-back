@@ -1,7 +1,7 @@
 package com.fr.core;
 
+import com.fr.entities.SportEntity;
 import com.fr.rest.service.SportControllerService;
-import com.fr.entities.Sport;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class SportControllerServiceImpl extends AbstractControllerServiceImpl implements SportControllerService {
     @Override
-    public List<Sport> getAllSports() {
+    public List<SportEntity> getAllSports() {
         return sportRepository.findAll();
     }
 }

@@ -2,7 +2,7 @@ package com.fr.core;
 
 import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.entities.CommentEntity;
-import com.fr.entities.LikeContent;
+import com.fr.entities.LikeContentEntity;
 import com.fr.entities.PostEntity;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.LikeControllerService;
@@ -27,7 +27,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     private int likeSize;
 
     @Override
-    public LikeContent likePost(LikeContent likeToSave) {
+    public LikeContentEntity likePost(LikeContentEntity likeToSave) {
         return likeContent(likeToSave);
     }
 
@@ -37,7 +37,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public void unLikePost(PostEntity post) {
 
-        LikeContent likeContent = likeRepository.getByPostId(post.getId());
+        LikeContentEntity likeContent = likeRepository.getByPostId(post.getId());
         likeRepository.delete(likeContent);
 
     }
@@ -61,7 +61,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         Pageable pageable1 = new PageRequest(page, likeSize);
 
-        List<LikeContent> likersData = likeRepository.getByPostUuidOrderByDatetimeCreated(id, pageable1);
+        List<LikeContentEntity> likersData = likeRepository.getByPostUuidOrderByDatetimeCreated(id, pageable1);
 
         return likersList(likersData);
 
@@ -75,7 +75,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         Pageable pageable1 = new PageRequest(page, likeSize);
 
-        List<LikeContent> likersData = likeRepository.getByCommentUuidOrderByDatetimeCreated(id, pageable1);
+        List<LikeContentEntity> likersData = likeRepository.getByCommentUuidOrderByDatetimeCreated(id, pageable1);
 
         return likersList(likersData);
 
@@ -88,7 +88,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public void unLikeComment(CommentEntity commentEntityToUnlike) {
 
-        LikeContent likeContent = likeRepository.getByCommentId(commentEntityToUnlike.getId());
+        LikeContentEntity likeContent = likeRepository.getByCommentId(commentEntityToUnlike.getId());
         likeRepository.delete(likeContent);
 
     }
@@ -106,7 +106,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public void likeComment(LikeContent likeToSave) {
+    public void likeComment(LikeContentEntity likeToSave) {
 
         likeContent(likeToSave);
 
@@ -118,7 +118,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
      * @param likeContent
      * @return boolean
      */
-    private LikeContent likeContent(LikeContent likeContent) {
+    private LikeContentEntity likeContent(LikeContentEntity likeContent) {
 
         if (likeContent != null) {
 
@@ -143,12 +143,12 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
      * @param likersData
      * @return list of HeaderDataDTO
      */
-    private List<HeaderDataDTO> likersList(List<LikeContent> likersData) {
+    private List<HeaderDataDTO> likersList(List<LikeContentEntity> likersData) {
 
         List<HeaderDataDTO> likers = new ArrayList<HeaderDataDTO>();
 
         if (!likersData.isEmpty()) {
-            for (LikeContent row : likersData) {
+            for (LikeContentEntity row : likersData) {
                 // get liker data
                 HeaderDataDTO u = new HeaderDataDTO();
 //                u.setAvatar(userDaoService.getLastAvatar(row.getUser().getId()).get(0).getUrl());

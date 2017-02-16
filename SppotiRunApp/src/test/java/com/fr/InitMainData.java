@@ -3,10 +3,10 @@ package com.fr; /**
  */
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fr.entities.SportEntity;
 import com.fr.models.SportList;
 import com.fr.models.UserRoleType;
-import com.fr.entities.Roles;
-import com.fr.entities.Sport;
+import com.fr.entities.RoleEntity;
 import com.fr.repositories.RoleRepository;
 import com.fr.repositories.SportRepository;
 import org.apache.log4j.Logger;
@@ -38,11 +38,11 @@ public class InitMainData {
     @Test
     public void insertSports() throws JsonProcessingException {
 
-        List<Sport> databaseSportList = sportRepository.findAll();
+        List<SportEntity> databaseSportList = sportRepository.findAll();
         if (!databaseSportList.isEmpty() || databaseSportList.size() != sportListSize) {
             // clear list
 
-            List<Sport> newSports = new ArrayList<>();
+            List<SportEntity> newSports = new ArrayList<>();
             SportList[] spList = SportList.values().clone();
 
 			/*
@@ -57,16 +57,16 @@ public class InitMainData {
                     boolean exist = false;
                     String definedSport = spList[i].getSportType();
 
-                    for (Sport sport : databaseSportList) {
+                    for (SportEntity sportEntity : databaseSportList) {
 
-                        if (sport.getName().equals(definedSport)) {
+                        if (sportEntity.getName().equals(definedSport)) {
                             exist = true;
 
                         }
 
                     }
                     if (!exist) {
-                        Sport s = new Sport(definedSport);
+                        SportEntity s = new SportEntity(definedSport);
                         newSports.add(s);
                     }
                 }
@@ -77,7 +77,7 @@ public class InitMainData {
 				 */
                 for (int i = 0; i < sportListSize; i++) {
                     String definedSport = spList[i].getSportType();
-                    Sport s = new Sport(definedSport);
+                    SportEntity s = new SportEntity(definedSport);
                     newSports.add(s);
                 }
             }
@@ -109,7 +109,7 @@ public class InitMainData {
         } else
 
         {
-            logger.info("Sport list in database is up to date !!");
+            logger.info("SportEntity list in database is up to date !!");
         }
 
     }
@@ -117,11 +117,11 @@ public class InitMainData {
     @Test
     public void insertRoles() throws JsonProcessingException {
 
-        List<Roles> databaseProfileList = roleRepository.findAll();
+        List<RoleEntity> databaseProfileList = roleRepository.findAll();
         if (!databaseProfileList.isEmpty() || databaseProfileList.size() != roleListSize) {
             // clear list
 
-            List<Roles> newRoles = new ArrayList<>();
+            List<RoleEntity> newRoles = new ArrayList<>();
             UserRoleType[] uroleList = UserRoleType.values().clone();
 
 			/*
@@ -136,7 +136,7 @@ public class InitMainData {
                     boolean exist = false;
                     String definedRole = uroleList[i].getUserProfileType();
 
-                    for (Roles sport : databaseProfileList) {
+                    for (RoleEntity sport : databaseProfileList) {
 
                         if (sport.getName().equals(definedRole)) {
                             exist = true;
@@ -145,7 +145,7 @@ public class InitMainData {
 
                     }
                     if (!exist) {
-                        Roles s = new Roles(definedRole);
+                        RoleEntity s = new RoleEntity(definedRole);
                         newRoles.add(s);
                     }
                 }
@@ -156,7 +156,7 @@ public class InitMainData {
 				 */
                 for (int i = 0; i < roleListSize; i++) {
                     String definedUserRole = uroleList[i].getUserProfileType();
-                    Roles ur = new Roles(definedUserRole);
+                    RoleEntity ur = new RoleEntity(definedUserRole);
                     newRoles.add(ur);
                 }
             }

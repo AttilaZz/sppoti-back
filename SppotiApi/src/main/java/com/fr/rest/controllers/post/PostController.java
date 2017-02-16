@@ -4,15 +4,12 @@ import com.fr.aop.TraceAuthentification;
 import com.fr.commons.dto.PostResponseDTO;
 import com.fr.rest.service.PostControllerService;
 import com.fr.entities.*;
-import com.fr.exceptions.PostContentMissingException;
 import com.fr.commons.dto.ContentEditedResponseDTO;
-import com.fr.commons.dto.PostRequestDTO;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -135,12 +132,12 @@ public class PostController {
 
         PostEntity postToEdit = postDataService.findPost(postId);
 
-        List<EditHistory> lastPostEditList = postDataService.getLastModification(postId);
-        EditHistory lastPostEdit = null;
+        List<EditHistoryEntity> lastPostEditList = postDataService.getLastModification(postId);
+        EditHistoryEntity lastPostEdit = null;
         boolean isAlreadyEdited = !lastPostEditList.isEmpty();
 
-        EditHistory postEditRow = new EditHistory();
-        SortedSet<Address> postEditAddress = null;
+        EditHistoryEntity postEditRow = new EditHistoryEntity();
+        SortedSet<AddressEntity> postEditAddress = null;
 
         // Required attributes
         if (postToEdit == null) {
@@ -176,7 +173,7 @@ public class PostController {
 
         } else if (newData.getSportId() != null) {
             // SportModelDTO modification
-            Sport sp = postDataService.getSportById(newData.getSportId());
+            SportEntity sp = postDataService.getSportById(newData.getSportId());
             if (sp != null) {
                 postEditRow.setSport(sp);
 

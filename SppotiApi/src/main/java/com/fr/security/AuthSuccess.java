@@ -2,7 +2,7 @@ package com.fr.security;
 
 import com.fr.commons.dto.SportModelDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.Sport;
+import com.fr.entities.SportEntity;
 import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
 import com.google.gson.Gson;
@@ -75,13 +75,13 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
         user.setUsername(username);
         user.setId(uid);
 
-        Set<Sport> sports = users.getRelatedSports();
+        Set<SportEntity> sportEntities = users.getRelatedSports();
         List<SportModelDTO> sportModelDTOs = new ArrayList<>();
 
-        for (Sport sport : sports) {
+        for (SportEntity sportEntity : sportEntities) {
             SportModelDTO sportModelDTO = new SportModelDTO();
-            sportModelDTO.setId(sport.getId());
-            sportModelDTO.setName(sport.getName());
+            sportModelDTO.setId(sportEntity.getId());
+            sportModelDTO.setName(sportEntity.getName());
 
             sportModelDTOs.add(sportModelDTO);
         }

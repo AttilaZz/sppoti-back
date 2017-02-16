@@ -15,8 +15,10 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * this table is for user resources, pictures, videos, documents, etc ...
  */
 @Entity
+@Table(name = "RESSOURCE")
 @JsonInclude(Include.NON_ABSENT)
-public class Resources {
+public class ResourcesEntity
+{
 
     @Id
     @GeneratedValue

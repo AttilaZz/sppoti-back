@@ -2,15 +2,7 @@ package com.fr.entities;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,8 +12,10 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * Created by: Wail DJENANE on May 22, 2016
  */
 @Entity
+@Table(name = "SPORT")
 @JsonInclude(Include.NON_EMPTY)
-public class Sport {
+public class SportEntity
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,16 +36,16 @@ public class Sport {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport")
     @JsonIgnore
-    private Set<Sppoti> game;
+    private Set<SppotiEntity> game;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport")
     @JsonIgnore
-    private Set<EditHistory> editList;
+    private Set<EditHistoryEntity> editList;
 
-    public Sport() {
+    public SportEntity() {
     }
 
-    public Sport(String name) {
+    public SportEntity(String name) {
         super();
         this.name = name;
     }
@@ -104,19 +98,19 @@ public class Sport {
         this.subscribedUsers = subscribedUsers;
     }
 
-    public Set<Sppoti> getGame() {
+    public Set<SppotiEntity> getGame() {
         return game;
     }
 
-    public void setGame(Set<Sppoti> game) {
+    public void setGame(Set<SppotiEntity> game) {
         this.game = game;
     }
 
-    public Set<EditHistory> getEditList() {
+    public Set<EditHistoryEntity> getEditList() {
         return editList;
     }
 
-    public void setEditList(Set<EditHistory> editList) {
+    public void setEditList(Set<EditHistoryEntity> editList) {
         this.editList = editList;
     }
 

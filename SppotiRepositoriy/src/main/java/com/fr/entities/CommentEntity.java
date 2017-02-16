@@ -3,15 +3,7 @@ package com.fr.entities;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import org.joda.time.DateTime;
 
@@ -25,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 
 @Entity
+@Table(name = "COMMENT")
 @JsonInclude(Include.NON_EMPTY)
 public class CommentEntity implements Comparable<CommentEntity> {
 
@@ -56,10 +49,10 @@ public class CommentEntity implements Comparable<CommentEntity> {
     private PostEntity post;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
-    private Set<LikeContent> likes;
+    private Set<LikeContentEntity> likes;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
-    private Set<EditHistory> editList;
+    private Set<EditHistoryEntity> editList;
 
     public Long getId() {
         return id;
@@ -117,19 +110,19 @@ public class CommentEntity implements Comparable<CommentEntity> {
         this.videoLink = videoLink;
     }
 
-    public Set<LikeContent> getLikes() {
+    public Set<LikeContentEntity> getLikes() {
         return likes;
     }
 
-    public void setLikes(Set<LikeContent> likes) {
+    public void setLikes(Set<LikeContentEntity> likes) {
         this.likes = likes;
     }
 
-    public Set<EditHistory> getEditList() {
+    public Set<EditHistoryEntity> getEditList() {
         return editList;
     }
 
-    public void setEditList(Set<EditHistory> editList) {
+    public void setEditList(Set<EditHistoryEntity> editList) {
         this.editList = editList;
     }
 

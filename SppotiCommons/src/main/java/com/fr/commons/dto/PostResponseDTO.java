@@ -3,9 +3,9 @@ package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.entities.Address;
+import com.fr.entities.AddressEntity;
 import com.fr.entities.PostEntity;
-import com.fr.entities.Sppoti;
+import com.fr.entities.SppotiEntity;
 
 import java.util.List;
 import java.util.Set;
@@ -31,7 +31,7 @@ public class PostResponseDTO {
     @JsonProperty("video")
     private String videoLink;
 
-    private Sppoti game;
+    private SppotiEntity game;
 
     private List<CommentDTO> comment;
     private int commentsCount;
@@ -42,7 +42,7 @@ public class PostResponseDTO {
     private boolean edited;
 
     private List<HeaderDataDTO> likers;
-    private SortedSet<Address> addresses;
+    private SortedSet<AddressEntity> addresses;
 
     private int visibility;
 
@@ -128,11 +128,11 @@ public class PostResponseDTO {
         this.videoLink = videoLink;
     }
 
-    public Sppoti getGame() {
+    public SppotiEntity getGame() {
         return game;
     }
 
-    public void setGame(Sppoti game) {
+    public void setGame(SppotiEntity game) {
         this.game = game;
     }
 
@@ -184,11 +184,11 @@ public class PostResponseDTO {
         this.id = id;
     }
 
-    public SortedSet<Address> getAddresses() {
+    public SortedSet<AddressEntity> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(SortedSet<Address> addresses) {
+    public void setAddresses(SortedSet<AddressEntity> addresses) {
         this.addresses = addresses;
     }
 

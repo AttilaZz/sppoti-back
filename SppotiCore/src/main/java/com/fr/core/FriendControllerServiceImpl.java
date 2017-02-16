@@ -1,6 +1,6 @@
 package com.fr.core;
 
-import com.fr.entities.FriendShip;
+import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
@@ -24,7 +24,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
      * {@inheritDoc}
      */
     @Override
-    public List<FriendShip> getByUserAndStatus(int uuid, String name, Pageable pageable) {
+    public List<FriendShipEntity> getByUserAndStatus(int uuid, String name, Pageable pageable) {
         return friendShipRepository.findByUserUuidAndStatusAndDeletedFalse(uuid, name, pageable);
     }
 
@@ -32,7 +32,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
      * {@inheritDoc}
      */
     @Override
-    public List<FriendShip> getByFriendUuidAndStatus(int uuid, String name, Pageable pageable) {
+    public List<FriendShipEntity> getByFriendUuidAndStatus(int uuid, String name, Pageable pageable) {
         return friendShipRepository.findByFriendUuidAndStatusAndDeletedFalse(uuid, name, pageable);
     }
 
@@ -40,7 +40,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
      * {@inheritDoc}
      */
     @Override
-    public FriendShip getByFriendUuidAndUser(int uuid, int uuid1) {
+    public FriendShipEntity getByFriendUuidAndUser(int uuid, int uuid1) {
         return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(uuid, uuid1);
     }
 
@@ -48,7 +48,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
      * {@inheritDoc}
      */
     @Override
-    public void saveFriendShip(FriendShip friendShip) {
+    public void saveFriendShip(FriendShipEntity friendShip) {
 
         if (friendShipRepository.save(friendShip) != null) {
             addNotification(NotificationType.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend());
@@ -70,10 +70,10 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
          /*
         Check if i received a friend request from the USER in the request
          */
-        FriendShip tempFriendShip = getByFriendUuidAndUser(connectedUser.getUuid(), friendUuid);
+        FriendShipEntity tempFriendShip = getByFriendUuidAndUser(connectedUser.getUuid(), friendUuid);
         if (tempFriendShip == null) {
-            LOGGER.error("UPDATE-FRIEND: FriendShip not found !");
-            throw new EntityNotFoundException("FriendShip not found between (" + connectedUser.getUuid() + ") And (" + friendUuid + ")");
+            LOGGER.error("UPDATE-FRIEND: FriendShipEntity not found !");
+            throw new EntityNotFoundException("FriendShipEntity not found between (" + connectedUser.getUuid() + ") And (" + friendUuid + ")");
         }
 
         /*
@@ -86,7 +86,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         //update and add notification
-        FriendShip friendShip = friendShipRepository.save(tempFriendShip);
+        FriendShipEntity friendShip = friendShipRepository.save(tempFriendShip);
         if (friendShip != null) {
             if (friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED.name())) {
                 addNotification(NotificationType.FRIEND_REQUEST_ACCEPTED, friendShip.getFriend(), friendShip.getUser());
@@ -101,7 +101,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
      * {@inheritDoc}
      */
     @Override
-    public void deleteFriendShip(FriendShip friendShip) {
+    public void deleteFriendShip(FriendShipEntity friendShip) {
 
         friendShip.setDeleted(true);
         friendShipRepository.save(friendShip);

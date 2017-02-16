@@ -1,8 +1,8 @@
 package com.fr.rest.controllers.account;
 
 import com.fr.commons.dto.SignUpRequestDTO;
-import com.fr.entities.Roles;
-import com.fr.entities.Sport;
+import com.fr.entities.RoleEntity;
+import com.fr.entities.SportEntity;
 import com.fr.entities.UserEntity;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictPhoneException;
@@ -53,7 +53,7 @@ public class AccountAddController {
 		/*
          * processing user Sports
 		 */
-        Set<Sport> userSports = new HashSet<>();
+        Set<SportEntity> userSports = new HashSet<>();
 
         if (!accountControllerService.isReceivedDataNotEmpty(user)) {
             LOGGER.info("INSCRIPTION: Un attribut obligatoire est vide !!");
@@ -79,7 +79,7 @@ public class AccountAddController {
 
         for (Long sportId : user.getSportId()) {
             // if the parsed SportModelDTO exist in database == correct request
-            Sport mSport = accountControllerService.getSportById(sportId);
+            SportEntity mSport = accountControllerService.getSportById(sportId);
             if (mSport != null) {
                 userSports.add(mSport);
             } else {
@@ -95,7 +95,7 @@ public class AccountAddController {
          * processing user Profile
 		 */
         String profileNameToSet = UserRoleType.USER.getUserProfileType();
-        Roles profile = accountControllerService.getProfileEntity(profileNameToSet);
+        RoleEntity profile = accountControllerService.getProfileEntity(profileNameToSet);
 
         if (profile == null) {
             LOGGER.info("Profile name <" + profileNameToSet + "> doesn't exist !!");
@@ -103,7 +103,7 @@ public class AccountAddController {
             return;
         }
 
-        Set<Roles> roles = new HashSet<>();
+        Set<RoleEntity> roles = new HashSet<>();
         roles.add(profile);
         newUser.setRoles(roles);
 

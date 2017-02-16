@@ -47,12 +47,12 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public Roles getProfileEntity(String profileType) {
+    public RoleEntity getProfileEntity(String profileType) {
         return roleRepository.getByName(profileType);
     }
 
     @Override
-    public Sport getSportById(Long id) {
+    public SportEntity getSportById(Long id) {
         return sportRepository.getById(id);
     }
 
@@ -122,10 +122,10 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
 
     @Override
     public void unSelectOldResource(Long userId, int i) {
-        Resources resources = resourceRepository.getByUserIdAndTypeAndIsSelectedTrue(userId, i);
-        if (resources != null) {
-            resources.setSelected(false);
-            resourceRepository.save(resources);
+        ResourcesEntity resourcesEntity = resourceRepository.getByUserIdAndTypeAndIsSelectedTrue(userId, i);
+        if (resourcesEntity != null) {
+            resourcesEntity.setSelected(false);
+            resourceRepository.save(resourcesEntity);
         }
     }
 

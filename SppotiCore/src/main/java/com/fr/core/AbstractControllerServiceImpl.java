@@ -222,10 +222,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @param dsHistoryList
      * @return list of ContentEditedResponseDTO
      */
-    protected List<ContentEditedResponseDTO> fillEditContentResponse(List<EditHistory> dsHistoryList) {
+    protected List<ContentEditedResponseDTO> fillEditContentResponse(List<EditHistoryEntity> dsHistoryList) {
         List<ContentEditedResponseDTO> editHistoryResponse = new ArrayList<ContentEditedResponseDTO>();
         editHistoryResponse.clear();
-        for (EditHistory editContent : dsHistoryList) {
+        for (EditHistoryEntity editContent : dsHistoryList) {
 
             ContentEditedResponseDTO cer = new ContentEditedResponseDTO();
             cer.setDateTime(editContent.getDatetimeEdited());
@@ -275,12 +275,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             cm.setLikedByUser(isCommentLikedByMe);
             cm.setLikeCount(commentEntity.getLikes().size());
 
-            List<EditHistory> editHistory = editHistoryRepository.getByCommentUuidOrderByDatetimeEditedDesc(commentId);
+            List<EditHistoryEntity> editHistory = editHistoryRepository.getByCommentUuidOrderByDatetimeEditedDesc(commentId);
 
             if (!editHistory.isEmpty()) {
                 cm.setEdited(true);
 
-                EditHistory ec = editHistory.get(0);
+                EditHistoryEntity ec = editHistory.get(0);
 
                 cm.setCreationDate(ec.getDatetimeEdited());
                 cm.setText(ec.getText());
@@ -306,7 +306,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     // detect if post or comment has already been liked by user
     protected boolean isContentLikedByUser(Object o, Long userId) {
 
-        List<LikeContent> lp = new ArrayList<LikeContent>();
+        List<LikeContentEntity> lp = new ArrayList<LikeContentEntity>();
         PostEntity p;
         CommentEntity c;
 
@@ -318,7 +318,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             lp.addAll(c.getLikes());
         }
 
-        for (LikeContent likePost : lp) {
+        for (LikeContentEntity likePost : lp) {
             if (likePost.getUser().getId().equals(userId)) {
                 return true;
             }
@@ -351,7 +351,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 /*
                 manage requests sent to me
                  */
-                FriendShip friendShip;
+                FriendShipEntity friendShip;
 
                 friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(connected_user.getUuid(), targetUser.getUuid());
 
@@ -405,10 +405,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
         List<SportModelDTO> sportModelDTOs = new ArrayList<SportModelDTO>();
 
-        for (Sport sport : targetUser.getRelatedSports()) {
+        for (SportEntity sportEntity : targetUser.getRelatedSports()) {
             SportModelDTO sportModelDTO = new SportModelDTO();
-            sportModelDTO.setId(sport.getId());
-            sportModelDTO.setName(sport.getName());
+            sportModelDTO.setId(sportEntity.getId());
+            sportModelDTO.setName(sportEntity.getName());
 
             sportModelDTOs.add(sportModelDTO);
         }
@@ -432,17 +432,17 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @return set of USERS_TEAM
      */
     @Override
-    public Set<TeamMembers> getTeamMembersEntityFromDto(List<UserDTO> users, Team team, Long adminId, Sppoti sppoti) {
+    public Set<TeamMemberEntity> getTeamMembersEntityFromDto(List<UserDTO> users, TeamEntity team, Long adminId, SppotiEntity sppoti) {
 
-        Set<TeamMembers> teamUsers = new HashSet<TeamMembers>();
-        Set<Team> teams = new HashSet<Team>();
+        Set<TeamMemberEntity> teamUsers = new HashSet<TeamMemberEntity>();
+        Set<TeamEntity> teams = new HashSet<TeamEntity>();
         teams.add(team);
 
         for (UserDTO user : users) {
 
             List<UserEntity> u = userRepository.getByUuid(user.getId());
 
-            TeamMembers teamMember = new TeamMembers();
+            TeamMemberEntity teamMember = new TeamMemberEntity();
             SppotiMember sppoter = new SppotiMember();
 
             if (u != null && !u.isEmpty()) {
@@ -457,7 +457,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 teamMember.setUsers(u.get(0));
 
                 if (sppoti != null) {
-                    TeamMembers sppoterMember = teamMembersRepository.findByUsersUuidAndTeamUuid(user.getId(), team.getUuid());
+                    TeamMemberEntity sppoterMember = teamMembersRepository.findByUsersUuidAndTeamUuid(user.getId(), team.getUuid());
 
                     /** if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter */
                     if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
@@ -524,16 +524,16 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     /**
      * @param team
-     * @return a teamResponse object from Team entity
+     * @return a teamResponse object from TeamEntity entity
      */
-    protected TeamResponseDTO fillTeamResponse(Team team, Long sppotiAdmin) {
+    protected TeamResponseDTO fillTeamResponse(TeamEntity team, Long sppotiAdmin) {
 
         TeamResponseDTO teamResponseDTO = new TeamResponseDTO();
         teamResponseDTO.setId(team.getUuid());
 
         List<UserDTO> teamUsers = new ArrayList<UserDTO>();
 
-        for (TeamMembers user : team.getTeamMemberss()) {
+        for (TeamMemberEntity user : team.getTeamMemberss()) {
 
             Integer sppoterStatus = null;
 

@@ -13,8 +13,10 @@ import java.util.UUID;
  * Created by: Wail DJENANE On May 22, 2016
  */
 @Entity
+@Table(name = "SPPOTI")
 @JsonInclude(Include.NON_EMPTY)
-public class Sppoti {
+public class SppotiEntity
+{
 
     @Id
     @GeneratedValue
@@ -50,7 +52,7 @@ public class Sppoti {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sport_id", nullable = false)
     @JsonIgnore
-    private Sport sport;
+    private SportEntity sport;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", nullable = false)
@@ -60,12 +62,12 @@ public class Sppoti {
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_host_id", nullable = false)
     @JsonIgnore
-    private Team teamHost;
+    private TeamEntity teamHost;
 
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_adverse_id")
     @JsonIgnore
-    private Team teamAdverse;
+    private TeamEntity teamAdverse;
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMember> sppotiMembers;
@@ -94,11 +96,11 @@ public class Sppoti {
         this.location = location;
     }
 
-    public Sport getSport() {
+    public SportEntity getSport() {
         return sport;
     }
 
-    public void setSport(Sport sport) {
+    public void setSport(SportEntity sport) {
         this.sport = sport;
     }
 
@@ -158,19 +160,19 @@ public class Sppoti {
         this.tags = tags;
     }
 
-    public Team getTeamHost() {
+    public TeamEntity getTeamHost() {
         return teamHost;
     }
 
-    public void setTeamHost(Team teamHost) {
+    public void setTeamHost(TeamEntity teamHost) {
         this.teamHost = teamHost;
     }
 
-    public Team getTeamAdverse() {
+    public TeamEntity getTeamAdverse() {
         return teamAdverse;
     }
 
-    public void setTeamAdverse(Team teamAdverse) {
+    public void setTeamAdverse(TeamEntity teamAdverse) {
         this.teamAdverse = teamAdverse;
     }
 

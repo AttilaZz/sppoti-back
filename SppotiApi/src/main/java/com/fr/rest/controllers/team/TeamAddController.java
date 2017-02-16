@@ -49,17 +49,17 @@ public class TeamAddController {
 //
 //        }
         if (team.getName() == null || team.getName().isEmpty()) {
-            LOGGER.error("Team (name) not found");
+            LOGGER.error("TeamEntity (name) not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         if (team.getMembers() == null || team.getMembers().isEmpty()) {
-            LOGGER.error("Team (members) not found");
+            LOGGER.error("TeamEntity (members) not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         if(team.getSportId() == null){
-            LOGGER.error("Team (sport id) not found");
+            LOGGER.error("TeamEntity (sport id) not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

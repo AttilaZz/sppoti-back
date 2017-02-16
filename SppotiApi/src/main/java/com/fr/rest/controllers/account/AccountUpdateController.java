@@ -1,8 +1,8 @@
 package com.fr.rest.controllers.account;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.Address;
-import com.fr.entities.Resources;
+import com.fr.entities.AddressEntity;
+import com.fr.entities.ResourcesEntity;
 import com.fr.entities.UserEntity;
 import com.fr.enums.CoverType;
 import com.fr.rest.service.AccountControllerService;
@@ -52,7 +52,7 @@ public class AccountUpdateController {
         UserEntity connected_user = accountControllerService.getUserById(userId);
 
         //detect which element uwer want to update
-        Resources resource = new Resources();
+        ResourcesEntity resource = new ResourcesEntity();
 
         boolean update = false;
 
@@ -87,7 +87,7 @@ public class AccountUpdateController {
                 update = true;
             }
             if (user.getAddress() != null && !user.getAddress().isEmpty()) {
-                connected_user.getAddresses().add(new Address(user.getAddress()));
+                connected_user.getAddresses().add(new AddressEntity(user.getAddress()));
                 update = true;
             }
             if (user.getUsername() != null && !user.getUsername().isEmpty()) {

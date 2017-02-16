@@ -1,6 +1,6 @@
 package com.fr.rest.controllers.friend;
 
-import com.fr.entities.FriendShip;
+import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.rest.service.FriendControllerService;
 import org.apache.log4j.Logger;
@@ -50,7 +50,7 @@ public class FriendDeleteController {
         /*
         Check if friendship exist
          */
-        FriendShip friendShip = friendControllerService.getByFriendUuidAndUser(friendId, connectedUser.getUuid());
+        FriendShipEntity friendShip = friendControllerService.getByFriendUuidAndUser(friendId, connectedUser.getUuid());
         if (friendShip == null) {
             LOGGER.error("UPDATE-FRIEND: No friendship found to delete !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

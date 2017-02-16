@@ -1,29 +1,28 @@
 package com.fr.repositories;
 
-import com.fr.entities.LikeContent;
+import com.fr.entities.LikeContentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by djenanewail on 12/15/16.
  */
-public interface LikeRepository extends CrudRepository<LikeContent, Long> {
+public interface LikeRepository extends CrudRepository<LikeContentEntity, Long> {
 
-    LikeContent getByPostId(Long id);
+    LikeContentEntity getByPostId(Long id);
 
     Page findAll(Pageable pageable);
 
-    List<LikeContent> getByPostUuidOrderByDatetimeCreated(int id, Pageable pageable1);
+    List<LikeContentEntity> getByPostUuidOrderByDatetimeCreated(int id, Pageable pageable1);
 
-    LikeContent getByUserIdAndPostUuid(Long userId, int postId);
+    LikeContentEntity getByUserIdAndPostUuid(Long userId, int postId);
 
-    LikeContent getByCommentId(Long id);
+    LikeContentEntity getByCommentId(Long id);
 
     Object getByUserIdAndCommentUuid(Long userId, int commentId);
 
-    List<LikeContent> getByCommentUuidOrderByDatetimeCreated(int id, Pageable pageable1);
+    List<LikeContentEntity> getByCommentUuidOrderByDatetimeCreated(int id, Pageable pageable1);
 }

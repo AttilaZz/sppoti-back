@@ -19,7 +19,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "ROLES")
 @JsonInclude(Include.NON_EMPTY)
-public class Roles {
+public class RoleEntity
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,16 +34,16 @@ public class Roles {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles", cascade = CascadeType.ALL)
     private Set<UserEntity> users;
 
-    public Roles() {
+    public RoleEntity() {
         super();
     }
 
-    public Roles(String name) {
+    public RoleEntity(String name) {
         super();
         this.name = name;
     }
 
-    public Roles(Long id) {
+    public RoleEntity(Long id) {
         this.id = id;
     }
 

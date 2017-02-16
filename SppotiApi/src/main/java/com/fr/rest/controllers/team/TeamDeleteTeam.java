@@ -46,7 +46,7 @@ public class TeamDeleteTeam {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        LOGGER.info("Team has been deleted (" + id + ")");
+        LOGGER.info("TeamEntity has been deleted (" + id + ")");
         return new ResponseEntity(HttpStatus.OK);
     }
 

@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.friend;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.FriendShip;
+import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.FriendControllerService;
@@ -82,13 +82,13 @@ public class FriendAddController {
         /*
         Check if friendship exist
          */
-        FriendShip tempFriendShip = friendControllerService.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid());
+        FriendShipEntity tempFriendShip = friendControllerService.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid());
         if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatus.PUBLIC_RELATION.name())) {
             LOGGER.error("ADD-FRIEND: You are already friends");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        FriendShip friendShip = new FriendShip();
+        FriendShipEntity friendShip = new FriendShipEntity();
 
         //friendship aleady exist in a different status
         if (tempFriendShip != null && tempFriendShip.getStatus().equals(GlobalAppStatus.PUBLIC_RELATION.name())) {

@@ -67,7 +67,7 @@ public class TeamMembersController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOGGER.info("Team member data updated ! \n " + request.toString());
+        LOGGER.info("TeamEntity member data updated ! \n " + request.toString());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
     }

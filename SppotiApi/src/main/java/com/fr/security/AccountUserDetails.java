@@ -1,7 +1,7 @@
 package com.fr.security;
 
 import com.fr.aop.TraceAuthentification;
-import com.fr.entities.Roles;
+import com.fr.entities.RoleEntity;
 import com.fr.entities.UserEntity;
 import org.apache.log4j.Logger;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +28,7 @@ public class AccountUserDetails implements MyUserDetails {
 
         ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-        for (Roles userRole : account.getRoles()) {
+        for (RoleEntity userRole : account.getRoles()) {
 
             authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getName()));
         }

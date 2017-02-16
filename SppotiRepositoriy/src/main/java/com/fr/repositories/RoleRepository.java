@@ -1,13 +1,13 @@
 package com.fr.repositories;
 
-import com.fr.entities.Roles;
+import com.fr.entities.RoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created by djenanewail on 12/9/16.
  */
-public interface RoleRepository extends JpaRepository<Roles, Long> {
+public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
-    Roles getByName(String name);
+    RoleEntity getByName(String name);
 
 }

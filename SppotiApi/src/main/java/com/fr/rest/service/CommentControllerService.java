@@ -6,7 +6,7 @@ package com.fr.rest.service;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.entities.CommentEntity;
-import com.fr.entities.EditHistory;
+import com.fr.entities.EditHistoryEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public interface CommentControllerService extends AbstractControllerService {
 
     CommentEntity findComment(int commentId);
 
-    boolean updateComment(EditHistory commentEditRow);
+    boolean updateComment(EditHistoryEntity commentEditRow);
 
     List<CommentDTO> getPostCommentsFromLastId(int postId, int page, Long userId);
 

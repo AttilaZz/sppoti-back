@@ -60,7 +60,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public boolean updatePost(EditHistory postEditRow, SortedSet<Address> postEditAddress, int postId) {
+    public boolean updatePost(EditHistoryEntity postEditRow, SortedSet<AddressEntity> postEditAddress, int postId) {
         if (postEditAddress != null) {
 
             try {
@@ -125,7 +125,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public Sport getSportToUse(Long id) {
+    public SportEntity getSportToUse(Long id) {
 
         return sportRepository.getById(id);
     }
@@ -134,7 +134,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public Sppoti getSppotiById(Long id) {
+    public SppotiEntity getSppotiById(Long id) {
 
         return sppotiRepository.getOne(id);
     }
@@ -234,14 +234,14 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             }
 
             // check if content has been modified or not
-            List<EditHistory> editHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(post.getUuid());
+            List<EditHistoryEntity> editHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(post.getUuid());
 
             if (!editHistory.isEmpty()) {
 
                 // modification detected
                 pres.setEdited(true);
 
-                EditHistory ec = editHistory.get(0);
+                EditHistoryEntity ec = editHistory.get(0);
 
                 pres.setDatetimeCreated(ec.getDatetimeEdited());
                 if (ec.getText() != null) {
@@ -314,7 +314,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             pres.setLastName(owner.getLastName());
             pres.setUsername(owner.getUsername());
 
-            List<Resources> resources = new ArrayList<Resources>();
+            List<ResourcesEntity> resources = new ArrayList<ResourcesEntity>();
             resources.addAll(owner.getRessources());
 
             if (!resources.isEmpty()) {
@@ -365,7 +365,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         Pageable pageable = new PageRequest(page, postSize);
 
-        List<EditHistory> postHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(id, pageable);
+        List<EditHistoryEntity> postHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(id, pageable);
 
         return fillEditContentResponse(postHistory);
     }
@@ -374,7 +374,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public List<EditHistory> getLastModification(int postId) {
+    public List<EditHistoryEntity> getLastModification(int postId) {
 //        return editContentDaoService.getLastEditedPost(postId);
         return editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(postId);
     }
@@ -383,7 +383,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public Sport getSportById(Long sport_id) {
+    public SportEntity getSportById(Long sport_id) {
         return sportRepository.getOne(sport_id);
     }
 

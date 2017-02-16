@@ -5,8 +5,8 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.entities.Message;
-import com.fr.entities.Sport;
+import com.fr.entities.MessageEntity;
+import com.fr.entities.SportEntity;
 
 /**
  * Created by: Wail DJENANE on Jun 11, 2016
@@ -27,8 +27,8 @@ public class ProfilePageDTO {
     private String profileName;
 
     private List<PostResponseDTO> userPosts;
-    private Set<Sport> userSports;
-    private List<Message> userMessages;
+    private Set<SportEntity> userSports;
+    private List<MessageEntity> userMessages;
     private Set<String> userAddresses;
 
     // when switching to another profile
@@ -131,19 +131,19 @@ public class ProfilePageDTO {
         this.userPosts = userPosts;
     }
 
-    public Set<Sport> getUserSports() {
+    public Set<SportEntity> getUserSports() {
         return userSports;
     }
 
-    public void setUserSports(Set<Sport> sportSet) {
-        this.userSports = sportSet;
+    public void setUserSports(Set<SportEntity> sportEntitySet) {
+        this.userSports = sportEntitySet;
     }
 
-    public List<Message> getUserMessages() {
+    public List<MessageEntity> getUserMessages() {
         return userMessages;
     }
 
-    public void setUserMessages(List<Message> userMessages) {
+    public void setUserMessages(List<MessageEntity> userMessages) {
         this.userMessages = userMessages;
     }
 

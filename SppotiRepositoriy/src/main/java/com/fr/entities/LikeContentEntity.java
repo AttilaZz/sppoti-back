@@ -9,22 +9,23 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * Created by: Wail DJENANE on Aug 20, 2016
+ * Created by: Wail DJENANE on Aug 15, 2016
  */
 
 @Entity
+@Table(name = "LIKE_CONTENT")
 @JsonInclude(Include.NON_EMPTY)
-public class EditHistory {
+public class LikeContentEntity
+{
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column(length = 500)
-    private String text;
-
-    @Column(nullable = false)
-    private String datetimeEdited = new DateTime().toString();
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private UserEntity user;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -36,10 +37,8 @@ public class EditHistory {
     @JsonIgnore
     private CommentEntity comment;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "sport_id")
-    @JsonIgnore
-    private Sport sport;
+    @Column(nullable = false)
+    private String datetimeCreated = new DateTime().toString();
 
     public Long getId() {
         return id;
@@ -47,6 +46,14 @@ public class EditHistory {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public PostEntity getPost() {
@@ -65,28 +72,12 @@ public class EditHistory {
         this.comment = comment;
     }
 
-    public String getText() {
-        return text;
+    public String getDatetimeCreated() {
+        return datetimeCreated;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getDatetimeEdited() {
-        return datetimeEdited;
-    }
-
-    public void setDatetimeEdited(String datetimeEdited) {
-        this.datetimeEdited = datetimeEdited;
-    }
-
-    public Sport getSport() {
-        return sport;
-    }
-
-    public void setSport(Sport sport) {
-        this.sport = sport;
+    public void setDatetimeCreated(String datetimeCreated) {
+        this.datetimeCreated = datetimeCreated;
     }
 
 }

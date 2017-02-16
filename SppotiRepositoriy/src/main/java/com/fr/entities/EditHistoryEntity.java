@@ -9,21 +9,24 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * Created by: Wail DJENANE on Aug 15, 2016
+ * Created by: Wail DJENANE on Aug 20, 2016
  */
 
 @Entity
+@Table(name = "EDIT_HISTORY")
 @JsonInclude(Include.NON_EMPTY)
-public class LikeContent {
+public class EditHistoryEntity
+{
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
-    private UserEntity user;
+    @Column(length = 500)
+    private String text;
+
+    @Column(nullable = false)
+    private String datetimeEdited = new DateTime().toString();
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -35,8 +38,10 @@ public class LikeContent {
     @JsonIgnore
     private CommentEntity comment;
 
-    @Column(nullable = false)
-    private String datetimeCreated = new DateTime().toString();
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "sport_id")
+    @JsonIgnore
+    private SportEntity sport;
 
     public Long getId() {
         return id;
@@ -44,14 +49,6 @@ public class LikeContent {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
     }
 
     public PostEntity getPost() {
@@ -70,12 +67,28 @@ public class LikeContent {
         this.comment = comment;
     }
 
-    public String getDatetimeCreated() {
-        return datetimeCreated;
+    public String getText() {
+        return text;
     }
 
-    public void setDatetimeCreated(String datetimeCreated) {
-        this.datetimeCreated = datetimeCreated;
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getDatetimeEdited() {
+        return datetimeEdited;
+    }
+
+    public void setDatetimeEdited(String datetimeEdited) {
+        this.datetimeEdited = datetimeEdited;
+    }
+
+    public SportEntity getSport() {
+        return sport;
+    }
+
+    public void setSport(SportEntity sport) {
+        this.sport = sport;
     }
 
 }

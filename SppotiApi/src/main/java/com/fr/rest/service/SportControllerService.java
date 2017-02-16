@@ -1,6 +1,6 @@
 package com.fr.rest.service;
 
-import com.fr.entities.Sport;
+import com.fr.entities.SportEntity;
 
 import java.util.List;
 
@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface SportControllerService extends AbstractControllerService{
 
-    List<Sport> getAllSports();
+    List<SportEntity> getAllSports();
 
 }

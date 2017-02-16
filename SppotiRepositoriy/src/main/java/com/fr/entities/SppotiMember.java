@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by djenanewail on 2/4/17.
  */
 @Entity
-@Table
+@Table(name = "SPPOTI_MEMBER")
 public class SppotiMember {
 
     @Id
@@ -24,11 +24,11 @@ public class SppotiMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sppoti_id")
-    private Sppoti sppoti;
+    private SppotiEntity sppoti;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sppoter_id")
-    private TeamMembers usersTeam;
+    private TeamMemberEntity usersTeam;
 
     public Long getId() {
         return id;
@@ -62,11 +62,11 @@ public class SppotiMember {
         this.invitationDate = invitationDate;
     }
 
-    public Sppoti getSppoti() {
+    public SppotiEntity getSppoti() {
         return sppoti;
     }
 
-    public void setSppoti(Sppoti sppoti) {
+    public void setSppoti(SppotiEntity sppoti) {
         this.sppoti = sppoti;
     }
 
@@ -86,11 +86,11 @@ public class SppotiMember {
         this.yPosition = yPosition;
     }
 
-    public TeamMembers getUsersTeam() {
+    public TeamMemberEntity getUsersTeam() {
         return usersTeam;
     }
 
-    public void setUsersTeam(TeamMembers usersTeam) {
+    public void setUsersTeam(TeamMemberEntity usersTeam) {
         this.usersTeam = usersTeam;
     }
 }

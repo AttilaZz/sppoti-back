@@ -11,8 +11,9 @@ import java.util.UUID;
  */
 
 @Entity
-@Table
-public class Team {
+@Table(name = "TEAM")
+public class TeamEntity
+{
 
     @Id
     @GeneratedValue
@@ -29,11 +30,11 @@ public class Team {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "team")
-    private Set<TeamMembers> teamMemberss;
+    private Set<TeamMemberEntity> teamMemberss;
 
     @OneToOne
     @JoinColumn(name = "sport_id")
-    private Sport sport;
+    private SportEntity sport;
 
     private boolean deleted = false;
 
@@ -77,19 +78,19 @@ public class Team {
         this.uuid = uuid;
     }
 
-    public Set<TeamMembers> getTeamMemberss() {
+    public Set<TeamMemberEntity> getTeamMemberss() {
         return teamMemberss;
     }
 
-    public void setTeamMemberss(Set<TeamMembers> teamMemberss) {
+    public void setTeamMemberss(Set<TeamMemberEntity> teamMemberss) {
         this.teamMemberss = teamMemberss;
     }
 
-    public Sport getSport() {
+    public SportEntity getSport() {
         return sport;
     }
 
-    public void setSport(Sport sport) {
+    public void setSport(SportEntity sport) {
         this.sport = sport;
     }
 

@@ -3,7 +3,7 @@ package com.fr.rest.controllers;
 import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.commons.dto.PostResponseDTO;
 import com.fr.entities.CommentEntity;
-import com.fr.entities.LikeContent;
+import com.fr.entities.LikeContentEntity;
 import com.fr.entities.PostEntity;
 import com.fr.entities.UserEntity;
 import com.fr.rest.service.CommentControllerService;
@@ -82,7 +82,7 @@ public class LikeController {
 
         }
 
-        LikeContent likeToSave = new LikeContent();
+        LikeContentEntity likeToSave = new LikeContentEntity();
         likeToSave.setPost(postToLike);
         likeToSave.setUser(user);
 
@@ -216,7 +216,7 @@ public class LikeController {
 
         }
 
-        LikeContent likeToSave = new LikeContent();
+        LikeContentEntity likeToSave = new LikeContentEntity();
         likeToSave.setComment(commentEntityToLike);
         likeToSave.setUser(user);
 

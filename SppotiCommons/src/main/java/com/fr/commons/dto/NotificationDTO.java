@@ -1,5 +1,6 @@
 package com.fr.commons.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
@@ -21,8 +22,8 @@ public class NotificationDTO {
     private Integer sppotiId;
     private Integer postId;
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-    private String datetime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private Date datetime;
 
     public Integer getId() {
         return id;
@@ -48,14 +49,14 @@ public class NotificationDTO {
         this.to = to;
     }
 
-    public String getDatetime() {
+    public Date getDatetime()
+    {
         return datetime;
     }
-
-    public void setDatetime(String datetime) {
+    public void setDatetime(Date datetime)
+    {
         this.datetime = datetime;
     }
-
     public Integer getNotificationType() {
         return notificationType;
     }

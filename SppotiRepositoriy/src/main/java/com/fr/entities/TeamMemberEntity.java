@@ -11,8 +11,9 @@ import java.util.UUID;
  * Created by djenanewail on 2/4/17.
  */
 @Entity
-@Table
-public class TeamMembers {
+@Table(name = "TEAM_MEMBER")
+public class TeamMemberEntity
+{
 
     @Id
     @GeneratedValue
@@ -34,7 +35,7 @@ public class TeamMembers {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
-    private Team team;
+    private TeamEntity team;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -75,11 +76,11 @@ public class TeamMembers {
         this.invitationDate = invitationDate;
     }
 
-    public Team getTeam() {
+    public TeamEntity getTeam() {
         return team;
     }
 
-    public void setTeam(Team team) {
+    public void setTeam(TeamEntity team) {
         this.team = team;
     }
 

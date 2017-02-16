@@ -6,7 +6,7 @@ package com.fr.core;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.entities.CommentEntity;
-import com.fr.entities.EditHistory;
+import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.CommentControllerService;
@@ -92,7 +92,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
      * {@inheritDoc}
      */
     @Override
-    public boolean updateComment(EditHistory commentToEdit) {
+    public boolean updateComment(EditHistoryEntity commentToEdit) {
 
         try {
             editHistoryRepository.save(commentToEdit);
@@ -126,7 +126,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
 
         Pageable pageable = new PageRequest(page, commentSize);
 
-        List<EditHistory> dsHistoryList = editHistoryRepository.getByCommentUuidOrderByDatetimeEditedDesc(id, pageable);
+        List<EditHistoryEntity> dsHistoryList = editHistoryRepository.getByCommentUuidOrderByDatetimeEditedDesc(id, pageable);
         return fillEditContentResponse(dsHistoryList);
     }
 

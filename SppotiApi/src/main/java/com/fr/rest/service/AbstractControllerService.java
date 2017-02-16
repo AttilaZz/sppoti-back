@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Set;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.Sppoti;
-import com.fr.entities.Team;
-import com.fr.entities.TeamMembers;
+import com.fr.entities.SppotiEntity;
+import com.fr.entities.TeamEntity;
+import com.fr.entities.TeamMemberEntity;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Service;
 
@@ -25,5 +25,5 @@ public interface AbstractControllerService {
 
     UserEntity getUserByUuId(int id);
 
-    Set<TeamMembers> getTeamMembersEntityFromDto(List<UserDTO> users, Team team, Long adminId, Sppoti sppoti);
+    Set<TeamMemberEntity> getTeamMembersEntityFromDto(List<UserDTO> users, TeamEntity team, Long adminId, SppotiEntity sppoti);
 }

@@ -3,7 +3,7 @@
  */
 package com.fr.rest.controllers;
 
-import com.fr.entities.Message;
+import com.fr.entities.MessageEntity;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,12 +34,13 @@ public class MessageDraftController {
     // private static final String ATT_USER_ID = "USER_ID";
 
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Message> updateUser(@PathVariable("id") Long id, @RequestBody Message newMsg) {
+    public ResponseEntity<MessageEntity> updateUser(@PathVariable("id") Long id, @RequestBody
+            MessageEntity newMsg) {
 
         if (id > 0) {
-            Message oldMsg = messageControllerService.findMessageById(id);
+            MessageEntity oldMsg = messageControllerService.findMessageById(id);
             if (oldMsg != null) {
-                Message updated = new Message();
+                MessageEntity updated = new MessageEntity();
                 // prepare data for update
                 if (newMsg.getContent() != null) {
                     updated.setContent(newMsg.getContent());
@@ -50,15 +51,15 @@ public class MessageDraftController {
 
                 // if (messageControllerService.updateMessage(updated)) {
                 // LOGGER.info("UPDATE: success");
-                // return new ResponseEntity<Message>(updated, HttpStatus.OK);
+                // return new ResponseEntity<MessageEntity>(updated, HttpStatus.OK);
                 // }
 
             }
-            return new ResponseEntity<Message>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<MessageEntity>(HttpStatus.NO_CONTENT);
         }
 
         // BAD MESSAGE ID
         LOGGER.info("UPDATE: bad argument");
-        return new ResponseEntity<Message>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<MessageEntity>(HttpStatus.BAD_REQUEST);
     }
 }

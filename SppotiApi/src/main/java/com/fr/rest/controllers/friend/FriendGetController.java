@@ -2,7 +2,7 @@ package com.fr.rest.controllers.friend;
 
 import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.FriendShip;
+import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.AccountControllerService;
@@ -67,7 +67,7 @@ public class FriendGetController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.CONFIRMED.name(), pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.CONFIRMED.name(), pageable);
 
         FriendResponseDTO friendResponse = getFriendResponse(friendShips);
 
@@ -91,7 +91,7 @@ public class FriendGetController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.REFUSED.name(), pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.REFUSED.name(), pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_REFUSED_FRIEND_REQUEST: No sent friend request found !");
@@ -119,7 +119,7 @@ public class FriendGetController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING.name(), pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING.name(), pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_SENT: No sent friend request found !");
@@ -147,7 +147,7 @@ public class FriendGetController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShip> friendShips = friendControllerService.getByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING.name(), pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING.name(), pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_RECEIVED: No received request friend found !");
@@ -163,10 +163,10 @@ public class FriendGetController {
     }
 
 
-    private FriendResponseDTO getFriendResponse(List<FriendShip> friendShips) {
+    private FriendResponseDTO getFriendResponse(List<FriendShipEntity> friendShips) {
         List<UserDTO> friendList = new ArrayList<>();
 
-        for (FriendShip friendShip : friendShips) {
+        for (FriendShipEntity friendShip : friendShips) {
             UserEntity userdb = friendShip.getFriend();
 
             UserDTO user = accountControllerService.fillUserResponse(userdb, null);

@@ -7,7 +7,6 @@ import com.fr.entities.*;
 import com.fr.exceptions.TeamMemberNotFoundException;
 import com.fr.exceptions.SportNotFoundException;
 import com.fr.models.GlobalAppStatus;
-import com.fr.models.NotificationType;
 import com.fr.rest.service.SppotiControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +25,7 @@ import java.util.List;
 @Component
 public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService {
 
-    private static final String TEAM_ID_NOT_FOUND = "Team id not found";
+    private static final String TEAM_ID_NOT_FOUND = "TeamEntity id not found";
     private Logger LOGGER = Logger.getLogger(SppotiControllerServiceImpl.class);
 
     @Value("${key.sppotiesPerPage}")
@@ -39,8 +38,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public SppotiResponseDTO saveSppoti(SppotiRequestDTO newSppoti, Long sppotiCreator) {
 
-        Team hostTeam = new Team();
-        Sppoti sppoti = new Sppoti();
+        TeamEntity hostTeam = new TeamEntity();
+        SppotiEntity sppoti = new SppotiEntity();
 
         if (newSppoti.getMyTeam() != null) {
 
@@ -67,7 +66,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         } else if (newSppoti.getMyTeamId() != 0) {
 
-            List<Team> tempTeams = teamRepository.findByUuid(newSppoti.getMyTeamId());
+            List<TeamEntity> tempTeams = teamRepository.findByUuid(newSppoti.getMyTeamId());
 
             if (tempTeams == null || tempTeams.isEmpty()) {
                 throw new EntityNotFoundException("Host team not found in the request");
@@ -79,9 +78,9 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Host team not found in the request");
         }
 
-        Sport sport = sportRepository.findOne(newSppoti.getSportId());
-        if (sport == null) {
-            throw new SportNotFoundException("Sport id is incorrect");
+        SportEntity sportEntity = sportRepository.findOne(newSppoti.getSportId());
+        if (sportEntity == null) {
+            throw new SportNotFoundException("SportEntity id is incorrect");
         }
 
         UserEntity owner = userRepository.findOne(sppotiCreator);
@@ -89,8 +88,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Stored used id in session has not been found in database");
         }
 
-        hostTeam.setSport(sport);
-        sppoti.setSport(sport);
+        hostTeam.setSport(sportEntity);
+        sppoti.setSport(sportEntity);
         sppoti.setUserSppoti(owner);
         sppoti.setTeamHost(hostTeam);
 
@@ -103,9 +102,9 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         if (newSppoti.getVsTeam() != 0) {
-            Team team = null;
+            TeamEntity team = null;
             try {
-                List<Team> tempTeams = teamRepository.findByUuid(newSppoti.getVsTeam());
+                List<TeamEntity> tempTeams = teamRepository.findByUuid(newSppoti.getVsTeam());
 
                 if (!tempTeams.isEmpty()) {
                     team = tempTeams.get(0);
@@ -128,7 +127,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppoti.setTitre(newSppoti.getTitre());
         sppoti.setMaxMembersCount(newSppoti.getMaxTeamCount());
 
-        Sppoti sppoti1 = sppotiRepository.save(sppoti);
+        SppotiEntity sppoti1 = sppotiRepository.save(sppoti);
 
         return new SppotiResponseDTO(sppoti1.getUuid());
 
@@ -141,7 +140,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public SppotiResponseDTO getSppotiByUuid(Integer uuid, Integer connectedUSer) {
 
-        Sppoti sppoti = sppotiRepository.findByUuid(uuid);
+        SppotiEntity sppoti = sppotiRepository.findByUuid(uuid);
 
         if (sppoti != null && sppoti.isDeleted()) {
             throw new EntityNotFoundException("Trying to get a deleted sppoti");
@@ -151,10 +150,10 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     }
 
-    private SppotiResponseDTO getSppotiResponse(Sppoti sppoti, Integer connectedUser) {
+    private SppotiResponseDTO getSppotiResponse(SppotiEntity sppoti, Integer connectedUser) {
 
         if (sppoti == null) {
-            throw new EntityNotFoundException("Sppoti not found");
+            throw new EntityNotFoundException("SppotiEntity not found");
         }
 
         SppotiResponseDTO sppotiResponseDTO = new SppotiResponseDTO(sppoti.getTitre(), sppoti.getDatetimeCreated(), sppoti.getDateTimeStart(), sppoti.getLocation(), sppoti.getMaxMembersCount(), sppoti.getSport());
@@ -197,11 +196,11 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         Pageable pageable = new PageRequest(page, sppotiSize);
 
-        List<Sppoti> sppoties = sppotiRepository.findByUserSppotiUuid(id, pageable);
+        List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuid(id, pageable);
 
         List<SppotiResponseDTO> sppotiResponseDTOs = new ArrayList<SppotiResponseDTO>();
 
-        for (Sppoti sppoti : sppoties) {
+        for (SppotiEntity sppoti : sppoties) {
             sppotiResponseDTOs.add(getSppotiResponse(sppoti, connectedUser));
         }
 
@@ -215,7 +214,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public void deleteSppoti(int id) {
 
-        Sppoti sppoti = sppotiRepository.findByUuid(id);
+        SppotiEntity sppoti = sppotiRepository.findByUuid(id);
 
         if (sppoti != null && !sppoti.isDeleted()) {
             sppoti.setDeleted(true);
@@ -229,10 +228,10 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public SppotiResponseDTO updateSppoti(SppotiRequestDTO sppotiRequest, int id, Integer connectedUser) {
 
-        Sppoti sppoti = sppotiRepository.findByUuid(id);
+        SppotiEntity sppoti = sppotiRepository.findByUuid(id);
 
         if (sppoti == null) {
-            throw new EntityNotFoundException("Sppoti not found with id: " + id);
+            throw new EntityNotFoundException("SppotiEntity not found with id: " + id);
         }
 
         if (sppotiRequest.getTags() != null) {
@@ -260,16 +259,16 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         if (sppotiRequest.getVsTeam() != 0) {
-            List<Team> adverseTeam = teamRepository.findByUuid(sppotiRequest.getVsTeam());
+            List<TeamEntity> adverseTeam = teamRepository.findByUuid(sppotiRequest.getVsTeam());
 
             if (adverseTeam == null || adverseTeam.isEmpty()) {
-                throw new EntityNotFoundException("Team id not found: " + sppotiRequest.getVsTeam());
+                throw new EntityNotFoundException("TeamEntity id not found: " + sppotiRequest.getVsTeam());
             }
 
             sppoti.setTeamAdverse(adverseTeam.get(0));
         }
 
-        Sppoti updatedSppoti = sppotiRepository.save(sppoti);
+        SppotiEntity updatedSppoti = sppotiRepository.save(sppoti);
 
         return getSppotiResponse(updatedSppoti, connectedUser);
 
@@ -292,7 +291,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppotiMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
         sppotiMembersRepository.save(sppotiMembers);
 
-        TeamMembers teamMembers = sppotiMembers.getUsersTeam();
+        TeamMemberEntity teamMembers = sppotiMembers.getUsersTeam();
         teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
 
         teamMembersRepository.save(teamMembers);

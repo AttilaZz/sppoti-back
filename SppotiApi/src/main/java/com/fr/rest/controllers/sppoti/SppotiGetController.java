@@ -47,7 +47,7 @@ public class SppotiGetController {
             response = sppotiControllerService.getSppotiByUuid(id, accountUserDetails.getUuid());
         } catch (RuntimeException e) {
             e.printStackTrace();
-            LOGGER.error("Sppoti not found: " + e.getMessage());
+            LOGGER.error("SppotiEntity not found: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

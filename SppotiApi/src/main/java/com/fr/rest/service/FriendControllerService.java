@@ -1,6 +1,6 @@
 package com.fr.rest.service;
 
-import com.fr.entities.FriendShip;
+import com.fr.entities.FriendShipEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +18,9 @@ public interface FriendControllerService extends AbstractControllerService {
      * @param uuid
      * @param name
      * @param pageable
-     * @return List FriendShip DTO
+     * @return List FriendShipEntity DTO
      */
-    List<FriendShip> getByUserAndStatus(int uuid, String name, Pageable pageable);
+    List<FriendShipEntity> getByUserAndStatus(int uuid, String name, Pageable pageable);
 
     /**
      * Fiend a all friends matching the given status
@@ -30,7 +30,7 @@ public interface FriendControllerService extends AbstractControllerService {
      * @param pageable
      * @return List of Friendship DTO
      */
-    List<FriendShip> getByFriendUuidAndStatus(int uuid, String name, Pageable pageable);
+    List<FriendShipEntity> getByFriendUuidAndStatus(int uuid, String name, Pageable pageable);
 
     /**
      * Fiend friendship between two users
@@ -39,14 +39,14 @@ public interface FriendControllerService extends AbstractControllerService {
      * @param uuid1
      * @return Friendship DTO
      */
-    FriendShip getByFriendUuidAndUser(int uuid, int uuid1);
+    FriendShipEntity getByFriendUuidAndUser(int uuid, int uuid1);
 
     /**
      * Save the friendship and send notification
      *
      * @param friendShip
      */
-    void saveFriendShip(FriendShip friendShip);
+    void saveFriendShip(FriendShipEntity friendShip);
 
     /**
      * Update status (ACCEPT/REFUSE) friend request and send notification
@@ -62,5 +62,5 @@ public interface FriendControllerService extends AbstractControllerService {
      *
      * @param friendShip
      */
-    void deleteFriendShip(FriendShip friendShip);
+    void deleteFriendShip(FriendShipEntity friendShip);
 }

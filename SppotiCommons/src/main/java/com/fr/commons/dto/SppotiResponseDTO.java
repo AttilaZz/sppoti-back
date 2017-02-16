@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.entities.Sport;
+import com.fr.entities.SportEntity;
 
 import java.util.Date;
 
@@ -33,7 +33,7 @@ public class SppotiResponseDTO {
     private String tags;
 
     @JsonProperty("sport")
-    private Sport relatedSport;
+    private SportEntity relatedSport;
 
     private TeamResponseDTO teamHost;
 
@@ -51,7 +51,7 @@ public class SppotiResponseDTO {
     public SppotiResponseDTO() {
     }
 
-    public SppotiResponseDTO(String titre, Date datetimeCreated, Date dateTimeStart, String location, Integer maxMembersCount, Sport relatedSport) {
+    public SppotiResponseDTO(String titre, Date datetimeCreated, Date dateTimeStart, String location, Integer maxMembersCount, SportEntity relatedSport) {
         this.titre = titre;
         this.datetimeCreated = datetimeCreated;
         this.dateTimeStart = dateTimeStart;
@@ -128,11 +128,11 @@ public class SppotiResponseDTO {
         this.tags = tags;
     }
 
-    public Sport getRelatedSport() {
+    public SportEntity getRelatedSport() {
         return relatedSport;
     }
 
-    public void setRelatedSport(Sport relatedSport) {
+    public void setRelatedSport(SportEntity relatedSport) {
         this.relatedSport = relatedSport;
     }
 

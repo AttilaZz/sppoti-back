@@ -1,9 +1,6 @@
 package com.fr.rest.controllers.friend;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.FriendShip;
-import com.fr.entities.UserEntity;
-import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.FriendControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +53,7 @@ public class FriendUpdateStatusController {
 
         } catch (Exception e) {
 
-            LOGGER.error("UPDATE-FRIEND: FriendShip failed to update", e);
+            LOGGER.error("UPDATE-FRIEND: FriendShipEntity failed to update", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

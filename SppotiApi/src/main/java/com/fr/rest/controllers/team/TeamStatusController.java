@@ -43,7 +43,7 @@ public class TeamStatusController {
 
         }
 
-        LOGGER.info("Team has been accepted");
+        LOGGER.info("TeamEntity has been accepted");
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
@@ -60,7 +60,7 @@ public class TeamStatusController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOGGER.info("Team has been refused");
+        LOGGER.info("TeamEntity has been refused");
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

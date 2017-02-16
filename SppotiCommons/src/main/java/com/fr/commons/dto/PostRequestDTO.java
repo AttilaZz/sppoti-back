@@ -3,7 +3,7 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.entities.Address;
+import com.fr.entities.AddressEntity;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Set;
@@ -20,7 +20,7 @@ public class PostRequestDTO {
 
     private Data content;
 
-    private Address address;
+    private AddressEntity address;
 
     private String avatar;
 
@@ -87,11 +87,11 @@ public class PostRequestDTO {
         this.cover = cover;
     }
 
-    public Address getAddress() {
+    public AddressEntity getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(AddressEntity address) {
         this.address = address;
     }
 

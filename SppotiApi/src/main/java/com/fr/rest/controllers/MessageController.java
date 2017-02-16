@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.fr.entities.Message;
+import com.fr.entities.MessageEntity;
 import com.fr.entities.UserEntity;
 import com.fr.rest.service.MessageControllerService;
 import org.apache.log4j.Logger;
@@ -51,7 +51,7 @@ public class MessageController {
         }
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        List<Message> sentMessages = messageControllerService.getSentUserMessages(userId, bottomMajId);
+        List<MessageEntity> sentMessages = messageControllerService.getSentUserMessages(userId, bottomMajId);
 
         if (sentMessages.isEmpty()) {
             return new ResponseEntity<MessageRequestDTO>(HttpStatus.NO_CONTENT);
@@ -75,7 +75,7 @@ public class MessageController {
         }
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        List<Message> receivedMessages = messageControllerService.getReceivedUserMessages(userId, bottomMajId);
+        List<MessageEntity> receivedMessages = messageControllerService.getReceivedUserMessages(userId, bottomMajId);
 
         response.setReceivedMessages(receivedMessages);
 
@@ -88,33 +88,33 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/send", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Message> addPost(@RequestBody MessageRequestDTO newMessage, UriComponentsBuilder ucBuilder,
+    public ResponseEntity<MessageEntity> addPost(@RequestBody MessageRequestDTO newMessage, UriComponentsBuilder ucBuilder,
                                            HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
         UserEntity user = messageControllerService.getUserById(userId);
-        LOGGER.info("LOGGED Message for UserDTO: => " + userId);
+        LOGGER.info("LOGGED MessageEntity for UserDTO: => " + userId);
 
-        Message newMsg = null;
+        MessageEntity newMsg = null;
 
         if (newMessage.getMsg() == null) {
-            LOGGER.info("ADD: Message content is empty");
+            LOGGER.info("ADD: MessageEntity content is empty");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        newMsg = new Message(newMessage.getMsg());
+        newMsg = new MessageEntity(newMessage.getMsg());
         newMsg.setUserMessage(user);
 
         if (newMessage.getReceivedId() == null) {
-            LOGGER.info("ADD: Message received id is empty");
+            LOGGER.info("ADD: MessageEntity received id is empty");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         newMsg.setReceiver_id(newMessage.getReceivedId());
 
         if (messageControllerService.saveMessage(newMsg)) {
-            LOGGER.info("ADD: Message has been saved: => " + newMsg);
-            return new ResponseEntity<Message>(newMsg, HttpStatus.CREATED);
+            LOGGER.info("ADD: MessageEntity has been saved: => " + newMsg);
+            return new ResponseEntity<MessageEntity>(newMsg, HttpStatus.CREATED);
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -135,7 +135,7 @@ public class MessageController {
         }
 
         if (messageControllerService.deteleMessageById(id)) {
-            LOGGER.info("DELETE: Message with id (" + id + ") has been deleted: ");
+            LOGGER.info("DELETE: MessageEntity with id (" + id + ") has been deleted: ");
             return new ResponseEntity<>(HttpStatus.OK);
 
         }

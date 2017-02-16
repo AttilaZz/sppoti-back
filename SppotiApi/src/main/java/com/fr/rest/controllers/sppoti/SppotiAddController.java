@@ -33,13 +33,13 @@ public class SppotiAddController {
     /**
      * @param newSppoti
      * @param request
-     * @return 201 status && Sppoti object with the inserted data, 400 status otherwise.
+     * @return 201 status && SppotiEntity object with the inserted data, 400 status otherwise.
      */
     @PostMapping
     public ResponseEntity<SppotiResponseDTO> addPost(@RequestBody SppotiRequestDTO newSppoti, HttpServletRequest request) {
 
         if (newSppoti.getAddress() == null || newSppoti.getAddress().isEmpty()) {
-            LOGGER.error("Address not found");
+            LOGGER.error("AddressEntity not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 //        if (newSppoti.getDescription() == null || newSppoti.getDescription().isEmpty()) {
@@ -51,7 +51,7 @@ public class SppotiAddController {
 
         }
         if (newSppoti.getSportId() == null) {
-            LOGGER.error("Sport-Id not found");
+            LOGGER.error("SportEntity-Id not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 //        if (newSppoti.getTags() == null || newSppoti.getTags().isEmpty()) {

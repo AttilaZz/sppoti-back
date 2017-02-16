@@ -1,7 +1,7 @@
 package com.fr.rest.controllers;
 
+import com.fr.entities.SportEntity;
 import com.fr.rest.service.SportControllerService;
-import com.fr.entities.Sport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +29,7 @@ public class SportController {
     @GetMapping(value = "/sport/all")
     public ResponseEntity<Object> getAllSports() {
 
-        List<Sport> allSports = sportService.getAllSports();
+        List<SportEntity> allSports = sportService.getAllSports();
 
         if (allSports.isEmpty()) {
             return new ResponseEntity<>(allSports, HttpStatus.NO_CONTENT);

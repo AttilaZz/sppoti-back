@@ -11,7 +11,8 @@ import java.util.Date;
 
 @Entity
 @Table(name = "friend_ship")
-public class FriendShip {
+public class FriendShipEntity
+{
 
     @Id
     @GeneratedValue

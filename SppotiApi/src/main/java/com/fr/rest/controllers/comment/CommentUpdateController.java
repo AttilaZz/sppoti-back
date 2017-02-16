@@ -3,7 +3,7 @@ package com.fr.rest.controllers.comment;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.entities.CommentEntity;
-import com.fr.entities.EditHistory;
+import com.fr.entities.EditHistoryEntity;
 import com.fr.rest.service.CommentControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class CommentUpdateController {
 
         CommentEntity commentEntityToEdit = commentDataService.findComment(id);
 
-        EditHistory commentEditRow = new EditHistory();
+        EditHistoryEntity commentEditRow = new EditHistoryEntity();
         ContentEditedResponseDTO edit = new ContentEditedResponseDTO();
 
         // Required attributes

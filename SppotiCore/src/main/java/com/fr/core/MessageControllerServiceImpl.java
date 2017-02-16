@@ -5,7 +5,7 @@ package com.fr.core;
 
 import java.util.List;
 
-import com.fr.entities.Message;
+import com.fr.entities.MessageEntity;
 import org.springframework.stereotype.Component;
 
 import com.fr.rest.service.MessageControllerService;
@@ -19,22 +19,22 @@ public class MessageControllerServiceImpl extends AbstractControllerServiceImpl 
 
 
     @Override
-    public List<Message> getSentUserMessages(Long userId, int page) {
+    public List<MessageEntity> getSentUserMessages(Long userId, int page) {
         return null;
     }
 
     @Override
-    public List<Message> getReceivedUserMessages(Long userId, int page) {
+    public List<MessageEntity> getReceivedUserMessages(Long userId, int page) {
         return null;
     }
 
     @Override
-    public Boolean saveMessage(Message msg) {
+    public Boolean saveMessage(MessageEntity msg) {
         return null;
     }
 
     @Override
-    public Boolean updateMessage(Message msg) {
+    public Boolean updateMessage(MessageEntity msg) {
         return null;
     }
 
@@ -44,7 +44,7 @@ public class MessageControllerServiceImpl extends AbstractControllerServiceImpl 
     }
 
     @Override
-    public Message findMessageById(Long msgId) {
+    public MessageEntity findMessageById(Long msgId) {
         return null;
     }
 }

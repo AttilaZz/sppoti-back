@@ -11,7 +11,9 @@ import java.util.UUID;
  */
 
 @Entity
-public class Address implements Comparable<Address> {
+@Table(name = "ADDRESS")
+public class AddressEntity
+        implements Comparable<AddressEntity> {
 
     @Id
     @GeneratedValue
@@ -34,10 +36,10 @@ public class Address implements Comparable<Address> {
     @JsonIgnore
     private UserEntity users;
 
-    public Address() {
+    public AddressEntity() {
     }
 
-    public Address(String address) {
+    public AddressEntity(String address) {
         this.address = address;
     }
 
@@ -90,7 +92,7 @@ public class Address implements Comparable<Address> {
     }
 
     @Override
-    public int compareTo(Address o) {
+    public int compareTo(AddressEntity o) {
         if (this != null) {
             if (o != null) {
                 return this.dateTime.compareTo(o.dateTime);
