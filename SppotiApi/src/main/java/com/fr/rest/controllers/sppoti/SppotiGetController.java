@@ -37,14 +37,12 @@ public class SppotiGetController {
      * @return 200 status with the target sppoti, 400 status otherwise.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<SppotiResponseDTO> getSppotiById(@PathVariable Integer id, Authentication authentication) {
-
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+    public ResponseEntity<SppotiResponseDTO> getSppotiById(@PathVariable Integer id) {
 
         SppotiResponseDTO response;
 
         try {
-            response = sppotiControllerService.getSppotiByUuid(id, accountUserDetails.getUuid());
+            response = sppotiControllerService.getSppotiByUuid(id);
         } catch (RuntimeException e) {
             e.printStackTrace();
             LOGGER.error("SppotiEntity not found: " + e.getMessage());
@@ -58,18 +56,15 @@ public class SppotiGetController {
     /**
      * @param id
      * @param page
-     * @param authentication
      * @return All sppoties for a given user
      */
     @GetMapping("/all/{userId}/{page}")
-    public ResponseEntity<List<SppotiResponseDTO>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page, Authentication authentication) {
-
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+    public ResponseEntity<List<SppotiResponseDTO>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
 
         List<SppotiResponseDTO> response;
 
         try {
-            response = sppotiControllerService.getAllUserSppoties(id, page, accountUserDetails.getUuid());
+            response = sppotiControllerService.getAllUserSppoties(id, page);
 
             if (response.isEmpty()) {
                 LOGGER.info("The user (" + id + ") has no sppoties");

@@ -302,5 +302,13 @@ public class UserEntity {
         this.username = username;
     }
 
-
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", uuid=" + uuid +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                '}';
+    }
 }

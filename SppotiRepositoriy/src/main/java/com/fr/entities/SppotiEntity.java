@@ -3,6 +3,7 @@ package com.fr.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fr.models.GlobalAppStatus;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -68,6 +69,9 @@ public class SppotiEntity
     @JoinColumn(name = "team_adverse_id")
     @JsonIgnore
     private TeamEntity teamAdverse;
+
+    @Column(nullable = false)
+    private String teamAdverseStatus = GlobalAppStatus.PENDING.name();
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMember> sppotiMembers;
@@ -191,5 +195,13 @@ public class SppotiEntity
 
     public void setSppotiMembers(Set<SppotiMember> sppotiMembers) {
         this.sppotiMembers = sppotiMembers;
+    }
+
+    public String getTeamAdverseStatus() {
+        return teamAdverseStatus;
+    }
+
+    public void setTeamAdverseStatus(String teamAdverseStatus) {
+        this.teamAdverseStatus = teamAdverseStatus;
     }
 }

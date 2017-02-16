@@ -4,6 +4,7 @@ import com.fr.commons.dto.SppotiRequestDTO;
 import com.fr.commons.dto.SppotiResponseDTO;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -14,17 +15,58 @@ import java.util.List;
 public interface SppotiControllerService extends AbstractControllerService {
 
 
-    SppotiResponseDTO saveSppoti(SppotiRequestDTO newSppoti, Long sppotiCreator);
+    /**
+     * @param newSppoti     sppoti to save.
+     * @return saved sppoti.
+     */
+    SppotiResponseDTO saveSppoti(SppotiRequestDTO newSppoti);
 
-    SppotiResponseDTO getSppotiByUuid(Integer uuid, Integer connectedUSer);
+    /**
+     * @param uuid sppoti unique id.
+     * @return found sppoti.
+     */
+    SppotiResponseDTO getSppotiByUuid(Integer uuid);
 
-    List<SppotiResponseDTO> getAllUserSppoties(Integer id, int page, Integer connectedUser);
+    /**
+     * @param id user id.
+     * @return all sppoties created by a user.
+     */
+    List<SppotiResponseDTO> getAllUserSppoties(Integer id, int page);
 
+    /**
+     * @param id sppoti id.
+     */
     void deleteSppoti(int id);
 
-    SppotiResponseDTO updateSppoti(SppotiRequestDTO sppotiRequest, int id, Integer connectedUser);
+    /**
+     *
+     * @param sppotiRequest sppoti data to update.
+     * @param id sppoti id.
+     * @return sppoti DTO with updated data.
+     */
+    SppotiResponseDTO updateSppoti(SppotiRequestDTO sppotiRequest, int id);
 
+    /**
+     * ACCEPT sppoti and add notification.
+     *
+     * @param sppotiId sppoti id.
+     * @param userId sppoter id.
+     */
     void acceptSppoti(int sppotiId, int userId);
 
+    /**
+     * REFUSE sppoti and add notification.
+     *
+     * @param sppotiId sppoti id.
+     * @param userId sppoter id.
+     */
     void refuseSppoti(int sppotiId, int userId);
+
+    /**
+     *
+     * @param sppotiId sppoti id to update.
+     * @param adverseTeamResponseStatus adverse team response to challenge.
+     * @return sppotiDTO with updated data.
+     */
+    SppotiResponseDTO updateTeamAdverseChallengeStatus(int sppotiId, int adverseTeamResponseStatus);
 }

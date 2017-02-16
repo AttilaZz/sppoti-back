@@ -37,8 +37,8 @@ public class SppotiResponseDTO {
 
     private TeamResponseDTO teamHost;
 
-    @JsonProperty("teamAdverse")
-    private TeamResponseDTO teamGuest;
+    private TeamResponseDTO teamAdverse;
+    private Integer teamAdverseStatus;
 
     private Integer sppotiCounter;
 
@@ -144,12 +144,12 @@ public class SppotiResponseDTO {
         this.teamHost = teamHost;
     }
 
-    public TeamResponseDTO getTeamGuest() {
-        return teamGuest;
+    public TeamResponseDTO getTeamAdverse() {
+        return teamAdverse;
     }
 
-    public void setTeamGuest(TeamResponseDTO teamGuest) {
-        this.teamGuest = teamGuest;
+    public void setTeamAdverse(TeamResponseDTO teamAdverse) {
+        this.teamAdverse = teamAdverse;
     }
 
     public Integer getSppotiCounter() {
@@ -190,5 +190,13 @@ public class SppotiResponseDTO {
 
     public void setConnectedUserId(Integer connectedUserId) {
         this.connectedUserId = connectedUserId;
+    }
+
+    public Integer getTeamAdverseStatus() {
+        return teamAdverseStatus;
+    }
+
+    public void setTeamAdverseStatus(Integer teamAdverseStatus) {
+        this.teamAdverseStatus = teamAdverseStatus;
     }
 }

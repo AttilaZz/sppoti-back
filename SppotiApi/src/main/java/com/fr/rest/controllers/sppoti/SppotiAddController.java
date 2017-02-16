@@ -28,8 +28,6 @@ public class SppotiAddController {
 
     private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
-    private static final String ATT_USER_ID = "USER_ID";
-
     /**
      * @param newSppoti
      * @param request
@@ -73,10 +71,8 @@ public class SppotiAddController {
 //            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Adverse team id not found");
 //        }
 
-        Long sppotiCreator = (Long) request.getSession().getAttribute(ATT_USER_ID);
-
         try {
-            SppotiResponseDTO sppotiResponseDTO = sppotiControllerService.saveSppoti(newSppoti, sppotiCreator);
+            SppotiResponseDTO sppotiResponseDTO = sppotiControllerService.saveSppoti(newSppoti);
 
             return new ResponseEntity<>(sppotiResponseDTO, HttpStatus.CREATED);
         } catch (RuntimeException e) {

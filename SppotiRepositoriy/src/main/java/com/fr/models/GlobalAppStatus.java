@@ -16,4 +16,5 @@ public enum GlobalAppStatus {
     public int getValue() {
         return this.status;
     }
+
 }

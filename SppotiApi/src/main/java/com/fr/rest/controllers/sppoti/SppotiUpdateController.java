@@ -31,14 +31,12 @@ public class SppotiUpdateController {
 
 
     /**
-     * @param id
-     * @param sppotiRequest
+     * @param id            id of sppoti.
+     * @param sppotiRequest data to update.
      * @return 200 status with the updated sppoti, 400 status otherwise.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<SppotiResponseDTO> updateSppoti(@PathVariable int id, @RequestBody SppotiRequestDTO sppotiRequest, Authentication authentication) {
-
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+    public ResponseEntity<SppotiResponseDTO> updateSppoti(@PathVariable int id, @RequestBody SppotiRequestDTO sppotiRequest) {
 
         boolean canUpdate = false;
 
@@ -66,24 +64,50 @@ public class SppotiUpdateController {
             canUpdate = true;
         }
 
-        if(sppotiRequest.getMaxTeamCount() != 0){
+        if (sppotiRequest.getMaxTeamCount() != 0) {
             canUpdate = true;
         }
 
         try {
 
             if (canUpdate) {
-                sppotiControllerService.updateSppoti(sppotiRequest, id, accountUserDetails.getUuid());
+                sppotiControllerService.updateSppoti(sppotiRequest, id);
             } else {
                 throw new IllegalArgumentException("Update not acceptable");
             }
 
         } catch (RuntimeException e) {
-            LOGGER.error("Update not acceptable due to an illegal argument or database problem: \n " + e.getMessage());
+            LOGGER.error("Update not acceptable due to an illegal argument or database problem: \n " + e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    /**
+     * Accept sppoti challenge: 4
+     * Refuse sppoti challenge: 5
+     *
+     * @param adverseTeamResponseStatus confirm/refuse challenge.
+     * @return All sppoti with updated status.
+     */
+    @PutMapping("/team/adverse/{sppotiId}/{response}")
+    public ResponseEntity<SppotiResponseDTO> updateTeamAdverseStatus(@PathVariable("response") int adverseTeamResponseStatus, @PathVariable int sppotiId) {
+
+        if (adverseTeamResponseStatus != 4 && adverseTeamResponseStatus != 5) {
+            LOGGER.error("Accepted status are 4 && 5: found:" + adverseTeamResponseStatus);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        SppotiResponseDTO sppotiResponseDTO;
+        try {
+            sppotiResponseDTO = sppotiControllerService.updateTeamAdverseChallengeStatus(sppotiId, adverseTeamResponseStatus);
+        } catch (RuntimeException e) {
+            LOGGER.error("Could not update team adverse status, sppoti id: " + sppotiId, e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(sppotiResponseDTO, HttpStatus.ACCEPTED);
     }
 
 }
