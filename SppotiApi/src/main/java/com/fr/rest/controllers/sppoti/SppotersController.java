@@ -40,7 +40,6 @@ public class SppotersController {
 
         }
 
-
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
     }
@@ -53,7 +52,7 @@ public class SppotersController {
             sppotiControllerService.refuseSppoti(userId, sppotiId);
 
         } catch (RuntimeException e) {
-            LOGGER.error("Accept sppoti error: " + e.getMessage());
+            LOGGER.error("Accept sppoti error: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
