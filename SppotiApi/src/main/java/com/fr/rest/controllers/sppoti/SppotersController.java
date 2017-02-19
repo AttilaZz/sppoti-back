@@ -35,7 +35,7 @@ public class SppotersController {
             sppotiControllerService.acceptSppoti(sppotiId, userId);
 
         } catch (RuntimeException e) {
-            LOGGER.error("Accept sppoti error: " + e.getMessage());
+            LOGGER.error("Accept sppoti error: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
