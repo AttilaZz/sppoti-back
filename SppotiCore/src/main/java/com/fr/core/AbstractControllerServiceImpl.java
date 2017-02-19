@@ -536,7 +536,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @param team team to map.
      * @return a teamResponse object from TeamEntity entity.
      */
-    protected TeamResponseDTO fillTeamResponse(TeamEntity team, Long sppotiAdmin) {
+    protected TeamResponseDTO fillTeamResponse(TeamEntity team, SppotiEntity sppoti) {
 
         TeamResponseDTO teamResponseDTO = new TeamResponseDTO();
         teamResponseDTO.setId(team.getUuid());
@@ -550,7 +550,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             //get status for the selected sppoti
             if (!StringUtils.isEmpty(user.getSppotiMembers())) {
                 for (SppotiMember sppoter : user.getSppotiMembers()) {
-                    if (sppoter.getTeamMember().getId().equals(user.getId())) {
+                    if (sppoter.getTeamMember().getId().equals(user.getId()) && sppoter.getSppoti().getId().equals(sppoti.getId())) {
                         sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
                     }
                 }
@@ -560,6 +560,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             UserDTO userCoverAndAvatar = EntitytoDtoTransformer.getUserCoverAndAvatar(user.getUsers());
 
             //fill sppoter data
+            Long sppotiAdmin = sppoti.getUserSppoti().getId();
             teamUsers.add(new UserDTO(user.getUuid(), user.getUsers().getFirstName(), user.getUsers().getLastName(), user.getUsers().getUsername(),
                     userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
                     userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
