@@ -49,6 +49,8 @@ public interface SppotiControllerService extends AbstractControllerService {
     /**
      * ACCEPT sppoti and add notification.
      *
+     * When user accept to join sppoti, he also accept to join his team.
+     *
      * @param sppotiId sppoti id.
      * @param userId sppoter id.
      */
@@ -56,6 +58,8 @@ public interface SppotiControllerService extends AbstractControllerService {
 
     /**
      * REFUSE sppoti and add notification.
+     *
+     * When user refuse sppoti, relation with his team remain.
      *
      * @param sppotiId sppoti id.
      * @param userId sppoter id.

@@ -492,10 +492,16 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     teamMember.setSppotiMembers(sppotiMembers);
                     sppoti.setSppotiMembers(sppotiMembers);
 
-                    /** send notification to the invited user. */
+                    /** send TEAM notification to the invited user. */
                     if (!u.get(0).getId().equals(adminId)) {
                         addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u.get(0));
                     }
+
+                    /** send SPPOTI notification to all the team. */
+                    if (!u.get(0).getId().equals(adminId)) {
+                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, getUserById(adminId), u.get(0));
+                    }
+
                 } else {
                     /** if request coming from add team - add members only in (users_team). */
                     if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
@@ -506,7 +512,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                         teamMember.setyPosition(user.getyPosition());
                     }
 
-                    /** send notification to the invited user. */
+                    /** send TEAM notification to the invited user. */
                     if (!u.get(0).getId().equals(adminId)) {
                         addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u.get(0));
                     }

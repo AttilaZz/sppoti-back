@@ -8,6 +8,7 @@ import com.fr.exceptions.NoRightToAcceptOrRefuseChallenge;
 import com.fr.exceptions.SportNotFoundException;
 import com.fr.exceptions.TeamMemberNotFoundException;
 import com.fr.models.GlobalAppStatus;
+import com.fr.models.NotificationType;
 import com.fr.rest.service.SppotiControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -308,13 +309,35 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         if (sppotiMembers == null) {
             throw new EntityNotFoundException("Sppoter not found");
         }
+
+        //update status as sppoti memeber.
         sppotiMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
-        sppotiMembersRepository.save(sppotiMembers);
+        SppotiMember updatedSppoter = sppotiMembersRepository.save(sppotiMembers);
 
+        /**
+         * Send notification to sppoti admin.
+         */
+        if (updatedSppoter != null) {
+            addNotification(NotificationType.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sppotiMembers.getTeamMember().getUsers(), sppotiMembers.getSppoti().getUserSppoti());
+        }
+
+        //update status as team member.
         TeamMemberEntity teamMembers = sppotiMembers.getTeamMember();
-        teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
+        if (!GlobalAppStatus.valueOf(teamMembers.getStatus()).equals(GlobalAppStatus.CONFIRMED)) {
+            teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
+        }
 
-        teamMembersRepository.save(teamMembers);
+        TeamMemberEntity updatedTeamMember = teamMembersRepository.save(teamMembers);
+
+        /**
+         * Send notification to team admin.
+         */
+        if (updatedTeamMember != null && !GlobalAppStatus.valueOf(teamMembers.getStatus()).equals(GlobalAppStatus.CONFIRMED)) {
+
+            UserEntity teamAdmin = teamMembersRepository.findByTeamUuidAndAdminTrue(teamMembers.getTeam().getUuid()).getUsers();
+
+            addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, sppotiMembers.getTeamMember().getUsers(), teamAdmin);
+        }
 
     }
 
@@ -332,7 +355,14 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         sppotiMembers.setStatus(GlobalAppStatus.REFUSED.name());
-        sppotiMembersRepository.save(sppotiMembers);
+        SppotiMember updatedSppoter = sppotiMembersRepository.save(sppotiMembers);
+
+        /**
+         * Send notification to sppoti admin.
+         */
+        if (updatedSppoter != null) {
+            addNotification(NotificationType.X_REFUSED_YOUR_SPPOTI_INVITATION, sppotiMembers.getTeamMember().getUsers(), sppotiMembers.getSppoti().getUserSppoti());
+        }
 
     }
 
