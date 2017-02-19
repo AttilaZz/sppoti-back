@@ -61,7 +61,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             }
 
             try {
-                hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMembers(), hostTeam, getConnectedUser().getId(), sppoti));
+                hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMembers(), hostTeam, sppoti));
             } catch (RuntimeException e) {
                 LOGGER.error("Error when trying to get USERS from team members list: ", e);
                 throw new TeamMemberNotFoundException("Host-TeamRequestDTO (members) one of the team doesn't exist");
@@ -193,7 +193,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppotiResponseDTO.setTeamHost(teamHostResponse);
         sppotiResponseDTO.setId(sppoti.getUuid());
 
-        List<SppotiMember> sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiSportId(sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId());
+        List<SppotiMember> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiSportId(sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId());
 
         sppotiResponseDTO.setSppotiCounter(sppotiMembers.size());
         sppotiResponseDTO.setMySppoti(getConnectedUser().getUuid() == sppoti.getUserSppoti().getUuid());
@@ -303,7 +303,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public void acceptSppoti(int sppotiId, int userId) {
 
-        SppotiMember sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiUuid(userId, sppotiId);
+        SppotiMember sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(userId, sppotiId);
 
         if (sppotiMembers == null) {
             throw new EntityNotFoundException("Sppoter not found");
@@ -325,7 +325,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public void refuseSppoti(int sppotiId, int userId) {
 
-        SppotiMember sppotiMembers = sppotiMembersRepository.findByUsersTeamUsersUuidAndSppotiUuid(sppotiId, userId);
+        SppotiMember sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(sppotiId, userId);
 
         if (sppotiMembers == null) {
             throw new EntityNotFoundException("Sppoter not found");

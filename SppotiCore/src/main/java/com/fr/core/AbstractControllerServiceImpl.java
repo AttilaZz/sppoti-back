@@ -124,6 +124,9 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     private Logger LOGGER = Logger.getLogger(AbstractControllerServiceImpl.class);
 
+    /**
+     * {@inheritDoc}
+     */
     @SuppressWarnings("unchecked")
     @Override
     public List<String> getUserRole() {
@@ -143,7 +146,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @return current authentication username
+     * {@inheritDoc}
      */
     @Override
     public String getAuthenticationUsername() {
@@ -159,8 +162,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param loginUser
-     * @return user entity from username
+     * {@inheritDoc}
      */
     @Override
     public UserEntity getUserFromUsernameType(String loginUser) {
@@ -168,8 +170,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param username username.
-     * @return login type.
+     * {@inheritDoc}
      */
     @Override
     public int getUserLoginType(String username) {
@@ -188,8 +189,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param id user id.
-     * @return found userEntity.
+     * {@inheritDoc}
      */
     @Override
     public UserEntity getUserById(Long id) {
@@ -197,8 +197,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param id user id.
-     * @return found user entity.
+     * {@inheritDoc}
      */
     @Override
     public UserEntity getUserByUuId(int id) {
@@ -427,18 +426,16 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param users   list of users.
-     * @param team    team to map.
-     * @param adminId sppoti admin id.
-     * @param sppoti  sppoti to map.
-     * @return set of USERS_TEAM
+     * {@inheritDoc}
      */
+    @Transactional
     @Override
-    public Set<TeamMemberEntity> getTeamMembersEntityFromDto(List<UserDTO> users, TeamEntity team, Long adminId, SppotiEntity sppoti) {
+    public Set<TeamMemberEntity> getTeamMembersEntityFromDto(List<UserDTO> users, TeamEntity team, SppotiEntity sppoti) {
 
         Set<TeamMemberEntity> teamUsers = new HashSet<TeamMemberEntity>();
 //        Set<TeamEntity> teams = new HashSet<TeamEntity>();
 //        teams.add(team);
+        Long adminId = getConnectedUser().getId();
 
         for (UserDTO user : users) {
 
@@ -486,10 +483,19 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                         }
                     }
 
-                    addSppoters(sppoti, teamMember, sppoter);
+                    /** Convert team members to sppoters. */
+                    Set<SppotiMember> sppotiMembers = new HashSet<>();
+                    sppoter.setTeamMember(teamMember);
+                    sppoter.setSppoti(sppoti);
+                    sppotiMembers.add(sppoter);
+
+                    teamMember.setSppotiMembers(sppotiMembers);
+                    sppoti.setSppotiMembers(sppotiMembers);
 
                     /** send notification to the invited user. */
-                    addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, u.get(0), getUserById(adminId));
+                    if (!u.get(0).getId().equals(adminId)) {
+                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u.get(0));
+                    }
                 } else {
                     /** if request coming from add team - add members only in (users_team). */
                     if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
@@ -498,6 +504,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
                     if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
                         teamMember.setyPosition(user.getyPosition());
+                    }
+
+                    /** send notification to the invited user. */
+                    if (!u.get(0).getId().equals(adminId)) {
+                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u.get(0));
                     }
                 }
 
@@ -512,16 +523,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
         return teamUsers;
 
-    }
-
-    private void addSppoters(SppotiEntity sppoti, TeamMemberEntity teamMember, SppotiMember sppoter) {
-        Set<SppotiMember> sppotiMembers = new HashSet<>();
-        sppoter.setTeamMember(teamMember);
-        sppoter.setSppoti(sppoti);
-        sppotiMembers.add(sppoter);
-
-        teamMember.setSppotiMembers(sppotiMembers);
-        sppoti.setSppotiMembers(sppotiMembers);
     }
 
 
@@ -582,6 +583,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @param userFrom             notif sender.
      * @param userTo               notif receiver.
      */
+    @Transactional
     protected void addNotification(NotificationType friendRequestRefused, UserEntity userFrom, UserEntity userTo) {
         NotificationEntity notification = new NotificationEntity();
         notification.setNotificationType(friendRequestRefused);
@@ -596,6 +598,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @param commentEntity comment entity.
      * @param postEntity    post entity.
      */
+    @Transactional
     public void addTagNotification(PostEntity postEntity, CommentEntity commentEntity) {
 
         String content = null;

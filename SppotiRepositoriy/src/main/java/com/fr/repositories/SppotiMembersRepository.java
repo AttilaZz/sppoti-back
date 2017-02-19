@@ -11,7 +11,7 @@ import java.util.List;
 public interface SppotiMembersRepository extends JpaRepository<SppotiMember, Long> {
 
 
-    SppotiMember findByUsersTeamUsersUuidAndSppotiUuid(int userId, int sppotiId);
+    SppotiMember findByTeamMemberUsersUuidAndSppotiUuid(int userId, int sppotiId);
 
-    List<SppotiMember> findByUsersTeamUsersUuidAndSppotiSportId(int uuid, Long id);
+    List<SppotiMember> findByTeamMemberUsersUuidAndSppotiSportId(int uuid, Long id);
 }

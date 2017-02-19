@@ -41,7 +41,7 @@ public class TeamMemberEntity
     @JoinColumn(name = "user_id")
     private UserEntity users;
 
-    @OneToMany(mappedBy = "usersTeam", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMember> sppotiMembers;
 
     public Long getId() {

@@ -28,7 +28,5 @@ public interface AccountControllerService extends AbstractControllerService{
 
     UserEntity getUserByUsername(String username);
 
-    UserEntity getUserById(Long userId);
-
     UserDTO fillUserResponse(UserEntity targetUser, UserEntity connected_user);
 }
