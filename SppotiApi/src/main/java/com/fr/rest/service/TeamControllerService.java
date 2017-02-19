@@ -87,10 +87,17 @@ public interface TeamControllerService extends AbstractControllerService {
     UserDTO addMember(int teamId, UserDTO userParam);
 
     /**
-     * @param team
-     * @param id
-     * @param page
-     * @return List of all found teams with theirs members
+     * @param team team to find.
+     * @param page page number.
+     * @return List of all teams that i am in.
      */
-    List<TeamResponseDTO> findAllTeams(String team, int id, int page);
+    List<TeamResponseDTO> findAllMyTeams(String team, int page);
+
+    /**
+     * @param team team to find.
+     * @param page page number.
+     * @return List of all teams.
+     */
+    List<TeamResponseDTO> findAllTeams(String team, int page);
+
 }

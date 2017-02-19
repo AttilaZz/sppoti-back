@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static utils.EntitytoDtoTransformer.getUserCoverAndAvatar;
 
@@ -165,7 +166,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         teamMembers.setStatus(GlobalAppStatus.REFUSED.name());
 
-        if(teamMembersRepository.save(teamMembers) != null){
+        if (teamMembersRepository.save(teamMembers) != null) {
             addNotification(NotificationType.X_REFUSED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers());
 
         }
@@ -266,17 +267,29 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public List<TeamResponseDTO> findAllTeams(String team, int id, int page) {
+    public List<TeamResponseDTO> findAllTeams(String team, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
-        List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndTeamNameContaining(id, team, pageable);
-        List<TeamResponseDTO> teamResponseDTOs = new ArrayList<TeamResponseDTO>();
+        List<TeamEntity> myTeams = teamRepository.findByName(team, pageable);
 
-        for (TeamMemberEntity myTeam : myTeams) {
-            teamResponseDTOs.add(fillTeamResponse(myTeam.getTeam(), null));
-        }
+        return myTeams.stream()
+                .map(t -> fillTeamResponse(t, null))
+                .collect(Collectors.toList());
+    }
 
-        return teamResponseDTOs;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<TeamResponseDTO> findAllMyTeams(String team, int page) {
+        Pageable pageable = new PageRequest(page, teamPageSize);
+
+        List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndTeamNameContaining(getConnectedUser().getUuid(), team, pageable);
+
+        return myTeams.stream()
+                .map(t -> fillTeamResponse(t.getTeam(), null))
+                .collect(Collectors.toList());
+
     }
 
 }

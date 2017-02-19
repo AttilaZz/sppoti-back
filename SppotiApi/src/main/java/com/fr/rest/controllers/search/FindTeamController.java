@@ -2,12 +2,10 @@ package com.fr.rest.controllers.search;
 
 import com.fr.commons.dto.TeamResponseDTO;
 import com.fr.rest.service.TeamControllerService;
-import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +21,8 @@ import java.util.List;
 public class FindTeamController {
 
     private Logger LOGGER = Logger.getLogger(FindTeamController.class);
+    private static final int MY_TEAM_SEARCH = 1;
+    private static final int ALL_TEAM_SEARCH = 0;
 
     private final TeamControllerService teamControllerService;
 
@@ -32,29 +32,41 @@ public class FindTeamController {
     }
 
     /**
-     * @param team
-     * @param page
-     * @param authentication
+     * @param team team to find.
+     * @param page page number.
      * @return All found teams containing the String (team).
      */
-    @GetMapping("/{team}/{page}")
-    public ResponseEntity<List<TeamResponseDTO>> findTeam(@PathVariable String team, @PathVariable int page, Authentication authentication) {
+    @GetMapping("/" + MY_TEAM_SEARCH + "/{team}/{page}")
+    public ResponseEntity<List<TeamResponseDTO>> findMyTeams(@PathVariable String team, @PathVariable int page) {
 
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-
-        List<TeamResponseDTO> teamResponseDTOs;
         try {
 
-            teamResponseDTOs = teamControllerService.findAllTeams(team, accountUserDetails.getUuid(), page);
-            
+            return new ResponseEntity<>(teamControllerService.findAllMyTeams(team, page), HttpStatus.OK);
 
         } catch (RuntimeException e) {
-            LOGGER.error("Find All teams error: " + e);
+            LOGGER.error("Find All my teams error: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
         }
 
-        return new ResponseEntity<>(teamResponseDTOs, HttpStatus.OK);
+    }
+
+    /**
+     * @param team team to find.
+     * @param page page number.
+     * @return All found teams containing the String (team).
+     */
+    @GetMapping("/" + ALL_TEAM_SEARCH + "/{team}/{page}")
+    public ResponseEntity<List<TeamResponseDTO>> findAllTeams(@PathVariable String team, @PathVariable int page) {
+
+        try {
+
+            return new ResponseEntity<>(teamControllerService.findAllTeams(team, page), HttpStatus.OK);
+
+        } catch (RuntimeException e) {
+            LOGGER.error("Find All teams error: ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 }
