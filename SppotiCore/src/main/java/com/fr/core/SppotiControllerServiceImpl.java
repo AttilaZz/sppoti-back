@@ -199,31 +199,15 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         sppotiResponseDTO.setSppotiCounter(sppotiMembers.size());
         sppotiResponseDTO.setMySppoti(getConnectedUser().getUuid() == sppoti.getUserSppoti().getUuid());
 
-        sppotiResponseDTO.setAdminTeamId(teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(sppoti.getUserSppoti().getUuid(), sppoti.getTeamHost().getUuid()).getUuid());
-        sppotiResponseDTO.setAdminUserId(sppoti.getUserSppoti().getUuid());
-        sppotiResponseDTO.setConnectedUserId(getConnectedUser().getUuid());
-
-        return sppotiResponseDTO;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<SppotiResponseDTO> getAllUserSppoties(Integer id, int page) {
-
-        Pageable pageable = new PageRequest(page, sppotiSize);
-
-        List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuid(id, pageable);
-
-        List<SppotiResponseDTO> sppotiResponseDTOs = new ArrayList<SppotiResponseDTO>();
-
-        for (SppotiEntity sppoti : sppoties) {
-            sppotiResponseDTOs.add(getSppotiResponse(sppoti));
+        //if user is member of a team, get admin of the tem and other informations.
+        TeamMemberEntity teamAdmin = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(sppoti.getUserSppoti().getUuid(), sppoti.getTeamHost().getUuid());
+        if (teamAdmin != null) {
+            sppotiResponseDTO.setAdminTeamId(teamAdmin.getUuid());
+            sppotiResponseDTO.setAdminUserId(sppoti.getUserSppoti().getUuid());
+            sppotiResponseDTO.setConnectedUserId(getConnectedUser().getUuid());
         }
 
-        return sppotiResponseDTOs;
-
+        return sppotiResponseDTO;
     }
 
     /**
@@ -394,6 +378,34 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         return getSppotiResponse(savedSppoti);
 
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<SppotiResponseDTO> getAllUserSppoties(Integer id, int page) {
+
+        Pageable pageable = new PageRequest(page, sppotiSize);
+
+        List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuid(id, pageable);
+
+        return sppoties.stream()
+                .map(this::getSppotiResponse)
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<SppotiResponseDTO> getAllJoinedSppoties(int userId, int page) {
+        Pageable pageable = new PageRequest(page, sppotiSize);
+
+        List<SppotiMember> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable);
+
+        return sppotiMembers.stream()
+                .map(s -> getSppotiResponse(s.getSppoti()))
+                .collect(Collectors.toList());
     }
 
 

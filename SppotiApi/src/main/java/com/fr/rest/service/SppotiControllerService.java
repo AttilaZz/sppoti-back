@@ -73,4 +73,12 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @return sppotiDTO with updated data.
      */
     SppotiResponseDTO updateTeamAdverseChallengeStatus(int sppotiId, int adverseTeamResponseStatus);
+
+    /**
+     *
+     * @param id user id.
+     * @param page page  umber.
+     * @return all sppoties that user has joined.
+     */
+    List<SppotiResponseDTO> getAllJoinedSppoties(int id, int page);
 }

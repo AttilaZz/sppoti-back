@@ -2,12 +2,10 @@ package com.fr.rest.controllers.sppoti;
 
 import com.fr.commons.dto.SppotiResponseDTO;
 import com.fr.rest.service.SppotiControllerService;
-import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +31,7 @@ public class SppotiGetController {
 
 
     /**
-     * @param id
+     * @param id sppoti id to find.
      * @return 200 status with the target sppoti, 400 status otherwise.
      */
     @GetMapping("/{id}")
@@ -54,30 +52,45 @@ public class SppotiGetController {
     }
 
     /**
-     * @param id
-     * @param page
-     * @return All sppoties for a given user
+     * @param id   user id.
+     * @param page page number.
+     * @return All sppoties created by the given user id.
      */
     @GetMapping("/all/{userId}/{page}")
     public ResponseEntity<List<SppotiResponseDTO>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
 
-        List<SppotiResponseDTO> response;
-
         try {
-            response = sppotiControllerService.getAllUserSppoties(id, page);
+            List<SppotiResponseDTO> response = sppotiControllerService.getAllUserSppoties(id, page);
 
-            if (response.isEmpty()) {
-                LOGGER.info("The user (" + id + ") has no sppoties");
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
+            LOGGER.info("The user (" + id + ") has created (" + response.size() + ") sppoties");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (RuntimeException e) {
-            e.printStackTrace();
-            LOGGER.error("Error getting sppoties: " + e.getMessage());
+            LOGGER.error("Error getting sppoties: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /**
+     * @param id   user id.
+     * @param page page number.
+     * @return All sppoties that user joined.
+     */
+    @GetMapping("/all/joined/{userId}/{page}")
+    public ResponseEntity<List<SppotiResponseDTO>> getAllJoinedUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
+
+        try {
+            List<SppotiResponseDTO> response = sppotiControllerService.getAllJoinedSppoties(id, page);
+            LOGGER.info("The user (" + id + ") has joined (" + response.size() + ") sppoties");
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (RuntimeException e) {
+            LOGGER.error("Error getting sppoties: ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }
