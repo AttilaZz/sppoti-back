@@ -16,7 +16,7 @@ import java.util.List;
 public interface LikeControllerService extends AbstractControllerService{
 
     /**
-     * Like comment or post
+     * Like like or post
      *
      * @param likeToSave
      */
@@ -38,7 +38,7 @@ public interface LikeControllerService extends AbstractControllerService{
     boolean isPostAlreadyLikedByUser(int postId, Long userId);
 
     /**
-     * Unlike content, post or comment
+     * Unlike content, post or like
      *
      * @param commentEntityToLike
      */
@@ -48,12 +48,12 @@ public interface LikeControllerService extends AbstractControllerService{
      *
      * @param id
      * @param userId
-     * @return true if comment already liked, false otherwise
+     * @return true if like already liked, false otherwise
      */
     boolean isCommentAlreadyLikedByUser(int id, Long userId);
 
     /**
-     * Like comment
+     * Like like
      *
      * @param likeToSave
      */
@@ -71,7 +71,7 @@ public interface LikeControllerService extends AbstractControllerService{
      *
      * @param id
      * @param page
-     * @return All persons who likes the comment
+     * @return All persons who likes the like
      */
     List<HeaderDataDTO> getCommentLikersList(int id, int page);
 }

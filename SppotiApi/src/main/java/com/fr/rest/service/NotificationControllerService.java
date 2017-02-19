@@ -12,16 +12,16 @@ public interface NotificationControllerService {
 
     /**
      *
-     * @param userId
-     * @param page
+     * @param userId user id.
+     * @param page page number.
      * @return All received notifications for a given user id
      */
     NotificationResponseDTO getAllReceivedNotifications(int userId, int page);
 
     /**
      *
-     * @param userId
-     * @param page
+     * @param userId user id.
+     * @param page page number.
      * @return all sent notification by a given user id
      */
     List<NotificationDTO> getAllSentNotifications(int userId, int page);
@@ -29,7 +29,7 @@ public interface NotificationControllerService {
     /**
      * Update open status to true
      *
-     * @param notifId
+     * @param notifId notif id.
      */
     void openNotification(int notifId);
 }

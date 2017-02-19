@@ -28,7 +28,7 @@ public class HeaderDataDTO {
 
     private int confirmedFriendRequestCount;
 
-    private List<NotificationDTO> notifList;//post-comment like + content share + tag
+    private List<NotificationDTO> notifList;//post-like like + content share + tag
     private int notifListCount;
 
     public HeaderDataDTO() {

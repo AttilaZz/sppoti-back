@@ -1,6 +1,5 @@
 package com.fr.rest.controllers.notifications;
 
-import com.fr.commons.dto.NotificationDTO;
 import com.fr.commons.dto.NotificationResponseDTO;
 import com.fr.rest.service.NotificationControllerService;
 import org.apache.log4j.Logger;
@@ -11,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 
 /**
  * Created by djenanewail on 2/9/17.
@@ -30,13 +28,12 @@ public class NotificationController {
     }
 
     /**
-     * @param authentication
-     * @param userId
-     * @param page
+     * @param userId user id.
+     * @param page number.
      * @return all unread user notifications.
      */
     @GetMapping("/{page}")
-    public ResponseEntity<NotificationResponseDTO> getAllUserNotifications(Authentication authentication, @PathVariable int userId, @PathVariable int page) {
+    public ResponseEntity<NotificationResponseDTO> getAllUserNotifications(@PathVariable int userId, @PathVariable int page) {
 
         NotificationResponseDTO notificationResponseDTO = notificationControllerService.getAllReceivedNotifications(userId, page);
 
@@ -50,7 +47,7 @@ public class NotificationController {
     }
 
     /**
-     * @param notifId
+     * @param notifId notif id.
      * @return 200 http status if notif were updated, 404 http status if notif not found, 500 http status otherwise.
      */
     @PutMapping("/{notifId}")

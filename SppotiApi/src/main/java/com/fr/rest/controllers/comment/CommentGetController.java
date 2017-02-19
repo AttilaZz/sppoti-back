@@ -34,12 +34,12 @@ public class CommentGetController {
     private Logger LOGGER = Logger.getLogger(CommentGetController.class);
 
     /**
-     * Get all comment for a given post
+     * Get all like for a given post
      *
      * @param postId
      * @param page
      * @param httpServletRequest
-     * @return List of comment DTO
+     * @return List of like DTO
      */
     @GetMapping("/{postId}/{page}")
     public ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable int postId, @PathVariable int page, HttpServletRequest httpServletRequest) {
@@ -49,7 +49,7 @@ public class CommentGetController {
         List<CommentDTO> commentModelDTOList = commentDataService.getPostCommentsFromLastId(postId, page, userId);
 
         if (commentModelDTOList.isEmpty()) {
-            LOGGER.info("COMMENT_LIST: No comment has been found");
+            LOGGER.info("COMMENT_LIST: No like has been found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 

@@ -271,7 +271,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             }
 
             /*
-            Manage commentEntities count + last comment
+            Manage commentEntities count + last like
              */
             Set<CommentEntity> commentEntities = post.getCommentEntities();
             pres.setCommentsCount(commentEntities.size());

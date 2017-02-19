@@ -40,7 +40,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
     public CommentDTO saveComment(CommentEntity newCommentEntity, Long userId, int postId) {
 
 
-        // get post postId to link the comment
+        // get post postId to link the like
         List<PostEntity> postEntity = postRepository.getByUuid(postId);
         if (!postEntity.isEmpty()) {
             newCommentEntity.setPost(postEntity.get(0));
@@ -53,7 +53,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
 
         if (commentEntity != null) {
 
-            //comment on other posts not mine
+            //like on other posts not mine
             if (commentEntity.getUser().getUuid() != commentEntity.getPost().getTargetUserProfileUuid()) {
                 addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.getUser(), getUserByUuId(commentEntity.getPost().getTargetUserProfileUuid()));
 
@@ -102,7 +102,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
             editHistoryRepository.save(commentToEdit);
             return true;
         } catch (Exception e) {
-            LOGGER.error("Error saving edited comment: ", e);
+            LOGGER.error("Error saving edited like: ", e);
             return false;
         }
 

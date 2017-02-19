@@ -248,7 +248,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param dbCommentEntityList comment entity.
+     * @param dbCommentEntityList like entity.
      * @param userId              user id.
      * @return list of Comment DTO
      */
@@ -300,11 +300,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param o      post or comment entity.
+     * @param o      post or like entity.
      * @param userId liker id.
      * @return true if content has been liked by me, false otherwise
      */
-    // detect if post or comment has already been liked by user
+    // detect if post or like has already been liked by user
     protected boolean isContentLikedByUser(Object o, Long userId) {
 
         List<LikeContentEntity> lp = new ArrayList<LikeContentEntity>();
@@ -602,7 +602,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     /**
      * Find tags in content and add notifications.
      *
-     * @param commentEntity comment entity.
+     * @param commentEntity like entity.
      * @param postEntity    post entity.
      */
     @Transactional

@@ -38,7 +38,7 @@ public class CommentUpdateController {
 
         // Required attributes
         if (commentEntityToEdit == null) {
-            LOGGER.info("COMMENT_UPDATE: Failed to retreive the comment");
+            LOGGER.info("COMMENT_UPDATE: Failed to retreive the like");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -48,7 +48,7 @@ public class CommentUpdateController {
         if (newComment.getText() != null && newComment.getText().trim().length() > 0) {
             commentEditRow.setText(newComment.getText());
         } else {
-            LOGGER.info("COMMENT_UPDATE: No content assigned with this comment");
+            LOGGER.info("COMMENT_UPDATE: No content assigned with this like");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -63,7 +63,7 @@ public class CommentUpdateController {
             return new ResponseEntity<>(newComment, HttpStatus.ACCEPTED);
 
         } else {
-            LOGGER.error("COMMENT_UPDATE: Failed when trying to update the comment in DB");
+            LOGGER.error("COMMENT_UPDATE: Failed when trying to update the like in DB");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

@@ -23,9 +23,9 @@ public class EntitytoDtoTransformer {
 
 
     /**
-     * @param commentEntity comment entity to map.
+     * @param commentEntity like entity to map.
      * @param userEntity user entity to map.
-     * @return comment dto.
+     * @return like dto.
      */
     @Transactional
     public static CommentDTO commentEntityToDto(CommentEntity commentEntity, UserEntity userEntity) {

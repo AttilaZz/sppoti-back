@@ -90,7 +90,7 @@ public class CommentAddController {
                 LOGGER.info("COMMENT: post has been saved: \n" + newComment);
                 return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
             } catch (Exception e) {
-                LOGGER.error("COMMENT: Failed to save comment", e);
+                LOGGER.error("COMMENT: Failed to save like", e);
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 

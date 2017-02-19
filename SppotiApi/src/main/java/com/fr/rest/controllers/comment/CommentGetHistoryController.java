@@ -34,7 +34,7 @@ public class CommentGetHistoryController {
      * @param id
      * @param page
      * @param httpServletRequest
-     * @return List of comment DTO
+     * @return List of like DTO
      */
     @GetMapping("/history/{id}/{page}")
     public ResponseEntity<List<ContentEditedResponseDTO>> getAllCommentModification(@PathVariable int id, @PathVariable int page, HttpServletRequest httpServletRequest) {
@@ -42,7 +42,7 @@ public class CommentGetHistoryController {
         List<ContentEditedResponseDTO> commentModelList = commentDataService.getAllCommentHistory(id, page);
 
         if (commentModelList.isEmpty()) {
-            LOGGER.info("COMMENT_HISTORY_LIST: No comment has been found");
+            LOGGER.info("COMMENT_HISTORY_LIST: No like has been found");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 

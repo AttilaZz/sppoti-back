@@ -36,7 +36,7 @@ public class CommentDeleteController {
         CommentEntity commentEntityToDelete = commentDataService.findComment(id);
 
         if (commentEntityToDelete == null) {
-            LOGGER.error("POST: Failed to retreive the comment");
+            LOGGER.error("POST: Failed to retreive the like");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         }
