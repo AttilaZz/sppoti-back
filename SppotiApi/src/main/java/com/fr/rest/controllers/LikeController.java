@@ -56,7 +56,7 @@ public class LikeController {
      */
 
     /**
-     * @param id
+     * @param id post id.
      * @param request
      * @return Like post
      */
@@ -107,7 +107,7 @@ public class LikeController {
     }
 
     /**
-     * @param id
+     * @param id post id.
      * @param request
      * @return unlike post
      */
@@ -156,9 +156,9 @@ public class LikeController {
     }
 
     /**
-     * @param id
-     * @param page
-     * @return list of people who liked the post
+     * @param id post id.
+     * @param page page number.
+     * @return list of people who liked the post.
      */
     @GetMapping(value = "/post/{id}/{page}")
     public ResponseEntity<PostResponseDTO> getPostLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
@@ -191,7 +191,7 @@ public class LikeController {
      */
 
     /**
-     * @param id
+     * @param id comment id.
      * @param request
      * @return status 200 if comment were liked or 404 if not
      */
@@ -239,7 +239,7 @@ public class LikeController {
     }
 
     /**
-     * @param id
+     * @param id post id.
      * @param request
      * @return 200 status if comment has been unliked or 404 if not.
      */
@@ -284,8 +284,8 @@ public class LikeController {
     }
 
     /**
-     * @param id
-     * @param page
+     * @param id comment id.
+     * @param page page number.
      * @return list of likers for a comment
      */
     @GetMapping(value = "/comment/{id}/{page}")
