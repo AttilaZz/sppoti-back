@@ -1,13 +1,15 @@
 package com.fr.core;
 
-import com.fr.rest.service.AccountControllerService;
-import com.fr.entities.*;
-import com.fr.exceptions.ConflictEmailException;
-import com.fr.exceptions.ConflictUsernameException;
 import com.fr.commons.dto.SignUpRequestDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.entities.ResourcesEntity;
+import com.fr.entities.RoleEntity;
+import com.fr.entities.SportEntity;
+import com.fr.entities.UserEntity;
+import com.fr.exceptions.ConflictEmailException;
+import com.fr.exceptions.ConflictUsernameException;
+import com.fr.rest.service.AccountControllerService;
 import org.apache.log4j.Logger;
-import org.aspectj.apache.bcel.generic.LOOKUPSWITCH;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

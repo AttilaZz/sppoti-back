@@ -1,12 +1,14 @@
 package com.fr.commons.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.entities.AddressEntity;
 import com.fr.entities.PostEntity;
 import com.fr.entities.SppotiEntity;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -20,7 +22,8 @@ public class PostResponseDTO {
     private int id;
     private Long sportId;
 
-    private String datetimeCreated;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date datetimeCreated;
 
     @JsonProperty("text")
     private String content;
@@ -200,12 +203,16 @@ public class PostResponseDTO {
         this.commentsCount = commentsCount;
     }
 
-    public String getDatetimeCreated() {
+    public Date getDatetimeCreated() {
         return datetimeCreated;
     }
 
-    public void setDatetimeCreated(String datetimeCreated) {
+    public void setDatetimeCreated(Date datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
+    }
+
+    public void setTargetUser(TargetUser targetUser) {
+        this.targetUser = targetUser;
     }
 
     public List<CommentDTO> getComment() {

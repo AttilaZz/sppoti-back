@@ -38,7 +38,8 @@ public class PostEntity implements Comparable<PostEntity> {
     private String content;
 
     @Column(nullable = false)
-    private String datetimeCreated = new DateTime().toString();
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date datetimeCreated = new Date();
 
     private String video;
 
@@ -127,11 +128,11 @@ public class PostEntity implements Comparable<PostEntity> {
         this.sport = sport;
     }
 
-    public String getDatetimeCreated() {
+    public Date getDatetimeCreated() {
         return datetimeCreated;
     }
 
-    public void setDatetimeCreated(String datetimeCreated) {
+    public void setDatetimeCreated(Date datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
     }
 

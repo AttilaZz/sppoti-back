@@ -1,16 +1,14 @@
 package com.fr.entities;
 
-import java.util.Set;
-import java.util.UUID;
-
-import javax.persistence.*;
-
-import org.joda.time.DateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by: Wail DJENANE on Aug 11, 2016
@@ -36,7 +34,8 @@ public class CommentEntity implements Comparable<CommentEntity> {
     private boolean deleted = false;
 
     @Column(nullable = false)
-    private String datetimeCreated = new DateTime().toString();
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date datetimeCreated = new Date();
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id", nullable = false)
@@ -86,11 +85,11 @@ public class CommentEntity implements Comparable<CommentEntity> {
         this.post = post;
     }
 
-    public String getDatetimeCreated() {
+    public Date getDatetimeCreated() {
         return datetimeCreated;
     }
 
-    public void setDatetimeCreated(String datetimeCreated) {
+    public void setDatetimeCreated(Date datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
     }
 

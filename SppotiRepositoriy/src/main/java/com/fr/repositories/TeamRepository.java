@@ -16,5 +16,5 @@ public interface TeamRepository extends JpaRepository<TeamEntity, Long> {
     List<TeamEntity> findByUuid(int uuid);
 
     @PostFilter("!filterObject.isDeleted() ")
-    List<TeamEntity> findByName(String team, Pageable pageable);
+    List<TeamEntity> findByNameContaining(String team, Pageable pageable);
 }

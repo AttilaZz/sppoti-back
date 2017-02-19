@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import java.util.Date;
+
 /**
  * Created by: Wail DJENANE on Aug 20, 2016
  */
@@ -26,7 +28,8 @@ public class EditHistoryEntity
     private String text;
 
     @Column(nullable = false)
-    private String datetimeEdited = new DateTime().toString();
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date datetimeEdited = new Date();
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -75,11 +78,11 @@ public class EditHistoryEntity
         this.text = text;
     }
 
-    public String getDatetimeEdited() {
+    public Date getDatetimeEdited() {
         return datetimeEdited;
     }
 
-    public void setDatetimeEdited(String datetimeEdited) {
+    public void setDatetimeEdited(Date datetimeEdited) {
         this.datetimeEdited = datetimeEdited;
     }
 

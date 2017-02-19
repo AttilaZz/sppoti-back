@@ -278,7 +278,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     public List<TeamResponseDTO> findAllTeams(String team, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
-        List<TeamEntity> myTeams = teamRepository.findByName(team, pageable);
+        List<TeamEntity> myTeams = teamRepository.findByNameContaining(team, pageable);
 
         return myTeams.stream()
                 .map(t -> fillTeamResponse(t, null))

@@ -1,7 +1,9 @@
 package com.fr.commons.dto;
 
+import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fr.entities.CommentEntity;
@@ -20,7 +22,8 @@ public class CommentDTO {
     private String authorUsername;
     private String authorAvatar;
 
-    private String creationDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date creationDate;
 
     private String text;
     private String imageLink;
@@ -94,11 +97,11 @@ public class CommentDTO {
         this.authorAvatar = authorAvatar;
     }
 
-    public String getCreationDate() {
+    public Date getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(String creationDate) {
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 

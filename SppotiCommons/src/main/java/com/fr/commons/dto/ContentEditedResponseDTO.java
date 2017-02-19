@@ -1,5 +1,6 @@
 package com.fr.commons.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -12,7 +13,10 @@ import java.util.Date;
 public class ContentEditedResponseDTO {
 
     private Long id;
-    private String dateTime = new Date().toString();
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date dateTime = new Date();
+
     private String text;
 
     private double latitude;
@@ -28,11 +32,11 @@ public class ContentEditedResponseDTO {
         this.id = id;
     }
 
-    public String getDateTime() {
+    public Date getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String dateTime) {
+    public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }
 
