@@ -42,7 +42,7 @@ public class TeamMemberEntity
     private UserEntity users;
 
     @OneToMany(mappedBy = "usersTeam", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SppotiMember> sppotiMemberss;
+    private Set<SppotiMember> sppotiMembers;
 
     public Long getId() {
         return id;
@@ -116,12 +116,8 @@ public class TeamMemberEntity
         this.uuid = uuid;
     }
 
-    public Set<SppotiMember> getSppotiMemberss() {
-        return sppotiMemberss;
-    }
-
-    public void setSppotiMembers(Set<SppotiMember> sppotiMemberss) {
-        this.sppotiMemberss = sppotiMemberss;
+    public Set<SppotiMember> getSppotiMembers() {
+        return sppotiMembers;
     }
 
     public Boolean getAdmin() {
@@ -132,8 +128,8 @@ public class TeamMemberEntity
         this.admin = admin;
     }
 
-    public void setSppotiMemberss(Set<SppotiMember> sppotiMemberss) {
-        this.sppotiMemberss = sppotiMemberss;
+    public void setSppotiMembers(Set<SppotiMember> sppotiMembers) {
+        this.sppotiMembers = sppotiMembers;
     }
 }
 

@@ -62,7 +62,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             teamToSave.setLogoPath(team.getLogoPath());
         }
 
-        teamToSave.setTeamMemberss(getTeamMembersEntityFromDto(team.getMembers(), teamToSave, adminId, null));
+        teamToSave.setTeamMembers(getTeamMembersEntityFromDto(team.getMembers(), teamToSave, adminId, null));
 
         teamToSave.setSport(sportEntity);
         TeamEntity addedTeam = teamRepository.save(teamToSave);

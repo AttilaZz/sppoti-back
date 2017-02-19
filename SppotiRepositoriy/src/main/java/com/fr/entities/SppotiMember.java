@@ -28,7 +28,7 @@ public class SppotiMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sppoter_id")
-    private TeamMemberEntity usersTeam;
+    private TeamMemberEntity teamMember;
 
     public Long getId() {
         return id;
@@ -86,11 +86,11 @@ public class SppotiMember {
         this.yPosition = yPosition;
     }
 
-    public TeamMemberEntity getUsersTeam() {
-        return usersTeam;
+    public TeamMemberEntity getTeamMember() {
+        return teamMember;
     }
 
-    public void setUsersTeam(TeamMemberEntity usersTeam) {
-        this.usersTeam = usersTeam;
+    public void setTeamMember(TeamMemberEntity teamMember) {
+        this.teamMember = teamMember;
     }
 }

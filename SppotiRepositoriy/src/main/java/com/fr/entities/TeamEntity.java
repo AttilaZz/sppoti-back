@@ -30,7 +30,7 @@ public class TeamEntity
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "team")
-    private Set<TeamMemberEntity> teamMemberss;
+    private Set<TeamMemberEntity> teamMembers;
 
     @OneToOne
     @JoinColumn(name = "sport_id")
@@ -78,12 +78,12 @@ public class TeamEntity
         this.uuid = uuid;
     }
 
-    public Set<TeamMemberEntity> getTeamMemberss() {
-        return teamMemberss;
+    public Set<TeamMemberEntity> getTeamMembers() {
+        return teamMembers;
     }
 
-    public void setTeamMemberss(Set<TeamMemberEntity> teamMemberss) {
-        this.teamMemberss = teamMemberss;
+    public void setTeamMembers(Set<TeamMemberEntity> teamMembers) {
+        this.teamMembers = teamMembers;
     }
 
     public SportEntity getSport() {

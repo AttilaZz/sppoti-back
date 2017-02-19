@@ -29,12 +29,11 @@ public class SppotiAddController {
     private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
     /**
-     * @param newSppoti
-     * @param request
+     * @param newSppoti sppoti to save.
      * @return 201 status && SppotiEntity object with the inserted data, 400 status otherwise.
      */
     @PostMapping
-    public ResponseEntity<SppotiResponseDTO> addPost(@RequestBody SppotiRequestDTO newSppoti, HttpServletRequest request) {
+    public ResponseEntity<SppotiResponseDTO> addPost(@RequestBody SppotiRequestDTO newSppoti) {
 
         if (newSppoti.getAddress() == null || newSppoti.getAddress().isEmpty()) {
             LOGGER.error("AddressEntity not found");

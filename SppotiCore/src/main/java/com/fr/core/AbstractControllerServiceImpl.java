@@ -245,7 +245,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      */
     protected UserEntity getConnectedUser() {
         AccountUserDetails accountUserDetails = (AccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return accountUserDetails.getConnectedUserDetails();
+        return userRepository.findOne(accountUserDetails.getId());
     }
 
     /**
@@ -437,8 +437,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     public Set<TeamMemberEntity> getTeamMembersEntityFromDto(List<UserDTO> users, TeamEntity team, Long adminId, SppotiEntity sppoti) {
 
         Set<TeamMemberEntity> teamUsers = new HashSet<TeamMemberEntity>();
-        Set<TeamEntity> teams = new HashSet<TeamEntity>();
-        teams.add(team);
+//        Set<TeamEntity> teams = new HashSet<TeamEntity>();
+//        teams.add(team);
 
         for (UserDTO user : users) {
 
@@ -451,7 +451,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
                 if (u.get(0).getId().equals(adminId)) {
                     teamMember.setAdmin(true);
-                    /** Admin is member of the team, status should be confirmed */
+                    /** Admin is member of the team, status should be confirmed. */
                     teamMember.setStatus(GlobalAppStatus.CONFIRMED.name());
                 }
 
@@ -461,7 +461,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 if (sppoti != null) {
                     TeamMemberEntity sppoterMember = teamMembersRepository.findByUsersUuidAndTeamUuid(user.getId(), team.getUuid());
 
-                    /** if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter */
+                    /** if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter. */
                     if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
                         sppoter.setxPosition(user.getxPosition());
                     }
@@ -470,14 +470,13 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                         sppoter.setyPosition(user.getyPosition());
                     }
 
-                    /** Admin is member of sppoti, status should be confirmed */
+                    /** Admin is member of sppoti, status should be confirmed. */
                     if (teamMember.getAdmin() != null && teamMember.getAdmin()) {
                         sppoter.setStatus(GlobalAppStatus.CONFIRMED.name());
                     }
 
-                    /** if the sppoter already exist - default coordinate doesn't change */
+                    /** if the sppoter already exist - default coordinate doesn't change. */
                     if (sppoterMember == null) {
-
                         if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
                             teamMember.setxPosition(user.getxPosition());
                         }
@@ -485,22 +484,14 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                         if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
                             teamMember.setyPosition(user.getyPosition());
                         }
-
                     }
 
-                    Set<SppotiMember> sppotiMembers = new HashSet<SppotiMember>();
-                    sppoter.setUsersTeam(teamMember);
-                    sppoter.setSppoti(sppoti);
-                    sppotiMembers.add(sppoter);
+                    addSppoters(sppoti, teamMember, sppoter);
 
-                    teamMember.setSppotiMembers(sppotiMembers);
-                    sppoti.setSppotiMembers(sppotiMembers);
-
-                    /** send notification to the invited user */
+                    /** send notification to the invited user. */
                     addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, u.get(0), getUserById(adminId));
-
                 } else {
-                    /** if request coming from add team - add members only in (users_team) */
+                    /** if request coming from add team - add members only in (users_team). */
                     if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
                         teamMember.setxPosition(user.getxPosition());
                     }
@@ -523,10 +514,20 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     }
 
+    private void addSppoters(SppotiEntity sppoti, TeamMemberEntity teamMember, SppotiMember sppoter) {
+        Set<SppotiMember> sppotiMembers = new HashSet<>();
+        sppoter.setTeamMember(teamMember);
+        sppoter.setSppoti(sppoti);
+        sppotiMembers.add(sppoter);
+
+        teamMember.setSppotiMembers(sppotiMembers);
+        sppoti.setSppotiMembers(sppotiMembers);
+    }
+
 
     /**
      * @param team team to map.
-     * @return a teamResponse object from TeamEntity entity
+     * @return a teamResponse object from TeamEntity entity.
      */
     protected TeamResponseDTO fillTeamResponse(TeamEntity team, Long sppotiAdmin) {
 
@@ -535,14 +536,14 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
         List<UserDTO> teamUsers = new ArrayList<UserDTO>();
 
-        for (TeamMemberEntity user : team.getTeamMemberss()) {
+        for (TeamMemberEntity user : team.getTeamMembers()) {
 
             Integer sppoterStatus = null;
 
             //get status for the selected sppoti
-            if (!StringUtils.isEmpty(user.getSppotiMemberss())) {
-                for (SppotiMember sppoter : user.getSppotiMemberss()) {
-                    if (sppoter.getUsersTeam().getId().equals(user.getId())) {
+            if (!StringUtils.isEmpty(user.getSppotiMembers())) {
+                for (SppotiMember sppoter : user.getSppotiMembers()) {
+                    if (sppoter.getTeamMember().getId().equals(user.getId())) {
                         sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
                     }
                 }
@@ -575,7 +576,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
 
     /**
-     * Add notification
+     * Add notification.
      *
      * @param friendRequestRefused notif type.
      * @param userFrom             notif sender.
@@ -590,7 +591,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * Find tags in content and add notifications
+     * Find tags in content and add notifications.
      *
      * @param commentEntity comment entity.
      * @param postEntity    post entity.
@@ -605,8 +606,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         }
 
         /**
-         * All words starting with @, followed by Letter or accented Letter
-         * and finishing with Letter, Number or Accented letter
+         * All words starting with @, followed by Letter or accented Letter.
+         * and finishing with Letter, Number or Accented letter.
          */
         String patternString1 = "(\\$+)([a-z|A-Z|\\p{javaLetter}][a-z\\d|A-Z\\d|\\p{javaLetter}]*)";
 
@@ -614,7 +615,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         Matcher matcher = pattern.matcher(content);
 
         /**
-         *  clean tags from @
+         *  clean tags from @.
          */
         List<String> tags = new ArrayList<>();
         while (matcher.find()) {
@@ -625,7 +626,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         }
 
         /**
-         * Process each tag
+         * Process each tag.
          */
         for (String username : tags) {
             UserEntity userToNotify;
