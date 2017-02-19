@@ -10,8 +10,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import utils.EntitytoDtoTransformer;
+import utils.NotificationTransformer;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +40,7 @@ public class NotificationControllerServiceImpl extends AbstractControllerService
 
         NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
         notificationResponseDTO.setNotifications(notifications.stream()
-                .map(EntitytoDtoTransformer::notificationEntityToDto)
+                .map(NotificationTransformer::notificationEntityToDto)
                 .collect(Collectors.toList()));
         notificationResponseDTO.setNotifCounter(notificationRepository.countByToUuid(userId));
 
@@ -56,6 +58,7 @@ public class NotificationControllerServiceImpl extends AbstractControllerService
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void openNotification(int notifId) {
         NotificationEntity notification = notificationRepository.findByUuid(notifId);

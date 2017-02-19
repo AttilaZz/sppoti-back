@@ -140,7 +140,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     /**
      * {@inheritDoc}
      */
-    @Transactional
     @Override
     public SppotiResponseDTO getSppotiByUuid(Integer uuid) {
 
@@ -160,7 +159,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
      * @param sppoti sppoti to retuen.
      * @return sppoti DTO.
      */
-    @Transactional
     private SppotiResponseDTO getSppotiResponse(SppotiEntity sppoti) {
 
         if (sppoti == null) {
@@ -202,7 +200,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     /**
      * {@inheritDoc}
      */
-    @Transactional
     @Override
     public List<SppotiResponseDTO> getAllUserSppoties(Integer id, int page) {
 

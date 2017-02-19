@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public TeamResponseDTO saveTeam(TeamRequestDTO team, Long adminId) {
 
@@ -72,6 +74,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void updateTeamMembers(TeamRequestDTO request, int memberId, int teamId) {
 
@@ -135,6 +138,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void acceptTeam(int teamId, int userId) {
 
@@ -155,6 +159,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void refuseTeam(int teamId, int userId) {
 
@@ -176,6 +181,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void deleteMemberFromTeam(int teamId, int memberId, int adminId) {
 
@@ -203,6 +209,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void deleteTeam(int id) {
 
@@ -220,6 +227,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public UserDTO addMember(int teamId, UserDTO userParam) {
 

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import utils.EntitytoDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
@@ -34,6 +35,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public CommentDTO saveComment(CommentEntity newCommentEntity, Long userId, int postId) {
 
@@ -68,6 +70,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public boolean deleteComment(CommentEntity commentEntity) {
         commentEntity.setDeleted(true);
@@ -91,6 +94,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public boolean updateComment(EditHistoryEntity commentToEdit) {
 

@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Value("${key.likesPerPage}")
     private int likeSize;
 
+    @Transactional
     @Override
     public LikeContentEntity likePost(LikeContentEntity likeToSave) {
         return likeContent(likeToSave);
@@ -34,6 +36,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void unLikePost(PostEntity post) {
 
@@ -84,7 +87,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
-
+    @Transactional
     @Override
     public void unLikeComment(CommentEntity commentEntityToUnlike) {
 
@@ -105,6 +108,7 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void likeComment(LikeContentEntity likeToSave) {
 
@@ -115,9 +119,10 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * like content - PostEntity or CommentEntity
      *
-     * @param likeContent
-     * @return boolean
+     * @param likeContent content to like.
+     * @return liked content.
      */
+    @Transactional
     private LikeContentEntity likeContent(LikeContentEntity likeContent) {
 
         if (likeContent != null) {

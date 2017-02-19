@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -47,6 +48,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void saveFriendShip(FriendShipEntity friendShip) {
 
@@ -59,6 +61,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void updateFriendShip(Long userId, int friendUuid, int friendStatus) {
 
@@ -100,6 +103,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void deleteFriendShip(FriendShipEntity friendShip) {
 

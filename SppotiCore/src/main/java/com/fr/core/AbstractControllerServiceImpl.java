@@ -16,6 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import utils.EntitytoDtoTransformer;
 
@@ -23,6 +24,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Transactional(readOnly = true)
 @Component("abstractService")
 public abstract class AbstractControllerServiceImpl implements AbstractControllerService {
 
@@ -166,8 +168,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param username
-     * @return login type
+     * @param username username.
+     * @return login type.
      */
     @Override
     public int getUserLoginType(String username) {
@@ -186,8 +188,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param id
-     * @return found userEntity
+     * @param id user id.
+     * @return found userEntity.
      */
     @Override
     public UserEntity getUserById(Long id) {
@@ -195,19 +197,19 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param id
-     * @return found user entity
+     * @param id user id.
+     * @return found user entity.
      */
     @Override
     public UserEntity getUserByUuId(int id) {
 
         List<UserEntity> usersList = userRepository.getByUuid(id);
 
-        if (usersList == null && usersList.isEmpty()) {
-            return null;
+        if (usersList != null && !usersList.isEmpty()) {
+            return usersList.get(0);
         }
 
-        return usersList.get(0);
+        return null;
 
     }
 
@@ -219,8 +221,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param dsHistoryList
-     * @return list of ContentEditedResponseDTO
+     * @param dsHistoryList lost of edited content.
+     * @return list of ContentEditedResponseDTO.
      */
     protected List<ContentEditedResponseDTO> fillEditContentResponse(List<EditHistoryEntity> dsHistoryList) {
         List<ContentEditedResponseDTO> editHistoryResponse = new ArrayList<ContentEditedResponseDTO>();
@@ -247,8 +249,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param dbCommentEntityList
-     * @param userId
+     * @param dbCommentEntityList comment entity.
+     * @param userId              user id.
      * @return list of Comment DTO
      */
     protected List<CommentDTO> fillCommentModelList(List<CommentEntity> dbCommentEntityList, Long userId) {
@@ -299,8 +301,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param o
-     * @param userId
+     * @param o      post or comment entity.
+     * @param userId liker id.
      * @return true if content has been liked by me, false otherwise
      */
     // detect if post or comment has already been liked by user
@@ -329,11 +331,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param targetUser
-     * @param connected_user
-     * @return user DTO
+     * @param targetUser    user entity.
+     * @param connectedUser connect user id.
+     * @return user DTO.
      */
-    protected UserDTO fillUserResponse(UserEntity targetUser, UserEntity connected_user) {
+    protected UserDTO fillUserResponse(UserEntity targetUser, UserEntity connectedUser) {
 
         UserDTO user = new UserDTO();
         user.setLastName(targetUser.getLastName());
@@ -345,18 +347,18 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         user.setBirthDate(targetUser.getDateBorn());
         user.setFriendStatus(GlobalAppStatus.PUBLIC_RELATION.getValue());
 
-        if (connected_user != null) {
+        if (connectedUser != null) {
 
-            if (!connected_user.getId().equals(targetUser.getId())) {
+            if (!connectedUser.getId().equals(targetUser.getId())) {
                 /*
                 manage requests sent to me
                  */
                 FriendShipEntity friendShip;
 
-                friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(connected_user.getUuid(), targetUser.getUuid());
+                friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(connectedUser.getUuid(), targetUser.getUuid());
 
                 if (friendShip == null) {
-                    friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(targetUser.getUuid(), connected_user.getUuid());
+                    friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid());
                 }
 
                 if (friendShip == null) {
@@ -381,12 +383,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 /*
                 Manage request sent by me
                  */
-                if (!friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connected_user.getUuid(), GlobalAppStatus.PENDING.name()).isEmpty()) {
+                if (!friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid(), GlobalAppStatus.PENDING.name()).isEmpty()) {
                     user.setFriendStatus(GlobalAppStatus.PENDING_SENT.getValue());
                 }
             }
 
-            user.setMyProfile(connected_user.getId().equals(targetUser.getId()));
+            user.setMyProfile(connectedUser.getId().equals(targetUser.getId()));
 
         } else {
             user.setMyProfile(true);
@@ -425,10 +427,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     /**
-     * @param users
-     * @param team
-     * @param adminId
-     * @param sppoti
+     * @param users   list of users.
+     * @param team    team to map.
+     * @param adminId sppoti admin id.
+     * @param sppoti  sppoti to map.
      * @return set of USERS_TEAM
      */
     @Override
@@ -523,7 +525,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
 
     /**
-     * @param team
+     * @param team team to map.
      * @return a teamResponse object from TeamEntity entity
      */
     protected TeamResponseDTO fillTeamResponse(TeamEntity team, Long sppotiAdmin) {
@@ -575,9 +577,9 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     /**
      * Add notification
      *
-     * @param friendRequestRefused
-     * @param userFrom
-     * @param userTo
+     * @param friendRequestRefused notif type.
+     * @param userFrom             notif sender.
+     * @param userTo               notif receiver.
      */
     protected void addNotification(NotificationType friendRequestRefused, UserEntity userFrom, UserEntity userTo) {
         NotificationEntity notification = new NotificationEntity();
@@ -590,8 +592,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     /**
      * Find tags in content and add notifications
      *
-     * @param commentEntity
-     * @param postEntity
+     * @param commentEntity comment entity.
+     * @param postEntity    post entity.
      */
     public void addTagNotification(PostEntity postEntity, CommentEntity commentEntity) {
 

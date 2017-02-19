@@ -9,6 +9,7 @@ import com.fr.entities.ResourcesEntity;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,48 +21,13 @@ import java.util.Set;
 @Component
 public class EntitytoDtoTransformer {
 
-    /**
-     * @param notification
-     * @return NotificationEntity DTO
-     */
-    public static NotificationDTO notificationEntityToDto(NotificationEntity notification) {
-        NotificationDTO notificationDTO = new NotificationDTO();
-        notificationDTO.setId(notification.getUuid());
-        notificationDTO.setDatetime(notification.getCreationDate());
-        notificationDTO.setFrom(notificationUserEntityToDto(notification.getFrom()));
-        notificationDTO.setTo(notificationUserEntityToDto(notification.getTo()));
-        notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
-        notificationDTO.setOpened(notification.isOpened());
-
-        return notificationDTO;
-    }
-
 
     /**
-     * @param userEntity
-     * @return user DTO used in notifications
+     * @param commentEntity comment entity to map.
+     * @param userEntity user entity to map.
+     * @return comment dto.
      */
-    public static UserDTO notificationUserEntityToDto(UserEntity userEntity) {
-        UserDTO userDTO = new UserDTO(), resourceUserDto = getUserCoverAndAvatar(userEntity);
-        userDTO.setFirstName(userEntity.getFirstName());
-        userDTO.setLastName(userEntity.getLastName());
-        userDTO.setEmail(userDTO.getEmail());
-        userDTO.setUsername(userEntity.getUsername());
-
-        userDTO.setAvatar(resourceUserDto.getAvatar() != null ? resourceUserDto.getAvatar() : null);
-        userDTO.setCover(resourceUserDto.getCover() != null ? resourceUserDto.getCover() : null);
-        userDTO.setCoverType(resourceUserDto.getCover() != null ? resourceUserDto.getCoverType() : null);
-
-//        userDTO.setBirthDate(userEntity.getDateBorn());
-
-        return userDTO;
-    }
-
-    /**
-     * @param commentEntity
-     * @param userEntity
-     * @return comment dto
-     */
+    @Transactional
     public static CommentDTO commentEntityToDto(CommentEntity commentEntity, UserEntity userEntity) {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setAuthorFirstName(userEntity != null ? userEntity.getFirstName() : null);
@@ -78,9 +44,10 @@ public class EntitytoDtoTransformer {
     }
 
     /**
-     * @param targetUser
-     * @return userDto with only avatar and cover
+     * @param targetUser user entity to map.
+     * @return userDto with only avatar and cover.
      */
+    @Transactional
     public static UserDTO getUserCoverAndAvatar(UserEntity targetUser) {
 
         UserDTO user = new UserDTO();

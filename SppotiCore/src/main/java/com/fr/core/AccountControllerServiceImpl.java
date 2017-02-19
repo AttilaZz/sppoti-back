@@ -6,8 +6,11 @@ import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;
 import com.fr.commons.dto.SignUpRequestDTO;
 import com.fr.commons.dto.UserDTO;
+import org.apache.log4j.Logger;
+import org.aspectj.apache.bcel.generic.LOOKUPSWITCH;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 
@@ -18,9 +21,15 @@ import javax.mail.MessagingException;
 @Component
 public class AccountControllerServiceImpl extends AbstractControllerServiceImpl implements AccountControllerService {
 
+    private Logger LOGGER = Logger.getLogger(AccountControllerServiceImpl.class);
+
     @Value("${key.originBack}")
     private String rootAddress;
 
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
     @Override
     public void saveNewUser(UserEntity user) throws Exception {
 
@@ -36,26 +45,33 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
             try {
 
                 UserEntity u = userRepository.save(user);
-
-//                Friend friend = new Friend(u);
-//                friendRepository.save(friend);
+                LOGGER.info("Account has been created: " + u);
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Create account error", e);
             }
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RoleEntity getProfileEntity(String profileType) {
         return roleRepository.getByName(profileType);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SportEntity getSportById(Long id) {
         return sportRepository.getById(id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isReceivedDataNotEmpty(SignUpRequestDTO user) {
 
@@ -69,6 +85,10 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
     @Override
     public boolean tryActivateAccount(String code) {
 
@@ -85,12 +105,15 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
             return true;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Account activation error", e);
             return false;
         }
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean sendConfirmationEmail(String email, String code) {
 
@@ -113,6 +136,10 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
     @Override
     public boolean updateUser(UserEntity connected_user) {
 
@@ -120,6 +147,10 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
     @Override
     public void unSelectOldResource(Long userId, int i) {
         ResourcesEntity resourcesEntity = resourceRepository.getByUserIdAndTypeAndIsSelectedTrue(userId, i);
@@ -129,13 +160,19 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public UserEntity getUserByUsername(String username) {
         return userRepository.getByUsername(username);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public UserDTO fillUserResponse(UserEntity targetUser, UserEntity connected_user) {
-        return super.fillUserResponse(targetUser, connected_user);
+    public UserDTO fillUserResponse(UserEntity targetUser, UserEntity connectedUser) {
+        return super.fillUserResponse(targetUser, connectedUser);
     }
 }

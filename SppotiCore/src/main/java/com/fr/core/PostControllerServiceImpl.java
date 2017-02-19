@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import utils.EntitytoDtoTransformer;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public PostEntity savePost(PostEntity post) {
         PostEntity postEntity = postRepository.save(post);
@@ -59,6 +61,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public boolean updatePost(EditHistoryEntity postEditRow, SortedSet<AddressEntity> postEditAddress, int postId) {
         if (postEditAddress != null) {
@@ -91,6 +94,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public boolean deletePost(PostEntity p) {
 
@@ -291,8 +295,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                 pres.setComment(commentList);
 
             } catch (Exception e) {
-                e.printStackTrace();
-                LOGGER.error("Error  asting set<CommentEntity> to List<CommentEntity>");
+                LOGGER.error("Error  asting set<CommentEntity> to List<CommentEntity>", e);
             }
 
             /*
@@ -390,6 +393,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public boolean editPostVisibility(int id, int visibility) {
 
