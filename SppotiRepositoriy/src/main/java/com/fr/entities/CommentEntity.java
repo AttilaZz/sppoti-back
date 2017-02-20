@@ -47,10 +47,10 @@ public class CommentEntity implements Comparable<CommentEntity> {
     @JsonIgnore
     private PostEntity post;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "like")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
     private Set<LikeContentEntity> likes;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "like")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
     private Set<EditHistoryEntity> editList;
 
     public Long getId() {
