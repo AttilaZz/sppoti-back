@@ -41,9 +41,9 @@ public class PostAddController {
 
 
     /**
-     * @param newPostReq
-     * @param request
-     * @return Add post by user
+     * @param newPostReq post data to save.
+     * @param request    http request object.
+     * @return Add post by user.
      */
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
@@ -52,7 +52,7 @@ public class PostAddController {
         // get current logged user
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
         UserEntity user = postDataService.getUserById(userId);
-        LOGGER.info("POST-ADD: LOGGED UserDTO: => " + userId);
+        LOGGER.debug("POST-ADD: LOGGED UserDTO: => " + userId);
 
         boolean canAdd = false;
 
@@ -76,15 +76,13 @@ public class PostAddController {
                 newPostToSave.setSport(targedSport);
                 postRep.setSportId(sportId);
             } else {
-                LOGGER.info("POST-ADD: The received SportModelDTO ID is not valid");
+                LOGGER.debug("POST-ADD: The received SportModelDTO ID is not valid");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
         } else {
-
-            LOGGER.info("POST-ADD: A sport_id must be defined ");
+            LOGGER.debug("POST-ADD: A sport_id must be defined ");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
         }
 
         // if post is about a game
@@ -125,18 +123,13 @@ public class PostAddController {
         /*
             ---- End address
          */
-        String content = null;
-        Set<String> image = new HashSet<>();
-        String video = null;
+        String content;
+        Set<String> image;
+        String video;
 
-        try {
-            content = newPostReq.getContent().getContent();
-            image = newPostReq.getContent().getImageLink();
-            video = newPostReq.getContent().getVideoLink();
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("ADD-POST: Data sent in json rrquest are incorrect");
-        }
+        content = newPostReq.getContent().getContent();
+        image = newPostReq.getContent().getImageLink();
+        video = newPostReq.getContent().getVideoLink();
 
         // if post has only classic content - Text, Image, Video
         if (newPostReq.getContent() != null) {
@@ -157,12 +150,8 @@ public class PostAddController {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
 
-                // base64 encode content
-                // Charset.forName("UTF-8").encode(content);
-                // Base64Utils.encode(content.getBytes())
                 postRep.setContent(content);
                 newPostToSave.setContent(content);
-
             }
 
             if (image != null) {
@@ -238,10 +227,6 @@ public class PostAddController {
             LOGGER.error("POST-ADD: At least a game or a post content must be assigned", e1);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("POST-ADD: Unhandled problem has been found");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
     }
