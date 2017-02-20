@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/team/{teamId}/")
-public class TeamStatusController {
+public class TeamUpdateStatusController {
 
     private TeamControllerService teamControllerService;
     private Logger LOGGER = Logger.getLogger(SppotiAddController.class);

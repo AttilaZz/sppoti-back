@@ -547,11 +547,13 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
             Integer sppoterStatus = null;
 
-            //get status for the selected sppoti
-            if (!StringUtils.isEmpty(user.getSppotiMembers())) {
-                for (SppotiMember sppoter : user.getSppotiMembers()) {
-                    if (sppoter.getTeamMember().getId().equals(user.getId()) && sppoter.getSppoti().getId().equals(sppoti.getId())) {
-                        sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
+            if (sppoti != null) {
+                //get status for the selected sppoti
+                if (!StringUtils.isEmpty(user.getSppotiMembers())) {
+                    for (SppotiMember sppoter : user.getSppotiMembers()) {
+                        if (sppoter.getTeamMember().getId().equals(user.getId()) && sppoter.getSppoti().getId().equals(sppoti.getId())) {
+                            sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
+                        }
                     }
                 }
             }

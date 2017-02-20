@@ -40,9 +40,7 @@ public class FindTeamController {
     public ResponseEntity<List<TeamResponseDTO>> findMyTeams(@PathVariable String team, @PathVariable int page) {
 
         try {
-
             return new ResponseEntity<>(teamControllerService.findAllMyTeams(team, page), HttpStatus.OK);
-
         } catch (RuntimeException e) {
             LOGGER.error("Find All my teams error: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -59,9 +57,7 @@ public class FindTeamController {
     public ResponseEntity<List<TeamResponseDTO>> findAllTeams(@PathVariable String team, @PathVariable int page) {
 
         try {
-
             return new ResponseEntity<>(teamControllerService.findAllTeams(team, page), HttpStatus.OK);
-
         } catch (RuntimeException e) {
             LOGGER.error("Find All teams error: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

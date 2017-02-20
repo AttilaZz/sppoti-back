@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/team/{teamId}/members")
-public class TeamMembersController {
+public class TeamUpdateMembersController {
 
     private TeamControllerService teamControllerService;
 
@@ -31,11 +31,11 @@ public class TeamMembersController {
     private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
     /**
-     * Accept/Refuse team information
-     * Update coordinate in the stadium (X, Y)
+     * Accept/Refuse team information.
+     * Update coordinate in the stadium (X, Y).
      *
-     * @param memberId
-     * @return The updated member information
+     * @param memberId team member id.
+     * @return The updated member information.
      */
     @PutMapping("/{memberId}")
     public ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamRequestDTO request) {
