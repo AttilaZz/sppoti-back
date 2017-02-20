@@ -560,14 +560,14 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             UserDTO userCoverAndAvatar = EntitytoDtoTransformer.getUserCoverAndAvatar(user.getUsers());
 
             //fill sppoter data
-            Long sppotiAdmin = sppoti.getUserSppoti().getId();
             teamUsers.add(new UserDTO(user.getUuid(), user.getUsers().getFirstName(), user.getUsers().getLastName(), user.getUsers().getUsername(),
                     userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
                     userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
                     userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null,
-                    user.getAdmin(), sppotiAdmin != null && user.getUsers().getId().equals(sppotiAdmin) ? true : null,
+                    user.getAdmin(),
+                    sppoti != null && sppoti.getUserSppoti().getId() != null && user.getUsers().getId().equals(sppoti.getUserSppoti().getId()) ? true : null,
                     GlobalAppStatus.valueOf(user.getStatus()).getValue(),
-                    sppotiAdmin != null ? sppoterStatus : null, user.getUsers().getUuid()));
+                    sppoti != null && sppoti.getUserSppoti().getId() != null ? sppoterStatus : null, user.getUsers().getUuid()));
         }
 
         teamResponseDTO.setTeamMembers(teamUsers);
