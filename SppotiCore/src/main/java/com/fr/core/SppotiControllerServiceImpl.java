@@ -186,7 +186,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         TeamResponseDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHost(), sppoti);
         if (sppoti.getTeamAdverse() != null) {
-            TeamResponseDTO teamAdverseResponse = fillTeamResponse(sppoti.getTeamAdverse(), null);
+            TeamResponseDTO teamAdverseResponse = fillTeamResponse(sppoti.getTeamAdverse(), sppoti);
             sppotiResponseDTO.setTeamAdverse(teamAdverseResponse);
             sppotiResponseDTO.setTeamAdverseStatus(GlobalAppStatus.valueOf(sppoti.getTeamAdverseStatus()).getValue());
         }else{

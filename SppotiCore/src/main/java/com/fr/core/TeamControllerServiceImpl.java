@@ -207,7 +207,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     /**
-     * {@inheritDoc}
+     *{@inheritDoc}
      */
     @Transactional
     @Override
