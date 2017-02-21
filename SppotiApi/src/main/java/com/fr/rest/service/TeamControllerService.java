@@ -100,4 +100,12 @@ public interface TeamControllerService extends AbstractControllerService {
      */
     List<TeamResponseDTO> findAllTeams(String team, int page);
 
+    /**
+     *
+     * @param team team to find.
+     * @param sport sport id.
+     * @param page page number.
+     * @return list of related teams.
+     */
+    List<TeamResponseDTO> findAllTeamsBySport(String team, Long sport, int page);
 }

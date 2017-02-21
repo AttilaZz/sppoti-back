@@ -289,10 +289,26 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
+    public List<TeamResponseDTO> findAllTeamsBySport(String team, Long sport, int page) {
+        Pageable pageable = new PageRequest(page, teamPageSize);
+
+        List<TeamMemberEntity> myTeams = teamMembersRepository.findByTeamSportIdAndUsersUuidAndTeamNameContaining(sport,
+                getConnectedUser().getUuid(), team, pageable);
+
+        return myTeams.stream()
+                .map(t -> fillTeamResponse(t.getTeam(), null))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<TeamResponseDTO> findAllMyTeams(String team, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
-        List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndTeamNameContaining(getConnectedUser().getUuid(), team, pageable);
+        List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndTeamNameContaining(getConnectedUser()
+                .getUuid(), team, pageable);
 
         return myTeams.stream()
                 .map(t -> fillTeamResponse(t.getTeam(), null))

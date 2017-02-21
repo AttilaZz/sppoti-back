@@ -11,17 +11,53 @@ import java.util.List;
  */
 public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, Long> {
 
-    TeamMemberEntity findByUuid(int memberId);
-
-    TeamMemberEntity findByUsersUuid(int memberId);
-
+    /**
+     *
+     * @param memberId member team id.
+     * @param teamId team id.
+     * @return found team.
+     */
     TeamMemberEntity findByUsersUuidAndTeamUuid(int memberId, int teamId);
 
+    /**
+     *
+     * @param userId user id.
+     * @param pageable page number.
+     * @return list of found team.
+     */
     List<TeamMemberEntity> findByUsersUuidAndAdminTrue(int userId, Pageable pageable);
 
+    /**
+     *
+     * @param memberId member id.
+     * @param teamId team id.
+     * @return found team.
+     */
     TeamMemberEntity findByUsersUuidAndTeamUuidAndAdminTrue(int memberId, int teamId);
 
+    /**
+     *
+     * @param id user id.
+     * @param team team id.
+     * @param pageable page number.
+     * @return list of teams.
+     */
     List<TeamMemberEntity> findByUsersUuidAndTeamNameContaining(int id, String team, Pageable pageable);
 
+    /**
+     *
+     * @param teamId team id.
+     * @return found team.
+     */
     TeamMemberEntity findByTeamUuidAndAdminTrue(int teamId);
+
+    /**
+     *
+     * @param sport sport id.
+     * @param user user id.
+     * @param team team id.
+     * @param pageable page number.
+     * @return list of teams.
+     */
+    List<TeamMemberEntity> findByTeamSportIdAndUsersUuidAndTeamNameContaining(Long sport, int user, String team, Pageable pageable);
 }

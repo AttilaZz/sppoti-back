@@ -65,4 +65,22 @@ public class FindTeamController {
 
     }
 
+    /**
+     * @param team  team to find.
+     * @param page  page number.
+     * @param sport sport id.
+     * @return All found teams containing the String (team) and linked to the sport in parameter.
+     */
+    @GetMapping("/" + ALL_TEAM_SEARCH + "/{team}/{sportId}/{page}")
+    public ResponseEntity<List<TeamResponseDTO>> findAllTeams(@PathVariable String team, @PathVariable int page, @PathVariable Long sport) {
+
+        try {
+            return new ResponseEntity<>(teamControllerService.findAllTeamsBySport(team, sport, page), HttpStatus.OK);
+        } catch (RuntimeException e) {
+            LOGGER.error("Find All teams error: ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 }
