@@ -15,14 +15,14 @@ import java.util.List;
 public interface TeamControllerService extends AbstractControllerService {
 
     /**
-     * @param team
-     * @param adminId
+     * @param team team to save.
+     * @param adminId admin id.
      * @return saved team data.
      */
     TeamResponseDTO saveTeam(TeamRequestDTO team, Long adminId);
 
     /**
-     * @param teamId
+     * @param teamId team id.
      * @return team data.
      */
     TeamResponseDTO getTeamById(int teamId);
@@ -30,15 +30,15 @@ public interface TeamControllerService extends AbstractControllerService {
     /**
      * Update memeber informations.
      *
-     * @param request
-     * @param memberId
-     * @param teamId
+     * @param request team to update.
+     * @param memberId member team id.
+     * @param teamId team id.
      */
     void updateTeamMembers(TeamRequestDTO request, int memberId, int teamId);
 
     /**
-     * @param userId
-     * @param page
+     * @param userId user id.
+     * @param page page number.
      * @return all team that user is admin
      */
     List<TeamResponseDTO> getAllTeamsByUserId(int userId, int page);
@@ -46,16 +46,16 @@ public interface TeamControllerService extends AbstractControllerService {
     /**
      * Member can accept team invitation
      *
-     * @param teamId
-     * @param uuid
+     * @param teamId team id.
+     * @param uuid user unique id.
      */
     void acceptTeam(int teamId, int uuid);
 
     /**
      * Member can refuse team invitation
      *
-     * @param teamId
-     * @param uuid
+     * @param teamId team id.
+     * @param uuid user unique id.
      */
     void refuseTeam(int teamId, int uuid);
 
@@ -64,9 +64,9 @@ public interface TeamControllerService extends AbstractControllerService {
      * <p>
      * UserDTO must be admin of team to delete members.
      *
-     * @param teamId
-     * @param memberId
-     * @param adminId
+     * @param teamId team id.
+     * @param memberId member team id.
+     * @param adminId team admin id.
      */
     void deleteMemberFromTeam(int teamId, int memberId, int adminId);
 
@@ -75,14 +75,14 @@ public interface TeamControllerService extends AbstractControllerService {
      * <p>
      * UserDTO must be admin to delete the team
      *
-     * @param id
+     * @param id team id.
      */
     void deleteTeam(int id);
 
     /**
-     * @param teamId
-     * @param userParam
-     * @return Added memeber
+     * @param teamId team id.
+     * @param userParam member to add.
+     * @return Added memeber.
      */
     UserDTO addMember(int teamId, UserDTO userParam);
 
