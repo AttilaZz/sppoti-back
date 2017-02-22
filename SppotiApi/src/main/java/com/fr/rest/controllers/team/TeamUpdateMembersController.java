@@ -73,6 +73,11 @@ public class TeamUpdateMembersController {
 
     }
 
+    /**
+     * @param teamId   team id.
+     * @param memberId memeber id.
+     * @return 202 status if captain updated.
+     */
     @PutMapping("/captain/{memberId}")
     public ResponseEntity<TeamResponseDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId) {
 

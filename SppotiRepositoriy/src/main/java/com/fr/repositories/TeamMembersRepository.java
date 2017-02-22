@@ -67,4 +67,12 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
      * @return all team members.
      */
     List<TeamMemberEntity> findByTeamUuid(int teamId);
+
+    /**
+     *
+     * @param teamId team id.
+     * @param memberId member id.
+     * @return team member.
+     */
+    TeamMemberEntity findByTeamUuidAndTeamCaptainTrue(int teamId, int memberId);
 }

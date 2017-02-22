@@ -208,7 +208,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     }
 
     /**
-     *{@inheritDoc}
+     * {@inheritDoc}
      */
     @Transactional
     @Override
@@ -315,13 +315,16 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public void updateTeamCaptain(int teamId, int memberId) {
 
-//        List<TeamMemberEntity> teamMemberEntityList = teamMembersRepository.findByTeamUuid(teamId);
-//
-//        teamMemberEntityList.stream()
-//                .map(
-//                        t ->
-//
-//                )
+        List<TeamMemberEntity> teamMemberEntity = teamMembersRepository.findByTeamUuid(teamId);
+
+        teamMemberEntity.forEach(t -> {
+            if (t.getUuid() == teamId) {
+                t.setTeamCaptain(true);
+            } else {
+                t.setTeamCaptain(false);
+            }
+        });
+        teamMembersRepository.save(teamMemberEntity);
 
     }
 
