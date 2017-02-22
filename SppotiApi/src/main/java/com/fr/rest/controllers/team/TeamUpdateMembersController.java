@@ -73,7 +73,7 @@ public class TeamUpdateMembersController {
 
     }
 
-    @PutMapping("/{memberId}")
+    @PutMapping("/captain/{memberId}")
     public ResponseEntity<TeamResponseDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId) {
 
         teamControllerService.updateTeamCaptain(teamId, memberId);
@@ -96,6 +96,24 @@ public class TeamUpdateMembersController {
 
         LOGGER.info("Team member has been deleted : " + memberId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Add member for a given team - only admin can add a memeber to his team.
+     *
+     * @return 201 status if memeber has been added.
+     */
+    @PostMapping
+    public ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody UserDTO user) {
+
+        if (user.getId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        UserDTO savedTeamMember = teamControllerService.addMember(teamId, user);
+
+        LOGGER.info("Team member has been added ! " + savedTeamMember);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

@@ -70,21 +70,4 @@ public class TeamAddController {
         return new ResponseEntity<>(teamResponseDTO, HttpStatus.CREATED);
     }
 
-    /**
-     * Add member for a given team - only admin can add a memeber to his team.
-     *
-     * @return 201 status if memeber has been added.
-     */
-    @PostMapping
-    public ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody UserDTO user) {
-
-        if (user.getId() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        UserDTO savedTeamMember = teamControllerService.addMember(teamId, user);
-
-        LOGGER.info("Team member has been added ! " + savedTeamMember);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
 }
