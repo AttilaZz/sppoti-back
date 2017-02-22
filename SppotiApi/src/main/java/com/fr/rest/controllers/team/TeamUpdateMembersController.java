@@ -79,9 +79,11 @@ public class TeamUpdateMembersController {
      * @return 202 status if captain updated.
      */
     @PutMapping("/captain/{memberId}")
-    public ResponseEntity<TeamResponseDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId) {
+    public ResponseEntity<TeamResponseDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
 
-        teamControllerService.updateTeamCaptain(teamId, memberId);
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+
+        teamControllerService.updateTeamCaptain(teamId, memberId, accountUserDetails.getUuid());
 
         LOGGER.info("Team captain has been changed to: " + memberId);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

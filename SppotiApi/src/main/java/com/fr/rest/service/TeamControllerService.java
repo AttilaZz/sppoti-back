@@ -121,6 +121,7 @@ public interface TeamControllerService extends AbstractControllerService {
      *
      * @param teamId team id.
      * @param memberId member id.
+     * @param connectedUserId connected user id.
      */
-    void updateTeamCaptain(int teamId, int memberId);
+    void updateTeamCaptain(int teamId, int memberId, int connectedUserId);
 }

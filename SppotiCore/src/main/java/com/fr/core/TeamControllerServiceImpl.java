@@ -8,6 +8,7 @@ import com.fr.entities.TeamEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.entities.UserEntity;
 import com.fr.exceptions.MemberNotInAdminTeamException;
+import com.fr.exceptions.NotTeamAdminException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.repositories.TeamMembersRepository;
@@ -199,7 +200,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             throw new EntityNotFoundException("Member to delete not foundn");
         }
 
-        //Admin and memeber to delete are in the same team
+        //Admin and member to delete are in the same team
         if (adminTeamMembers.getTeam().getId().equals(targetTeamMember.getTeam().getId())) {
             teamMembersRepository.delete(targetTeamMember);
         } else {
@@ -313,12 +314,16 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public void updateTeamCaptain(int teamId, int memberId) {
+    public void updateTeamCaptain(int teamId, int memberId, int connectedUserId) {
+
+        if (teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, teamId) == null) {
+            throw new NotTeamAdminException("User is not admin of this team (" + teamId + ") to change captain");
+        }
 
         List<TeamMemberEntity> teamMemberEntity = teamMembersRepository.findByTeamUuid(teamId);
 
         teamMemberEntity.forEach(t -> {
-            if (t.getUuid() == teamId) {
+            if (t.getUuid() == memberId) {
                 t.setTeamCaptain(true);
             } else {
                 t.setTeamCaptain(false);
