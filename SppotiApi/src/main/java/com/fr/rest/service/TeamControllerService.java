@@ -108,4 +108,19 @@ public interface TeamControllerService extends AbstractControllerService {
      * @return list of related teams.
      */
     List<TeamResponseDTO> findAllTeamsBySport(String team, Long sport, int page);
+
+    /**
+     *
+     * @param teamRequestDTO team data to update.
+     * @param teamId team id.
+     * @return updated team.
+     */
+    TeamResponseDTO updateTeam(int teamId, TeamRequestDTO teamRequestDTO);
+
+    /**
+     *
+     * @param teamId team id.
+     * @param memberId member id.
+     */
+    void updateTeamCaptain(int teamId, int memberId);
 }

@@ -1,6 +1,7 @@
 package com.fr.rest.controllers.team;
 
 import com.fr.commons.dto.TeamRequestDTO;
+import com.fr.commons.dto.TeamResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.controllers.sppoti.SppotiAddController;
@@ -72,22 +73,13 @@ public class TeamUpdateMembersController {
 
     }
 
-    /**
-     * Add member for a given team - only admin can add a memeber to his team
-     *
-     * @return 201 status if memeber has been added
-     */
-    @PostMapping
-    public ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody UserDTO user) {
+    @PutMapping("/{memberId}")
+    public ResponseEntity<TeamResponseDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId) {
 
-        if (user.getId() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        teamControllerService.updateTeamCaptain(teamId, memberId);
 
-        UserDTO savedTeamMember = teamControllerService.addMember(teamId, user);
-
-        LOGGER.info("Team member has been added ! " + savedTeamMember);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        LOGGER.info("Team captain has been changed to: " + memberId);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     /**

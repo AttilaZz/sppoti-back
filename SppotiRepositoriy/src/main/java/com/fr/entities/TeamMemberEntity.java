@@ -19,26 +19,33 @@ public class TeamMemberEntity
     @GeneratedValue
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private int uuid = UUID.randomUUID().hashCode();
 
+    @Column(nullable = false)
     private String status = GlobalAppStatus.PENDING.name();
 
+    @Column(nullable = false)
     private Date joinDate;
 
+    @Column(nullable = false)
     private Date invitationDate = new Date();
 
     private Integer xPosition;
     private Integer yPosition;
 
+    @Column(nullable = false)
     private Boolean admin = false;
 
+    @Column(nullable = false)
+    private Boolean teamCaptain;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private TeamEntity team;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity users;
 
     @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -130,6 +137,14 @@ public class TeamMemberEntity
 
     public void setSppotiMembers(Set<SppotiMember> sppotiMembers) {
         this.sppotiMembers = sppotiMembers;
+    }
+
+    public Boolean getTeamCaptain() {
+        return teamCaptain;
+    }
+
+    public void setTeamCaptain(Boolean teamCaptain) {
+        this.teamCaptain = teamCaptain;
     }
 }
 

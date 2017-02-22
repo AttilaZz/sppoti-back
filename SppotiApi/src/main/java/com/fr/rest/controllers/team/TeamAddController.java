@@ -2,13 +2,17 @@ package com.fr.rest.controllers.team;
 
 import com.fr.commons.dto.TeamRequestDTO;
 import com.fr.commons.dto.TeamResponseDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.rest.service.TeamControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,8 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/team")
 public class TeamAddController {
-
-    private static final String ATT_USER_ID = "USER_ID";
 
     private TeamControllerService teamControllerService;
     private Logger LOGGER = Logger.getLogger(TeamAddController.class);
@@ -33,21 +35,13 @@ public class TeamAddController {
     /**
      * This service create team
      *
-     * @param team
-     * @param request
+     * @param team           team to add.
+     * @param authentication auth object.
      * @return Created team data
      */
     @PostMapping
-    public ResponseEntity<TeamResponseDTO> createTeam(@RequestBody TeamRequestDTO team, HttpServletRequest request) {
+    public ResponseEntity<TeamResponseDTO> createTeam(@RequestBody TeamRequestDTO team, Authentication authentication) {
 
-//        if (team.getCoverPath() == null || team.getCoverPath().isEmpty()) {
-//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequestDTO (cover path) not found");
-//
-//        }
-//        if (team.getLogoPath() == null || team.getLogoPath().isEmpty()) {
-//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Host-TeamRequestDTO (logo path) not found");
-//
-//        }
         if (team.getName() == null || team.getName().isEmpty()) {
             LOGGER.error("TeamEntity (name) not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -58,41 +52,39 @@ public class TeamAddController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        if(team.getSportId() == null){
+        if (team.getSportId() == null) {
             LOGGER.error("TeamEntity (sport id) not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Long teamCreator = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
         TeamResponseDTO teamResponseDTO;
         try {
-
-            teamResponseDTO = teamControllerService.saveTeam(team, teamCreator);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("Problème de création de la team: " + e);
+            teamResponseDTO = teamControllerService.saveTeam(team, accountUserDetails.getId());
+        } catch (EntityNotFoundException e) {
+            LOGGER.error("Spport not found in the request: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
         }
 
         return new ResponseEntity<>(teamResponseDTO, HttpStatus.CREATED);
     }
 
     /**
-     * This method update general team informations,
-     * Title, Logos, Cover
+     * Add member for a given team - only admin can add a memeber to his team.
      *
-     * @param id
-     * @param teamRequestDTO
-     * @return The updated team
+     * @return 201 status if memeber has been added.
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<TeamResponseDTO> updateTeam(@PathVariable int id, @RequestBody TeamRequestDTO teamRequestDTO) {
+    @PostMapping
+    public ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody UserDTO user) {
 
+        if (user.getId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        UserDTO savedTeamMember = teamControllerService.addMember(teamId, user);
+
+        LOGGER.info("Team member has been added ! " + savedTeamMember);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
 }

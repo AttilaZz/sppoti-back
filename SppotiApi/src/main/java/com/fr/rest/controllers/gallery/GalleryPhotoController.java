@@ -1,4 +1,4 @@
-package com.fr.rest.controllers.post;
+package com.fr.rest.controllers.gallery;
 
 import com.fr.commons.dto.PostResponseDTO;
 import com.fr.commons.dto.UserDTO;
@@ -22,8 +22,8 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/gallery")
-public class GalleryController {
+@RequestMapping("/gallery/photo")
+public class GalleryPhotoController {
 
     private PostControllerService postControllerService;
 
@@ -32,38 +32,24 @@ public class GalleryController {
         this.postControllerService = postControllerService;
     }
 
+    private Logger LOGGER = Logger.getLogger(GalleryPhotoController.class);
+
     private static final String ATT_USER_ID = "USER_ID";
 
     /**
-     * @param page page number.
+     * @param page    page number.
      * @param request http request object.
      * @return List of all photos posted by a user.
      */
-    @GetMapping(value = "/photo/{page}")
+    @GetMapping(value = "/{page}")
     public ResponseEntity<List<PostResponseDTO>> photoGallery(@PathVariable int page, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
-        List<PostResponseDTO> lpost = postControllerService.getPhotoGallery(userId, page);
+        List<PostResponseDTO> photoGallery = postControllerService.getPhotoGallery(userId, page);
 
-        return new ResponseEntity<>(lpost, HttpStatus.OK);
-
-    }
-
-    /**
-     *
-     * @param page page number.
-     * @param request http request object.
-     * @return all videos posted by user.
-     */
-    @GetMapping(value = "/video/{page}")
-    public ResponseEntity<List<PostResponseDTO>> videoGallery(@PathVariable int page, HttpServletRequest request) {
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-
-        List<PostResponseDTO> lpost = postControllerService.getVideoGallery(userId, page);
-
-        return new ResponseEntity<>(lpost, HttpStatus.OK);
+        LOGGER.info("Photos gallery has been returned: " + photoGallery);
+        return new ResponseEntity<>(photoGallery, HttpStatus.OK);
 
     }
 

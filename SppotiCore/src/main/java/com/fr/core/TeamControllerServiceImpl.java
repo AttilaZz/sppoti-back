@@ -10,6 +10,7 @@ import com.fr.entities.UserEntity;
 import com.fr.exceptions.MemberNotInAdminTeamException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
+import com.fr.repositories.TeamMembersRepository;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -298,6 +299,30 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         return myTeams.stream()
                 .map(t -> fillTeamResponse(t.getTeam(), null))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public TeamResponseDTO updateTeam(int teamId, TeamRequestDTO teamRequestDTO) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateTeamCaptain(int teamId, int memberId) {
+
+//        List<TeamMemberEntity> teamMemberEntityList = teamMembersRepository.findByTeamUuid(teamId);
+//
+//        teamMemberEntityList.stream()
+//                .map(
+//                        t ->
+//
+//                )
+
     }
 
     /**

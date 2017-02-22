@@ -35,8 +35,8 @@ public class TeamGetController {
     /**
      * Get team data from an id
      *
-     * @param teamId
-     * @return target team
+     * @param teamId team id.
+     * @return target team.
      */
     @GetMapping("/{teamId}")
     public ResponseEntity<TeamResponseDTO> getTeamById(@PathVariable int teamId) {
@@ -55,9 +55,9 @@ public class TeamGetController {
     }
 
     /**
-     * @param userId
-     * @param page
-     * @return All teams for a giver user Id
+     * @param userId user id.
+     * @param page page number.
+     * @return All teams for a giver user Id.
      */
     @GetMapping("/all/{userId}/{page}")
     public ResponseEntity getAllTeams(@PathVariable int userId, @PathVariable int page) {

@@ -1,4 +1,5 @@
 package com.fr.rest.controllers.gallery;
+
 import com.fr.commons.dto.PostResponseDTO;
 import com.fr.entities.UserEntity;
 import com.fr.rest.service.CommentControllerService;
@@ -14,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
 /**
  * Created by wdjenane on 22/02/2017.
  */
 @RestController
-@RequestMapping("/gallery")
-public class GalleryVideoController
-{
+@RequestMapping("/gallery/video")
+public class GalleryVideoController {
     private PostControllerService postControllerService;
 
     @Autowired
@@ -32,21 +33,21 @@ public class GalleryVideoController
 
     private static final String ATT_USER_ID = "USER_ID";
 
-    @GetMapping(value = "/video/{page}")
+
+    /**
+     * @param page    page number.
+     * @param request http request object.
+     * @return all videos posted by user.
+     */
+    @GetMapping(value = "/{page}")
     public ResponseEntity<List<PostResponseDTO>> videoGallery(@PathVariable int page, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        UserEntity user = postControllerService.getUserById(userId);
 
-        List<PostResponseDTO> lpost = postControllerService.getVideoGallery(userId, page);
+        List<PostResponseDTO> videoGallery = postControllerService.getVideoGallery(userId, page);
 
-        if (lpost.size() == 0) {
-            LOGGER.info("VIDEO_GALLERY: Empty !!");
-            return new ResponseEntity<>(lpost, HttpStatus.NO_CONTENT);
-        }
-
-        LOGGER.info("VIDEO_GALLERY: has been returned to user:  " + user.getFirstName() + " " + user.getLastName());
-        return new ResponseEntity<>(lpost, HttpStatus.OK);
+        LOGGER.info("Video gallery has been returned: " + videoGallery);
+        return new ResponseEntity<>(videoGallery, HttpStatus.OK);
 
     }
 }
