@@ -11,17 +11,16 @@ import com.fr.exceptions.MemberNotInAdminTeamException;
 import com.fr.exceptions.NotTeamAdminException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
-import com.fr.repositories.TeamMembersRepository;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +30,7 @@ import static utils.EntitytoDtoTransformer.getUserCoverAndAvatar;
 /**
  * Created by djenanewail on 1/22/17.
  */
+
 @Component
 public class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements TeamControllerService {
 
@@ -313,6 +313,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void updateTeamCaptain(int teamId, int memberId, int connectedUserId) {
 
@@ -323,7 +324,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         List<TeamMemberEntity> teamMemberEntity = teamMembersRepository.findByTeamUuid(teamId);
 
         teamMemberEntity.forEach(t -> {
-            if (t.getUuid() == memberId) {
+            if (t.getUuid() == memberId || t.getUsers().getUuid() == memberId) {
                 t.setTeamCaptain(true);
             } else {
                 t.setTeamCaptain(false);
