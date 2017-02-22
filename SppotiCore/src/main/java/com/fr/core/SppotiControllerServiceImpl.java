@@ -77,7 +77,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             }
             hostTeam = tempTeams.get(0);
 
-            final TeamEntity sppoterTeam = hostTeam;
             //Convert team members to sppoters.
             Set<SppotiMember> sppotiMembers = hostTeam.getTeamMembers().stream()
                     .map(
@@ -274,6 +273,18 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                 throw new EntityNotFoundException("TeamEntity id not found: " + sppotiRequest.getVsTeam());
             }
 
+            //Convert team members to sppoters.
+            Set<SppotiMember> sppotiMembers = adverseTeam.get(0).getTeamMembers().stream()
+                    .map(
+                            sm -> {
+                                SppotiMember sppotiMember = new SppotiMember();
+                                sppotiMember.setTeamMember(sm);
+                                sppotiMember.setSppoti(sppoti);
+                                return sppotiMember;
+                            }
+
+                    ).collect(Collectors.toSet());
+            sppoti.setSppotiMembers(sppotiMembers);
             sppoti.setTeamAdverse(adverseTeam.get(0));
         }
 

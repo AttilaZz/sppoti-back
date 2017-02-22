@@ -37,16 +37,9 @@ public class SppotiGetController {
     @GetMapping("/{id}")
     public ResponseEntity<SppotiResponseDTO> getSppotiById(@PathVariable Integer id) {
 
-        SppotiResponseDTO response;
+        SppotiResponseDTO response = sppotiControllerService.getSppotiByUuid(id);
 
-        try {
-            response = sppotiControllerService.getSppotiByUuid(id);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            LOGGER.error("SppotiEntity not found: " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+        LOGGER.info("Sppoti has been returned: " + response);
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -37,33 +38,18 @@ public class PostController {
     private static final String ATT_USER_ID = "USER_ID";
 
     /**
-     * @param id
-     * @param request
-     * @return all post details
+     * @param postId  post postId.
+     * @param request request object.
+     * @return all post details.
      */
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<PostResponseDTO> detailsPost(@PathVariable int id, HttpServletRequest request) {
-
-        PostEntity mPost = postDataService.findPost(id);
+    @GetMapping(value = "/{postId}")
+    public ResponseEntity<PostResponseDTO> detailsPost(@PathVariable int postId, HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        UserEntity user = postDataService.getUserById(userId);
 
-        if (mPost == null || user == null) {
 
-            if (mPost == null) {
-                // post not fount
-                LOGGER.info("DETAILS_POST: Failed to retreive the post");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else {
-                LOGGER.info("DETAILS_POST: Failed to retreive user session");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-        }
-
-        PostResponseDTO prep = postDataService.fillPostToSend(mPost, userId);
-        LOGGER.info("DETAILS_POST: PostEntity details has been returned for postId: " + id);
+        PostResponseDTO prep = postDataService.fillPostToSend(postId, userId);
+        LOGGER.info("DETAILS_POST: PostEntity details has been returned for postId: " + postId);
         return new ResponseEntity<>(prep, HttpStatus.OK);
 
     }
@@ -80,7 +66,7 @@ public class PostController {
         UserEntity requestUser = postDataService.getUserByUuId(user_unique_id);
 
         if (requestUser == null) {
-            LOGGER.error("GET-ALL-POSTS: UserDTO id is invalid");
+            LOGGER.error("GET-ALL-POSTS: UserDTO postId is invalid");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -94,7 +80,7 @@ public class PostController {
             posts = postDataService.findAllPosts(requestUser.getId(), user_unique_id, visibility, page);
         } else {
             //get unknown user posts - visibility: 0
-            List visibility = Arrays.asList(0);
+            List visibility = Collections.singletonList(0);
             posts = postDataService.findAllPosts(requestUser.getId(), user_unique_id, visibility, page);
         }
 
@@ -102,18 +88,12 @@ public class PostController {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
-        if (posts != null && posts.isEmpty()) {
-            LOGGER.warn("GET-ALL-POSTS: No content found !");
+        if (posts == null || posts.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
         }
 
         List<PostResponseDTO> postResponseDTOs = new ArrayList<>();
-
-        for (PostEntity post : posts) {
-//            PostResponseDTO postResponse = new PostResponseDTO(post);
-            postResponseDTOs.add(postDataService.fillPostToSend(post, userId));
-        }
+        posts.forEach(t -> postResponseDTOs.add(postDataService.fillPostToSend(t.getUuid(), userId)));
 
 //        PostResponseDTO prep = postDataService.fillPostToSend(postResponseDTOs, userId);
         LOGGER.info("ALL_POST: All post have been returned");
@@ -122,12 +102,12 @@ public class PostController {
     }
 
     /**
-     * @param postId
-     * @param newData
-     * @return Update post data
+     * @param postId  post postId.
+     * @param newData data to update.
+     * @return Update post data.
      */
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("id") int postId,
+    @PutMapping(value = "/{postId}")
+    public ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("postId") int postId,
                                                                @RequestBody ContentEditedResponseDTO newData) {
 
         PostEntity postToEdit = postDataService.findPost(postId);
@@ -182,7 +162,7 @@ public class PostController {
                 }
 
             } else {
-                LOGGER.info("POST_UPDATE: Failed to retreive the SportModelDTO to update");
+                LOGGER.info("POST_UPDATE: Failed to retrieve the SportModelDTO to update");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {
@@ -211,75 +191,55 @@ public class PostController {
     }
 
     /**
-     * @param id
-     * @return Delete post
+     * @param postId post postId.
+     * @return 200 status if post deleted.
      */
-    @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable int id) {
-        PostEntity postToDelete = postDataService.findPost(id);
+    @DeleteMapping(value = "/{postId}")
+    public ResponseEntity<Void> deletePost(@PathVariable int postId) {
 
-        if (postToDelete == null) {
-            // post not fount
-            LOGGER.info("POST_DELETE: Failed to retreive the post");
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        try {
+            postDataService.deletePost(postId);
 
+        } catch (EntityNotFoundException e) {
+            LOGGER.error("POST_DELETE: can't retrieve post", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        if (postDataService.deletePost(postToDelete)) {
-            // delete success
-            LOGGER.info("POST_DELETE: PostEntity with id: " + id + "-- has been deleted");
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-
-        // database problem
-        LOGGER.error("POST_DELETE: can't delete post!!");
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
-     * @param id
-     * @param page
-     * @return List of post history edition
+     * @param postId post id.
+     * @param page   page number.
+     * @return List of post history edition.
      */
-    @GetMapping(value = "/history/{id}/{page}")
-    public ResponseEntity<List<ContentEditedResponseDTO>> editHistory(@PathVariable int id, @PathVariable int page) {
+    @GetMapping(value = "/history/{postId}/{page}")
+    public ResponseEntity<List<ContentEditedResponseDTO>> getPostHistory(@PathVariable int postId, @PathVariable int page) {
 
-        PostEntity postToLike = postDataService.findPost(id);
+        List<ContentEditedResponseDTO> contentEditedResponseDTOs = postDataService.getAllPostHistory(postId, page);
 
-        if (postToLike == null) {
-
-            // post not fount
-            LOGGER.info("POST_EDIT_HISTORY: Failed to retreive the post");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        }
-
-        LOGGER.info("POST_EDIT_HISTORY: PostEntity HISTORY has been returned for postId: " + id);
-        return new ResponseEntity<>(postDataService.getAllPostHistory(id, page), HttpStatus.OK);
+        LOGGER.info("POST_EDIT_HISTORY: PostEntity HISTORY has been returned for postId: " + postId);
+        return new ResponseEntity<>(contentEditedResponseDTOs, HttpStatus.OK);
 
     }
 
-    @PutMapping(value = "/{id}/{visibility}")
+    /**
+     * @param id         post id.
+     * @param visibility post visibility.
+     * @return 202 status if visibility has been edited.
+     */
+    @PutMapping(value = "/{postId}/{visibility}")
     public ResponseEntity<Void> editVisibility(@PathVariable int id, @PathVariable int visibility) {
 
-        PostEntity postToEdit = postDataService.findPost(id);
-
-        if (postToEdit == null) {
-
-            // post not fount
-            LOGGER.info("POST_EDIT_VISIBILITY: Failed to retreive the post");
+        try {
+            postDataService.editPostVisibility(id, visibility);
+        } catch (EntityNotFoundException e) {
+            LOGGER.info("POST_EDIT_VISIBILITY: Can't update visibility!!", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        }
-
-        if (!postDataService.editPostVisibility(id, visibility)) {
-            LOGGER.info("POST_EDIT_VISIBILITY: Can't update visibility!!");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
         }
 
         LOGGER.info("POST_EDIT_VISIBILITY: PostEntity VISIBILITY has been changed for postId: " + id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
     }
 }

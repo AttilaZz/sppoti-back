@@ -2,6 +2,7 @@ package com.fr.rest.controllers.sppoti;
 
 import com.fr.commons.dto.SppotiRequestDTO;
 import com.fr.commons.dto.SppotiResponseDTO;
+import com.fr.exceptions.NoRightToAcceptOrRefuseChallenge;
 import com.fr.rest.service.SppotiControllerService;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
@@ -76,8 +77,8 @@ public class SppotiUpdateController {
                 throw new IllegalArgumentException("Update not acceptable");
             }
 
-        } catch (RuntimeException e) {
-            LOGGER.error("Update not acceptable due to an illegal argument or database problem: \n " + e);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("Update not acceptable due to an illegal argument or database problem: \n ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -102,8 +103,8 @@ public class SppotiUpdateController {
         SppotiResponseDTO sppotiResponseDTO;
         try {
             sppotiResponseDTO = sppotiControllerService.updateTeamAdverseChallengeStatus(sppotiId, adverseTeamResponseStatus);
-        } catch (RuntimeException e) {
-            LOGGER.error("Could not update team adverse status, sppoti id: " + sppotiId, e);
+        } catch (NoRightToAcceptOrRefuseChallenge e) {
+            LOGGER.error("User must be the admin to update status, sppoti id: " + sppotiId, e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

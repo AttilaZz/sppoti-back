@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import utils.EntitytoDtoTransformer;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
             addNotification(NotificationType.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(), getUserByUuId(postEntity.getTargetUserProfileUuid()));
 
-            if(post.getContent() != null){
+            if (post.getContent() != null) {
                 addTagNotification(postEntity, null);
             }
 
@@ -99,16 +100,15 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      */
     @Transactional
     @Override
-    public boolean deletePost(PostEntity p) {
+    public void deletePost(int postId) {
 
-        try {
-            p.setDeleted(true);
-            postRepository.save(p);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+        List<PostEntity> postEntity = postRepository.getByUuid(postId);
+
+        if (postEntity.isEmpty()) {
+            throw new EntityNotFoundException("Post (" + postId + ") not found");
         }
+
+        postRepository.delete(postEntity.get(0));
 
     }
 
@@ -167,13 +167,18 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public PostResponseDTO fillPostToSend(PostEntity post, Long userId) {
+    public PostResponseDTO fillPostToSend(int postId, Long userId) {
 
-        return fillPostResponseFromDbPost(0, userId, 3, post).get(0);
+        List<PostEntity> posts = postRepository.getByUuid(postId);
+        if (posts.isEmpty()) {
+            throw new EntityNotFoundException("Post id (" + postId + ") introuvable.");
+        }
+
+        return fillPostResponseFromDbPost(0, userId, 3, posts.get(0)).get(0);
 
     }
 
-    private List<PostResponseDTO> fillPostResponseFromDbPost(int page, Long userId, int operationType, PostEntity post_param) {
+    private List<PostResponseDTO> fillPostResponseFromDbPost(int page, Long userId, int operationType, PostEntity postEntity) {
 
         Pageable pageable = new PageRequest(page, postSize);
 
@@ -192,7 +197,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                 break;
             case 3:
 
-                dbContent.add(post_param);
+                dbContent.add(postEntity);
 
                 break;
             default:
@@ -389,8 +394,8 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public SportEntity getSportById(Long sport_id) {
-        return sportRepository.getOne(sport_id);
+    public SportEntity getSportById(Long sportId) {
+        return sportRepository.getOne(sportId);
     }
 
     /**
@@ -398,21 +403,19 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      */
     @Transactional
     @Override
-    public boolean editPostVisibility(int id, int visibility) {
+    public void editPostVisibility(int id, int visibility) {
 
         List<PostEntity> posts = postRepository.getByUuidOrderByDatetimeCreatedDesc(id, null);
 
-        if (posts == null) return false;
+        if (posts.isEmpty()) {
+            throw new EntityNotFoundException("Post Not found");
+        }
 
         PostEntity post = posts.get(0);
         post.setVisibility(visibility);
 
-        try {
-            postRepository.save(post);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        postRepository.save(post);
+
     }
 
     /**
@@ -430,7 +433,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
      * {@inheritDoc}
      */
     @Override
-    public boolean isTargetUserFriendOfMe(int connected_user_uuid, int friend_id) {
-        return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friend_id, connected_user_uuid) != null;
+    public boolean isTargetUserFriendOfMe(int connectedUserUuid, int friendId) {
+        return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friendId, connectedUserUuid) != null;
     }
 }

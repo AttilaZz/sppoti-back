@@ -17,8 +17,8 @@ import java.util.SortedSet;
 public interface PostControllerService extends AbstractControllerService {
 
     /**
-     * @param post
-     * @return saved post
+     * @param post post content to save.
+     * @return saved post.
      */
     PostEntity savePost(PostEntity post);
 
@@ -31,97 +31,95 @@ public interface PostControllerService extends AbstractControllerService {
      */
 
     /**
-     * @param postEditRow
-     * @param postEditAddress
-     * @param postId
-     * @return true if post has been edited, false otherwise
+     * @param postEditRow last edited post.
+     * @param postEditAddress post address.
+     * @param postId post id.
+     * @return true if post has been edited, false otherwise.
      */
     boolean updatePost(EditHistoryEntity postEditRow, SortedSet<AddressEntity> postEditAddress, int postId);
 
     /**
-     * @param p
-     * @return true if post has been deleted, false otherwise
+     * @param postId post id.
      */
-    boolean deletePost(PostEntity p);
+    void deletePost(int postId);
 
     /**
-     * @param id
-     * @return post
+     * @param id post id.
+     * @return post.
      */
     PostEntity findPost(int id);
 
     /**
-     * @param id
-     * @return sport
+     * @param id sport id.
+     * @return sport.
      */
     SportEntity getSportToUse(Long id);
 
     /**
-     * @param id
-     * @return SppotiEntity
+     * @param id sppoti id.
+     * @return SppotiEntity.
      */
     SppotiEntity getSppotiById(Long id);
 
     /**
-     * @param userId
-     * @param buttomMarker
-     * @return all posted photos
+     * @param userId user id.
+     * @param page page number.
+     * @return all posted photos.
      */
-    List<PostResponseDTO> getPhotoGallery(Long userId, int buttomMarker);
+    List<PostResponseDTO> getPhotoGallery(Long userId, int page);
 
     /**
-     * @param userId
-     * @param buttomMarker
-     * @return all posted videos
+     * @param userId user id.
+     * @param page page number.
+     * @return all posted videos.
      */
-    List<PostResponseDTO> getVideoGallery(Long userId, int buttomMarker);
+    List<PostResponseDTO> getVideoGallery(Long userId, int page);
 
     /**
-     * @param post
-     * @param userId
-     * @return prepare post to be sent via service
+     * @param postId post id.
+     * @param userId user id.
+     * @return prepare post to be sent via service.
      */
-    PostResponseDTO fillPostToSend(PostEntity post, Long userId);
+    PostResponseDTO fillPostToSend(int postId, Long userId);
 
     /**
-     * @param id
-     * @param page
-     * @return list of all edited content
+     * @param id post id.
+     * @param page page number.
+     * @return list of all edited posts.
      */
     List<ContentEditedResponseDTO> getAllPostHistory(int id, int page);
 
     /**
-     * @param postId
-     * @return las modification
+     * @param postId post id.
+     * @return last modification.
      */
     List<EditHistoryEntity> getLastModification(int postId);
 
     /**
-     * @param sport_id
-     * @return sport
+     * @param sportId sport id.
+     * @return sport.
      */
-    SportEntity getSportById(Long sport_id);
+    SportEntity getSportById(Long sportId);
 
     /**
-     * @param id
-     * @param visibility
-     * @return true if visibility has been edited, false otherwise
+     * @param id post id.
+     * @param visibility visibility type.
      */
-    boolean editPostVisibility(int id, int visibility);
+    void editPostVisibility(int id, int visibility);
 
     /**
-     * @param userLongId
-     * @param userIntId
-     * @param visibility
-     * @param page
+     * @param userLongId user technical id.
+     * @param userIntId user unique id.
+     * @param visibility visibility type.
+     * @param page page number.
      * @return all user posts
      */
     List<PostEntity> findAllPosts(Long userLongId, int userIntId, List visibility, int page);
 
     /**
-     * @param connected_user_uuid
-     * @param friend_id
+     * @param connectedUserUuid user uuid.
+     * @param friendId friend id.
      * @return true if target user is friend, false otherwise
      */
-    boolean isTargetUserFriendOfMe(int connected_user_uuid, int friend_id);
+    boolean isTargetUserFriendOfMe(int connectedUserUuid, int friendId);
 }
