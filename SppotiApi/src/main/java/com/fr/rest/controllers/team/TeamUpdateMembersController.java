@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping("/team/{teamId}/members")
+@RequestMapping("/team/{teamId}/member")
 public class TeamUpdateMembersController {
 
     private TeamControllerService teamControllerService;
@@ -38,36 +38,36 @@ public class TeamUpdateMembersController {
      * @return The updated member information.
      */
     @PutMapping("/{memberId}")
-    public ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamRequestDTO request) {
+    public ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamRequestDTO teamDto) {
 
         boolean canUpdate = false;
 
-        if (request.getStatus() != null && !request.getStatus().equals(0)) {
+        if (teamDto.getStatus() != null && !teamDto.getStatus().equals(0)) {
             for (GlobalAppStatus status : GlobalAppStatus.values()) {
-                if (status.getValue() == request.getStatus()) {
+                if (status.getValue() == teamDto.getStatus()) {
                     canUpdate = true;
                 }
             }
         }
 
-        if (request.getxPosition() != null && request.getyPosition() != null) {
+        if (teamDto.getxPosition() != null && teamDto.getyPosition() != null) {
             canUpdate = true;
         }
 
         if (!canUpdate) {
-            LOGGER.error("Nothing to update, check your json request ! \n " + request.toString());
+            LOGGER.error("Nothing to update, check your json teamDto ! \n " + teamDto);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         try {
-            teamControllerService.updateTeamMembers(request, memberId, teamId);
+            teamControllerService.updateTeamMembers(teamDto, memberId, teamId);
 
         } catch (RuntimeException e) {
-            LOGGER.error("Problem updating team member: " + e.getMessage());
+            LOGGER.error("Problem updating team member: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        LOGGER.info("TeamEntity member data updated ! \n " + request.toString());
+        LOGGER.info("TeamEntity member data updated ! \n " + teamDto.toString());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
     }
@@ -84,14 +84,9 @@ public class TeamUpdateMembersController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        try {
+        UserDTO savedTeamMember = teamControllerService.addMember(teamId, user);
 
-            teamControllerService.addMember(teamId, user);
-
-        } catch (RuntimeException e) {
-            LOGGER.error("Error adding user: " + e.getMessage() + "\n Member Id:" + user.getId());
-        }
-
+        LOGGER.info("Team member has been added ! " + savedTeamMember);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -105,16 +100,9 @@ public class TeamUpdateMembersController {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
-        try {
+        teamControllerService.deleteMemberFromTeam(teamId, memberId, accountUserDetails.getUuid());
 
-            teamControllerService.deleteMemberFromTeam(teamId, memberId, accountUserDetails.getUuid());
-
-        } catch (RuntimeException e) {
-
-            LOGGER.error("Error deleting member: " + e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+        LOGGER.info("Team member has been deleted : " + memberId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
