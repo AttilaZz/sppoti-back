@@ -11,106 +11,102 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * Created by: Wail DJENANE on May 22, 2016
  */
-@Entity
-@Table(name = "SPORT")
-@JsonInclude(Include.NON_EMPTY)
-public class SportEntity
+@Entity @Table(name = "SPORT") @JsonInclude(Include.NON_EMPTY) public class SportEntity
+        extends AbstractCommonEntity
 {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false) private String name;
     private String description;
     private String icon;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "relatedSports")
-    @JsonIgnore
-    private Set<UserEntity> subscribedUsers;
+    @JsonIgnore private Set<UserEntity> subscribedUsers;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport")
-    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport") @JsonIgnore
     private Set<PostEntity> post;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport")
-    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport") @JsonIgnore
     private Set<SppotiEntity> game;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport")
-    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "sport") @JsonIgnore
     private Set<EditHistoryEntity> editList;
 
-    public SportEntity() {
+    public SportEntity()
+    {
     }
 
-    public SportEntity(String name) {
+    public SportEntity(String name)
+    {
         super();
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
 
-    public String getIcon() {
+    public String getIcon()
+    {
         return icon;
     }
 
-    public Set<PostEntity> getPost() {
+    public Set<PostEntity> getPost()
+    {
         return post;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description)
+    {
         this.description = description;
     }
 
-    public void setIcon(String icon) {
+    public void setIcon(String icon)
+    {
         this.icon = icon;
     }
 
-    public void setPost(Set<PostEntity> post) {
+    public void setPost(Set<PostEntity> post)
+    {
         this.post = post;
     }
 
-    public Set<UserEntity> getSubscribedUsers() {
+    public Set<UserEntity> getSubscribedUsers()
+    {
         return subscribedUsers;
     }
 
-    public void setSubscribedUsers(Set<UserEntity> subscribedUsers) {
+    public void setSubscribedUsers(Set<UserEntity> subscribedUsers)
+    {
         this.subscribedUsers = subscribedUsers;
     }
 
-    public Set<SppotiEntity> getGame() {
+    public Set<SppotiEntity> getGame()
+    {
         return game;
     }
 
-    public void setGame(Set<SppotiEntity> game) {
+    public void setGame(Set<SppotiEntity> game)
+    {
         this.game = game;
     }
 
-    public Set<EditHistoryEntity> getEditList() {
+    public Set<EditHistoryEntity> getEditList()
+    {
         return editList;
     }
 
-    public void setEditList(Set<EditHistoryEntity> editList) {
+    public void setEditList(Set<EditHistoryEntity> editList)
+    {
         this.editList = editList;
     }
 

@@ -13,56 +13,60 @@ import javax.persistence.TemporalType;
 /**
  * Created by: Wail DJENANE on Aug 16, 2016
  */
-@Entity
-@Table(name = "PERSISTENT_LOGINS")
-public class PersistentLogin implements Serializable {
+@Entity @Table(name = "PERSISTENT_LOGINS") public class PersistentLogin
+        implements Serializable
+{
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    @Id
-    private String series;
+    @Id private String series;
 
-    @Column(name = "USERNAME", unique = true, nullable = false)
-    private String username;
+    @Column(name = "USERNAME", unique = true, nullable = false) private String username;
 
-    @Column(name = "TOKEN", unique = true, nullable = false)
-    private String token;
+    @Column(name = "TOKEN", unique = true, nullable = false) private String token;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date last_used;
+    @Temporal(TemporalType.TIMESTAMP) private Date last_used;
 
-    public String getSeries() {
+    public String getSeries()
+    {
         return series;
     }
 
-    public void setSeries(String series) {
+    public void setSeries(String series)
+    {
         this.series = series;
     }
 
-    public String getUsername() {
+    public String getUsername()
+    {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(String username)
+    {
         this.username = username;
     }
 
-    public String getToken() {
+    public String getToken()
+    {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setToken(String token)
+    {
         this.token = token;
     }
 
-    public Date getLast_used() {
+    public Date getLast_used()
+    {
         return last_used;
     }
 
-    public void setLast_used(Date last_used) {
+    public void setLast_used(Date last_used)
+    {
         this.last_used = last_used;
     }
 

@@ -31,7 +31,7 @@ public class SppotiUtils
     }
 
     /**
-     * Crée un Long aléatoire.
+     * Create a random long value.
      *
      * @param scale nombre de chiffre
      * @return un Long random
@@ -42,7 +42,7 @@ public class SppotiUtils
     }
 
     /**
-     * Crée un String aléatoire.
+     * Create a random string value.
      *
      * @param size nombre de caractère
      * @return un String random
@@ -50,5 +50,16 @@ public class SppotiUtils
     public static String randomString(final int size)
     {
         return RandomStringUtils.randomAlphanumeric(size);
+    }
+
+    /**
+     * Create a random string value.
+     *
+     * @param size nombre de caractère.
+     * @return un String random.
+     */
+    public static Integer randomInteger(final int size)
+    {
+        return randomString(size).hashCode();
     }
 }

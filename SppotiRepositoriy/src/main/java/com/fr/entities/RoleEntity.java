@@ -16,58 +16,43 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-@Entity
-@Table(name = "ROLES")
-@JsonInclude(Include.NON_EMPTY)
-public class RoleEntity
+@Entity @Table(name = "ROLES") @JsonInclude(Include.NON_EMPTY) public class RoleEntity
+        extends AbstractCommonEntity
 {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "name", nullable = false) private String name;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles", cascade = CascadeType.ALL)
+    @JsonIgnore @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles", cascade = CascadeType.ALL)
     private Set<UserEntity> users;
 
-    public RoleEntity() {
+    public RoleEntity()
+    {
         super();
     }
 
-    public RoleEntity(String name) {
+    public RoleEntity(String name)
+    {
         super();
         this.name = name;
     }
 
-    public RoleEntity(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public Set<UserEntity> getUsers() {
+    public Set<UserEntity> getUsers()
+    {
         return users;
     }
 
-    public void setUsers(Set<UserEntity> users) {
+    public void setUsers(Set<UserEntity> users)
+    {
         this.users = users;
     }
 }

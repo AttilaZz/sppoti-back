@@ -13,15 +13,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "ADDRESS")
 public class AddressEntity
+        extends AbstractCommonEntity
         implements Comparable<AddressEntity> {
-
-    @Id
-    @GeneratedValue
-    @JsonIgnore
-    private Long id;
-
-    @Column(unique = true)
-    private int uuid = UUID.randomUUID().hashCode();
 
     private String address;
     private String dateTime = new DateTime().toString();
@@ -65,22 +58,6 @@ public class AddressEntity
 
     public void setPost(PostEntity post) {
         this.post = post;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(int uuid) {
-        this.uuid = uuid;
     }
 
     public UserEntity getUsers() {

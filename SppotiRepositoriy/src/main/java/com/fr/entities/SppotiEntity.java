@@ -13,195 +13,180 @@ import java.util.UUID;
 /**
  * Created by: Wail DJENANE On May 22, 2016
  */
-@Entity
-@Table(name = "SPPOTI")
-@JsonInclude(Include.NON_EMPTY)
-public class SppotiEntity
+@Entity @Table(name = "SPPOTI") @JsonInclude(Include.NON_EMPTY) public class SppotiEntity
+        extends AbstractCommonEntity
 {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+    @Column(nullable = false) private String titre;
 
-    @Column(unique = true)
-    private Integer uuid = UUID.randomUUID().hashCode();
+    @Column(nullable = false) private String description;
 
-    @Column(nullable = false)
-    private String titre;
+    @Column(nullable = false) private Date datetimeCreated = new Date();
 
-    @Column(nullable = false)
-    private String description;
+    @Column(nullable = false) private Date dateTimeStart;
 
-    @Column(nullable = false)
-    private Date datetimeCreated = new Date();
+    @Column(nullable = false) private String location;
 
-    @Column(nullable = false)
-    private Date dateTimeStart;
+    @Column(nullable = false) private int maxMembersCount;
 
-    @Column(nullable = false)
-    private String location;
+    @Column private String tags;
 
-    @Column(nullable = false)
-    private int maxMembersCount;
-
-    @Column
-    private String tags;
-
-    @Column
-    private boolean deleted = false;
+    @Column private boolean deleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "sport_id", nullable = false)
-    @JsonIgnore
-    private SportEntity sport;
+    @JoinColumn(name = "sport_id", nullable = false) @JsonIgnore private SportEntity sport;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
-    private UserEntity userSppoti;
+    @JoinColumn(name = "user_id", nullable = false) @JsonIgnore private UserEntity userSppoti;
 
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_host_id", nullable = false)
-    @JsonIgnore
-    private TeamEntity teamHost;
+    @JoinColumn(name = "team_host_id", nullable = false) @JsonIgnore private TeamEntity teamHost;
 
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_adverse_id")
-    @JsonIgnore
-    private TeamEntity teamAdverse;
+    @JoinColumn(name = "team_adverse_id") @JsonIgnore private TeamEntity teamAdverse;
 
-    @Column(nullable = false)
-    private String teamAdverseStatus = GlobalAppStatus.PENDING.name();
+    @Column(nullable = false) private String teamAdverseStatus = GlobalAppStatus.PENDING.name();
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMember> sppotiMembers;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getDatetimeCreated() {
+    public Date getDatetimeCreated()
+    {
         return datetimeCreated;
     }
 
-    public void setDatetimeCreated(Date datetimeCreated) {
+    public void setDatetimeCreated(Date datetimeCreated)
+    {
         this.datetimeCreated = datetimeCreated;
     }
 
-    public String getLocation() {
+    public String getLocation()
+    {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(String location)
+    {
         this.location = location;
     }
 
-    public SportEntity getSport() {
+    public SportEntity getSport()
+    {
         return sport;
     }
 
-    public void setSport(SportEntity sport) {
+    public void setSport(SportEntity sport)
+    {
         this.sport = sport;
     }
 
-    public UserEntity getUserSppoti() {
+    public UserEntity getUserSppoti()
+    {
         return userSppoti;
     }
 
-    public void setUserSppoti(UserEntity userSppoti) {
+    public void setUserSppoti(UserEntity userSppoti)
+    {
         this.userSppoti = userSppoti;
     }
 
-    public String getTitre() {
+    public String getTitre()
+    {
         return titre;
     }
 
-    public void setTitre(String titre) {
+    public void setTitre(String titre)
+    {
         this.titre = titre;
     }
 
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description)
+    {
         this.description = description;
     }
 
-    public Integer getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(Integer uuid) {
-        this.uuid = uuid;
-    }
-
-    public int getMaxMembersCount() {
+    public int getMaxMembersCount()
+    {
         return maxMembersCount;
     }
 
-    public void setMaxMembersCount(int maxMembersCount) {
+    public void setMaxMembersCount(int maxMembersCount)
+    {
         this.maxMembersCount = maxMembersCount;
     }
 
-    public Date getDateTimeStart() {
+    public Date getDateTimeStart()
+    {
         return dateTimeStart;
     }
 
-    public void setDateTimeStart(Date dateTimeStart) {
+    public void setDateTimeStart(Date dateTimeStart)
+    {
         this.dateTimeStart = dateTimeStart;
     }
 
-    public String getTags() {
+    public String getTags()
+    {
         return tags;
     }
 
-    public void setTags(String tags) {
+    public void setTags(String tags)
+    {
         this.tags = tags;
     }
 
-    public TeamEntity getTeamHost() {
+    public TeamEntity getTeamHost()
+    {
         return teamHost;
     }
 
-    public void setTeamHost(TeamEntity teamHost) {
+    public void setTeamHost(TeamEntity teamHost)
+    {
         this.teamHost = teamHost;
     }
 
-    public TeamEntity getTeamAdverse() {
+    public TeamEntity getTeamAdverse()
+    {
         return teamAdverse;
     }
 
-    public void setTeamAdverse(TeamEntity teamAdverse) {
+    public void setTeamAdverse(TeamEntity teamAdverse)
+    {
         this.teamAdverse = teamAdverse;
     }
 
-
-    public boolean isDeleted() {
+    public boolean isDeleted()
+    {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(boolean deleted)
+    {
         this.deleted = deleted;
     }
 
-    public Set<SppotiMember> getSppotiMembers() {
+    public Set<SppotiMember> getSppotiMembers()
+    {
         return sppotiMembers;
     }
 
-    public void setSppotiMembers(Set<SppotiMember> sppotiMembers) {
+    public void setSppotiMembers(Set<SppotiMember> sppotiMembers)
+    {
         this.sppotiMembers = sppotiMembers;
     }
 
-    public String getTeamAdverseStatus() {
+    public String getTeamAdverseStatus()
+    {
         return teamAdverseStatus;
     }
 
-    public void setTeamAdverseStatus(String teamAdverseStatus) {
+    public void setTeamAdverseStatus(String teamAdverseStatus)
+    {
         this.teamAdverseStatus = teamAdverseStatus;
     }
 }
