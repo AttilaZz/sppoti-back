@@ -118,7 +118,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .tokenValiditySeconds(86400)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/account/**", "/sport/**", "/csrf", "/upload/**").permitAll()
+                .antMatchers("/", "/account/**", "/sport/**").permitAll()
                 .antMatchers("/admin/**").hasRole(UserRoleType.ADMIN.getUserProfileType())
                 .antMatchers("/api/profile/**").hasAnyRole(UserRoleType.USER.getUserProfileType(),
                 UserRoleType.ADMIN.getUserProfileType())

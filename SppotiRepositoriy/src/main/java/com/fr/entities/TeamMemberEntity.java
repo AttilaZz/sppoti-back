@@ -10,129 +10,119 @@ import java.util.UUID;
 /**
  * Created by djenanewail on 2/4/17.
  */
-@Entity @Table(name = "TEAM_MEMBER") public class TeamMemberEntity
-        extends AbstractCommonEntity
-{
+@Entity
+@Table(name = "TEAM_MEMBER")
+public class TeamMemberEntity
+        extends AbstractCommonEntity {
 
-    @Column(nullable = false) private String status = GlobalAppStatus.PENDING.name();
+    @Column(nullable = false)
+    private String status = GlobalAppStatus.PENDING.name();
 
-    @Column(nullable = false) private Date joinDate;
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date joinDate;
 
-    @Column(nullable = false) private Date invitationDate = new Date();
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date invitationDate = new Date();
 
     private Integer xPosition;
     private Integer yPosition;
 
-    @Column(nullable = false) private Boolean admin = false;
+    @Column(nullable = false)
+    private Boolean admin = false;
 
-    @Column(nullable = false) private Boolean teamCaptain;
+    @Column(nullable = false)
+    private Boolean teamCaptain;
 
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "team_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id", nullable = false)
     private TeamEntity team;
 
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity users;
 
     @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMember> sppotiMembers;
 
-    public String getStatus()
-    {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status)
-    {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public Date getJoinDate()
-    {
+    public Date getJoinDate() {
         return joinDate;
     }
 
-    public void setJoinDate(Date joinDate)
-    {
+    public void setJoinDate(Date joinDate) {
         this.joinDate = joinDate;
     }
 
-    public Date getInvitationDate()
-    {
+    public Date getInvitationDate() {
         return invitationDate;
     }
 
-    public void setInvitationDate(Date invitationDate)
-    {
+    public void setInvitationDate(Date invitationDate) {
         this.invitationDate = invitationDate;
     }
 
-    public TeamEntity getTeam()
-    {
+    public TeamEntity getTeam() {
         return team;
     }
 
-    public void setTeam(TeamEntity team)
-    {
+    public void setTeam(TeamEntity team) {
         this.team = team;
     }
 
-    public UserEntity getUsers()
-    {
+    public UserEntity getUsers() {
         return users;
     }
 
-    public void setUsers(UserEntity users)
-    {
+    public void setUsers(UserEntity users) {
         this.users = users;
     }
 
-    public Integer getxPosition()
-    {
+    public Integer getxPosition() {
         return xPosition;
     }
 
-    public void setxPosition(Integer xPosition)
-    {
+    public void setxPosition(Integer xPosition) {
         this.xPosition = xPosition;
     }
 
-    public Integer getyPosition()
-    {
+    public Integer getyPosition() {
         return yPosition;
     }
 
-    public void setyPosition(Integer yPosition)
-    {
+    public void setyPosition(Integer yPosition) {
         this.yPosition = yPosition;
     }
 
-    public Set<SppotiMember> getSppotiMembers()
-    {
+    public Set<SppotiMember> getSppotiMembers() {
         return sppotiMembers;
     }
 
-    public Boolean getAdmin()
-    {
+    public Boolean getAdmin() {
         return admin;
     }
 
-    public void setAdmin(Boolean admin)
-    {
+    public void setAdmin(Boolean admin) {
         this.admin = admin;
     }
 
-    public void setSppotiMembers(Set<SppotiMember> sppotiMembers)
-    {
+    public void setSppotiMembers(Set<SppotiMember> sppotiMembers) {
         this.sppotiMembers = sppotiMembers;
     }
 
-    public Boolean getTeamCaptain()
-    {
+    public Boolean getTeamCaptain() {
         return teamCaptain;
     }
 
-    public void setTeamCaptain(Boolean teamCaptain)
-    {
+    public void setTeamCaptain(Boolean teamCaptain) {
         this.teamCaptain = teamCaptain;
     }
 }

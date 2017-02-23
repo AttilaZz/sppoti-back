@@ -12,69 +12,67 @@ import java.util.UUID;
 /**
  * Created by: Wail DJENANE on Nov 10, 2016
  */
-@Entity @Table(name = "NOTIFICATION") @JsonInclude(Include.NON_EMPTY)
+@Entity
+@Table(name = "NOTIFICATION")
+@JsonInclude(Include.NON_EMPTY)
 public class NotificationEntity
-        extends AbstractCommonEntity
-{
+        extends AbstractCommonEntity {
 
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_user_id", nullable = false) private UserEntity from;
+    @JoinColumn(name = "from_user_id", nullable = false)
+    private UserEntity from;
 
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_user_id", nullable = false) private UserEntity to;
+    @JoinColumn(name = "to_user_id", nullable = false)
+    private UserEntity to;
 
-    @Temporal(TemporalType.TIMESTAMP) @Column(nullable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
     private Date creationDate = new Date();
 
-    @Enumerated(EnumType.STRING) private NotificationType notificationType;
+    @Enumerated(EnumType.STRING)
+    private NotificationType notificationType;
 
-    @Column(nullable = false) private boolean opened = false;
+    @Column(nullable = false)
+    private boolean opened = false;
 
-    public UserEntity getFrom()
-    {
+    public UserEntity getFrom() {
         return from;
     }
 
-    public void setFrom(UserEntity from)
-    {
+    public void setFrom(UserEntity from) {
         this.from = from;
     }
 
-    public UserEntity getTo()
-    {
+    public UserEntity getTo() {
         return to;
     }
 
-    public void setTo(UserEntity to)
-    {
+    public void setTo(UserEntity to) {
         this.to = to;
     }
 
-    public Date getCreationDate()
-    {
+    public Date getCreationDate() {
         return creationDate;
     }
-    public void setCreationDate(Date creationDate)
-    {
+
+    public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
-    public NotificationType getNotificationType()
-    {
+
+    public NotificationType getNotificationType() {
         return notificationType;
     }
 
-    public void setNotificationType(NotificationType notificationType)
-    {
+    public void setNotificationType(NotificationType notificationType) {
         this.notificationType = notificationType;
     }
 
-    public boolean isOpened()
-    {
+    public boolean isOpened() {
         return opened;
     }
 
-    public void setOpened(boolean opened)
-    {
+    public void setOpened(boolean opened) {
         this.opened = opened;
     }
 }

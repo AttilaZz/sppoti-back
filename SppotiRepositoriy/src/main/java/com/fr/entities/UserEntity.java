@@ -6,41 +6,61 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import javax.validation.constraints.Past;
 import java.util.*;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
  */
 
-@Entity @Table(name = "USER") @JsonInclude(Include.NON_EMPTY) public class UserEntity
-        extends AbstractCommonEntity
-{
+@Entity
+@Table(name = "USER")
+@JsonInclude(Include.NON_EMPTY)
+public class UserEntity
+        extends AbstractCommonEntity {
 
-    @Column(nullable = false) private String lastName;
+    @Column(nullable = false)
+    private String lastName;
 
-    @Column(nullable = false) private String firstName;
+    @Column(nullable = false)
+    private String firstName;
 
-    @Column(nullable = false, columnDefinition = "DATE") private Date dateBorn;
+    @Temporal(TemporalType.DATE)
+    @Past
+    @Column(nullable = false)
+    private Date dateBorn;
 
-    @Column(nullable = false) private String sexe;
+    @Column(nullable = false)
+    private String sexe;
 
-    @Column(unique = true) private String telephone;
+    @Column(unique = true)
+    private String telephone;
 
-    @Column(nullable = false, unique = true) private String email;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-    @Column(nullable = false, unique = true) private String username;
+    @Column(nullable = false, unique = true)
+    private String username;
 
-    @JsonIgnore @Column(nullable = false, unique = true) private String confirmationCode;
+    @JsonIgnore
+    @Column(nullable = false, unique = true)
+    private String confirmationCode;
 
-    @JsonIgnore @Column(nullable = false) private String password;
+    @JsonIgnore
+    @Column(nullable = false)
+    private String password;
 
-    @JsonIgnore private boolean deleted = false;
+    @JsonIgnore
+    private boolean deleted = false;
 
-    @JsonIgnore private boolean confirmed = false;
+    @JsonIgnore
+    private boolean confirmed = false;
 
-    @Column private String job;
+    @Column
+    private String job;
 
-    @Column private String description;
+    @Column
+    private String description;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("datetimeCreated DESC")
@@ -58,18 +78,24 @@ import java.util.*;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private Set<LikeContentEntity> likes;
 
-    @JsonIgnore @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
-    @Where(clause = "is_selected='1'") private Set<ResourcesEntity> ressources;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    @Where(clause = "is_selected='1'")
+    private Set<ResourcesEntity> ressources;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_id", nullable = false) @JsonIgnore private Set<RoleEntity> roles;
+    @JoinColumn(name = "role_id", nullable = false)
+    @JsonIgnore
+    private Set<RoleEntity> roles;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "sport_id", nullable = false) @JsonIgnore
+    @JoinColumn(name = "sport_id", nullable = false)
+    @JsonIgnore
     private Set<SportEntity> relatedSports;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
-    @OrderBy("dateTime DESC") private SortedSet<AddressEntity> addresses;
+    @OrderBy("dateTime DESC")
+    private SortedSet<AddressEntity> addresses;
 
     //    @ManyToMany(cascade = CascadeType.PERSIST)
     //    @JoinColumn(name = "team_id")
@@ -79,227 +105,182 @@ import java.util.*;
     //    @ElementCollection
     //    private Map<TeamEntity, Boolean> teamStatus = new TreeMap<TeamEntity, Boolean>();
 
-    public boolean isDeleted()
-    {
+    public boolean isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted)
-    {
+    public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 
-    public boolean isConfirmed()
-    {
+    public boolean isConfirmed() {
         return confirmed;
     }
 
-    public void setConfirmed(boolean confirmed)
-    {
+    public void setConfirmed(boolean confirmed) {
         this.confirmed = confirmed;
     }
 
-    public UserEntity()
-    {
+    public UserEntity() {
     }
 
-    public Set<PostEntity> getUserPosts()
-    {
+    public Set<PostEntity> getUserPosts() {
         return userPosts;
     }
 
-    public void setUserPosts(SortedSet<PostEntity> userPosts)
-    {
+    public void setUserPosts(SortedSet<PostEntity> userPosts) {
         this.userPosts = userPosts;
     }
 
-    public Set<SppotiEntity> getUserSppoties()
-    {
+    public Set<SppotiEntity> getUserSppoties() {
         return userSppoties;
     }
 
-    public void setUserSppoties(Set<SppotiEntity> userSppoties)
-    {
+    public void setUserSppoties(Set<SppotiEntity> userSppoties) {
         this.userSppoties = userSppoties;
     }
 
-    public Set<MessageEntity> getUserMessages()
-    {
+    public Set<MessageEntity> getUserMessages() {
         return userMessages;
     }
 
-    public void setUserMessages(Set<MessageEntity> userMessages)
-    {
+    public void setUserMessages(Set<MessageEntity> userMessages) {
         this.userMessages = userMessages;
     }
 
-    public Set<CommentEntity> getCommentEntities()
-    {
+    public Set<CommentEntity> getCommentEntities() {
         return commentEntities;
     }
 
-    public void setCommentEntities(Set<CommentEntity> commentEntities)
-    {
+    public void setCommentEntities(Set<CommentEntity> commentEntities) {
         this.commentEntities = commentEntities;
     }
 
-    public Set<LikeContentEntity> getLikes()
-    {
+    public Set<LikeContentEntity> getLikes() {
         return likes;
     }
 
-    public void setLikes(Set<LikeContentEntity> likes)
-    {
+    public void setLikes(Set<LikeContentEntity> likes) {
         this.likes = likes;
     }
 
-    public Set<ResourcesEntity> getRessources()
-    {
+    public Set<ResourcesEntity> getRessources() {
         return ressources;
     }
 
-    public void setRessources(Set<ResourcesEntity> ressources)
-    {
+    public void setRessources(Set<ResourcesEntity> ressources) {
         this.ressources = ressources;
     }
 
-    public String getConfirmationCode()
-    {
+    public String getConfirmationCode() {
         return confirmationCode;
     }
 
-    public void setConfirmationCode(String confirmationCode)
-    {
+    public void setConfirmationCode(String confirmationCode) {
         this.confirmationCode = confirmationCode;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getJob()
-    {
+    public String getJob() {
         return job;
     }
 
-    public void setJob(String job)
-    {
+    public void setJob(String job) {
         this.job = job;
     }
 
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description)
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public Set<RoleEntity> getRoles()
-    {
+    public Set<RoleEntity> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<RoleEntity> roles)
-    {
+    public void setRoles(Set<RoleEntity> roles) {
         this.roles = roles;
     }
 
-    public Set<SportEntity> getRelatedSports()
-    {
+    public Set<SportEntity> getRelatedSports() {
         return relatedSports;
     }
 
-    public void setRelatedSports(Set<SportEntity> relatedSports)
-    {
+    public void setRelatedSports(Set<SportEntity> relatedSports) {
         this.relatedSports = relatedSports;
     }
 
-    public SortedSet<AddressEntity> getAddresses()
-    {
+    public SortedSet<AddressEntity> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(SortedSet<AddressEntity> addresses)
-    {
+    public void setAddresses(SortedSet<AddressEntity> addresses) {
         this.addresses = addresses;
     }
 
-    public String getLastName()
-    {
+    public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName)
-    {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getFirstName()
-    {
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName)
-    {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public Date getDateBorn()
-    {
+    public Date getDateBorn() {
         return dateBorn;
     }
 
-    public void setDateBorn(Date dateBorn)
-    {
+    public void setDateBorn(Date dateBorn) {
         this.dateBorn = dateBorn;
     }
 
-    public String getSexe()
-    {
+    public String getSexe() {
         return sexe;
     }
 
-    public void setSexe(String sexe)
-    {
+    public void setSexe(String sexe) {
         this.sexe = sexe;
     }
 
-    public String getTelephone()
-    {
+    public String getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(String telephone)
-    {
+    public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
 
-    public String getEmail()
-    {
+    public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email)
-    {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public String getUsername()
-    {
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username)
-    {
+    public void setUsername(String username) {
         this.username = username;
     }
 }

@@ -28,7 +28,7 @@ public class EntryPointUnAthorisedHandler implements AuthenticationEntryPoint {
         arg1.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
         arg1.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
 
-        arg1.sendError(HttpServletResponse.SC_FORBIDDEN, "Acces Denied");
+        arg1.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized Access");
     }
 
 }

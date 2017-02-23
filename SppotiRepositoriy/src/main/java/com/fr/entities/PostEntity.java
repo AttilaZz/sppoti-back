@@ -21,43 +21,54 @@ import com.google.gson.annotations.SerializedName;
  * one sport
  */
 
-@Entity @Table(name = "POST") @JsonInclude(Include.NON_EMPTY) public class PostEntity
+@Entity
+@Table(name = "POST")
+@JsonInclude(Include.NON_EMPTY)
+public class PostEntity
         extends AbstractCommonEntity
-        implements Comparable<PostEntity>
-{
+        implements Comparable<PostEntity> {
 
-    @Column(length = 500) @SerializedName("text") private String content;
+    @Column(length = 500)
+    @SerializedName("text")
+    private String content;
 
-    @Column(nullable = false) @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date datetimeCreated = new Date();
 
     private String video;
 
-    @ElementCollection private Set<String> album;
+    @ElementCollection
+    private Set<String> album;
 
-    @Column(nullable = false) private int visibility = 0;
+    @Column(nullable = false)
+    private int visibility = 0;
 
-    @Column(nullable = false) private boolean isDeleted = false;
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     @OrderBy("dateTime DESC")
     private SortedSet<AddressEntity> addresses = new TreeSet<AddressEntity>();
 
-    public PostEntity()
-    {
+    public PostEntity() {
         super();
     }
 
-    public PostEntity(PostEntity post)
-    {
+    public PostEntity(PostEntity post) {
         this.content = post.getContent();
         this.album = post.getAlbum();
         this.video = post.getVideo();
     }
 
-    @ManyToOne @JoinColumn(name = "user_id") @JsonIgnore private UserEntity user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private UserEntity user;
 
-    @ManyToOne @JoinColumn(name = "sport_id") private SportEntity sport;
+    @ManyToOne
+    @JoinColumn(name = "sport_id")
+    private SportEntity sport;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     @OrderBy("datetimeCreated DESC")
@@ -69,146 +80,121 @@ import com.google.gson.annotations.SerializedName;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
     private Set<EditHistoryEntity> editList;
 
-    @Column(name = "target_user") private int targetUserProfileUuid;
+    @Column(name = "target_user")
+    private int targetUserProfileUuid;
 
-    public String getContent()
-    {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(String content)
-    {
+    public void setContent(String content) {
         this.content = content;
     }
 
-    public UserEntity getUser()
-    {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(UserEntity user)
-    {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
-    public String getVideo()
-    {
+    public String getVideo() {
         return video;
     }
 
-    public void setVideo(String video)
-    {
+    public void setVideo(String video) {
         this.video = video;
     }
 
-    public SportEntity getSport()
-    {
+    public SportEntity getSport() {
         return sport;
     }
 
-    public void setSport(SportEntity sport)
-    {
+    public void setSport(SportEntity sport) {
         this.sport = sport;
     }
 
-    public Date getDatetimeCreated()
-    {
+    public Date getDatetimeCreated() {
         return datetimeCreated;
     }
 
-    public void setDatetimeCreated(Date datetimeCreated)
-    {
+    public void setDatetimeCreated(Date datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
     }
 
-    public SortedSet<CommentEntity> getCommentEntities()
-    {
+    public SortedSet<CommentEntity> getCommentEntities() {
         return commentEntities;
     }
 
-    public void setCommentEntities(SortedSet<CommentEntity> commentEntities)
-    {
+    public void setCommentEntities(SortedSet<CommentEntity> commentEntities) {
         this.commentEntities = commentEntities;
     }
 
-    public Set<LikeContentEntity> getLikes()
-    {
+    public Set<LikeContentEntity> getLikes() {
         return likes;
     }
 
-    public void setLikes(Set<LikeContentEntity> likes)
-    {
+    public void setLikes(Set<LikeContentEntity> likes) {
         this.likes = likes;
     }
 
-    public Set<EditHistoryEntity> getEditList()
-    {
+    public Set<EditHistoryEntity> getEditList() {
         return editList;
     }
 
-    public void setEditList(Set<EditHistoryEntity> editList)
-    {
+    public void setEditList(Set<EditHistoryEntity> editList) {
         this.editList = editList;
     }
 
-    public Set<String> getAlbum()
-    {
+    public Set<String> getAlbum() {
         return album;
     }
 
-    public void setAlbum(Set<String> album)
-    {
+    public void setAlbum(Set<String> album) {
         this.album = album;
     }
 
-    public int getVisibility()
-    {
+    public int getVisibility() {
         return visibility;
     }
 
-    public void setVisibility(int visibility)
-    {
+    public void setVisibility(int visibility) {
         this.visibility = visibility;
     }
 
-    public boolean isDeleted()
-    {
+    public boolean isDeleted() {
         return isDeleted;
     }
 
-    public void setDeleted(boolean isDeleted)
-    {
+    public void setDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 
-    public SortedSet<AddressEntity> getAddresses()
-    {
+    public SortedSet<AddressEntity> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(SortedSet<AddressEntity> addresses)
-    {
+    public void setAddresses(SortedSet<AddressEntity> addresses) {
         this.addresses = addresses;
     }
 
-    public int getTargetUserProfileUuid()
-    {
+    public int getTargetUserProfileUuid() {
         return targetUserProfileUuid;
     }
 
-    public void setTargetUserProfileUuid(int targetUserProfileUuid)
-    {
+    public void setTargetUserProfileUuid(int targetUserProfileUuid) {
         this.targetUserProfileUuid = targetUserProfileUuid;
     }
 
-    @SuppressWarnings("unused") @Override public int compareTo(PostEntity o)
-    {
+    @SuppressWarnings("unused")
+    @Override
+    public int compareTo(PostEntity o) {
 
         if (this != null) {
             if (o != null) {
                 return this.datetimeCreated.compareTo(o.datetimeCreated);
-            }
-            else {
+            } else {
                 return 1;
             }
         }

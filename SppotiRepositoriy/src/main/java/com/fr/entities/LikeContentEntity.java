@@ -12,58 +12,59 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * Created by: Wail DJENANE on Aug 15, 2016
  */
 
-@Entity @Table(name = "LIKE_CONTENT") @JsonInclude(Include.NON_EMPTY) public class LikeContentEntity
-        extends AbstractCommonEntity
-{
+@Entity
+@Table(name = "LIKE_CONTENT")
+@JsonInclude(Include.NON_EMPTY)
+public class LikeContentEntity
+        extends AbstractCommonEntity {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false) @JsonIgnore private UserEntity user;
-
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY) @JoinColumn(name = "post_id")
-    @JsonIgnore private PostEntity post;
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private UserEntity user;
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "comment_id") @JsonIgnore private CommentEntity comment;
+    @JoinColumn(name = "post_id")
+    @JsonIgnore
+    private PostEntity post;
 
-    @Column(nullable = false) private String datetimeCreated = new DateTime().toString();
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    @JsonIgnore
+    private CommentEntity comment;
 
-    public UserEntity getUser()
-    {
+    @Column(nullable = false)
+    private String datetimeCreated = new DateTime().toString();
+
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(UserEntity user)
-    {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
-    public PostEntity getPost()
-    {
+    public PostEntity getPost() {
         return post;
     }
 
-    public void setPost(PostEntity post)
-    {
+    public void setPost(PostEntity post) {
         this.post = post;
     }
 
-    public CommentEntity getComment()
-    {
+    public CommentEntity getComment() {
         return comment;
     }
 
-    public void setComment(CommentEntity comment)
-    {
+    public void setComment(CommentEntity comment) {
         this.comment = comment;
     }
 
-    public String getDatetimeCreated()
-    {
+    public String getDatetimeCreated() {
         return datetimeCreated;
     }
 
-    public void setDatetimeCreated(String datetimeCreated)
-    {
+    public void setDatetimeCreated(String datetimeCreated) {
         this.datetimeCreated = datetimeCreated;
     }
 

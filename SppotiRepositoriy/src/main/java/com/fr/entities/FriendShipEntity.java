@@ -9,68 +9,64 @@ import java.util.Date;
  * Created by: Wail DJENANE on Jul 3, 2016
  */
 
-@Entity @Table(name = "friend_ship") public class FriendShipEntity
-        extends AbstractCommonEntity
-{
-    @Column(nullable = false) private Date datetime = new Date();
+@Entity
+@Table(name = "friend_ship")
+public class FriendShipEntity
+        extends AbstractCommonEntity {
+    @Column(nullable = false)
+    private Date datetime = new Date();
 
-    @Column(nullable = false) private String status = GlobalAppStatus.PENDING.name();
+    @Column(nullable = false)
+    private String status = GlobalAppStatus.PENDING.name();
 
     @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "friend_id") private UserEntity friend;
+    @JoinColumn(name = "friend_id")
+    private UserEntity friend;
 
-    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY) @JoinColumn(name = "user_id")
+    @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @Column private boolean deleted;
+    @Column
+    private boolean deleted;
 
-    public Date getDatetime()
-    {
+    public Date getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(Date datetime)
-    {
+    public void setDatetime(Date datetime) {
         this.datetime = datetime;
     }
 
-    public String getStatus()
-    {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status)
-    {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public UserEntity getFriend()
-    {
+    public UserEntity getFriend() {
         return friend;
     }
 
-    public void setFriend(UserEntity friend)
-    {
+    public void setFriend(UserEntity friend) {
         this.friend = friend;
     }
 
-    public UserEntity getUser()
-    {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(UserEntity user)
-    {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 
-    public boolean isDeleted()
-    {
+    public boolean isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(boolean deleted)
-    {
+    public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 }

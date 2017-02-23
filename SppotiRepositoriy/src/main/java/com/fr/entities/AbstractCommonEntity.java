@@ -1,46 +1,54 @@
 package com.fr.entities;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
 import java.util.UUID;
+
 /**
  * Created by wdjenane on 23/02/2017.
  */
 
-@MappedSuperclass public class AbstractCommonEntity
-{
+@MappedSuperclass
+public class AbstractCommonEntity {
 
     private static final long serialVersionUID = -6893399491928930624L;
 
     /**
      * technical id.
      */
-    @Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "id") private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
 
     /**
      * version.
      */
-    @Version @Column(name = "version") private Integer version = -1;
+    @Version
+    @Column(name = "version")
+    private Integer version = -1;
 
     /**
      * fonctionnal id.
      */
-    @Column(nullable = false, unique = true, updatable = false) private int uuid = UUID.randomUUID()
+    @Column(nullable = false, unique = true, updatable = false)
+    private int uuid = UUID.randomUUID()
             .hashCode() * UUID.randomUUID().hashCode();
 
     /**
      * {@inheritDoc}.
      */
-    @Override public String toString()
-    {
+    @Override
+    public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override public int hashCode()
-    {
+    @Override
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = (prime * result) + ((this.id == null) ? 0 : this.id.hashCode());
@@ -51,8 +59,8 @@ import java.util.UUID;
     /**
      * {@inheritDoc}
      */
-    @Override public boolean equals(final Object obj)
-    {
+    @Override
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -67,44 +75,40 @@ import java.util.UUID;
             if (other.id != null) {
                 return false;
             }
-        }
-        else if (!this.id.equals(other.id)) {
+        } else if (!this.id.equals(other.id)) {
             return false;
         }
         if (this.version == null) {
             if (other.version != null) {
                 return false;
             }
-        }
-        else if (!this.version.equals(other.version)) {
+        } else if (!this.version.equals(other.version)) {
             return false;
         }
         return true;
     }
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
-    public void setId(Long id)
-    {
+
+    public void setId(Long id) {
         this.id = id;
     }
-    public Integer getVersion()
-    {
+
+    public Integer getVersion() {
         return version;
     }
-    public void setVersion(Integer version)
-    {
+
+    public void setVersion(Integer version) {
         this.version = version;
     }
 
-    public int getUuid()
-    {
+    public int getUuid() {
         return uuid;
     }
-    public void setUuid(int uuid)
-    {
+
+    public void setUuid(int uuid) {
         this.uuid = uuid;
     }
 }
