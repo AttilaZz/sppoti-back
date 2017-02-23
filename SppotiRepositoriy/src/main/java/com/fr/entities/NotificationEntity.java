@@ -75,4 +75,27 @@ public class NotificationEntity
     public void setOpened(boolean opened) {
         this.opened = opened;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NotificationEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        NotificationEntity that = (NotificationEntity) o;
+
+        if (opened != that.opened) return false;
+        if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
+        return notificationType == that.notificationType;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + (notificationType != null ? notificationType.hashCode() : 0);
+        result = 31 * result + (opened ? 1 : 0);
+        return result;
+    }
 }

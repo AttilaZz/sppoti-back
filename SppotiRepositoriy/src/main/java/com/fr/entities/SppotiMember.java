@@ -4,6 +4,7 @@ import com.fr.models.GlobalAppStatus;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by djenanewail on 2/4/17.
@@ -81,5 +82,34 @@ public class SppotiMember
 
     public void setTeamMember(TeamMemberEntity teamMember) {
         this.teamMember = teamMember;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SppotiMember)) return false;
+        if (!super.equals(o)) return false;
+
+        SppotiMember that = (SppotiMember) o;
+
+        if (status != null ? !status.equals(that.status) : that.status != null) return false;
+        if (invitationDate != null ? !invitationDate.equals(that.invitationDate) : that.invitationDate != null)
+            return false;
+        if (acceptationDate != null ? !acceptationDate.equals(that.acceptationDate) : that.acceptationDate != null)
+            return false;
+        if (xPosition != null ? !xPosition.equals(that.xPosition) : that.xPosition != null) return false;
+        return yPosition != null ? yPosition.equals(that.yPosition) : that.yPosition == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (invitationDate != null ? invitationDate.hashCode() : 0);
+        result = 31 * result + (acceptationDate != null ? acceptationDate.hashCode() : 0);
+        result = 31 * result + (xPosition != null ? xPosition.hashCode() : 0);
+        result = 31 * result + (yPosition != null ? yPosition.hashCode() : 0);
+        return result;
     }
 }

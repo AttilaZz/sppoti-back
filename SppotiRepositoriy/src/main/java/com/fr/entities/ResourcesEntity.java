@@ -101,4 +101,33 @@ public class ResourcesEntity
         this.user = user;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ResourcesEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        ResourcesEntity that = (ResourcesEntity) o;
+
+        if (isSelected != that.isSelected) return false;
+        if (url != null ? !url.equals(that.url) : that.url != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+        if (typeExtension != null ? !typeExtension.equals(that.typeExtension) : that.typeExtension != null)
+            return false;
+        return dateTime != null ? dateTime.equals(that.dateTime) : that.dateTime == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (typeExtension != null ? typeExtension.hashCode() : 0);
+        result = 31 * result + (dateTime != null ? dateTime.hashCode() : 0);
+        result = 31 * result + (isSelected ? 1 : 0);
+        return result;
+    }
 }

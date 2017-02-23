@@ -79,4 +79,28 @@ public class TeamEntity
         this.deleted = deleted;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TeamEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        TeamEntity that = (TeamEntity) o;
+
+        if (deleted != that.deleted) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (logoPath != null ? !logoPath.equals(that.logoPath) : that.logoPath != null) return false;
+        return coverPath != null ? coverPath.equals(that.coverPath) : that.coverPath == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (logoPath != null ? logoPath.hashCode() : 0);
+        result = 31 * result + (coverPath != null ? coverPath.hashCode() : 0);
+        result = 31 * result + (deleted ? 1 : 0);
+        return result;
+    }
 }

@@ -180,4 +180,41 @@ public class SppotiEntity
     public void setTeamAdverseStatus(String teamAdverseStatus) {
         this.teamAdverseStatus = teamAdverseStatus;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SppotiEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        SppotiEntity that = (SppotiEntity) o;
+
+        if (maxMembersCount != that.maxMembersCount) return false;
+        if (deleted != that.deleted) return false;
+        if (titre != null ? !titre.equals(that.titre) : that.titre != null) return false;
+        if (description != null ? !description.equals(that.description) : that.description != null) return false;
+        if (datetimeCreated != null ? !datetimeCreated.equals(that.datetimeCreated) : that.datetimeCreated != null)
+            return false;
+        if (dateTimeStart != null ? !dateTimeStart.equals(that.dateTimeStart) : that.dateTimeStart != null)
+            return false;
+        if (location != null ? !location.equals(that.location) : that.location != null) return false;
+        if (tags != null ? !tags.equals(that.tags) : that.tags != null) return false;
+        return teamAdverseStatus != null ? teamAdverseStatus.equals(that.teamAdverseStatus) : that.teamAdverseStatus == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (titre != null ? titre.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (datetimeCreated != null ? datetimeCreated.hashCode() : 0);
+        result = 31 * result + (dateTimeStart != null ? dateTimeStart.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + maxMembersCount;
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        result = 31 * result + (deleted ? 1 : 0);
+        result = 31 * result + (teamAdverseStatus != null ? teamAdverseStatus.hashCode() : 0);
+        return result;
+    }
 }

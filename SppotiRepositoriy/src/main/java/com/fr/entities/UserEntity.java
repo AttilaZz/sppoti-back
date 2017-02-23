@@ -283,4 +283,48 @@ public class UserEntity
     public void setUsername(String username) {
         this.username = username;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        UserEntity that = (UserEntity) o;
+
+        if (deleted != that.deleted) return false;
+        if (confirmed != that.confirmed) return false;
+        if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
+        if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
+        if (dateBorn != null ? !dateBorn.equals(that.dateBorn) : that.dateBorn != null) return false;
+        if (sexe != null ? !sexe.equals(that.sexe) : that.sexe != null) return false;
+        if (telephone != null ? !telephone.equals(that.telephone) : that.telephone != null) return false;
+        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        if (confirmationCode != null ? !confirmationCode.equals(that.confirmationCode) : that.confirmationCode != null)
+            return false;
+        if (password != null ? !password.equals(that.password) : that.password != null) return false;
+        if (job != null ? !job.equals(that.job) : that.job != null) return false;
+        return description != null ? description.equals(that.description) : that.description == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
+        result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
+        result = 31 * result + (dateBorn != null ? dateBorn.hashCode() : 0);
+        result = 31 * result + (sexe != null ? sexe.hashCode() : 0);
+        result = 31 * result + (telephone != null ? telephone.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (confirmationCode != null ? confirmationCode.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (deleted ? 1 : 0);
+        result = 31 * result + (confirmed ? 1 : 0);
+        result = 31 * result + (job != null ? job.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        return result;
+    }
 }

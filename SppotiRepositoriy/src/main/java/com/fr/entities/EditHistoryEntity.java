@@ -81,4 +81,24 @@ public class EditHistoryEntity
         this.sport = sport;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EditHistoryEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        EditHistoryEntity that = (EditHistoryEntity) o;
+
+        if (text != null ? !text.equals(that.text) : that.text != null) return false;
+        return datetimeEdited != null ? datetimeEdited.equals(that.datetimeEdited) : that.datetimeEdited == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        result = 31 * result + (datetimeEdited != null ? datetimeEdited.hashCode() : 0);
+        return result;
+    }
 }

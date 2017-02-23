@@ -53,4 +53,23 @@ public class RoleEntity
     public void setUsers(Set<UserEntity> users) {
         this.users = users;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RoleEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        RoleEntity that = (RoleEntity) o;
+
+        return name != null ? name.equals(that.name) : that.name == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
+    }
 }

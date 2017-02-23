@@ -69,4 +69,27 @@ public class FriendShipEntity
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FriendShipEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        FriendShipEntity that = (FriendShipEntity) o;
+
+        if (deleted != that.deleted) return false;
+        if (datetime != null ? !datetime.equals(that.datetime) : that.datetime != null) return false;
+        return status != null ? status.equals(that.status) : that.status == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (datetime != null ? datetime.hashCode() : 0);
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (deleted ? 1 : 0);
+        return result;
+    }
 }

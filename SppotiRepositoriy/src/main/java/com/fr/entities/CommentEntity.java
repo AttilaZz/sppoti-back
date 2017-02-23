@@ -138,4 +138,30 @@ public class CommentEntity
         return 0;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CommentEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        CommentEntity that = (CommentEntity) o;
+
+        if (deleted != that.deleted) return false;
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        if (imageLink != null ? !imageLink.equals(that.imageLink) : that.imageLink != null) return false;
+        if (videoLink != null ? !videoLink.equals(that.videoLink) : that.videoLink != null) return false;
+        return datetimeCreated != null ? datetimeCreated.equals(that.datetimeCreated) : that.datetimeCreated == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (imageLink != null ? imageLink.hashCode() : 0);
+        result = 31 * result + (videoLink != null ? videoLink.hashCode() : 0);
+        result = 31 * result + (deleted ? 1 : 0);
+        result = 31 * result + (datetimeCreated != null ? datetimeCreated.hashCode() : 0);
+        return result;
+    }
 }

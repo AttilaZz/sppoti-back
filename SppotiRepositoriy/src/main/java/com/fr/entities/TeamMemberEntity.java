@@ -33,7 +33,7 @@ public class TeamMemberEntity
     private Boolean admin = false;
 
     @Column(nullable = false)
-    private Boolean teamCaptain;
+    private Boolean teamCaptain = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", nullable = false)
@@ -124,6 +124,38 @@ public class TeamMemberEntity
 
     public void setTeamCaptain(Boolean teamCaptain) {
         this.teamCaptain = teamCaptain;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TeamMemberEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        TeamMemberEntity that = (TeamMemberEntity) o;
+
+        if (status != null ? !status.equals(that.status) : that.status != null) return false;
+        if (joinDate != null ? !joinDate.equals(that.joinDate) : that.joinDate != null) return false;
+        if (invitationDate != null ? !invitationDate.equals(that.invitationDate) : that.invitationDate != null)
+            return false;
+        if (xPosition != null ? !xPosition.equals(that.xPosition) : that.xPosition != null) return false;
+        if (yPosition != null ? !yPosition.equals(that.yPosition) : that.yPosition != null) return false;
+        if (admin != null ? !admin.equals(that.admin) : that.admin != null) return false;
+        return teamCaptain != null ? teamCaptain.equals(that.teamCaptain) : that.teamCaptain == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (joinDate != null ? joinDate.hashCode() : 0);
+        result = 31 * result + (invitationDate != null ? invitationDate.hashCode() : 0);
+        result = 31 * result + (xPosition != null ? xPosition.hashCode() : 0);
+        result = 31 * result + (yPosition != null ? yPosition.hashCode() : 0);
+        result = 31 * result + (admin != null ? admin.hashCode() : 0);
+        result = 31 * result + (teamCaptain != null ? teamCaptain.hashCode() : 0);
+        return result;
     }
 }
 

@@ -205,4 +205,35 @@ public class PostEntity
         return 0;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PostEntity)) return false;
+        if (!super.equals(o)) return false;
+
+        PostEntity that = (PostEntity) o;
+
+        if (visibility != that.visibility) return false;
+        if (isDeleted != that.isDeleted) return false;
+        if (targetUserProfileUuid != that.targetUserProfileUuid) return false;
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        if (datetimeCreated != null ? !datetimeCreated.equals(that.datetimeCreated) : that.datetimeCreated != null)
+            return false;
+        if (video != null ? !video.equals(that.video) : that.video != null) return false;
+        return album != null ? album.equals(that.album) : that.album == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (datetimeCreated != null ? datetimeCreated.hashCode() : 0);
+        result = 31 * result + (video != null ? video.hashCode() : 0);
+        result = 31 * result + (album != null ? album.hashCode() : 0);
+        result = 31 * result + visibility;
+        result = 31 * result + (isDeleted ? 1 : 0);
+        result = 31 * result + targetUserProfileUuid;
+        return result;
+    }
 }
