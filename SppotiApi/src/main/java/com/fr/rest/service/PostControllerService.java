@@ -1,7 +1,7 @@
 package com.fr.rest.service;
 
 import com.fr.commons.dto.ContentEditedResponseDTO;
-import com.fr.commons.dto.PostResponseDTO;
+import com.fr.commons.dto.post.PostResponseDTO;
 import com.fr.entities.*;
 import org.springframework.stereotype.Service;
 

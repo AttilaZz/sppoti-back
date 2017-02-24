@@ -1,6 +1,6 @@
 package com.fr.rest.controllers.team;
 
-import com.fr.commons.dto.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.rest.controllers.sppoti.SppotiAddController;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;

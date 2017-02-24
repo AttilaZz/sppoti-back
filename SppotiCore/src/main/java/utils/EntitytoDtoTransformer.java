@@ -1,10 +1,8 @@
 package utils;
 
 import com.fr.commons.dto.CommentDTO;
-import com.fr.commons.dto.NotificationDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.CommentEntity;
-import com.fr.entities.NotificationEntity;
 import com.fr.entities.ResourcesEntity;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;

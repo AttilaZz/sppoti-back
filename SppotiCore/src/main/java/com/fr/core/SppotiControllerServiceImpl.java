@@ -1,8 +1,8 @@
 package com.fr.core;
 
-import com.fr.commons.dto.SppotiRequestDTO;
-import com.fr.commons.dto.SppotiResponseDTO;
-import com.fr.commons.dto.TeamResponseDTO;
+import com.fr.commons.dto.sppoti.SppotiRequestDTO;
+import com.fr.commons.dto.sppoti.SppotiResponseDTO;
+import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.*;
 import com.fr.exceptions.NoRightToAcceptOrRefuseChallenge;
 import com.fr.exceptions.SportNotFoundException;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;

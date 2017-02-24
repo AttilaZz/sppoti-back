@@ -2,7 +2,7 @@ package com.fr.core;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
-import com.fr.commons.dto.PostResponseDTO;
+import com.fr.commons.dto.post.PostResponseDTO;
 import com.fr.entities.*;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.PostControllerService;

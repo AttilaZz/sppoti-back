@@ -1,7 +1,7 @@
 package com.fr.rest.service;
 
-import com.fr.commons.dto.NotificationDTO;
-import com.fr.commons.dto.NotificationResponseDTO;
+import com.fr.commons.dto.notification.NotificationDTO;
+import com.fr.commons.dto.notification.NotificationResponseDTO;
 
 import java.util.List;
 

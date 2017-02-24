@@ -1,6 +1,6 @@
 package utils;
 
-import com.fr.commons.dto.NotificationDTO;
+import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.NotificationEntity;
 import com.fr.entities.UserEntity;

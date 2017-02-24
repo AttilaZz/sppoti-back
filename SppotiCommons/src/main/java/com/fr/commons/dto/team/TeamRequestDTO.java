@@ -1,4 +1,6 @@
-package com.fr.commons.dto;
+package com.fr.commons.dto.team;
+
+import com.fr.commons.dto.UserDTO;
 
 import java.util.List;
 

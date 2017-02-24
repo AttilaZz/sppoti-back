@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.post.like;
 
 import com.fr.commons.dto.HeaderDataDTO;
-import com.fr.commons.dto.PostResponseDTO;
+import com.fr.commons.dto.post.PostResponseDTO;
 import com.fr.entities.PostEntity;
 import com.fr.rest.service.LikeControllerService;
 import com.fr.rest.service.PostControllerService;

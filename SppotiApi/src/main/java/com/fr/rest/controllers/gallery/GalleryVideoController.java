@@ -1,8 +1,6 @@
 package com.fr.rest.controllers.gallery;
 
-import com.fr.commons.dto.PostResponseDTO;
-import com.fr.entities.UserEntity;
-import com.fr.rest.service.CommentControllerService;
+import com.fr.commons.dto.post.PostResponseDTO;
 import com.fr.rest.service.PostControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

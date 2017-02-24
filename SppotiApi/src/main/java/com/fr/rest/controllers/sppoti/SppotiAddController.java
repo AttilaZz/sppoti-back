@@ -1,15 +1,13 @@
 package com.fr.rest.controllers.sppoti;
 
-import com.fr.commons.dto.SppotiRequestDTO;
-import com.fr.commons.dto.SppotiResponseDTO;
+import com.fr.commons.dto.sppoti.SppotiRequestDTO;
+import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import com.fr.rest.service.SppotiControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016

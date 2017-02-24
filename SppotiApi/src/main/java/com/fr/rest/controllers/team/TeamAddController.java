@@ -1,8 +1,7 @@
 package com.fr.rest.controllers.team;
 
-import com.fr.commons.dto.TeamRequestDTO;
-import com.fr.commons.dto.TeamResponseDTO;
-import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.team.TeamRequestDTO;
+import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.rest.service.TeamControllerService;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
@@ -13,8 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by djenanewail on 1/22/17.

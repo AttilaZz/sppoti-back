@@ -2,6 +2,7 @@ package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fr.commons.dto.notification.NotificationDTO;
 
 import java.util.List;
 

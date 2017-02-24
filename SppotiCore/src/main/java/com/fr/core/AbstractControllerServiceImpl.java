@@ -1,6 +1,7 @@
 package com.fr.core;
 
 import com.fr.commons.dto.*;
+import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.*;
 import com.fr.exceptions.TeamMemberNotFoundException;
 import com.fr.mail.ApplicationMailer;

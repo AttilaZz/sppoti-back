@@ -1,9 +1,11 @@
-package com.fr.commons.dto;
+package com.fr.commons.dto.post;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.commons.dto.CommentDTO;
+import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.entities.AddressEntity;
 import com.fr.entities.PostEntity;
 import com.fr.entities.SppotiEntity;

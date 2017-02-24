@@ -1,12 +1,11 @@
 package com.fr.rest.controllers.notifications;
 
-import com.fr.commons.dto.NotificationResponseDTO;
+import com.fr.commons.dto.notification.NotificationResponseDTO;
 import com.fr.rest.service.NotificationControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;

@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fr.commons.dto.post.PostResponseDTO;
 import com.fr.entities.MessageEntity;
 import com.fr.entities.SportEntity;
 

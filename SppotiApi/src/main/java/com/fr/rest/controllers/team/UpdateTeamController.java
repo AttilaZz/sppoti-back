@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.team;
 
-import com.fr.commons.dto.TeamRequestDTO;
-import com.fr.commons.dto.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamRequestDTO;
+import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.rest.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,8 @@
-package com.fr.commons.dto;
+package com.fr.commons.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fr.commons.dto.UserDTO;
 
 import java.util.Date;
 

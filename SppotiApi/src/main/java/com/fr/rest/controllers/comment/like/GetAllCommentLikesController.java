@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.comment.like;
 
 import com.fr.commons.dto.HeaderDataDTO;
-import com.fr.commons.dto.PostResponseDTO;
+import com.fr.commons.dto.post.PostResponseDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.rest.service.CommentControllerService;
 import com.fr.rest.service.LikeControllerService;

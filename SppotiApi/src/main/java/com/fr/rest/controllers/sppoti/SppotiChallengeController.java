@@ -1,6 +1,6 @@
 package com.fr.rest.controllers.sppoti;
 
-import com.fr.commons.dto.SppotiResponseDTO;
+import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import com.fr.rest.service.SppotiControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

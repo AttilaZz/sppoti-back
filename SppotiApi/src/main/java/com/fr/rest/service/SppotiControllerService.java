@@ -1,10 +1,9 @@
 package com.fr.rest.service;
 
-import com.fr.commons.dto.SppotiRequestDTO;
-import com.fr.commons.dto.SppotiResponseDTO;
+import com.fr.commons.dto.sppoti.SppotiRequestDTO;
+import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**

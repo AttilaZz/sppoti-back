@@ -1,7 +1,7 @@
 package com.fr.core;
 
-import com.fr.commons.dto.TeamRequestDTO;
-import com.fr.commons.dto.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamRequestDTO;
+import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.SportEntity;
 import com.fr.entities.TeamEntity;
@@ -78,7 +78,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
      */
     @Transactional
     @Override
-    public void updateTeamMembers(TeamRequestDTO request, int memberId, int teamId) {
+    public void updateTeamMembers(TeamRequestDTO teamRequestDTO, int memberId, int teamId) {
 
         TeamMemberEntity usersTeam = teamMembersRepository.findByUsersUuidAndTeamUuid(memberId, teamId);
 
@@ -86,17 +86,17 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             throw new EntityNotFoundException("Member not found");
         }
 
-        if (request.getStatus() != null || !request.getStatus().equals(0)) {
+        if (teamRequestDTO.getStatus() != null && !teamRequestDTO.getStatus().equals(0)) {
             for (GlobalAppStatus status : GlobalAppStatus.values()) {
-                if (status.getValue() == request.getStatus()) {
+                if (status.getValue() == teamRequestDTO.getStatus()) {
                     usersTeam.setStatus(status.name());
                 }
             }
         }
 
-        if (request.getxPosition() != null && request.getyPosition() != null) {
-            usersTeam.setyPosition(request.getyPosition());
-            usersTeam.setxPosition(request.getxPosition());
+        if (teamRequestDTO.getxPosition() != null && teamRequestDTO.getyPosition() != null) {
+            usersTeam.setyPosition(teamRequestDTO.getyPosition());
+            usersTeam.setxPosition(teamRequestDTO.getxPosition());
         }
 
         teamMembersRepository.save(usersTeam);

@@ -1,7 +1,7 @@
 package com.fr.rest.controllers.team;
 
-import com.fr.commons.dto.TeamRequestDTO;
-import com.fr.commons.dto.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamRequestDTO;
+import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.controllers.sppoti.SppotiAddController;

@@ -1,8 +1,8 @@
 package com.fr.rest.controllers.post;
 
 import com.fr.aop.TraceAuthentification;
-import com.fr.commons.dto.PostRequestDTO;
-import com.fr.commons.dto.PostResponseDTO;
+import com.fr.commons.dto.post.PostRequestDTO;
+import com.fr.commons.dto.post.PostResponseDTO;
 import com.fr.entities.*;
 import com.fr.exceptions.PostContentMissingException;
 import com.fr.rest.service.PostControllerService;

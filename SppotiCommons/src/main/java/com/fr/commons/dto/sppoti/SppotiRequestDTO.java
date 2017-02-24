@@ -1,9 +1,10 @@
-package com.fr.commons.dto;
+package com.fr.commons.dto.sppoti;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.commons.dto.team.TeamRequestDTO;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package com.fr.commons.dto;
+package com.fr.commons.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
