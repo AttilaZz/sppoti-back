@@ -7,11 +7,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 public class AbstractCommonDTO {
 
-    private Long id;
+    protected Integer version;
 
-    private Integer version;
-
-    private int uuid;
+    protected Integer id;
 
     /**
      * {@inheritDoc}.
@@ -21,13 +19,6 @@ public class AbstractCommonDTO {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Integer getVersion() {
         return version;
@@ -37,11 +28,11 @@ public class AbstractCommonDTO {
         this.version = version;
     }
 
-    public int getUuid() {
-        return uuid;
+    public Integer getId() {
+        return id;
     }
 
-    public void setUuid(int uuid) {
-        this.uuid = uuid;
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

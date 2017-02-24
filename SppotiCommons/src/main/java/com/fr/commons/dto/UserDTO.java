@@ -12,9 +12,8 @@ import java.util.List;
  * Created by djenanewail on 12/16/16.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO {
+public class UserDTO extends AbstractCommonDTO{
 
-    private Integer id;
     private String firstName;
     private String lastName;
     private String username;
@@ -85,14 +84,6 @@ public class UserDTO {
         this.avatar = avatar;
         this.coverType = coverType;
         this.id = uuid;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getFirstName() {

@@ -4,6 +4,7 @@ package com.fr.commons.dto.post;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.entities.AddressEntity;
@@ -19,9 +20,8 @@ import java.util.SortedSet;
  * Created by: Wail DJENANE on Aug 7, 2016
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class PostResponseDTO {
+public class PostResponseDTO extends AbstractCommonDTO {
 
-    private int id;
     private Long sportId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
@@ -179,14 +179,6 @@ public class PostResponseDTO {
 
     public void setMyPost(boolean isMyPost) {
         this.myPost = isMyPost;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public SortedSet<AddressEntity> getAddresses() {

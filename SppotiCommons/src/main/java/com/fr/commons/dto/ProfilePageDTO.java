@@ -13,7 +13,7 @@ import com.fr.entities.SportEntity;
  * Created by: Wail DJENANE on Jun 11, 2016
  */
 @JsonInclude(Include.NON_ABSENT)
-public class ProfilePageDTO {
+public class ProfilePageDTO extends AbstractCommonDTO{
 
     private String lastName;
     private String firstName;

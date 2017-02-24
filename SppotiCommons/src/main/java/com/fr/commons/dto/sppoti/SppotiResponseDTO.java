@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.SportEntity;
 
@@ -13,7 +14,7 @@ import java.util.Date;
  * Created by: Wail DJENANE on Jul 12, 2016
  */
 @JsonInclude(Include.NON_NULL)
-public class SppotiResponseDTO {
+public class SppotiResponseDTO extends AbstractCommonDTO {
 
     private Integer id;
 

@@ -2,6 +2,7 @@ package com.fr.commons.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.UserDTO;
 
 import java.util.Date;
@@ -11,9 +12,8 @@ import java.util.Date;
  */
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class NotificationDTO {
+public class NotificationDTO extends AbstractCommonDTO {
 
-    private Integer id;
     private UserDTO from;
     private UserDTO to;
     private Integer notificationType;
@@ -25,14 +25,6 @@ public class NotificationDTO {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private Date datetime;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public UserDTO getFrom() {
         return from;

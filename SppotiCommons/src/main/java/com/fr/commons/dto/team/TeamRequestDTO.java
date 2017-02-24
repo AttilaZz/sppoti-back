@@ -1,5 +1,6 @@
 package com.fr.commons.dto.team;
 
+import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.UserDTO;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 /**
  * Created by djenanewail on 1/23/17.
  */
-public class TeamRequestDTO {
+public class TeamRequestDTO extends AbstractCommonDTO {
 
     private String name;
     private String logoPath;

@@ -1,6 +1,7 @@
 package com.fr.commons.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fr.commons.dto.AbstractCommonDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  * Created by wdjenane on 14/02/2017.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class NotificationResponseDTO {
+public class NotificationResponseDTO extends AbstractCommonDTO {
 
     private List<NotificationDTO> notifications;
     private Integer notifCounter;

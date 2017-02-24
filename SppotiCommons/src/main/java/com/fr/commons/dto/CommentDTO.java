@@ -12,9 +12,8 @@ import com.fr.entities.CommentEntity;
  * Created by: Wail DJENANE on Aug 12, 2016
  */
 @JsonInclude(Include.NON_EMPTY)
-public class CommentDTO {
+public class CommentDTO extends AbstractCommonDTO{
 
-    private int id;
     private int postId;
 
     private String authorFirstName;
@@ -159,14 +158,6 @@ public class CommentDTO {
 
     public void setEdited(boolean isEdited) {
         this.isEdited = isEdited;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getPostId() {

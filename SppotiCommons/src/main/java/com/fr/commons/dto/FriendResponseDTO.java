@@ -8,7 +8,7 @@ import java.util.List;
  * Created by: Wail DJENANE on Jul 3, 2016
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FriendResponseDTO {
+public class FriendResponseDTO extends AbstractCommonDTO{
 
     private List<UserDTO> pendingList;
     private List<UserDTO> refusedList;

@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by: Wail DJENANE on Jun 15, 2016
  */
-public class SignUpRequestDTO {
+public class SignUpRequestDTO extends AbstractCommonDTO{
 
     private String lastName;
     private String firstName;

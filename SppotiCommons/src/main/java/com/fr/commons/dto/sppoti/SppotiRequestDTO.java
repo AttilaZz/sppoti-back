@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.team.TeamRequestDTO;
 
 import java.util.Date;
@@ -13,7 +14,7 @@ import java.util.Date;
  */
 
 @JsonInclude(Include.NON_NULL)
-public class SppotiRequestDTO {
+public class SppotiRequestDTO extends AbstractCommonDTO {
 
     private String titre;
     private Long sportId;

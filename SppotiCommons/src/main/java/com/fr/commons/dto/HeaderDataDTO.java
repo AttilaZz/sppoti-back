@@ -10,7 +10,7 @@ import java.util.List;
  * Created by: Wail DJENANE on Oct 17, 2016
  */
 @JsonInclude(value = Include.NON_DEFAULT)
-public class HeaderDataDTO {
+public class HeaderDataDTO extends AbstractCommonDTO{
 
     private String firstName;
     private String lastName;

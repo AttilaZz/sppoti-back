@@ -3,6 +3,7 @@ package com.fr.commons.dto.post;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.entities.AddressEntity;
 import com.google.gson.annotations.SerializedName;
 
@@ -12,7 +13,7 @@ import java.util.Set;
  * Created by: Wail DJENANE on Jun 13, 2016
  */
 @JsonInclude(Include.NON_ABSENT)
-public class PostRequestDTO {
+public class PostRequestDTO extends AbstractCommonDTO {
 
     private Long sportId;
 
