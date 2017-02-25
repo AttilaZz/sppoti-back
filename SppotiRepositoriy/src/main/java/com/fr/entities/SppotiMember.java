@@ -4,7 +4,6 @@ import com.fr.models.GlobalAppStatus;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
 
 /**
  * Created by djenanewail on 2/4/17.
@@ -15,16 +14,21 @@ public class SppotiMember
         extends AbstractCommonEntity {
 
     private String status = GlobalAppStatus.PENDING.name();
+
+    @Temporal(TemporalType.TIMESTAMP)
     private Date invitationDate = new Date();
+
+    @Temporal(TemporalType.TIMESTAMP)
     private Date acceptationDate;
+
     private Integer xPosition;
     private Integer yPosition;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sppoti_id")
     private SppotiEntity sppoti;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "sppoter_id")
     private TeamMemberEntity teamMember;
 

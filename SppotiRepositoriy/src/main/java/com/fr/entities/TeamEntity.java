@@ -15,7 +15,7 @@ import java.util.UUID;
 public class TeamEntity
         extends AbstractCommonEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     private String logoPath;
@@ -28,6 +28,13 @@ public class TeamEntity
     @OneToOne
     @JoinColumn(name = "sport_id")
     private SportEntity sport;
+
+    /**
+     * When creating a host team from a sppoti, we need a reference to the sppoti,
+     * in order to save team host ang get i's id, otherwise, we get a transient exception.
+     */
+    @OneToMany(mappedBy = "teamHost", cascade = CascadeType.ALL)
+    private Set<SppotiEntity> sppotiEntity;
 
     private boolean deleted = false;
 
@@ -77,6 +84,14 @@ public class TeamEntity
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Set<SppotiEntity> getSppotiEntity() {
+        return sppotiEntity;
+    }
+
+    public void setSppotiEntity(Set<SppotiEntity> sppotiEntity) {
+        this.sppotiEntity = sppotiEntity;
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.*;
 import com.fr.exceptions.NoRightToAcceptOrRefuseChallenge;
 import com.fr.exceptions.SportNotFoundException;
-import com.fr.exceptions.TeamMemberNotFoundException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.SppotiControllerService;
@@ -15,9 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -46,6 +46,25 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         TeamEntity hostTeam = new TeamEntity();
         SppotiEntity sppoti = new SppotiEntity();
 
+        SportEntity sportEntity = sportRepository.findOne(newSppoti.getSportId());
+        if (sportEntity == null) {
+            throw new SportNotFoundException("SportEntity id is incorrect");
+        }
+        sppoti.setSport(sportEntity);
+
+        sppoti.setLocation(newSppoti.getAddress());
+        sppoti.setDateTimeStart(newSppoti.getDatetimeStart());
+        sppoti.setTitre(newSppoti.getTitre());
+        sppoti.setMaxMembersCount(newSppoti.getMaxTeamCount());
+
+        if (newSppoti.getTags() != null) {
+            sppoti.setTags(newSppoti.getTags());
+        }
+
+        if (newSppoti.getDescription() != null) {
+            sppoti.setDescription(newSppoti.getDescription());
+        }
+
         if (newSppoti.getMyTeam() != null) {
 
             if (newSppoti.getMyTeam().getName() != null) {
@@ -60,12 +79,9 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                 hostTeam.setCoverPath(newSppoti.getMyTeam().getCoverPath());
             }
 
-            try {
-                hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMembers(), hostTeam, sppoti));
-            } catch (RuntimeException e) {
-                LOGGER.error("Error when trying to get USERS from team members list: ", e);
-                throw new TeamMemberNotFoundException("Host-TeamRequestDTO (members) one of the team doesn't exist");
-            }
+            hostTeam.setTeamMembers(getTeamMembersEntityFromDto(newSppoti.getMyTeam().getMembers(), hostTeam, sppoti));
+            hostTeam.setSport(sportEntity);
+//            teamRepository.save(hostTeam);
 
         } else if (newSppoti.getMyTeamId() != 0) {
 
@@ -93,50 +109,13 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Host team not found in the request");
         }
 
-        SportEntity sportEntity = sportRepository.findOne(newSppoti.getSportId());
-        if (sportEntity == null) {
-            throw new SportNotFoundException("SportEntity id is incorrect");
-        }
-
-        hostTeam.setSport(sportEntity);
-        sppoti.setSport(sportEntity);
         sppoti.setUserSppoti(getConnectedUser());
         sppoti.setTeamHost(hostTeam);
 
-        if (newSppoti.getTags() != null) {
-            sppoti.setTags(newSppoti.getTags());
-        }
+        Set<SppotiEntity> sppotiEntities = new HashSet<>();
+        sppotiEntities.add(sppoti);
+        hostTeam.setSppotiEntity(sppotiEntities);
 
-        if (newSppoti.getDescription() != null) {
-            sppoti.setDescription(newSppoti.getDescription());
-        }
-
-        /** add team adverse. */
-//        if (newSppoti.getVsTeam() != 0) {
-//            TeamEntity team = null;
-//            try {
-//                List<TeamEntity> tempTeams = teamRepository.findByUuid(newSppoti.getVsTeam());
-//
-//                if (!tempTeams.isEmpty()) {
-//                    team = tempTeams.get(0);
-//                }
-//
-//            } catch (RuntimeException e) {
-//                e.printStackTrace();
-//                LOGGER.error("Error when getting team from AdverseTeamId: " + newSppoti.getVsTeam());
-//            }
-//
-//            if (team == null) {
-//                throw new EntityNotFoundException(TEAM_ID_NOT_FOUND);
-//
-//            }
-//            sppoti.setTeamAdverse(team);
-//        }
-
-        sppoti.setLocation(newSppoti.getAddress());
-        sppoti.setDateTimeStart(newSppoti.getDatetimeStart());
-        sppoti.setTitre(newSppoti.getTitre());
-        sppoti.setMaxMembersCount(newSppoti.getMaxTeamCount());
 
         SppotiEntity savedSppoti = sppotiRepository.save(sppoti);
 
@@ -187,7 +166,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             TeamResponseDTO teamAdverseResponse = fillTeamResponse(sppoti.getTeamAdverse(), sppoti);
             sppotiResponseDTO.setTeamAdverse(teamAdverseResponse);
             sppotiResponseDTO.setTeamAdverseStatus(GlobalAppStatus.valueOf(sppoti.getTeamAdverseStatus()).getValue());
-        }else{
+        } else {
             sppotiResponseDTO.setTeamAdverseStatus(GlobalAppStatus.NO_CHALLENGE_YET.getValue());
         }
 

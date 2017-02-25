@@ -5,6 +5,7 @@ import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import com.fr.rest.service.SppotiControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,10 +70,17 @@ public class SppotiAddController {
 //        }
 
         try {
+
             SppotiResponseDTO sppotiResponseDTO = sppotiControllerService.saveSppoti(newSppoti);
 
             return new ResponseEntity<>(sppotiResponseDTO, HttpStatus.CREATED);
+
         } catch (RuntimeException e) {
+            if (e instanceof DataIntegrityViolationException) {
+                LOGGER.error("team name already exist: ", e);
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+
             LOGGER.error("Ajout de sppoti imposssible: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

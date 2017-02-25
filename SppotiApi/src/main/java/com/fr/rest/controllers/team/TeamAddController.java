@@ -6,6 +6,7 @@ import com.fr.rest.service.TeamControllerService;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -62,6 +63,9 @@ public class TeamAddController {
         } catch (EntityNotFoundException e) {
             LOGGER.error("Spport not found in the request: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (DataIntegrityViolationException e) {
+            LOGGER.error("team name already exist: ", e);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
         return new ResponseEntity<>(teamResponseDTO, HttpStatus.CREATED);

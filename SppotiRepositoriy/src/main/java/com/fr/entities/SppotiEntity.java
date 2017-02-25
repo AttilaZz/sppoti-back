@@ -22,13 +22,15 @@ public class SppotiEntity
     @Column(nullable = false)
     private String titre;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date datetimeCreated = new Date();
 
     @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date dateTimeStart;
 
     @Column(nullable = false)
@@ -53,8 +55,8 @@ public class SppotiEntity
     @JsonIgnore
     private UserEntity userSppoti;
 
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_host_id", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_host_id")
     @JsonIgnore
     private TeamEntity teamHost;
 
