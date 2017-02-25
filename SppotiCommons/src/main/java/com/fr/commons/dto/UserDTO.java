@@ -61,7 +61,7 @@ public class UserDTO extends AbstractCommonDTO{
     public UserDTO() {
     }
 
-    public UserDTO(int id, String firstName, String lastName, String username, String cover, String avatar, Integer coverType, Boolean isTeamAdmin, Boolean isSppotiAdmin, Integer teamStatus, Integer sppotiStatus, Integer userId) {
+    public UserDTO(int id, String firstName, String lastName, String username, String cover, String avatar, Integer coverType, Boolean isTeamAdmin, Boolean isSppotiAdmin, Integer teamStatus, Integer sppotiStatus, Integer userId, Integer xPosition, Integer yPosition) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -74,6 +74,8 @@ public class UserDTO extends AbstractCommonDTO{
         this.teamStatus = teamStatus;
         this.sppotiStatus = sppotiStatus;
         this.userId = userId;
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
     }
 
     public UserDTO(int uuid, String firstName, String lastName, String username, String cover, String avatar, Integer coverType) {

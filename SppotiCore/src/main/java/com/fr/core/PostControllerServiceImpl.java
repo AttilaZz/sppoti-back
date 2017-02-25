@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import utils.EntitytoDtoTransformer;
+import transformers.EntitytoDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;

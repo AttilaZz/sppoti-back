@@ -19,7 +19,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import utils.EntitytoDtoTransformer;
+import transformers.EntitytoDtoTransformer;
+import transformers.TeamMemberTransformer;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -545,41 +546,28 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
         List<UserDTO> teamUsers = new ArrayList<UserDTO>();
 
-        for (TeamMemberEntity user : team.getTeamMembers()) {
+        for (TeamMemberEntity memberEntity : team.getTeamMembers()) {
 
             Integer sppoterStatus = null;
 
             if (sppoti != null) {
                 //get status for the selected sppoti
-                if (!StringUtils.isEmpty(user.getSppotiMembers())) {
-                    for (SppotiMember sppoter : user.getSppotiMembers()) {
-                        if (sppoter.getTeamMember().getId().equals(user.getId()) && sppoter.getSppoti().getId().equals(sppoti.getId())) {
+                if (!StringUtils.isEmpty(memberEntity.getSppotiMembers())) {
+                    for (SppotiMember sppoter : memberEntity.getSppotiMembers()) {
+                        if (sppoter.getTeamMember().getId().equals(memberEntity.getId()) && sppoter.getSppoti().getId().equals(sppoti.getId())) {
                             sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
                         }
                     }
                 }
             }
 
-            //get avatar and cover
-            UserDTO userCoverAndAvatar = EntitytoDtoTransformer.getUserCoverAndAvatar(user.getUsers());
-
-            //fill sppoter data
-            teamUsers.add(new UserDTO(user.getUuid(), user.getUsers().getFirstName(), user.getUsers().getLastName(), user.getUsers().getUsername(),
-                    userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
-                    userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
-                    userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null,
-                    user.getAdmin(),
-                    sppoti != null && sppoti.getUserSppoti().getId() != null && user.getUsers().getId().equals(sppoti.getUserSppoti().getId()) ? true : null,
-                    GlobalAppStatus.valueOf(user.getStatus()).getValue(),
-                    sppoti != null && sppoti.getUserSppoti().getId() != null ? sppoterStatus : null, user.getUsers().getUuid()));
+            teamUsers.add(TeamMemberTransformer.teamMemberEntityToDto(memberEntity, sppoti, sppoterStatus));
         }
 
         teamResponseDTO.setTeamMembers(teamUsers);
-
         teamResponseDTO.setCoverPath(team.getCoverPath());
         teamResponseDTO.setLogoPath(team.getLogoPath());
         teamResponseDTO.setName(team.getName());
-
         teamResponseDTO.setSportId(team.getSport().getId());
 
         return teamResponseDTO;

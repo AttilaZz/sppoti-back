@@ -1,4 +1,4 @@
-package utils;
+package transformers;
 
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.UserDTO;
@@ -7,7 +7,7 @@ import com.fr.entities.UserEntity;
 
 import javax.transaction.Transactional;
 
-import static utils.EntitytoDtoTransformer.getUserCoverAndAvatar;
+import static transformers.EntitytoDtoTransformer.getUserCoverAndAvatar;
 
 /**
  * Created by djenanewail on 2/19/17.
