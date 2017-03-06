@@ -33,6 +33,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.hibernate.criterion.Restrictions.and;
 
@@ -71,15 +72,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         //auth.authenticationProvider(authenticationProvider());
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css/**");
-        web.ignoring().antMatchers("/templates/**");
-        web.ignoring().antMatchers("/js/**");
-        web.ignoring().antMatchers("/images/**");
-        web.ignoring().antMatchers("/views/**");
-        web.ignoring().antMatchers("/upload/**");
-    }
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring().antMatchers("/css/**");
+//        web.ignoring().antMatchers("/templates/**");
+//        web.ignoring().antMatchers("/js/**");
+//        web.ignoring().antMatchers("/images/**");
+//        web.ignoring().antMatchers("/views/**");
+//        web.ignoring().antMatchers("/upload/**");
+//    }
 
     @Autowired
     private PersistentTokenRepository tokenRepository;
@@ -87,7 +88,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://localhost:8000"));
+        configuration.setAllowedOrigins(Collections.singletonList("https://localhost:8000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -118,7 +119,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .tokenValiditySeconds(86400)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/account/**", "/sport/**").permitAll()
+                .antMatchers("/account/**", "/sport/**").permitAll()
                 .antMatchers("/admin/**").hasRole(UserRoleType.ADMIN.getUserProfileType())
                 .antMatchers("/api/profile/**").hasAnyRole(UserRoleType.USER.getUserProfileType(),
                 UserRoleType.ADMIN.getUserProfileType())

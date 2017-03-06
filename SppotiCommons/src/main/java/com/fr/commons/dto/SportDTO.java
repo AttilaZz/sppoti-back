@@ -3,7 +3,7 @@ package com.fr.commons.dto;
 /**
  * Created by djenanewail on 12/22/16.
  */
-public class SportModelDTO {
+public class SportDTO {
 
     private Long id;
     private String name;

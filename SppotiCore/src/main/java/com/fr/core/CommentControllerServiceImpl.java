@@ -16,7 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import transformers.EntitytoDtoTransformer;
+import transformers.EntityToDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -55,7 +55,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
 
             //like on other posts not mine
             if (commentEntity.getUser().getUuid() != commentEntity.getPost().getTargetUserProfileUuid()) {
-                addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.getUser(), getUserByUuId(commentEntity.getPost().getTargetUserProfileUuid()));
+                addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.getUser(), getUserByUuId(commentEntity.getPost().getTargetUserProfileUuid()), null);
 
             }
 
@@ -63,7 +63,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
 
         }
 
-        return EntitytoDtoTransformer.commentEntityToDto(commentEntity, getUserById(userId));
+        return EntityToDtoTransformer.commentEntityToDto(commentEntity, getUserById(userId));
 
     }
 

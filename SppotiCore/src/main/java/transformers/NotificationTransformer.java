@@ -4,21 +4,20 @@ import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.NotificationEntity;
 import com.fr.entities.UserEntity;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
-
-import static transformers.EntitytoDtoTransformer.getUserCoverAndAvatar;
+import static transformers.EntityToDtoTransformer.getUserCoverAndAvatar;
 
 /**
  * Created by djenanewail on 2/19/17.
  */
+@Transactional(readOnly = true)
 public class NotificationTransformer {
 
     /**
      * @param notification notification entity to map.
      * @return NotificationEntity DTO.
      */
-    @Transactional
     public static NotificationDTO notificationEntityToDto(NotificationEntity notification) {
         NotificationDTO notificationDTO = new NotificationDTO();
         notificationDTO.setId(notification.getUuid());
@@ -28,6 +27,10 @@ public class NotificationTransformer {
         notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
         notificationDTO.setOpened(notification.isOpened());
 
+        if (notification.getTeam() != null) {
+            TeamTransformer.teamEntityToDto(notification.getTeam());
+        }
+
         return notificationDTO;
     }
 
@@ -35,7 +38,6 @@ public class NotificationTransformer {
      * @param userEntity user entity to map.
      * @return user DTO used in notifications.
      */
-    @Transactional
     public static UserDTO notificationUserEntityToDto(UserEntity userEntity) {
         UserDTO userDTO = new UserDTO(), resourceUserDto = getUserCoverAndAvatar(userEntity);
         userDTO.setFirstName(userEntity.getFirstName());

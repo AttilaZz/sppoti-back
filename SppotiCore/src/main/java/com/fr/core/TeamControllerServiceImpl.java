@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static transformers.EntitytoDtoTransformer.getUserCoverAndAvatar;
+import static transformers.EntityToDtoTransformer.getUserCoverAndAvatar;
 
 /**
  * Created by djenanewail on 1/22/17.
@@ -153,7 +153,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
 
         if (teamMembersRepository.save(teamMembers) != null) {
-            addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers());
+            addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null);
         }
 
     }
@@ -174,7 +174,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         teamMembers.setStatus(GlobalAppStatus.REFUSED.name());
 
         if (teamMembersRepository.save(teamMembers) != null) {
-            addNotification(NotificationType.X_REFUSED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers());
+            addNotification(NotificationType.X_REFUSED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null);
 
         }
 
@@ -233,14 +233,11 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public UserDTO addMember(int teamId, UserDTO userParam) {
 
-        List<UserEntity> usersList = userRepository.getByUuid(userParam.getId());
-        UserEntity user;
+        UserEntity user = getUserByUuId(teamId);
 
-        if (usersList == null || usersList.isEmpty()) {
+        if (user == null) {
             throw new EntityNotFoundException("UserDTO with id (" + userParam.getId() + ") Not found");
         }
-
-        user = usersList.get(0);
 
         List<TeamEntity> teamList = teamRepository.findByUuid(teamId);
 

@@ -66,14 +66,14 @@ public interface PostControllerService extends AbstractControllerService {
      * @param page page number.
      * @return all posted photos.
      */
-    List<PostResponseDTO> getPhotoGallery(Long userId, int page);
+    List<PostResponseDTO> getPhotoGallery(int userId, int page);
 
     /**
      * @param userId user id.
      * @param page page number.
      * @return all posted videos.
      */
-    List<PostResponseDTO> getVideoGallery(Long userId, int page);
+    List<PostResponseDTO> getVideoGallery(int userId, int page);
 
     /**
      * @param postId post id.

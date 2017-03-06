@@ -78,12 +78,12 @@ public class AccountAddController {
         newUser.setUsername(uName);
 
         for (Long sportId : user.getSportId()) {
-            // if the parsed SportModelDTO exist in database == correct request
+            // if the parsed SportDTO exist in database == correct request
             SportEntity mSport = accountControllerService.getSportById(sportId);
             if (mSport != null) {
                 userSports.add(mSport);
             } else {
-                LOGGER.info("INSCRIPTION: le nom de SportModelDTO envoyé n'est pas reconnu");
+                LOGGER.info("INSCRIPTION: le nom de SportDTO envoyé n'est pas reconnu");
                 response.setStatus(400);
                 return;
             }

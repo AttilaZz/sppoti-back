@@ -18,7 +18,7 @@ import java.util.List;
  * Created by wdjenane on 22/02/2017.
  */
 @RestController
-@RequestMapping("/gallery/video")
+@RequestMapping("/gallery/video/{userId}")
 public class GalleryVideoController {
     private PostControllerService postControllerService;
 
@@ -29,18 +29,13 @@ public class GalleryVideoController {
 
     private Logger LOGGER = Logger.getLogger(GalleryVideoController.class);
 
-    private static final String ATT_USER_ID = "USER_ID";
-
 
     /**
-     * @param page    page number.
-     * @param request http request object.
+     * @param page page number.
      * @return all videos posted by user.
      */
     @GetMapping(value = "/{page}")
-    public ResponseEntity<List<PostResponseDTO>> videoGallery(@PathVariable int page, HttpServletRequest request) {
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+    public ResponseEntity<List<PostResponseDTO>> videoGallery(@PathVariable int page, @PathVariable int userId) {
 
         List<PostResponseDTO> videoGallery = postControllerService.getVideoGallery(userId, page);
 

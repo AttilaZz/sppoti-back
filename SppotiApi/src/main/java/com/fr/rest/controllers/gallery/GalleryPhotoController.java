@@ -19,7 +19,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/gallery/photo")
+@RequestMapping("/gallery/photo/{userId}")
 public class GalleryPhotoController {
 
     private PostControllerService postControllerService;
@@ -31,17 +31,12 @@ public class GalleryPhotoController {
 
     private Logger LOGGER = Logger.getLogger(GalleryPhotoController.class);
 
-    private static final String ATT_USER_ID = "USER_ID";
-
     /**
      * @param page    page number.
-     * @param request http request object.
      * @return List of all photos posted by a user.
      */
     @GetMapping(value = "/{page}")
-    public ResponseEntity<List<PostResponseDTO>> photoGallery(@PathVariable int page, HttpServletRequest request) {
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+    public ResponseEntity<List<PostResponseDTO>> photoGallery(@PathVariable int page, @PathVariable int userId) {
 
         List<PostResponseDTO> photoGallery = postControllerService.getPhotoGallery(userId, page);
 

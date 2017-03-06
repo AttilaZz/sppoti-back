@@ -36,6 +36,10 @@ public class NotificationEntity
     @Column(nullable = false)
     private boolean opened = false;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private TeamEntity team;
+
     public UserEntity getFrom() {
         return from;
     }
@@ -74,6 +78,14 @@ public class NotificationEntity
 
     public void setOpened(boolean opened) {
         this.opened = opened;
+    }
+
+    public TeamEntity getTeam() {
+        return team;
+    }
+
+    public void setTeam(TeamEntity team) {
+        this.team = team;
     }
 
     @Override

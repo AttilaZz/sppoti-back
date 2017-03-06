@@ -143,7 +143,7 @@ public class PostController {
             postEditRow.setText(newData.getText());
 
             /*
-             related SportModelDTO can be modified
+             related SportDTO can be modified
              */
             if (isAlreadyEdited) {
                 postEditRow.setSport(lastPostEdit.getSport());
@@ -152,7 +152,7 @@ public class PostController {
             }
 
         } else if (newData.getSportId() != null) {
-            // SportModelDTO modification
+            // SportDTO modification
             SportEntity sp = postDataService.getSportById(newData.getSportId());
             if (sp != null) {
                 postEditRow.setSport(sp);
@@ -162,7 +162,7 @@ public class PostController {
                 }
 
             } else {
-                LOGGER.info("POST_UPDATE: Failed to retrieve the SportModelDTO to update");
+                LOGGER.info("POST_UPDATE: Failed to retrieve the SportDTO to update");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         } else {

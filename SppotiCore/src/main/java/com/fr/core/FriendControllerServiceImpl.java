@@ -53,7 +53,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
     public void saveFriendShip(FriendShipEntity friendShip) {
 
         if (friendShipRepository.save(friendShip) != null) {
-            addNotification(NotificationType.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend());
+            addNotification(NotificationType.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend(), null);
         }
 
     }
@@ -92,9 +92,9 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
         FriendShipEntity friendShip = friendShipRepository.save(tempFriendShip);
         if (friendShip != null) {
             if (friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED.name())) {
-                addNotification(NotificationType.FRIEND_REQUEST_ACCEPTED, friendShip.getFriend(), friendShip.getUser());
+                addNotification(NotificationType.FRIEND_REQUEST_ACCEPTED, friendShip.getFriend(), friendShip.getUser(), null);
             } else if (friendShip.getStatus().equals(GlobalAppStatus.REFUSED.name())) {
-                addNotification(NotificationType.FRIEND_REQUEST_REFUSED, friendShip.getFriend(), friendShip.getUser());
+                addNotification(NotificationType.FRIEND_REQUEST_REFUSED, friendShip.getFriend(), friendShip.getUser(), null);
             }
         }
 

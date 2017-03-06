@@ -19,7 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import transformers.EntitytoDtoTransformer;
+import transformers.EntityToDtoTransformer;
 import transformers.TeamMemberTransformer;
 
 import java.util.*;
@@ -204,10 +204,10 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     @Override
     public UserEntity getUserByUuId(int id) {
 
-        List<UserEntity> usersList = userRepository.getByUuid(id);
+        Optional<UserEntity> usersList = userRepository.getByUuid(id);
 
-        if (usersList != null && !usersList.isEmpty()) {
-            return usersList.get(0);
+        if (usersList.isPresent()) {
+            return usersList.get();
         }
 
         return null;
@@ -264,7 +264,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 //            if (!userDaoService.getLastAvatar(userId).isEmpty())
 //                cm.setAuthorAvatar(userDaoService.getLastAvatar(userId).get(0).getUrl());
 
-            UserDTO userCoverAndAvatar = EntitytoDtoTransformer.getUserCoverAndAvatar(
+            UserDTO userCoverAndAvatar = EntityToDtoTransformer.getUserCoverAndAvatar(
                     commentEntity.getUser());
             cm.setAuthorAvatar(userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null);
             cm.setAuthorFirstName(commentEntity.getUser().getFirstName());
@@ -398,7 +398,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         /*
         Manage resources
          */
-        UserDTO user_cover_avatar = EntitytoDtoTransformer.getUserCoverAndAvatar(targetUser);
+        UserDTO user_cover_avatar = EntityToDtoTransformer.getUserCoverAndAvatar(targetUser);
         user.setCover(user_cover_avatar.getCover());
         user.setAvatar(user_cover_avatar.getAvatar());
         user.setCoverType(user_cover_avatar.getCoverType());
@@ -406,17 +406,17 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         End resource manager
          */
 
-        List<SportModelDTO> sportModelDTOs = new ArrayList<SportModelDTO>();
+        List<SportDTO> sportDTOs = new ArrayList<SportDTO>();
 
         for (SportEntity sportEntity : targetUser.getRelatedSports()) {
-            SportModelDTO sportModelDTO = new SportModelDTO();
-            sportModelDTO.setId(sportEntity.getId());
-            sportModelDTO.setName(sportEntity.getName());
+            SportDTO sportDTO = new SportDTO();
+            sportDTO.setId(sportEntity.getId());
+            sportDTO.setName(sportEntity.getName());
 
-            sportModelDTOs.add(sportModelDTO);
+            sportDTOs.add(sportDTO);
         }
 
-        user.setSportModelDTOs(sportModelDTOs);
+        user.setSportDTOs(sportDTOs);
 
         try {
             user.setAddress(targetUser.getAddresses().first().getAddress());
@@ -441,14 +441,14 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
         for (UserDTO user : users) {
 
-            List<UserEntity> u = userRepository.getByUuid(user.getId());
+            UserEntity u = getUserByUuId(user.getId());
 
             TeamMemberEntity teamMember = new TeamMemberEntity();
             SppotiMember sppoter = new SppotiMember();
 
-            if (u != null && !u.isEmpty()) {
+            if (u != null) {
 
-                if (u.get(0).getId().equals(adminId)) {
+                if (u.getId().equals(adminId)) {
                     teamMember.setAdmin(true);
                     teamMember.setTeamCaptain(true);
                     /** Admin is member of the team, status should be confirmed. */
@@ -456,7 +456,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 }
 
                 teamMember.setTeam(team);
-                teamMember.setUsers(u.get(0));
+                teamMember.setUsers(u);
 
                 if (sppoti != null) {
                     TeamMemberEntity sppoterMember = teamMembersRepository.findByUsersUuidAndTeamUuid(user.getId(), team.getUuid());
@@ -496,13 +496,13 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     sppoti.setSppotiMembers(sppotiMembers);
 
                     /** send TEAM notification to the invited user. */
-                    if (!u.get(0).getId().equals(adminId)) {
-                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u.get(0));
+                    if (!u.getId().equals(adminId)) {
+                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u, null);
                     }
 
                     /** send SPPOTI notification to all the team. */
-                    if (!u.get(0).getId().equals(adminId)) {
-                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, getUserById(adminId), u.get(0));
+                    if (!u.getId().equals(adminId)) {
+                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, getUserById(adminId), u, null);
                     }
 
                 } else {
@@ -516,8 +516,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     }
 
                     /** send TEAM notification to the invited user. */
-                    if (!u.get(0).getId().equals(adminId)) {
-                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u.get(0));
+                    if (!u.getId().equals(adminId)) {
+                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u, team);
                     }
                 }
 
@@ -578,16 +578,18 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     /**
      * Add notification.
      *
-     * @param friendRequestRefused notif type.
-     * @param userFrom             notif sender.
-     * @param userTo               notif receiver.
+     * @param notificationType notif type.
+     * @param userFrom         notif sender.
+     * @param userTo           notif receiver.
+     * @param teamEntity       team information.
      */
     @Transactional
-    protected void addNotification(NotificationType friendRequestRefused, UserEntity userFrom, UserEntity userTo) {
+    protected void addNotification(NotificationType notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity) {
         NotificationEntity notification = new NotificationEntity();
-        notification.setNotificationType(friendRequestRefused);
+        notification.setNotificationType(notificationType);
         notification.setFrom(userFrom);
         notification.setTo(userTo);
+        notification.setTeam(teamEntity);
         notificationRepository.save(notification);
     }
 
@@ -637,9 +639,9 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
             if (userToNotify != null) {
                 if (commentEntity != null) {
-                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(), userToNotify);
+                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(), userToNotify, null);
                 } else if (postEntity != null) {
-                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify);
+                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify, null);
                 }
 
             }

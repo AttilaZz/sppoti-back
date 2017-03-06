@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Moi on 27-Nov-16.
@@ -25,7 +26,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     UserEntity getByIdAndDeletedFalse(Long id);
 
-    List<UserEntity> getByUuid(int id);
+    Optional<UserEntity> getByUuid(int id);
 
     @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
     @Query("SELECT u from UserEntity u WHERE u.username LIKE CONCAT('%',:prefix,'%') OR u.firstName LIKE CONCAT('%',:prefix,'%') OR u.lastName LIKE CONCAT('%',:prefix,'%') ")

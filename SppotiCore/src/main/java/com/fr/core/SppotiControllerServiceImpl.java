@@ -293,7 +293,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
          * Send notification to sppoti admin.
          */
         if (updatedSppoter != null) {
-            addNotification(NotificationType.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sppotiMembers.getTeamMember().getUsers(), sppotiMembers.getSppoti().getUserSppoti());
+            addNotification(NotificationType.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sppotiMembers.getTeamMember().getUsers(), sppotiMembers.getSppoti().getUserSppoti(), null);
         }
 
         //update status as team member.
@@ -311,7 +311,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
             UserEntity teamAdmin = teamMembersRepository.findByTeamUuidAndAdminTrue(teamMembers.getTeam().getUuid()).getUsers();
 
-            addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, sppotiMembers.getTeamMember().getUsers(), teamAdmin);
+            addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, sppotiMembers.getTeamMember().getUsers(), teamAdmin, teamMembers.getTeam());
         }
 
     }
@@ -336,7 +336,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
          * Send notification to sppoti admin.
          */
         if (updatedSppoter != null) {
-            addNotification(NotificationType.X_REFUSED_YOUR_SPPOTI_INVITATION, sppotiMembers.getTeamMember().getUsers(), sppotiMembers.getSppoti().getUserSppoti());
+            addNotification(NotificationType.X_REFUSED_YOUR_SPPOTI_INVITATION, sppotiMembers.getTeamMember().getUsers(), sppotiMembers.getSppoti().getUserSppoti(), null);
         }
 
     }

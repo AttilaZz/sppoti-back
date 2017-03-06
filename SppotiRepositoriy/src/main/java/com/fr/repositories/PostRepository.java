@@ -27,11 +27,11 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
     @PostFilter("(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend())) && !filterObject.isDeleted() ")
     List<PostEntity> getByUserUuidOrderByDatetimeCreatedDesc(int uuid, Pageable pageable);
 
-    @PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted() ")
-    List<PostEntity> getByAlbumIsNotNullOrderByDatetimeCreatedDesc(Pageable pageable);
+    @PostFilter("!filterObject.isDeleted() ")
+    List<PostEntity> getByAlbumIsNotNullAndUserUuidOrderByDatetimeCreatedDesc(int userdId, Pageable pageable);
 
-    @PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted() ")
-    List<PostEntity> getByVideoIsNotNullOrderByDatetimeCreatedDesc(Pageable pageable);
+    @PostFilter("!filterObject.isDeleted() ")
+    List<PostEntity> getByVideoIsNotNullAndUserUuidOrderByDatetimeCreatedDesc(int userId, Pageable pageable);
 
     @PostFilter("!filterObject.isDeleted() ")
     @Query("SELECT p FROM PostEntity p WHERE (p.user.id = :userId OR p.targetUserProfileUuid = :userUuid) AND p.visibility IN (:visibility)")

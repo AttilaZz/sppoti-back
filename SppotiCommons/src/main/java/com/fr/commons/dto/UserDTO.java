@@ -27,7 +27,7 @@ public class UserDTO extends AbstractCommonDTO{
 
     @SerializedName("sports")
     @JsonProperty("sports")
-    private List<SportModelDTO> sportModelDTOs;
+    private List<SportDTO> sportDTOs;
 
     private String password;
     private String phone;
@@ -136,12 +136,12 @@ public class UserDTO extends AbstractCommonDTO{
         this.yPosition = yPosition;
     }
 
-    public List<SportModelDTO> getSportModelDTOs() {
-        return sportModelDTOs;
+    public List<SportDTO> getSportDTOs() {
+        return sportDTOs;
     }
 
-    public void setSportModelDTOs(List<SportModelDTO> sportModelDTOs) {
-        this.sportModelDTOs = sportModelDTOs;
+    public void setSportDTOs(List<SportDTO> sportDTOs) {
+        this.sportDTOs = sportDTOs;
     }
 
     public String getPassword() {

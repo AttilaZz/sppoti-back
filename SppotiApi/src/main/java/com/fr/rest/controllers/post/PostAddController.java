@@ -76,7 +76,7 @@ public class PostAddController {
                 newPostToSave.setSport(targedSport);
                 postRep.setSportId(sportId);
             } else {
-                LOGGER.debug("POST-ADD: The received SportModelDTO ID is not valid");
+                LOGGER.debug("POST-ADD: The received SportDTO ID is not valid");
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 

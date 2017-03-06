@@ -6,8 +6,8 @@ import com.fr.entities.CommentEntity;
 import com.fr.entities.ResourcesEntity;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +17,8 @@ import java.util.Set;
  */
 
 @Component
-public class EntitytoDtoTransformer {
+@Transactional(readOnly = true)
+public class EntityToDtoTransformer {
 
 
     /**
@@ -25,7 +26,6 @@ public class EntitytoDtoTransformer {
      * @param userEntity user entity to map.
      * @return like dto.
      */
-    @Transactional
     public static CommentDTO commentEntityToDto(CommentEntity commentEntity, UserEntity userEntity) {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setAuthorFirstName(userEntity != null ? userEntity.getFirstName() : null);
@@ -45,7 +45,6 @@ public class EntitytoDtoTransformer {
      * @param targetUser user entity to map.
      * @return userDto with only avatar and cover.
      */
-    @Transactional
     public static UserDTO getUserCoverAndAvatar(UserEntity targetUser) {
 
         UserDTO user = new UserDTO();

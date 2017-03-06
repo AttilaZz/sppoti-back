@@ -105,7 +105,7 @@ public class InitMainData {
             if (isSaved)
                 logger.info("All sports have been saved !!");
             else
-                logger.error("At least one SportModelDTO is not saved !!");
+                logger.error("At least one SportDTO is not saved !!");
         } else
 
         {

@@ -129,11 +129,11 @@ public class LikeControllerServiceImpl extends AbstractControllerServiceImpl imp
 
             if (likeContent.getComment() != null && !likeContent.getComment().getUser().getId().equals(getConnectedUser().getId())) {
                 //Comment like
-                addNotification(NotificationType.X_LIKED_YOUR_COMMENT, likeContent.getUser(), likeContent.getComment().getUser());
+                addNotification(NotificationType.X_LIKED_YOUR_COMMENT, likeContent.getUser(), likeContent.getComment().getUser(), null);
 
             } else if (likeContent.getPost() != null && !likeContent.getPost().getUser().getId().equals(getConnectedUser().getId())) {
                 //like post
-                addNotification(NotificationType.X_LIKED_YOUR_POST, likeContent.getUser(), likeContent.getPost().getUser());
+                addNotification(NotificationType.X_LIKED_YOUR_POST, likeContent.getUser(), likeContent.getPost().getUser(), null);
             }
 
         }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.team.TeamResponseDTO;
 
 import java.util.Date;
 
@@ -22,6 +23,8 @@ public class NotificationDTO extends AbstractCommonDTO {
     private Integer teamId;
     private Integer sppotiId;
     private Integer postId;
+
+    private TeamResponseDTO teamResponseDTO;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private Date datetime;
@@ -88,6 +91,14 @@ public class NotificationDTO extends AbstractCommonDTO {
 
     public void setPostId(Integer postId) {
         this.postId = postId;
+    }
+
+    public TeamResponseDTO getTeamResponseDTO() {
+        return teamResponseDTO;
+    }
+
+    public void setTeamResponseDTO(TeamResponseDTO teamResponseDTO) {
+        this.teamResponseDTO = teamResponseDTO;
     }
 }
 

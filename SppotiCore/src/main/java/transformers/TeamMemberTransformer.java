@@ -4,10 +4,12 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.entities.SppotiEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.models.GlobalAppStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by djenanewail on 2/25/17.
  */
+@Transactional(readOnly = true)
 public class TeamMemberTransformer {
 
     /**
@@ -19,7 +21,7 @@ public class TeamMemberTransformer {
      */
     public static UserDTO teamMemberEntityToDto(TeamMemberEntity memberEntity, SppotiEntity sppoti, Integer sppoterStatus) {
 
-        UserDTO userCoverAndAvatar = EntitytoDtoTransformer.getUserCoverAndAvatar(memberEntity.getUsers());
+        UserDTO userCoverAndAvatar = EntityToDtoTransformer.getUserCoverAndAvatar(memberEntity.getUsers());
 
         return new UserDTO(memberEntity.getUuid(), memberEntity.getUsers().getFirstName(), memberEntity.getUsers().getLastName(), memberEntity.getUsers().getUsername(),
                 userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,

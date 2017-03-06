@@ -10,7 +10,7 @@ import java.util.List;
  * Created by djenanewail on 1/26/17.
  */
 
-@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TeamResponseDTO extends AbstractCommonDTO {
 
     private String name;

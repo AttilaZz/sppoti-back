@@ -1,6 +1,6 @@
 package com.fr.security;
 
-import com.fr.commons.dto.SportModelDTO;
+import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.SportEntity;
 import com.fr.entities.UserEntity;
@@ -76,17 +76,17 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
         user.setId(uid);
 
         Set<SportEntity> sportEntities = users.getRelatedSports();
-        List<SportModelDTO> sportModelDTOs = new ArrayList<>();
+        List<SportDTO> sportDTOs = new ArrayList<>();
 
         for (SportEntity sportEntity : sportEntities) {
-            SportModelDTO sportModelDTO = new SportModelDTO();
-            sportModelDTO.setId(sportEntity.getId());
-            sportModelDTO.setName(sportEntity.getName());
+            SportDTO sportDTO = new SportDTO();
+            sportDTO.setId(sportEntity.getId());
+            sportDTO.setName(sportEntity.getName());
 
-            sportModelDTOs.add(sportModelDTO);
+            sportDTOs.add(sportDTO);
         }
 
-        user.setSportModelDTOs(sportModelDTOs);
+        user.setSportDTOs(sportDTOs);
 
         Gson gson = new Gson();
         response.getWriter().write(gson.toJson(user));
