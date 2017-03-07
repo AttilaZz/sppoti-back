@@ -380,7 +380,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         Pageable pageable = new PageRequest(page, sppotiSize);
 
-        List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuid(id, pageable);
+        List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuidAndTeamAdverseStatusNot(id, GlobalAppStatus.REFUSED.name(), pageable);
 
         return sppoties.stream()
                 .map(this::getSppotiResponse)

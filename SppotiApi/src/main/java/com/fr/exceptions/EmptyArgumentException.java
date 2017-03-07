@@ -6,7 +6,7 @@ package com.fr.exceptions;
 /**
  * Created by: Wail DJENANE on Jul 12, 2016
  */
-public class EmptyArgumentException extends Exception {
+public class EmptyArgumentException extends RuntimeException {
 
     private static final long serialVersionUID = 4552507363386252439L;
 

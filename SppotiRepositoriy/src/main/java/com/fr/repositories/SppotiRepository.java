@@ -16,6 +16,13 @@ public interface SppotiRepository extends JpaRepository<SppotiEntity, Long> {
 
     SppotiEntity findByUuid(int uuid);
 
-    @PostFilter("!filterObject.isDeleted() ")
-    List<SppotiEntity> findByUserSppotiUuid(Integer id, Pageable pageable);
+    /**
+     *
+     * @param id sppoti creator id.
+     * @param adverseTeamStatus adverse team status to exclude from search.
+     * @param pageable page number.
+     * @return return all found sppoties.
+     */
+    @PostFilter("!filterObject.isDeleted()")
+    List<SppotiEntity> findByUserSppotiUuidAndTeamAdverseStatusNot(Integer id, String adverseTeamStatus, Pageable pageable);
 }
