@@ -233,7 +233,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public UserDTO addMember(int teamId, UserDTO userParam) {
 
-        UserEntity user = getUserByUuId(teamId);
+        UserEntity user = getUserByUuId(userParam.getId());
 
         if (user == null) {
             throw new EntityNotFoundException("UserDTO with id (" + userParam.getId() + ") Not found");
@@ -241,8 +241,13 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         List<TeamEntity> teamList = teamRepository.findByUuid(teamId);
 
-        if (teamList == null || teamList.isEmpty()) {
+        if (StringUtils.isEmpty(teamList)) {
             throw new EntityNotFoundException("TeamEntity with id (" + teamId + ") Not found");
+        }
+
+        if(teamMembersRepository.findByTeamUuidAndAdminTrue(teamList.get(0).getUuid()).getUsers().getUuid() != user.getUuid()){
+            //NOT TEAM ADMIN.
+            throw new NotTeamAdminException("You must be the team admin to access this service");
         }
 
         TeamEntity team = teamList.get(0);
@@ -315,7 +320,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     public void updateTeamCaptain(int teamId, int memberId, int connectedUserId) {
 
         if (teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, teamId) == null) {
-            throw new NotTeamAdminException("User is not admin of this team (" + teamId + ") to change captain");
+            throw new NotTeamAdminException("You must be the team admin to access this service");
         }
 
         List<TeamMemberEntity> teamMemberEntity = teamMembersRepository.findByTeamUuid(teamId);

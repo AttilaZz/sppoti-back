@@ -12,7 +12,7 @@ import java.util.List;
  * Created by djenanewail on 12/16/16.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO extends AbstractCommonDTO{
+public class UserDTO extends AbstractCommonDTO {
 
     private String firstName;
     private String lastName;
@@ -51,17 +51,20 @@ public class UserDTO extends AbstractCommonDTO{
 
     private Boolean myProfile;
 
-    private Boolean teamAdmin;
     private Boolean sppotiAdmin;
-
-    private Integer teamStatus;
     private Integer sppotiStatus;
+
+    //used in team response.
     private Integer userId;
+
+    private Boolean teamAdmin;
+    private Integer teamStatus;
+    private Boolean teamCaptain;
 
     public UserDTO() {
     }
 
-    public UserDTO(int id, String firstName, String lastName, String username, String cover, String avatar, Integer coverType, Boolean isTeamAdmin, Boolean isSppotiAdmin, Integer teamStatus, Integer sppotiStatus, Integer userId, Integer xPosition, Integer yPosition) {
+    public UserDTO(int id, String firstName, String lastName, String username, String cover, String avatar, Integer coverType, Boolean isTeamAdmin, Boolean isSppotiAdmin, Integer teamStatus, Integer sppotiStatus, Integer userId, Integer xPosition, Integer yPosition, Boolean teamCaptain) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -76,6 +79,7 @@ public class UserDTO extends AbstractCommonDTO{
         this.userId = userId;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
+        this.teamCaptain = teamCaptain;
     }
 
     public UserDTO(int uuid, String firstName, String lastName, String username, String cover, String avatar, Integer coverType) {
@@ -270,5 +274,13 @@ public class UserDTO extends AbstractCommonDTO{
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Boolean getTeamCaptain() {
+        return teamCaptain;
+    }
+
+    public void setTeamCaptain(Boolean teamCaptain) {
+        this.teamCaptain = teamCaptain;
     }
 }

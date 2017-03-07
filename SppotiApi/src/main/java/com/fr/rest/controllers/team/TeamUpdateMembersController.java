@@ -106,7 +106,7 @@ public class TeamUpdateMembersController {
     }
 
     /**
-     * Add member for a given team - only admin can add a memeber to his team.
+     * Add member for a given team - only admin can add a member to his team.
      *
      * @return 201 status if memeber has been added.
      */

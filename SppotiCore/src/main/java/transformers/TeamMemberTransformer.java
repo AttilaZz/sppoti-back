@@ -32,7 +32,8 @@ public class TeamMemberTransformer {
                 GlobalAppStatus.valueOf(memberEntity.getStatus()).getValue(),
                 sppoti != null && sppoti.getUserSppoti().getId() != null ? sppoterStatus : null, memberEntity.getUsers().getUuid(),
                 memberEntity.getxPosition() != null ? memberEntity.getxPosition() : null,
-                memberEntity.getyPosition() != null ? memberEntity.getyPosition() : null);
+                memberEntity.getyPosition() != null ? memberEntity.getyPosition() : null,
+                memberEntity.getTeamCaptain() != null ? memberEntity.getTeamCaptain() : null);
     }
 
 }
