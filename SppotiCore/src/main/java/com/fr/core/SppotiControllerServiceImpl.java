@@ -5,6 +5,7 @@ import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.*;
 import com.fr.exceptions.NoRightToAcceptOrRefuseChallenge;
+import com.fr.exceptions.NotAdminException;
 import com.fr.exceptions.SportNotFoundException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
@@ -371,7 +372,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -388,6 +388,9 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<SppotiResponseDTO> getAllJoinedSppoties(int userId, int page) {
         Pageable pageable = new PageRequest(page, sppotiSize);
@@ -399,5 +402,19 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void isSppotiAdmin(int sppotiId, Long userId) {
+        SppotiEntity sppotiEntity = sppotiRepository.findByUuid(sppotiId);
+        if (sppotiEntity == null) {
+            throw new EntityNotFoundException("Sppoti (" + sppotiId + ") not found !");
+        }
+
+        if (!sppotiEntity.getUserSppoti().getId().equals(userId)) {
+            throw new NotAdminException("You must be the sppoti admin to continue");
+        }
+    }
 
 }

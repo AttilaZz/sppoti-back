@@ -3,12 +3,17 @@ package com.fr.rest.controllers.sppoti;
 import com.fr.commons.dto.sppoti.SppotiRequestDTO;
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import com.fr.exceptions.NoRightToAcceptOrRefuseChallenge;
+import com.fr.exceptions.NotAdminException;
 import com.fr.rest.service.SppotiControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.EntityNotFoundException;
 
 /**
  * Created by djenanewail on 2/5/17.
@@ -30,12 +35,25 @@ public class SppotiUpdateController {
 
 
     /**
-     * @param id            id of sppoti.
+     * @param sppotiId      sppotiId of sppoti.
      * @param sppotiRequest data to update.
      * @return 200 status with the updated sppoti, 400 status otherwise.
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<SppotiResponseDTO> updateSppoti(@PathVariable int id, @RequestBody SppotiRequestDTO sppotiRequest) {
+    @PutMapping("/{sppotiId}")
+    public ResponseEntity<SppotiResponseDTO> updateSppoti(@PathVariable int sppotiId, @RequestBody SppotiRequestDTO sppotiRequest, Authentication authentication) {
+
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+
+        //throws exception if user is not the sppoti admin
+        try {
+            sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId());
+        }catch (EntityNotFoundException e){
+            LOGGER.error("Sppoti not found", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }catch (NotAdminException e){
+            LOGGER.error("Acceess denied, u're not the sppoti admin");
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
         boolean canUpdate = false;
 
@@ -70,7 +88,7 @@ public class SppotiUpdateController {
         try {
 
             if (canUpdate) {
-                sppotiControllerService.updateSppoti(sppotiRequest, id);
+                sppotiControllerService.updateSppoti(sppotiRequest, sppotiId);
             } else {
                 throw new IllegalArgumentException("Update not acceptable");
             }
@@ -102,7 +120,7 @@ public class SppotiUpdateController {
         try {
             sppotiResponseDTO = sppotiControllerService.updateTeamAdverseChallengeStatus(sppotiId, adverseTeamResponseStatus);
         } catch (NoRightToAcceptOrRefuseChallenge e) {
-            LOGGER.error("User must be the admin to update status, sppoti id: " + sppotiId, e);
+            LOGGER.error("User must be the admin to update status, sppoti sppotiId: " + sppotiId, e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 

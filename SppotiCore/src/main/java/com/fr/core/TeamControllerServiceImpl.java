@@ -8,7 +8,7 @@ import com.fr.entities.TeamEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.entities.UserEntity;
 import com.fr.exceptions.MemberNotInAdminTeamException;
-import com.fr.exceptions.NotTeamAdminException;
+import com.fr.exceptions.NotAdminException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.TeamControllerService;
@@ -247,7 +247,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         if(teamMembersRepository.findByTeamUuidAndAdminTrue(teamList.get(0).getUuid()).getUsers().getUuid() != user.getUuid()){
             //NOT TEAM ADMIN.
-            throw new NotTeamAdminException("You must be the team admin to access this service");
+            throw new NotAdminException("You must be the team admin to access this service");
         }
 
         TeamEntity team = teamList.get(0);
@@ -320,7 +320,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     public void updateTeamCaptain(int teamId, int memberId, int connectedUserId) {
 
         if (teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, teamId) == null) {
-            throw new NotTeamAdminException("You must be the team admin to access this service");
+            throw new NotAdminException("You must be the team admin to access this service");
         }
 
         List<TeamMemberEntity> teamMemberEntity = teamMembersRepository.findByTeamUuid(teamId);

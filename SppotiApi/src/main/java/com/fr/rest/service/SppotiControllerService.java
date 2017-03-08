@@ -15,7 +15,7 @@ public interface SppotiControllerService extends AbstractControllerService {
 
 
     /**
-     * @param newSppoti     sppoti to save.
+     * @param newSppoti sppoti to save.
      * @return saved sppoti.
      */
     SppotiResponseDTO saveSppoti(SppotiRequestDTO newSppoti);
@@ -38,46 +38,49 @@ public interface SppotiControllerService extends AbstractControllerService {
     void deleteSppoti(int id);
 
     /**
-     *
      * @param sppotiRequest sppoti data to update.
-     * @param id sppoti id.
+     * @param id            sppoti id.
      * @return sppoti DTO with updated data.
      */
     SppotiResponseDTO updateSppoti(SppotiRequestDTO sppotiRequest, int id);
 
     /**
      * ACCEPT sppoti and add notification.
-     *
+     * <p>
      * When user accept to join sppoti, he also accept to join his team.
      *
      * @param sppotiId sppoti id.
-     * @param userId sppoter id.
+     * @param userId   sppoter id.
      */
     void acceptSppoti(int sppotiId, int userId);
 
     /**
      * REFUSE sppoti and add notification.
-     *
+     * <p>
      * When user refuse sppoti, relation with his team remain.
      *
      * @param sppotiId sppoti id.
-     * @param userId sppoter id.
+     * @param userId   sppoter id.
      */
     void refuseSppoti(int sppotiId, int userId);
 
     /**
-     *
-     * @param sppotiId sppoti id to update.
+     * @param sppotiId                  sppoti id to update.
      * @param adverseTeamResponseStatus adverse team response to challenge.
      * @return sppotiDTO with updated data.
      */
     SppotiResponseDTO updateTeamAdverseChallengeStatus(int sppotiId, int adverseTeamResponseStatus);
 
     /**
-     *
-     * @param id user id.
+     * @param id   user id.
      * @param page page  umber.
      * @return all sppoties that user has joined.
      */
     List<SppotiResponseDTO> getAllJoinedSppoties(int id, int page);
+
+    /**
+     * @param userId   id of the connected user.
+     * @param sppotiId id of the sppoti.
+     */
+    void isSppotiAdmin(int sppotiId, Long userId);
 }
