@@ -431,7 +431,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         if (sppotiEntity.getTeamAdverse() != null) {
-            //TODO: throw error if sppoti has already a team adverse waiting
             throw new BusinessGlobalException("This sppoti is challenged by an other team");
         }
 
