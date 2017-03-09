@@ -83,4 +83,11 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param sppotiId id of the sppoti.
      */
     void isSppotiAdmin(int sppotiId, Long userId);
+
+    /**
+     * This method allow to challenge a team in a sppoti.
+     *  @param sppotiId sppoti id.
+     * @param teamId   team id.
+     */
+    SppotiResponseDTO sendChallenge(int sppotiId, int teamId);
 }

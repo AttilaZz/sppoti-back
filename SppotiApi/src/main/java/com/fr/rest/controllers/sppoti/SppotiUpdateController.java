@@ -108,8 +108,8 @@ public class SppotiUpdateController {
      * @param adverseTeamResponseStatus confirm/refuse challenge.
      * @return All sppoti with updated status.
      */
-    @PutMapping("/team/adverse/{sppotiId}/{response}")
-    public ResponseEntity<SppotiResponseDTO> updateTeamAdverseStatus(@PathVariable("response") int adverseTeamResponseStatus, @PathVariable int sppotiId) {
+    @PutMapping("/challenge/{sppotiId}/{response}")
+    public ResponseEntity<SppotiResponseDTO> updateTeamAdverseChallengeStatus(@PathVariable("response") int adverseTeamResponseStatus, @PathVariable int sppotiId) {
 
         if (adverseTeamResponseStatus != 4 && adverseTeamResponseStatus != 5) {
             LOGGER.error("Accepted status are 4 && 5: found:" + adverseTeamResponseStatus);
@@ -127,4 +127,21 @@ public class SppotiUpdateController {
         return new ResponseEntity<>(sppotiResponseDTO, HttpStatus.ACCEPTED);
     }
 
+    /**
+     *
+     * @param sppotiId sppoti id.
+     * @param teamId team id.
+     */
+    @PutMapping("/challenge/send/{sppotiId}/{teamId}")
+    public ResponseEntity<SppotiResponseDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId) {
+
+        try{
+            sppotiControllerService.sendChallenge(sppotiId, teamId);
+        }catch (EntityNotFoundException e){
+            LOGGER.error(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 }

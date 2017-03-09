@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.persistence.EntityNotFoundException;
+
 /**
  * Created by djenanewail on 2/20/17.
  */
@@ -31,12 +33,18 @@ public class SppotiChallengeController {
     @PutMapping("/{sppotiId}/{teamId}")
     public ResponseEntity<SppotiResponseDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId) {
 
+        try{
+            sppotiControllerService.sendChallenge(sppotiId, teamId);
+        }catch (EntityNotFoundException e){
+            LOGGER.error(e.getMessage(), e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/accept/{sppotiId}/{teamId}")
-    public ResponseEntity<SppotiResponseDTO> sacceptChallenge(@PathVariable int sppotiId, @PathVariable int teamId) {
+    public ResponseEntity<SppotiResponseDTO> acceptChallenge(@PathVariable int sppotiId, @PathVariable int teamId) {
 
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

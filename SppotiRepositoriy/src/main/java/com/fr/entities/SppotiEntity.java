@@ -65,8 +65,9 @@ public class SppotiEntity
     @JsonIgnore
     private TeamEntity teamAdverse;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String teamAdverseStatus = GlobalAppStatus.PENDING.name();
+    private GlobalAppStatus teamAdverseStatus = GlobalAppStatus.NO_CHALLENGE_YET;
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMember> sppotiMembers;
@@ -175,11 +176,11 @@ public class SppotiEntity
         this.sppotiMembers = sppotiMembers;
     }
 
-    public String getTeamAdverseStatus() {
+    public GlobalAppStatus getTeamAdverseStatus() {
         return teamAdverseStatus;
     }
 
-    public void setTeamAdverseStatus(String teamAdverseStatus) {
+    public void setTeamAdverseStatus(GlobalAppStatus teamAdverseStatus) {
         this.teamAdverseStatus = teamAdverseStatus;
     }
 

@@ -10,11 +10,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  */
 
 @ControllerAdvice
-public class GlobalPrivilegeExceptionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = NotAdminException.class)
     public ResponseEntity notTeamAdmin(NotAdminException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
+    @ExceptionHandler(value = BusinessGlobalException.class)
+    public ResponseEntity globalException(BusinessGlobalException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }

@@ -4,6 +4,7 @@ import com.fr.commons.dto.sppoti.SppotiRequestDTO;
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.*;
+import com.fr.exceptions.BusinessGlobalException;
 import com.fr.exceptions.NoRightToAcceptOrRefuseChallenge;
 import com.fr.exceptions.NotAdminException;
 import com.fr.exceptions.SportNotFoundException;
@@ -166,7 +167,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         if (sppoti.getTeamAdverse() != null) {
             TeamResponseDTO teamAdverseResponse = fillTeamResponse(sppoti.getTeamAdverse(), sppoti);
             sppotiResponseDTO.setTeamAdverse(teamAdverseResponse);
-            sppotiResponseDTO.setTeamAdverseStatus(GlobalAppStatus.valueOf(sppoti.getTeamAdverseStatus()).getValue());
+            sppotiResponseDTO.setTeamAdverseStatus(sppoti.getTeamAdverseStatus().getValue());
         } else {
             sppotiResponseDTO.setTeamAdverseStatus(GlobalAppStatus.NO_CHALLENGE_YET.getValue());
         }
@@ -357,12 +358,13 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                 .findFirst();
 
         if (!adverseTeamAdmin.isPresent()) {
-            throw new NoRightToAcceptOrRefuseChallenge("User (" + getConnectedUser().toString() + " is not admin of tema (" + sppotiEntity.getTeamAdverse() + ")");
+            throw new NoRightToAcceptOrRefuseChallenge("User (" + getConnectedUser().toString() + " is not admin of team (" + sppotiEntity.getTeamAdverse() + ")");
         }
 
+        //set new status.
         for (GlobalAppStatus status : GlobalAppStatus.values()) {
             if (status.getValue() == adverseTeamResponseStatus) {
-                sppotiEntity.setTeamAdverseStatus(status.name());
+                sppotiEntity.setTeamAdverseStatus(status);
             }
         }
 
@@ -415,6 +417,37 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         if (!sppotiEntity.getUserSppoti().getId().equals(userId)) {
             throw new NotAdminException("You must be the sppoti admin to continue");
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public SppotiResponseDTO sendChallenge(int sppotiId, int teamId) {
+
+        SppotiEntity sppotiEntity = sppotiRepository.findByUuid(sppotiId);
+        if (sppotiEntity == null) {
+            throw new EntityNotFoundException("Sppoti not found (" + sppotiId + ")");
+        }
+
+        if (sppotiEntity.getTeamAdverse() != null) {
+            //TODO: throw error if sppoti has already a team adverse waiting
+            throw new BusinessGlobalException("This sppoti is challenged by an other team");
+        }
+
+        List<TeamEntity> teamEntities = teamRepository.findByUuid(teamId);
+        if (teamEntities.isEmpty()) {
+            throw new EntityNotFoundException("Team not found (" + teamId + ")");
+        }
+
+        TeamEntity challengeTeam = teamEntities.get(0);
+
+        sppotiEntity.setTeamAdverse(challengeTeam);
+        sppotiEntity.setTeamAdverseStatus(GlobalAppStatus.PENDING);
+
+        SppotiEntity savedSppoti = sppotiRepository.save(sppotiEntity);
+
+        return getSppotiResponse(savedSppoti);
     }
 
 }
