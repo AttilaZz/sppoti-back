@@ -254,16 +254,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             }
 
             //Convert team members to sppoters.
-            Set<SppotiMember> sppotiMembers = adverseTeam.get(0).getTeamMembers().stream()
-                    .map(
-                            sm -> {
-                                SppotiMember sppotiMember = new SppotiMember();
-                                sppotiMember.setTeamMember(sm);
-                                sppotiMember.setSppoti(sppoti);
-                                return sppotiMember;
-                            }
-
-                    ).collect(Collectors.toSet());
+            Set<SppotiMember> sppotiMembers = convertTeamMembersToSppoters(adverseTeam.get(0), sppoti);
             sppoti.setSppotiMembers(sppotiMembers);
             sppoti.setTeamAdverse(adverseTeam.get(0));
         }
@@ -440,20 +431,33 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Team not found (" + teamId + ")");
         }
 
-        //Update adverse team status in sppoti entity.
         TeamEntity challengeTeam = teamEntities.get(0);
+
+        //update sppoti team admin status.
+        //Convert team members to sppoters.
+        Set<SppotiMember> sppotiMembers = convertTeamMembersToSppoters(challengeTeam, sppotiEntity);
+        sppotiEntity.setSppotiMembers(sppotiMembers);
         sppotiEntity.setTeamAdverse(challengeTeam);
         sppotiEntity.setTeamAdverseStatus(GlobalAppStatus.PENDING);
-
-        //update team admin status.
-        TeamMemberEntity teamMemberEntity = teamMembersRepository.findByTeamUuidAndAdminTrue(teamId);
-        teamMemberEntity.setStatus(GlobalAppStatus.CONFIRMED.name());
-        teamMembersRepository.save(teamMemberEntity);
 
         //update sppoti.
         SppotiEntity savedSppoti = sppotiRepository.save(sppotiEntity);
 
         return getSppotiResponse(savedSppoti);
+    }
+
+    private Set<SppotiMember> convertTeamMembersToSppoters(TeamEntity challengeTeam, SppotiEntity sppoti) {
+        return challengeTeam.getTeamMembers().stream()
+                    .map(
+                            sm -> {
+                                SppotiMember sppotiMember = new SppotiMember();
+                                sppotiMember.setTeamMember(sm);
+                                sppotiMember.setSppoti(sppoti);
+                                if(sm.getAdmin()) sppotiMember.setStatus(GlobalAppStatus.CONFIRMED.name());
+                                return sppotiMember;
+                            }
+
+                    ).collect(Collectors.toSet());
     }
 
 }
