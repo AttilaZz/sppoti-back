@@ -422,6 +422,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public SppotiResponseDTO sendChallenge(int sppotiId, int teamId) {
 
@@ -439,11 +440,17 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Team not found (" + teamId + ")");
         }
 
+        //Update adverse team status in sppoti entity.
         TeamEntity challengeTeam = teamEntities.get(0);
-
         sppotiEntity.setTeamAdverse(challengeTeam);
         sppotiEntity.setTeamAdverseStatus(GlobalAppStatus.PENDING);
 
+        //update team admin status.
+        TeamMemberEntity teamMemberEntity = teamMembersRepository.findByTeamUuidAndAdminTrue(teamId);
+        teamMemberEntity.setStatus(GlobalAppStatus.CONFIRMED.name());
+        teamMembersRepository.save(teamMemberEntity);
+
+        //update sppoti.
         SppotiEntity savedSppoti = sppotiRepository.save(sppotiEntity);
 
         return getSppotiResponse(savedSppoti);
