@@ -254,7 +254,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             }
 
             //Convert team members to sppoters.
-            Set<SppotiMember> sppotiMembers = convertTeamMembersToSppoters(adverseTeam.get(0), sppoti);
+            Set<SppotiMember> sppotiMembers = convertAdverseTeamMembersToSppoters(adverseTeam.get(0), sppoti);
             sppoti.setSppotiMembers(sppotiMembers);
             sppoti.setTeamAdverse(adverseTeam.get(0));
         }
@@ -415,27 +415,33 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
      */
     @Transactional
     @Override
-    public SppotiResponseDTO sendChallenge(int sppotiId, int teamId) {
+    public SppotiResponseDTO sendChallenge(int sppotiId, int teamId, Long connectedUserId) {
 
+        //Check if team exist.
+        List<TeamEntity> teamEntities = teamRepository.findByUuid(teamId);
+        if (teamEntities.isEmpty()) {
+            throw new EntityNotFoundException("Team not found (" + teamId + ")");
+        }
+        TeamEntity challengeTeam = teamEntities.get(0);
+
+        //check if user has rights to send challenge.
+        if(!connectedUserId.equals(teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers().getId())){
+            throw new NotAdminException("You don't have privileges to send challenge");
+        }
+
+        //check if sppoti exists.
         SppotiEntity sppotiEntity = sppotiRepository.findByUuid(sppotiId);
         if (sppotiEntity == null) {
             throw new EntityNotFoundException("Sppoti not found (" + sppotiId + ")");
         }
 
+        //Check if sppoti has already an adverse team.
         if (sppotiEntity.getTeamAdverse() != null) {
             throw new BusinessGlobalException("This sppoti is challenged by an other team");
         }
 
-        List<TeamEntity> teamEntities = teamRepository.findByUuid(teamId);
-        if (teamEntities.isEmpty()) {
-            throw new EntityNotFoundException("Team not found (" + teamId + ")");
-        }
-
-        TeamEntity challengeTeam = teamEntities.get(0);
-
-        //update sppoti team admin status.
         //Convert team members to sppoters.
-        Set<SppotiMember> sppotiMembers = convertTeamMembersToSppoters(challengeTeam, sppotiEntity);
+        Set<SppotiMember> sppotiMembers = convertAdverseTeamMembersToSppoters(challengeTeam, sppotiEntity);
         sppotiEntity.setSppotiMembers(sppotiMembers);
         sppotiEntity.setTeamAdverse(challengeTeam);
         sppotiEntity.setTeamAdverseStatus(GlobalAppStatus.PENDING);
@@ -446,7 +452,13 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         return getSppotiResponse(savedSppoti);
     }
 
-    private Set<SppotiMember> convertTeamMembersToSppoters(TeamEntity challengeTeam, SppotiEntity sppoti) {
+    /**
+     *
+     * @param challengeTeam adverse team.
+     * @param sppoti sppoti id.
+     * @return all adverse team as sppoters.
+     */
+    private Set<SppotiMember> convertAdverseTeamMembersToSppoters(TeamEntity challengeTeam, SppotiEntity sppoti) {
         return challengeTeam.getTeamMembers().stream()
                     .map(
                             sm -> {

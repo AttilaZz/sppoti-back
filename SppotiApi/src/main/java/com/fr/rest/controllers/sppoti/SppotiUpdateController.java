@@ -133,10 +133,12 @@ public class SppotiUpdateController {
      * @param teamId team id.
      */
     @PutMapping("/challenge/send/{sppotiId}/{teamId}")
-    public ResponseEntity<SppotiResponseDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId) {
+    public ResponseEntity<SppotiResponseDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId, Authentication authentication) {
+
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
         try{
-            sppotiControllerService.sendChallenge(sppotiId, teamId);
+            sppotiControllerService.sendChallenge(sppotiId, teamId, accountUserDetails.getId());
         }catch (EntityNotFoundException e){
             LOGGER.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

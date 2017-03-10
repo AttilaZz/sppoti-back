@@ -89,5 +89,5 @@ public interface SppotiControllerService extends AbstractControllerService {
      *  @param sppotiId sppoti id.
      * @param teamId   team id.
      */
-    SppotiResponseDTO sendChallenge(int sppotiId, int teamId);
+    SppotiResponseDTO sendChallenge(int sppotiId, int teamId, Long connectedUserId);
 }
