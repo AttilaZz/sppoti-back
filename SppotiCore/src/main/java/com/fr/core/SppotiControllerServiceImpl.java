@@ -254,11 +254,12 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             }
 
             //Convert team members to sppoters.
-            Set<SppotiMember> sppotiMembers = convertAdverseTeamMembersToSppoters(adverseTeam.get(0), sppoti);
+            Set<SppotiMember> sppotiMembers = convertAdverseTeamMembersToSppoters(adverseTeam.get(0), sppoti, false);
             sppoti.setSppotiMembers(sppotiMembers);
             sppoti.setTeamAdverse(adverseTeam.get(0));
         }
 
+        sppoti.setTeamAdverseStatus(GlobalAppStatus.PENDING);
         SppotiEntity updatedSppoti = sppotiRepository.save(sppoti);
 
         return getSppotiResponse(updatedSppoti);
@@ -373,7 +374,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         Pageable pageable = new PageRequest(page, sppotiSize);
 
-        List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuidAndTeamAdverseStatusNot(id, GlobalAppStatus.REFUSED.name(), pageable);
+        List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuidAndTeamAdverseStatusNot(id, GlobalAppStatus.REFUSED, pageable);
 
         return sppoties.stream()
                 .map(this::getSppotiResponse)
@@ -425,7 +426,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         TeamEntity challengeTeam = teamEntities.get(0);
 
         //check if user has rights to send challenge.
-        if(!connectedUserId.equals(teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers().getId())){
+        if (!connectedUserId.equals(teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers().getId())) {
             throw new NotAdminException("You don't have privileges to send challenge");
         }
 
@@ -441,7 +442,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         }
 
         //Convert team members to sppoters.
-        Set<SppotiMember> sppotiMembers = convertAdverseTeamMembersToSppoters(challengeTeam, sppotiEntity);
+        Set<SppotiMember> sppotiMembers = convertAdverseTeamMembersToSppoters(challengeTeam, sppotiEntity, true);
         sppotiEntity.setSppotiMembers(sppotiMembers);
         sppotiEntity.setTeamAdverse(challengeTeam);
         sppotiEntity.setTeamAdverseStatus(GlobalAppStatus.PENDING);
@@ -453,23 +454,26 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     }
 
     /**
-     *
      * @param challengeTeam adverse team.
-     * @param sppoti sppoti id.
+     * @param sppoti        sppoti id.
      * @return all adverse team as sppoters.
      */
-    private Set<SppotiMember> convertAdverseTeamMembersToSppoters(TeamEntity challengeTeam, SppotiEntity sppoti) {
+    private Set<SppotiMember> convertAdverseTeamMembersToSppoters(TeamEntity challengeTeam, SppotiEntity sppoti, boolean fromAdverseTeam) {
         return challengeTeam.getTeamMembers().stream()
-                    .map(
-                            sm -> {
-                                SppotiMember sppotiMember = new SppotiMember();
-                                sppotiMember.setTeamMember(sm);
-                                sppotiMember.setSppoti(sppoti);
-                                if(sm.getAdmin()) sppotiMember.setStatus(GlobalAppStatus.CONFIRMED.name());
-                                return sppotiMember;
+                .map(
+                        sm -> {
+                            SppotiMember sppotiMember = new SppotiMember();
+                            sppotiMember.setTeamMember(sm);
+                            sppotiMember.setSppoti(sppoti);
+                            if (fromAdverseTeam) {
+                                if (sm.getAdmin()) sppotiMember.setStatus(GlobalAppStatus.CONFIRMED.name());
+                            } else {
+                                sppotiMember.setStatus(GlobalAppStatus.PENDING.name());
                             }
+                            return sppotiMember;
+                        }
 
-                    ).collect(Collectors.toSet());
+                ).collect(Collectors.toSet());
     }
 
 }

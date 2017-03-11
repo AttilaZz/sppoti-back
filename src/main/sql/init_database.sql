@@ -44,7 +44,7 @@ FOURTH USER
  */
 INSERT INTO sppoti.user (id, uuid, version, confirmation_code, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
 VALUES
-  (14, 12999678, 3, 'code2', TRUE, curdate(), FALSE, NULL, 'gg.gg@gg.gg', 'koko', NULL, 'MUkA', 'KAKA31', 'H',
+  (14, 10459678, 3, 'code4', TRUE, curdate(), FALSE, NULL, 'gg.gg@gg.gg', 'koko', NULL, 'MUkA', 'KAKA31', 'H',
    NULL, 'kaka31');
 
 INSERT INTO sppoti.user_roles (users_id, roles_id) VALUES (14, 1);
@@ -81,12 +81,12 @@ VALUES (4, -16284522, 0, FALSE, '2017-02-23 11:56:55', NULL, 'PENDING', TRUE, NU
 
 #sppoti1
 INSERT INTO sppoti.sppoti (id, uuid, version, date_time_start, datetime_created, deleted, description, location, max_members_count, tags, team_adverse_status, titre, sport_id, team_adverse_id, team_host_id, user_id)
-VALUES (1, -326614926, 0, '2016 - 01 - 18 22:32:00', '2017 - 03 - 10 16:16:18', FALSE, 'My FIRST fancy sppoti',
+VALUES (3, -326614926, 0, '2016-01-18 22:32:00', '2017-03-10 16:16:18', FALSE, 'My FIRST fancy sppoti',
            'Ain el bia 31200 v - sh5', 25, '$mahrez, $Slimani', 'NO_CHALLENGE_YET', 'FOOTBALL IN the STREET', 1, NULL,
-        2, 2);
+        2, 11);
 
 INSERT INTO sppoti.sppoti_member (id, uuid, version, acceptation_date, invitation_date, status, x_position, y_position, sppoti_id, sppoter_id)
-VALUES (1, 1750519340, 0, NULL, '2017-03-10 16:16:18', 'CONFIRMED', NULL, NULL, 1, 1);
+VALUES (1, 1750519340, 0, NULL, '2017-03-10 16:16:18', 'CONFIRMED', NULL, NULL, 3, 1);
 
 INSERT INTO sppoti.sppoti_member (id, uuid, version, acceptation_date, invitation_date, status, x_position, y_position, sppoti_id, sppoter_id)
-VALUES (2, 1856519340, 0, NULL, '2017-03-10 16:16:18', 'PENDING', NULL, NULL, 1, 2);
+VALUES (2, 1856519340, 0, NULL, '2017-03-10 16:16:18', 'PENDING', NULL, NULL, 3, 2);
