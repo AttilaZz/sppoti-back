@@ -1,6 +1,9 @@
 package com.fr.core;
 
-import com.fr.commons.dto.*;
+import com.fr.commons.dto.CommentDTO;
+import com.fr.commons.dto.ContentEditedResponseDTO;
+import com.fr.commons.dto.SportDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.*;
 import com.fr.exceptions.TeamMemberNotFoundException;
@@ -435,8 +438,8 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     public Set<TeamMemberEntity> getTeamMembersEntityFromDto(List<UserDTO> users, TeamEntity team, SppotiEntity sppoti) {
 
         Set<TeamMemberEntity> teamUsers = new HashSet<TeamMemberEntity>();
-//        Set<TeamEntity> teams = new HashSet<TeamEntity>();
-//        teams.add(team);
+        Set<NotificationEntity> notificationEntities = new HashSet<>();
+
         Long adminId = getConnectedUser().getId();
 
         for (UserDTO user : users) {
@@ -517,7 +520,12 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
                     /** send TEAM notification to the invited user. */
                     if (!u.getId().equals(adminId)) {
-                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u, team);
+                        notificationEntities.add(getNotificationEntity(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u, team));
+                        if(team.getNotificationEntities() != null) {
+                            team.getNotificationEntities().addAll(notificationEntities);
+                        }else{
+                            team.setNotificationEntities(notificationEntities);
+                        }
                     }
                 }
 
@@ -585,12 +593,18 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      */
     @Transactional
     protected void addNotification(NotificationType notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity) {
+        NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity);
+
+        notificationRepository.save(notification);
+    }
+
+    private NotificationEntity getNotificationEntity(NotificationType notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity) {
         NotificationEntity notification = new NotificationEntity();
         notification.setNotificationType(notificationType);
         notification.setFrom(userFrom);
         notification.setTo(userTo);
         notification.setTeam(teamEntity);
-        notificationRepository.save(notification);
+        return notification;
     }
 
     /**

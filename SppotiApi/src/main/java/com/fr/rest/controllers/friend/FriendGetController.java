@@ -7,6 +7,7 @@ import com.fr.entities.UserEntity;
 import com.fr.models.GlobalAppStatus;
 import com.fr.rest.service.AccountControllerService;
 import com.fr.rest.service.FriendControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,15 +56,15 @@ public class FriendGetController {
     private int friend_list_size;
 
     /**
-     * @param userId
-     * @param page
-     * @param request
-     * @return confirmed friend lis
+     * @param userId         connected user id.
+     * @param page           page number.
+     * @param authentication spring security.
+     * @return confirmed friend list.
      */
     @GetMapping("/confirmed/{userId}/{page}")
-    public ResponseEntity<FriendResponseDTO> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<FriendResponseDTO> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page, Authentication authentication) {
 
-        Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity connectedUser = friendControllerService.getUserById(connected_user);
 
         Pageable pageable = new PageRequest(page, friend_list_size);
@@ -77,15 +79,15 @@ public class FriendGetController {
     }
 
     /**
-     * @param userId
-     * @param page
-     * @param request
-     * @return
+     * @param userId         connected user id.
+     * @param page           page number.
+     * @param authentication spring secu.
+     * @return all refused friend requests.
      */
     @GetMapping("/refused/{userId}/{page}")
-    public ResponseEntity<FriendResponseDTO> getRefusedFriendList(@PathVariable int userId, @PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<FriendResponseDTO> getRefusedFriendList(@PathVariable int userId, @PathVariable int page, Authentication authentication) {
 
-        Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity connectedUser = friendControllerService.getUserById(connected_user);
 
 
@@ -107,14 +109,14 @@ public class FriendGetController {
 
 
     /**
-     * @param page
-     * @param request
-     * @return
+     * @param page           page number.
+     * @param authentication spring secu.
+     * @return all pending requests.
      */
     @GetMapping("/pending/sent/{page}")
-    public ResponseEntity<FriendResponseDTO> getSentPendingFriendList(@PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<FriendResponseDTO> getSentPendingFriendList(@PathVariable int page, Authentication authentication) {
 
-        Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity connectedUser = friendControllerService.getUserById(connected_user);
 
         Pageable pageable = new PageRequest(page, friend_list_size);
@@ -133,16 +135,15 @@ public class FriendGetController {
 
     }
 
-
     /**
-     * @param page
-     * @param request
-     * @return
+     * @param page           page number.
+     * @param authentication spring secu.
+     * @return all friend pending requests.
      */
     @GetMapping("/pending/received/{page}")
-    public ResponseEntity<FriendResponseDTO> getREceivedPendingFriendList(@PathVariable int page, HttpServletRequest request) {
+    public ResponseEntity<FriendResponseDTO> getREceivedPendingFriendList(@PathVariable int page, Authentication authentication) {
 
-        Long connected_user = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity connectedUser = friendControllerService.getUserById(connected_user);
 
         Pageable pageable = new PageRequest(page, friend_list_size);
@@ -162,7 +163,11 @@ public class FriendGetController {
 
     }
 
-
+    /**
+     *
+     * @param friendShips list of all friendships.
+     * @return friend response DTO.
+     */
     private FriendResponseDTO getFriendResponse(List<FriendShipEntity> friendShips) {
         List<UserDTO> friendList = new ArrayList<>();
 

@@ -29,8 +29,11 @@ public class TeamEntity
     @JoinColumn(name = "sport_id")
     private SportEntity sport;
 
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    private Set<NotificationEntity> notificationEntities;
+
     /**
-     * When creating a host team from a sppoti, we need a reference to the sppoti,
+     * When creating a host team from a sppotigit co, we need a reference to the sppoti,
      * in order to save team host ang get i's id, otherwise, we get a transient exception.
      */
     @OneToMany(mappedBy = "teamHost", cascade = CascadeType.ALL)
@@ -92,6 +95,14 @@ public class TeamEntity
 
     public void setSppotiEntity(Set<SppotiEntity> sppotiEntity) {
         this.sppotiEntity = sppotiEntity;
+    }
+
+    public Set<NotificationEntity> getNotificationEntities() {
+        return notificationEntities;
+    }
+
+    public void setNotificationEntities(Set<NotificationEntity> notificationEntities) {
+        this.notificationEntities = notificationEntities;
     }
 
     @Override

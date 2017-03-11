@@ -44,12 +44,24 @@ FOURTH USER
  */
 INSERT INTO sppoti.user (id, uuid, version, confirmation_code, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
 VALUES
-  (14, 10459678, 3, 'code4', TRUE, curdate(), FALSE, NULL, 'gg.gg@gg.gg', 'koko', NULL, 'MUkA', 'KAKA31', 'H',
+  (14, 10459678, 0, 'code4', TRUE, curdate(), FALSE, NULL, 'gg.gg@gg.gg', 'koko', NULL, 'MUkA', 'KAKA31', 'H',
    NULL, 'kaka31');
 
 INSERT INTO sppoti.user_roles (users_id, roles_id) VALUES (14, 1);
 INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) VALUES (14, 4);
 INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) VALUES (14, 5);
+
+/*
+FIFTH USER
+ */
+INSERT INTO sppoti.user (id, uuid, version, confirmation_code, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
+VALUES
+  (15, 10415388, 0, 'code5', TRUE, curdate(), FALSE, NULL, 'gg.gg@kk.kk', 'koko', NULL, 'KOKO', 'koko31', 'H',
+   NULL, 'koko31');
+
+INSERT INTO sppoti.user_roles (users_id, roles_id) VALUES (15, 1);
+INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) VALUES (15, 6);
+INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) VALUES (14, 1);
 
 /* ------------------------------------
   INSERT - TEAMS && TEAM MEMBERS
