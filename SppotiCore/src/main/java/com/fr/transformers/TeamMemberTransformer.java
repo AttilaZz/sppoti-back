@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.Set;
@@ -63,8 +64,10 @@ public class TeamMemberTransformer {
         Optional<Set<SppotiRatingEntity>> sppotiRatingEntity = ratingRepository.findByRatedSppoterUuidAndSppotiEntityUuid(userId, sppotiId);
 
         if (sppotiRatingEntity.isPresent()) {
-            OptionalDouble averageRating = sppotiRatingEntity.get().stream()
-                    .mapToInt(
+            Set<SppotiRatingEntity> sppotiRatingEntities = new HashSet<>();
+            sppotiRatingEntities.addAll(sppotiRatingEntity.get());
+            OptionalDouble averageRating = sppotiRatingEntities.stream()
+                    .mapToDouble(
                             SppotiRatingEntity::getStarsCount
                     ).average();
 
