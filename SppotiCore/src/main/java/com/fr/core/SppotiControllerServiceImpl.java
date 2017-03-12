@@ -1,5 +1,6 @@
 package com.fr.core;
 
+import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.sppoti.SppotiRequestDTO;
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -451,6 +449,32 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
         SppotiEntity savedSppoti = sppotiRepository.save(sppotiEntity);
 
         return getSppotiResponse(savedSppoti);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public void rateSppoter(SppotiRatingDTO sppotiRatingDTO) {
+
+        SppotiEntity sppotiEntity = sppotiRepository.findByUuid(sppotiRatingDTO.getSppotiId());
+        if(sppotiEntity == null){
+            throw new EntityNotFoundException("Sppoti not found");
+        }
+
+        Optional<UserEntity> ratedSppoter = userRepository.getByUuid(sppotiRatingDTO.getSppotiRatedId());
+        if(!ratedSppoter.isPresent()){
+            throw new EntityNotFoundException("Sppoter to rate not found");
+        }
+
+        SppotiRatingEntity sppotiRatingEntity = new SppotiRatingEntity();
+        sppotiRatingEntity.setRatedSppoter(ratedSppoter.get());
+        sppotiRatingEntity.setRatingDate(new Date());
+        sppotiRatingEntity.setRaterSppoter(getConnectedUser());
+
+        ratingRepository.save(sppotiRatingEntity);
+
     }
 
     /**

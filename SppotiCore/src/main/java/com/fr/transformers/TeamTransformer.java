@@ -1,4 +1,4 @@
-package transformers;
+package com.fr.transformers;
 
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.TeamEntity;

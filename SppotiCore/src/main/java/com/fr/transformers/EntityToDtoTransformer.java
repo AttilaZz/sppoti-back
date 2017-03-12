@@ -1,4 +1,4 @@
-package transformers;
+package com.fr.transformers;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.UserDTO;

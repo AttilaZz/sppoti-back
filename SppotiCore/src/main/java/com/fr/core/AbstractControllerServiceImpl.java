@@ -22,8 +22,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import transformers.EntityToDtoTransformer;
-import transformers.TeamMemberTransformer;
+import com.fr.transformers.EntityToDtoTransformer;
+import com.fr.transformers.TeamMemberTransformer;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -49,7 +49,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected TeamMembersRepository teamMembersRepository;
     protected SppotiMembersRepository sppotiMembersRepository;
     protected NotificationRepository notificationRepository;
+    protected RatingRepository ratingRepository;
 
+    public void setRatingRepository(RatingRepository ratingRepository) {
+        this.ratingRepository = ratingRepository;
+    }
 
     @Autowired
     public void setSppotiMembersRepository(SppotiMembersRepository sppotiMembersRepository) {
@@ -126,6 +130,9 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     @Autowired
     private Environment environment;
+
+    @Autowired
+    private TeamMemberTransformer teamMemberTransformer;
 
     private Logger LOGGER = Logger.getLogger(AbstractControllerServiceImpl.class);
 
@@ -569,7 +576,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 }
             }
 
-            teamUsers.add(TeamMemberTransformer.teamMemberEntityToDto(memberEntity, sppoti, sppoterStatus));
+            teamUsers.add(teamMemberTransformer.teamMemberEntityToDto(memberEntity, sppoti, sppoterStatus));
         }
 
         teamResponseDTO.setTeamMembers(teamUsers);

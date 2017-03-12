@@ -29,7 +29,7 @@ public class SppotiMember
     private SppotiEntity sppoti;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "sppoter_id")
+    @JoinColumn(name = "team_member_id")
     private TeamMemberEntity teamMember;
 
     public String getStatus() {

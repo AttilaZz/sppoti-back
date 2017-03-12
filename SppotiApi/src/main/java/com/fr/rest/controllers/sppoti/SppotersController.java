@@ -1,14 +1,16 @@
 package com.fr.rest.controllers.sppoti;
 
+import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.rest.service.SppotiControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.EntityNotFoundException;
 
 /**
  * Created by djenanewail on 2/4/17.
@@ -26,7 +28,12 @@ public class SppotersController {
 
     private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
-
+    /**
+     *
+     * @param sppotiId sppoti id.
+     * @param userId user id.
+     * @return 202 status if sppoti status updated.
+     */
     @PutMapping("/accept/{userId}")
     public ResponseEntity<String> acceptSppoti(@PathVariable int sppotiId, @PathVariable int userId) {
 
@@ -44,8 +51,14 @@ public class SppotersController {
 
     }
 
+    /**
+     *
+     * @param sppotiId sppoti id.
+     * @param userId user id.
+     * @return 202 status if sppoti status updated.
+     */
     @PutMapping("/refuse/{userId}")
-    public ResponseEntity<String> refuseSppoti(@PathVariable int sppotiId, @PathVariable int userId) {
+    public ResponseEntity<Void> refuseSppoti(@PathVariable int sppotiId, @PathVariable int userId) {
 
         try {
 
@@ -59,6 +72,30 @@ public class SppotersController {
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
+    }
+
+    /**
+     *
+     * @return rate.
+     */
+    @PostMapping("/rate")
+    public ResponseEntity<Void> rateSppoter(@PathVariable int sppotiId, @RequestBody SppotiRatingDTO sppotiRatingDTO){
+
+        if(sppotiRatingDTO.getSppotiRatedId() == null){
+            LOGGER.error("Rated sppoter id not found in the request");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        sppotiRatingDTO.setSppotiId(sppotiId);
+
+        try{
+            sppotiControllerService.rateSppoter(sppotiRatingDTO);
+        }catch (EntityNotFoundException e){
+            LOGGER.error(e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

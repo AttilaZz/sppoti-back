@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static transformers.EntityToDtoTransformer.getUserCoverAndAvatar;
+import static com.fr.transformers.EntityToDtoTransformer.getUserCoverAndAvatar;
 
 /**
  * Created by djenanewail on 1/22/17.

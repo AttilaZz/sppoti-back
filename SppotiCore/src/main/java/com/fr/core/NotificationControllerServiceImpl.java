@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import transformers.NotificationTransformer;
+import com.fr.transformers.NotificationTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;

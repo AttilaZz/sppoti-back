@@ -1,5 +1,6 @@
 package com.fr.rest.service;
 
+import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.sppoti.SppotiRequestDTO;
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import org.springframework.stereotype.Service;
@@ -90,4 +91,10 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param teamId   team id.
      */
     SppotiResponseDTO sendChallenge(int sppotiId, int teamId, Long connectedUserId);
+
+    /**
+     *
+     * @param sppotiRatingDTO rating object.
+     */
+    void rateSppoter(SppotiRatingDTO sppotiRatingDTO);
 }

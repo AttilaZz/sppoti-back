@@ -17,4 +17,6 @@ public interface SppotiMembersRepository extends JpaRepository<SppotiMember, Lon
     List<SppotiMember> findByTeamMemberUsersUuidAndSppotiSportId(int uuid, Long id);
 
     List<SppotiMember> findByTeamMemberUsersUuid(int userId, Pageable pageable);
+
+    SppotiMember findByUuid(Integer sppotiRatedId);
 }

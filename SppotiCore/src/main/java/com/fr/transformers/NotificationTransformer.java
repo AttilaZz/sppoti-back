@@ -1,4 +1,4 @@
-package transformers;
+package com.fr.transformers;
 
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.UserDTO;
@@ -6,7 +6,7 @@ import com.fr.entities.NotificationEntity;
 import com.fr.entities.UserEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-import static transformers.EntityToDtoTransformer.getUserCoverAndAvatar;
+import static com.fr.transformers.EntityToDtoTransformer.getUserCoverAndAvatar;
 
 /**
  * Created by djenanewail on 2/19/17.
