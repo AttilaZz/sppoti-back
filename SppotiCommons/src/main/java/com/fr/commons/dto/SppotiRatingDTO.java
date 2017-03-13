@@ -6,8 +6,17 @@ package com.fr.commons.dto;
 public class SppotiRatingDTO extends AbstractCommonDTO{
 
     Integer sppotiId;
-    Integer sppotiRaterId;
-    Integer sppotiRatedId;
+    Integer sppoterRaterId;
+    Integer sppoterRatedId;
+    Integer stars;
+
+    public Integer getStars() {
+        return stars;
+    }
+
+    public void setStars(Integer stars) {
+        this.stars = stars;
+    }
 
     public Integer getSppotiId() {
         return sppotiId;
@@ -17,19 +26,19 @@ public class SppotiRatingDTO extends AbstractCommonDTO{
         this.sppotiId = sppotiId;
     }
 
-    public Integer getSppotiRaterId() {
-        return sppotiRaterId;
+    public Integer getSppoterRaterId() {
+        return sppoterRaterId;
     }
 
-    public void setSppotiRaterId(Integer sppotiRaterId) {
-        this.sppotiRaterId = sppotiRaterId;
+    public void setSppoterRaterId(Integer sppoterRaterId) {
+        this.sppoterRaterId = sppoterRaterId;
     }
 
-    public Integer getSppotiRatedId() {
-        return sppotiRatedId;
+    public Integer getSppoterRatedId() {
+        return sppoterRatedId;
     }
 
-    public void setSppotiRatedId(Integer sppotiRatedId) {
-        this.sppotiRatedId = sppotiRatedId;
+    public void setSppoterRatedId(Integer sppoterRatedId) {
+        this.sppoterRatedId = sppoterRatedId;
     }
 }

@@ -2,12 +2,10 @@ package com.fr.rest.controllers.sppoti;
 
 import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.rest.service.SppotiControllerService;
-import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -81,8 +79,13 @@ public class SppotersController {
     @PostMapping("/rate")
     public ResponseEntity<Void> rateSppoter(@PathVariable int sppotiId, @RequestBody SppotiRatingDTO sppotiRatingDTO){
 
-        if(sppotiRatingDTO.getSppotiRatedId() == null){
+        if(sppotiRatingDTO.getSppoterRatedId() == null){
             LOGGER.error("Rated sppoter id not found in the request");
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if(sppotiRatingDTO.getStars() == null){
+            LOGGER.error("Rating stars not found");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 

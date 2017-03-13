@@ -97,8 +97,8 @@ VALUES (3, -326614926, 0, '2016-01-18 22:32:00', '2017-03-10 16:16:18', FALSE, '
            'Ain el bia 31200 v - sh5', 25, '$mahrez, $Slimani', 'NO_CHALLENGE_YET', 'FOOTBALL IN the STREET', 1, NULL,
         2, 11);
 
-INSERT INTO sppoti.sppoti_member (id, uuid, version, acceptation_date, invitation_date, status, x_position, y_position, sppoti_id, sppoter_id)
+INSERT INTO sppoti.sppoti_member (id, uuid, version, acceptation_date, invitation_date, status, x_position, y_position, sppoti_id, team_member_id)
 VALUES (1, 1750519340, 0, NULL, '2017-03-10 16:16:18', 'CONFIRMED', NULL, NULL, 3, 1);
 
-INSERT INTO sppoti.sppoti_member (id, uuid, version, acceptation_date, invitation_date, status, x_position, y_position, sppoti_id, sppoter_id)
+INSERT INTO sppoti.sppoti_member (id, uuid, version, acceptation_date, invitation_date, status, x_position, y_position, sppoti_id, team_member_id)
 VALUES (2, 1856519340, 0, NULL, '2017-03-10 16:16:18', 'PENDING', NULL, NULL, 3, 2);

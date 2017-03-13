@@ -51,6 +51,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     protected NotificationRepository notificationRepository;
     protected RatingRepository ratingRepository;
 
+    @Autowired
     public void setRatingRepository(RatingRepository ratingRepository) {
         this.ratingRepository = ratingRepository;
     }

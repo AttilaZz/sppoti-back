@@ -463,15 +463,19 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Sppoti not found");
         }
 
-        Optional<UserEntity> ratedSppoter = userRepository.getByUuid(sppotiRatingDTO.getSppotiRatedId());
+        //TODO: ckeck if sppoter exist in sppoti team
+
+        Optional<UserEntity> ratedSppoter = userRepository.getByUuid(sppotiRatingDTO.getSppoterRatedId());
         if(!ratedSppoter.isPresent()){
             throw new EntityNotFoundException("Sppoter to rate not found");
         }
 
         SppotiRatingEntity sppotiRatingEntity = new SppotiRatingEntity();
+        sppotiRatingEntity.setSppotiEntity(sppotiEntity);
         sppotiRatingEntity.setRatedSppoter(ratedSppoter.get());
         sppotiRatingEntity.setRatingDate(new Date());
         sppotiRatingEntity.setRaterSppoter(getConnectedUser());
+        sppotiRatingEntity.setStarsCount(sppotiRatingDTO.getStars());
 
         ratingRepository.save(sppotiRatingEntity);
 
