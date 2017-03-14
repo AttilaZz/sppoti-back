@@ -36,7 +36,7 @@ public class TeamMemberTransformer {
 
         UserDTO userCoverAndAvatar = EntityToDtoTransformer.getUserCoverAndAvatar(memberEntity.getUsers());
 
-        Integer sppotiId = sppoti != null ? sppoti.getUuid() : null;
+        Integer sppotiId = sppoti != null ? sppoti.getUuid() : 0;
 
         return new UserDTO(memberEntity.getUuid(), memberEntity.getUsers().getFirstName(), memberEntity.getUsers().getLastName(), memberEntity.getUsers().getUsername(),
                 userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
@@ -75,7 +75,7 @@ public class TeamMemberTransformer {
                 return averageRating.getAsDouble();
             }
         }
-        return null;
+        return 0D;
     }
 
 }

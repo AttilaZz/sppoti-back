@@ -27,7 +27,7 @@ public class SppotiRatingEntity extends AbstractCommonEntity{
     private Date ratingDate;
 
     @Column(nullable = false)
-    private Integer starsCount = 0;
+    private Integer starsCount;
 
     public SppotiEntity getSppotiEntity() {
         return sppotiEntity;

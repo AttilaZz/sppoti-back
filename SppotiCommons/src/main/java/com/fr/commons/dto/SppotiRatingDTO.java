@@ -1,7 +1,6 @@
 package com.fr.commons.dto;
 
-import org.hibernate.validator.constraints.NotBlank;
-
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -19,6 +18,7 @@ public class SppotiRatingDTO extends AbstractCommonDTO {
     Integer sppoterRatedId;
 
     @NotNull
+    @Max(value = 10)
     Integer stars;
 
     public Integer getStars() {

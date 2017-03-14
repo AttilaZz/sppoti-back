@@ -19,14 +19,14 @@ public class AbstractCommonEntity {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
     /**
      * version.
      */
     @Version
-    @Column(name = "version")
+    @Column(name = "version", nullable = false)
     private Integer version = -1;
 
     /**
