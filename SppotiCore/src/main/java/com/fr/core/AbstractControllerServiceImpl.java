@@ -483,7 +483,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
                     /** Admin is member of sppoti, status should be confirmed. */
                     if (teamMember.getAdmin() != null && teamMember.getAdmin()) {
-                        sppoter.setStatus(GlobalAppStatus.CONFIRMED.name());
+                        sppoter.setStatus(GlobalAppStatus.CONFIRMED);
                     }
 
                     /** if the sppoter already exist - default coordinate doesn't change. */
@@ -571,7 +571,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 if (!StringUtils.isEmpty(memberEntity.getSppotiMembers())) {
                     for (SppotiMember sppoter : memberEntity.getSppotiMembers()) {
                         if (sppoter.getTeamMember().getId().equals(memberEntity.getId()) && sppoter.getSppoti().getId().equals(sppoti.getId())) {
-                            sppoterStatus = GlobalAppStatus.valueOf(sppoter.getStatus()).getValue();
+                            sppoterStatus = sppoter.getStatus().getValue();
                         }
                     }
                 }

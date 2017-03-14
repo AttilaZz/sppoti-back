@@ -72,33 +72,4 @@ public class SppotersController {
 
     }
 
-    /**
-     *
-     * @return rate.
-     */
-    @PostMapping("/rate")
-    public ResponseEntity<Void> rateSppoter(@PathVariable int sppotiId, @RequestBody SppotiRatingDTO sppotiRatingDTO){
-
-        if(sppotiRatingDTO.getSppoterRatedId() == null){
-            LOGGER.error("Rated sppoter id not found in the request");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        if(sppotiRatingDTO.getStars() == null){
-            LOGGER.error("Rating stars not found");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        sppotiRatingDTO.setSppotiId(sppotiId);
-
-        try{
-            sppotiControllerService.rateSppoter(sppotiRatingDTO);
-        }catch (EntityNotFoundException e){
-            LOGGER.error(e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
 }

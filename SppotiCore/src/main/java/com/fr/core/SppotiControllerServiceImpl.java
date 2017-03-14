@@ -5,10 +5,7 @@ import com.fr.commons.dto.sppoti.SppotiRequestDTO;
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.*;
-import com.fr.exceptions.BusinessGlobalException;
-import com.fr.exceptions.NoRightToAcceptOrRefuseChallenge;
-import com.fr.exceptions.NotAdminException;
-import com.fr.exceptions.SportNotFoundException;
+import com.fr.exceptions.*;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.SppotiControllerService;
@@ -271,41 +268,42 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public void acceptSppoti(int sppotiId, int userId) {
 
-        SppotiMember sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(userId, sppotiId);
+        Optional<SppotiMember> optional = Optional.ofNullable(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(userId, sppotiId));
 
-        if (sppotiMembers == null) {
-            throw new EntityNotFoundException("Sppoter not found");
-        }
+        optional.ifPresent(
+                sm -> {
+                    //update status as sppoti memeber.
+                    sm.setStatus(GlobalAppStatus.CONFIRMED);
+                    SppotiMember updatedSppoter = sppotiMembersRepository.save(sm);
 
-        //update status as sppoti memeber.
-        sppotiMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
-        SppotiMember updatedSppoter = sppotiMembersRepository.save(sppotiMembers);
+                    /**
+                     * Send notification to sppoti admin.
+                     */
+                    if (updatedSppoter != null) {
+                        addNotification(NotificationType.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sm.getTeamMember().getUsers(), sm.getSppoti().getUserSppoti(), null);
+                    }
 
-        /**
-         * Send notification to sppoti admin.
-         */
-        if (updatedSppoter != null) {
-            addNotification(NotificationType.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sppotiMembers.getTeamMember().getUsers(), sppotiMembers.getSppoti().getUserSppoti(), null);
-        }
+                    //update status as team member.
+                    TeamMemberEntity teamMembers = sm.getTeamMember();
+                    if (!GlobalAppStatus.valueOf(teamMembers.getStatus()).equals(GlobalAppStatus.CONFIRMED)) {
+                        teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
+                    }
 
-        //update status as team member.
-        TeamMemberEntity teamMembers = sppotiMembers.getTeamMember();
-        if (!GlobalAppStatus.valueOf(teamMembers.getStatus()).equals(GlobalAppStatus.CONFIRMED)) {
-            teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
-        }
+                    TeamMemberEntity updatedTeamMember = teamMembersRepository.save(teamMembers);
 
-        TeamMemberEntity updatedTeamMember = teamMembersRepository.save(teamMembers);
+                    /**
+                     * Send notification to team admin.
+                     */
+                    if (updatedTeamMember != null && !GlobalAppStatus.valueOf(teamMembers.getStatus()).equals(GlobalAppStatus.CONFIRMED)) {
 
-        /**
-         * Send notification to team admin.
-         */
-        if (updatedTeamMember != null && !GlobalAppStatus.valueOf(teamMembers.getStatus()).equals(GlobalAppStatus.CONFIRMED)) {
+                        UserEntity teamAdmin = teamMembersRepository.findByTeamUuidAndAdminTrue(teamMembers.getTeam().getUuid()).getUsers();
 
-            UserEntity teamAdmin = teamMembersRepository.findByTeamUuidAndAdminTrue(teamMembers.getTeam().getUuid()).getUsers();
+                        addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, sm.getTeamMember().getUsers(), teamAdmin, teamMembers.getTeam());
+                    }
+                }
+        );
 
-            addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, sppotiMembers.getTeamMember().getUsers(), teamAdmin, teamMembers.getTeam());
-        }
-
+        optional.orElseThrow(() -> new EntityNotFoundException("Sppoter not found"));
     }
 
     /**
@@ -321,7 +319,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
             throw new EntityNotFoundException("Sppoter not found");
         }
 
-        sppotiMembers.setStatus(GlobalAppStatus.REFUSED.name());
+        sppotiMembers.setStatus(GlobalAppStatus.REFUSED);
         SppotiMember updatedSppoter = sppotiMembersRepository.save(sppotiMembers);
 
         /**
@@ -458,27 +456,34 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public void rateSppoter(SppotiRatingDTO sppotiRatingDTO) {
 
-        SppotiEntity sppotiEntity = sppotiRepository.findByUuid(sppotiRatingDTO.getSppotiId());
-        if(sppotiEntity == null){
-            throw new EntityNotFoundException("Sppoti not found");
-        }
+        Optional<SppotiEntity> sppotiEntity = Optional.ofNullable(sppotiRepository.findByUuid(sppotiRatingDTO.getSppotiId()));
 
-        //TODO: ckeck if sppoter exist in sppoti team
+        sppotiEntity.ifPresent(
+                se -> {
 
-        Optional<UserEntity> ratedSppoter = userRepository.getByUuid(sppotiRatingDTO.getSppoterRatedId());
-        if(!ratedSppoter.isPresent()){
-            throw new EntityNotFoundException("Sppoter to rate not found");
-        }
 
-        SppotiRatingEntity sppotiRatingEntity = new SppotiRatingEntity();
-        sppotiRatingEntity.setSppotiEntity(sppotiEntity);
-        sppotiRatingEntity.setRatedSppoter(ratedSppoter.get());
-        sppotiRatingEntity.setRatingDate(new Date());
-        sppotiRatingEntity.setRaterSppoter(getConnectedUser());
-        sppotiRatingEntity.setStarsCount(sppotiRatingDTO.getStars());
+                    Optional<SppotiMember> ratedSppoter = Optional.of(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(sppotiRatingDTO.getSppoterRatedId(), se.getUuid()));
+                    ratedSppoter.ifPresent(
+                            rs -> {
+                                if(rs.getStatus().equals(GlobalAppStatus.PENDING)){
+                                    throw new BusinessGlobalException("Sppoter hasn't accepted sppoti yet");
+                                }
 
-        ratingRepository.save(sppotiRatingEntity);
+                                SppotiRatingEntity sppotiRatingEntity = new SppotiRatingEntity();
+                                sppotiRatingEntity.setSppotiEntity(se);
+                                sppotiRatingEntity.setRatedSppoter(rs.getTeamMember().getUsers());
+                                sppotiRatingEntity.setRatingDate(new Date());
+                                sppotiRatingEntity.setRaterSppoter(getConnectedUser());
+                                sppotiRatingEntity.setStarsCount(sppotiRatingDTO.getStars());
 
+                                ratingRepository.save(sppotiRatingEntity);
+                            }
+                    );
+                    ratedSppoter.orElseThrow(() -> new EntityNotFoundException("Sppoter not found"));
+                }
+        );
+
+        sppotiEntity.orElseThrow(() -> new EntityNotFoundException("Sppoti not found"));
     }
 
     /**
@@ -494,9 +499,9 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                             sppotiMember.setTeamMember(sm);
                             sppotiMember.setSppoti(sppoti);
                             if (fromAdverseTeam) {
-                                if (sm.getAdmin()) sppotiMember.setStatus(GlobalAppStatus.CONFIRMED.name());
+                                if (sm.getAdmin()) sppotiMember.setStatus(GlobalAppStatus.CONFIRMED);
                             } else {
-                                sppotiMember.setStatus(GlobalAppStatus.PENDING.name());
+                                sppotiMember.setStatus(GlobalAppStatus.PENDING);
                             }
                             return sppotiMember;
                         }

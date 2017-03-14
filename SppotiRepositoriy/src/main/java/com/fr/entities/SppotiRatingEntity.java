@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by djenanewail on 3/12/17.
  */
 @Entity
-@Table(name = "rate")
+@Table(name = "rating")
 public class SppotiRatingEntity extends AbstractCommonEntity{
 
     @ManyToOne

@@ -1,13 +1,24 @@
 package com.fr.commons.dto;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by djenanewail on 3/12/17.
  */
-public class SppotiRatingDTO extends AbstractCommonDTO{
+public class SppotiRatingDTO extends AbstractCommonDTO {
 
+    @NotNull
     Integer sppotiId;
+
+    //set automatically using the connected user.
     Integer sppoterRaterId;
+
+    @NotNull
     Integer sppoterRatedId;
+
+    @NotNull
     Integer stars;
 
     public Integer getStars() {

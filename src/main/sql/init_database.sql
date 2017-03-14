@@ -93,12 +93,12 @@ VALUES (4, -16284522, 0, FALSE, '2017-02-23 11:56:55', NULL, 'PENDING', TRUE, NU
 
 #sppoti1
 INSERT INTO sppoti.sppoti (id, uuid, version, date_time_start, datetime_created, deleted, description, location, max_members_count, tags, team_adverse_status, titre, sport_id, team_adverse_id, team_host_id, user_id)
-VALUES (3, -326614926, 0, '2016-01-18 22:32:00', '2017-03-10 16:16:18', FALSE, 'My FIRST fancy sppoti',
+VALUES (1, -326614926, 0, '2016-01-18 22:32:00', '2017-03-10 16:16:18', FALSE, 'My FIRST fancy sppoti',
            'Ain el bia 31200 v - sh5', 25, '$mahrez, $Slimani', 'NO_CHALLENGE_YET', 'FOOTBALL IN the STREET', 1, NULL,
         2, 11);
 
 INSERT INTO sppoti.sppoti_member (id, uuid, version, acceptation_date, invitation_date, status, x_position, y_position, sppoti_id, team_member_id)
-VALUES (1, 1750519340, 0, NULL, '2017-03-10 16:16:18', 'CONFIRMED', NULL, NULL, 3, 1);
+VALUES (1, 1750519340, 0, NULL, '2017-03-10 16:16:18', 'CONFIRMED', NULL, NULL, 1, 1);
 
 INSERT INTO sppoti.sppoti_member (id, uuid, version, acceptation_date, invitation_date, status, x_position, y_position, sppoti_id, team_member_id)
-VALUES (2, 1856519340, 0, NULL, '2017-03-10 16:16:18', 'PENDING', NULL, NULL, 3, 2);
+VALUES (2, 1856519340, 0, NULL, '2017-03-10 16:16:18', 'PENDING', NULL, NULL, 1, 2);

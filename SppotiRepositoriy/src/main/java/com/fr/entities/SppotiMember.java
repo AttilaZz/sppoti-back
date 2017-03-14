@@ -13,7 +13,9 @@ import java.util.Date;
 public class SppotiMember
         extends AbstractCommonEntity {
 
-    private String status = GlobalAppStatus.PENDING.name();
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private GlobalAppStatus status = GlobalAppStatus.PENDING;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date invitationDate = new Date();
@@ -32,11 +34,11 @@ public class SppotiMember
     @JoinColumn(name = "team_member_id")
     private TeamMemberEntity teamMember;
 
-    public String getStatus() {
+    public GlobalAppStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(GlobalAppStatus status) {
         this.status = status;
     }
 
