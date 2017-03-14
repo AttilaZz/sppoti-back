@@ -460,8 +460,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
         sppotiEntity.ifPresent(
                 se -> {
-
-
                     Optional<SppotiMember> ratedSppoter = Optional.of(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(sppotiRatingDTO.getSppoterRatedId(), se.getUuid()));
                     ratedSppoter.ifPresent(
                             rs -> {
@@ -482,7 +480,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                     ratedSppoter.orElseThrow(() -> new EntityNotFoundException("Sppoter not found"));
                 }
         );
-
         sppotiEntity.orElseThrow(() -> new EntityNotFoundException("Sppoti not found"));
     }
 

@@ -19,18 +19,18 @@ import java.util.*;
 public class UserEntity
         extends AbstractCommonEntity {
 
-    @Column(nullable = false)
+    @Column
     private String lastName;
 
-    @Column(nullable = false)
+    @Column
     private String firstName;
 
     @Temporal(TemporalType.DATE)
     @Past
-    @Column(nullable = false)
+    @Column
     private Date dateBorn;
 
-    @Column(nullable = false)
+    @Column
     private String sexe;
 
     @Column(unique = true)
