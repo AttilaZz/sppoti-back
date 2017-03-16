@@ -16,7 +16,8 @@ public class TeamMemberEntity
         extends AbstractCommonEntity {
 
     @Column(nullable = false)
-    private String status = GlobalAppStatus.PENDING.name();
+    @Enumerated(EnumType.STRING)
+    private GlobalAppStatus status = GlobalAppStatus.PENDING;
 
     @Column
     @Temporal(TemporalType.TIMESTAMP)
@@ -46,11 +47,11 @@ public class TeamMemberEntity
     @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMember> sppotiMembers;
 
-    public String getStatus() {
+    public GlobalAppStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(GlobalAppStatus status) {
         this.status = status;
     }
 

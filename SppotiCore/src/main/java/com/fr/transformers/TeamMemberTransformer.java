@@ -44,7 +44,7 @@ public class TeamMemberTransformer {
                 userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null,
                 memberEntity.getAdmin(),
                 sppoti != null && sppoti.getUserSppoti().getId() != null && memberEntity.getUsers().getId().equals(sppoti.getUserSppoti().getId()) ? true : null,
-                GlobalAppStatus.valueOf(memberEntity.getStatus()).getValue(),
+                memberEntity.getStatus().getValue(),
                 sppoti != null && sppoti.getUserSppoti().getId() != null ? sppoterStatus : null, memberEntity.getUsers().getUuid(),
                 memberEntity.getxPosition() != null ? memberEntity.getxPosition() : null,
                 memberEntity.getyPosition() != null ? memberEntity.getyPosition() : null,

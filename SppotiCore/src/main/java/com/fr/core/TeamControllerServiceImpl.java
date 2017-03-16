@@ -89,7 +89,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         if (teamRequestDTO.getStatus() != null && !teamRequestDTO.getStatus().equals(0)) {
             for (GlobalAppStatus status : GlobalAppStatus.values()) {
                 if (status.getValue() == teamRequestDTO.getStatus()) {
-                    usersTeam.setStatus(status.name());
+                    usersTeam.setStatus(status);
                 }
             }
         }
@@ -150,7 +150,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             throw new EntityNotFoundException("TeamEntity not found");
         }
 
-        teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
+        teamMembers.setStatus(GlobalAppStatus.CONFIRMED);
 
         if (teamMembersRepository.save(teamMembers) != null) {
             addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null);
@@ -171,7 +171,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             throw new EntityNotFoundException("TeamEntity not found");
         }
 
-        teamMembers.setStatus(GlobalAppStatus.REFUSED.name());
+        teamMembers.setStatus(GlobalAppStatus.REFUSED);
 
         if (teamMembersRepository.save(teamMembers) != null) {
             addNotification(NotificationType.X_REFUSED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null);

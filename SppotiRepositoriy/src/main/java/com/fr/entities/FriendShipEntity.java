@@ -17,7 +17,8 @@ public class FriendShipEntity
     private Date datetime = new Date();
 
     @Column(nullable = false)
-    private String status = GlobalAppStatus.PENDING.name();
+    @Enumerated(EnumType.STRING)
+    private GlobalAppStatus status = GlobalAppStatus.PENDING;
 
     @OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "friend_id")
@@ -38,11 +39,11 @@ public class FriendShipEntity
         this.datetime = datetime;
     }
 
-    public String getStatus() {
+    public GlobalAppStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(GlobalAppStatus status) {
         this.status = status;
     }
 

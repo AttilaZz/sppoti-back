@@ -1,6 +1,7 @@
 package com.fr.rest.service;
 
 import com.fr.entities.FriendShipEntity;
+import com.fr.models.GlobalAppStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public interface FriendControllerService extends AbstractControllerService {
      * @param pageable
      * @return List FriendShipEntity DTO
      */
-    List<FriendShipEntity> getByUserAndStatus(int uuid, String name, Pageable pageable);
+    List<FriendShipEntity> getByUserAndStatus(int uuid, GlobalAppStatus name, Pageable pageable);
 
     /**
      * Fiend a all friends matching the given status
@@ -30,7 +31,7 @@ public interface FriendControllerService extends AbstractControllerService {
      * @param pageable
      * @return List of Friendship DTO
      */
-    List<FriendShipEntity> getByFriendUuidAndStatus(int uuid, String name, Pageable pageable);
+    List<FriendShipEntity> getByFriendUuidAndStatus(int uuid, GlobalAppStatus name, Pageable pageable);
 
     /**
      * Fiend friendship between two users

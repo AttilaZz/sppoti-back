@@ -463,7 +463,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     teamMember.setAdmin(true);
                     teamMember.setTeamCaptain(true);
                     /** Admin is member of the team, status should be confirmed. */
-                    teamMember.setStatus(GlobalAppStatus.CONFIRMED.name());
+                    teamMember.setStatus(GlobalAppStatus.CONFIRMED);
                 }
 
                 teamMember.setTeam(team);

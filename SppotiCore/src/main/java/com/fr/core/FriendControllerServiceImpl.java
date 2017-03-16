@@ -25,7 +25,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
      * {@inheritDoc}
      */
     @Override
-    public List<FriendShipEntity> getByUserAndStatus(int uuid, String name, Pageable pageable) {
+    public List<FriendShipEntity> getByUserAndStatus(int uuid, GlobalAppStatus name, Pageable pageable) {
         return friendShipRepository.findByUserUuidAndStatusAndDeletedFalse(uuid, name, pageable);
     }
 
@@ -33,7 +33,7 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
      * {@inheritDoc}
      */
     @Override
-    public List<FriendShipEntity> getByFriendUuidAndStatus(int uuid, String name, Pageable pageable) {
+    public List<FriendShipEntity> getByFriendUuidAndStatus(int uuid, GlobalAppStatus name, Pageable pageable) {
         return friendShipRepository.findByFriendUuidAndStatusAndDeletedFalse(uuid, name, pageable);
     }
 
@@ -84,16 +84,16 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
          */
         for (GlobalAppStatus globalAppStatus : GlobalAppStatus.values()) {
             if (globalAppStatus.getValue() == friendStatus) {
-                tempFriendShip.setStatus(globalAppStatus.name());
+                tempFriendShip.setStatus(globalAppStatus);
             }
         }
 
         //update and add notification
         FriendShipEntity friendShip = friendShipRepository.save(tempFriendShip);
         if (friendShip != null) {
-            if (friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED.name())) {
+            if (friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED)) {
                 addNotification(NotificationType.FRIEND_REQUEST_ACCEPTED, friendShip.getFriend(), friendShip.getUser(), null);
-            } else if (friendShip.getStatus().equals(GlobalAppStatus.REFUSED.name())) {
+            } else if (friendShip.getStatus().equals(GlobalAppStatus.REFUSED)) {
                 addNotification(NotificationType.FRIEND_REQUEST_REFUSED, friendShip.getFriend(), friendShip.getUser(), null);
             }
         }

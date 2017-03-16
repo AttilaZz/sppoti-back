@@ -37,9 +37,9 @@ public class FriendAddController {
     }
 
     /**
-     * @param user
-     * @param request
-     * @return
+     * @param user friend to add.
+     * @param request spring secu object.
+     * @return created friend.
      */
     @PostMapping
     public ResponseEntity<Object> addFriend(@RequestBody UserDTO user, HttpServletRequest request) {
@@ -83,7 +83,7 @@ public class FriendAddController {
         Check if friendship exist
          */
         FriendShipEntity tempFriendShip = friendControllerService.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid());
-        if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatus.PUBLIC_RELATION.name())) {
+        if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatus.PUBLIC_RELATION)) {
             LOGGER.error("ADD-FRIEND: You are already friends");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -91,9 +91,9 @@ public class FriendAddController {
         FriendShipEntity friendShip = new FriendShipEntity();
 
         //friendship aleady exist in a different status
-        if (tempFriendShip != null && tempFriendShip.getStatus().equals(GlobalAppStatus.PUBLIC_RELATION.name())) {
+        if (tempFriendShip != null && tempFriendShip.getStatus().equals(GlobalAppStatus.PUBLIC_RELATION)) {
             friendShip = tempFriendShip;
-            friendShip.setStatus(GlobalAppStatus.PENDING.name());
+            friendShip.setStatus(GlobalAppStatus.PENDING);
         } else {
             UserEntity u = friendControllerService.getUserByUuId(user.getFriendUuid());
             friendShip.setFriend(u);

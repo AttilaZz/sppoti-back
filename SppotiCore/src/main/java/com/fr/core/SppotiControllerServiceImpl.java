@@ -285,8 +285,8 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
 
                     //update status as team member.
                     TeamMemberEntity teamMembers = sm.getTeamMember();
-                    if (!GlobalAppStatus.valueOf(teamMembers.getStatus()).equals(GlobalAppStatus.CONFIRMED)) {
-                        teamMembers.setStatus(GlobalAppStatus.CONFIRMED.name());
+                    if (!teamMembers.getStatus().equals(GlobalAppStatus.CONFIRMED)) {
+                        teamMembers.setStatus(GlobalAppStatus.CONFIRMED);
                     }
 
                     TeamMemberEntity updatedTeamMember = teamMembersRepository.save(teamMembers);
@@ -294,7 +294,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                     /**
                      * Send notification to team admin.
                      */
-                    if (updatedTeamMember != null && !GlobalAppStatus.valueOf(teamMembers.getStatus()).equals(GlobalAppStatus.CONFIRMED)) {
+                    if (updatedTeamMember != null && !teamMembers.getStatus().equals(GlobalAppStatus.CONFIRMED)) {
 
                         UserEntity teamAdmin = teamMembersRepository.findByTeamUuidAndAdminTrue(teamMembers.getTeam().getUuid()).getUsers();
 

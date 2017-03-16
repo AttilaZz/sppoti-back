@@ -1,6 +1,7 @@
 package com.fr.repositories;
 
 import com.fr.entities.FriendShipEntity;
+import com.fr.models.GlobalAppStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -15,9 +16,9 @@ public interface FriendShipRepository extends CrudRepository<FriendShipEntity, L
 
     FriendShipEntity findByFriendUuidAndUserUuidAndDeletedFalse(int friend_uuid, int connected_user);
 
-    List<FriendShipEntity> findByUserUuidAndStatusAndDeletedFalse(int uuid, String name, Pageable pageable);
+    List<FriendShipEntity> findByUserUuidAndStatusAndDeletedFalse(int uuid, GlobalAppStatus name, Pageable pageable);
 
-    List<FriendShipEntity> findByFriendUuidAndStatusAndDeletedFalse(int friend, String name, Pageable pageable);
+    List<FriendShipEntity> findByFriendUuidAndStatusAndDeletedFalse(int friend, GlobalAppStatus name, Pageable pageable);
 
     List<FriendShipEntity> findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(int connectedUser, int uuid, String name);
 

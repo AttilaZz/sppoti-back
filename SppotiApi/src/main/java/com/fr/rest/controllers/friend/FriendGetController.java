@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,9 +68,9 @@ public class FriendGetController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.CONFIRMED.name(), pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.CONFIRMED, pageable);
 
-        FriendResponseDTO friendResponse = getFriendResponse(friendShips);
+        FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
 
         LOGGER.info("FRIEND_LIST: user friend list has been returned");
         return new ResponseEntity<>(friendResponse, HttpStatus.OK);
@@ -93,14 +92,14 @@ public class FriendGetController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.REFUSED.name(), pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.REFUSED, pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_REFUSED_FRIEND_REQUEST: No sent friend request found !");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        FriendResponseDTO friendResponse = getFriendResponse(friendShips);
+        FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
 
         LOGGER.info("FRIEND_LIST: user friend list has been returned");
         return new ResponseEntity<>(friendResponse, HttpStatus.OK);
@@ -121,14 +120,14 @@ public class FriendGetController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING.name(), pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING, pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_SENT: No sent friend request found !");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        FriendResponseDTO friendResponse = getFriendResponse(friendShips);
+        FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
 
         LOGGER.info("FRIEND_LIST: user friend list has been returned");
         return new ResponseEntity<>(friendResponse, HttpStatus.OK);
@@ -141,14 +140,14 @@ public class FriendGetController {
      * @return all friend pending requests.
      */
     @GetMapping("/pending/received/{page}")
-    public ResponseEntity<FriendResponseDTO> getREceivedPendingFriendList(@PathVariable int page, Authentication authentication) {
+    public ResponseEntity<FriendResponseDTO> getReceivedPendingFriendList(@PathVariable int page, Authentication authentication) {
 
         Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity connectedUser = friendControllerService.getUserById(connected_user);
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShipEntity> friendShips = friendControllerService.getByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING.name(), pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING, pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_RECEIVED: No received request friend found !");
@@ -156,7 +155,7 @@ public class FriendGetController {
         }
 
 
-        FriendResponseDTO friendResponse = getFriendResponse(friendShips);
+        FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
 
         LOGGER.info("FRIEND_LIST: user friend list has been returned");
         return new ResponseEntity<>(friendResponse, HttpStatus.OK);
@@ -164,19 +163,22 @@ public class FriendGetController {
     }
 
     /**
-     *
      * @param friendShips list of all friendships.
      * @return friend response DTO.
      */
-    private FriendResponseDTO getFriendResponse(List<FriendShipEntity> friendShips) {
+    private FriendResponseDTO getFriendResponse(List<FriendShipEntity> friendShips, Long connectedUser) {
         List<UserDTO> friendList = new ArrayList<>();
 
         for (FriendShipEntity friendShip : friendShips) {
-            UserEntity userdb = friendShip.getFriend();
+            UserEntity user;
 
-            UserDTO user = accountControllerService.fillUserResponse(userdb, null);
+            if(friendShip.getFriend().getId().equals(connectedUser)){
+                user = friendShip.getUser();
+            }else {
+                user = friendShip.getFriend();
+            }
 
-            friendList.add(user);
+            friendList.add(accountControllerService.fillUserResponse(user, null));
 
         }
 
