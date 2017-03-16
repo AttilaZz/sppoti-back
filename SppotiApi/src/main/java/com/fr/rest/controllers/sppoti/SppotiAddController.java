@@ -38,9 +38,7 @@ public class SppotiAddController {
             LOGGER.error("AddressEntity not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-//        if (newSppoti.getDescription() == null || newSppoti.getDescription().isEmpty()) {
-//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Description not found");
-//        }
+
         if (newSppoti.getMaxTeamCount() == 0) {
             LOGGER.error("Max-TeamRequestDTO-Count not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -50,9 +48,7 @@ public class SppotiAddController {
             LOGGER.error("SportEntity-Id not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-//        if (newSppoti.getTags() == null || newSppoti.getTags().isEmpty()) {
-//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Tags not found");
-//        }
+
         if (newSppoti.getTitre() == null || newSppoti.getTitre().isEmpty()) {
             LOGGER.error("Title not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -65,25 +61,11 @@ public class SppotiAddController {
             LOGGER.error("TeamHostModel && TeamHostId not found ");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-//        if (newSppoti.getVsTeam() == 0) {
-//            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Adverse team id not found");
-//        }
 
-        try {
+        SppotiResponseDTO sppotiResponseDTO = sppotiControllerService.saveSppoti(newSppoti);
 
-            SppotiResponseDTO sppotiResponseDTO = sppotiControllerService.saveSppoti(newSppoti);
+        return new ResponseEntity<>(sppotiResponseDTO, HttpStatus.CREATED);
 
-            return new ResponseEntity<>(sppotiResponseDTO, HttpStatus.CREATED);
-
-        } catch (RuntimeException e) {
-            if (e instanceof DataIntegrityViolationException) {
-                LOGGER.error("team name already exist: ", e);
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
-            }
-
-            LOGGER.error("Ajout de sppoti imposssible: ", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
     }
 
 

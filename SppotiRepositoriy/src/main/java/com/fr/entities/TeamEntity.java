@@ -15,7 +15,7 @@ import java.util.UUID;
 public class TeamEntity
         extends AbstractCommonEntity {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     private String logoPath;
@@ -26,7 +26,7 @@ public class TeamEntity
     private Set<TeamMemberEntity> teamMembers;
 
     @OneToOne
-    @JoinColumn(name = "sport_id")
+    @JoinColumn(nullable = false, name = "sport_id")
     private SportEntity sport;
 
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
