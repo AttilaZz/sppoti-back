@@ -8,6 +8,7 @@ import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
+import com.fr.entities.UserEntity;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.CommentControllerService;
 import org.apache.log4j.Logger;
@@ -20,6 +21,7 @@ import com.fr.transformers.EntityToDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
@@ -49,22 +51,26 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
         }
 
         newCommentEntity.setUser(userRepository.findOne(getConnectedUser().getId()));
-        CommentEntity commentEntity = commentRepository.save(newCommentEntity);
+        Optional<CommentEntity> commentEntity = Optional.ofNullable(commentRepository.save(newCommentEntity));
 
-        if (commentEntity != null) {
+        if (commentEntity.isPresent()) {
+            int targetUser = commentEntity.get().getPost().getTargetUserProfileUuid();
+            if (targetUser != 0 && targetUser != connectedUserId) {
 
-            //like on other posts not mine
-            if (commentEntity.getUser().getUuid() != commentEntity.getPost().getTargetUserProfileUuid()) {
-                addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.getUser(), getUserByUuId(commentEntity.getPost().getTargetUserProfileUuid()), null);
+                //like on other posts not mine
+                if (commentEntity.get().getUser().getUuid() != commentEntity.get().getPost().getTargetUserProfileUuid()) {
+                    addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getUser(), getUserByUuId(commentEntity.get().getPost().getTargetUserProfileUuid()), null);
+
+                }
+
+                addTagNotification(null, commentEntity.get());
 
             }
 
-            addTagNotification(null, commentEntity);
-
+            return EntityToDtoTransformer.commentEntityToDto(commentEntity.get(), getUserById(userId));
         }
 
-        return EntityToDtoTransformer.commentEntityToDto(commentEntity, getUserById(userId));
-
+        return null;
     }
 
     /**

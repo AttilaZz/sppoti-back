@@ -16,10 +16,7 @@ import com.fr.transformers.EntityToDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
@@ -41,7 +38,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     public PostEntity savePost(PostEntity post) {
         PostEntity postEntity = postRepository.save(post);
 
-        if (postEntity != null && post.getTargetUserProfileUuid() != getConnectedUser().getUuid()) {
+        if (postEntity != null && post.getTargetUserProfileUuid() != 0 && post.getTargetUserProfileUuid() != getConnectedUser().getUuid()) {
 
             addNotification(NotificationType.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(), getUserByUuId(postEntity.getTargetUserProfileUuid()), null);
 
@@ -187,6 +184,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public PostResponseDTO fillPostToSend(int postId, Long userId) {
 
+
         List<PostEntity> posts = postRepository.getByUuid(postId);
         if (posts.isEmpty()) {
             throw new EntityNotFoundException("Post id (" + postId + ") introuvable.");
@@ -201,6 +199,11 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     }
 
+    /**
+     * @param postEntities list of post entities.
+     * @param userPost     post creator.
+     * @return list of all posts.
+     */
     public List<PostResponseDTO> postEntityToDto(final List<PostEntity> postEntities, final UserEntity userPost) {
 
         List<PostResponseDTO> postResponseDTOs = new ArrayList<PostResponseDTO>();
@@ -263,9 +266,9 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             /*
             Manage commentEntities count + last like
              */
-                    Set<CommentEntity> commentEntities = p.getCommentEntities();
+                    Set<CommentEntity> commentEntities = new TreeSet<>();
+                    commentEntities.addAll(p.getCommentEntities());
                     pres.setCommentsCount(commentEntities.size());
-
 
                     List<CommentEntity> commentsListTemp = new ArrayList<CommentEntity>();
                     commentsListTemp.addAll(commentEntities);

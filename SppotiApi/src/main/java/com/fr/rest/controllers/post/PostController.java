@@ -55,7 +55,7 @@ public class PostController {
     }
 
     @GetMapping(value = "/all/{user_unique_id}/{page}")
-    public ResponseEntity<Object> getAllPosts(@PathVariable int user_unique_id, @PathVariable int page, HttpServletRequest request, Authentication authentication) {
+    public ResponseEntity<List<PostResponseDTO>> getAllPosts(@PathVariable int user_unique_id, @PathVariable int page, HttpServletRequest request, Authentication authentication) {
 
         //if user_unique_id is the connected user
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();

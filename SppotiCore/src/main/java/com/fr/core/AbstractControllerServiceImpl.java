@@ -378,15 +378,15 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 } else {
 
                     //We are friend
-                    if (friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED.name())) {
+                    if (friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED)) {
                         user.setFriendStatus(GlobalAppStatus.CONFIRMED.getValue());
 
                         //Friend request waiting to be accepted by me
-                    } else if (friendShip.getStatus().equals(GlobalAppStatus.PENDING.name())) {
+                    } else if (friendShip.getStatus().equals(GlobalAppStatus.PENDING)) {
                         user.setFriendStatus(GlobalAppStatus.PENDING.getValue());
 
                         //Friend request refused by me
-                    } else if (friendShip.getStatus().equals(GlobalAppStatus.REFUSED.name())) {
+                    } else if (friendShip.getStatus().equals(GlobalAppStatus.REFUSED)) {
                         user.setFriendStatus(GlobalAppStatus.REFUSED.getValue());
 
                     }

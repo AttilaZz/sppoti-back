@@ -32,7 +32,7 @@ public class PostEntity
     @SerializedName("text")
     private String content;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "DATETIME(3)")
     @Temporal(TemporalType.TIMESTAMP)
     private Date datetimeCreated = new Date();
 

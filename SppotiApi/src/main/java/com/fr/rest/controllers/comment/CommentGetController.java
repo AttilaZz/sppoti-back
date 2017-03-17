@@ -2,10 +2,12 @@ package com.fr.rest.controllers.comment;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.rest.service.CommentControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,15 +38,15 @@ public class CommentGetController {
     /**
      * Get all like for a given post
      *
-     * @param postId
-     * @param page
-     * @param httpServletRequest
-     * @return List of like DTO
+     * @param postId post id.
+     * @param page page number.
+     * @param authentication auth object spring secu.
+     * @return List of like DTO.
      */
     @GetMapping("/{postId}/{page}")
-    public ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable int postId, @PathVariable int page, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable int postId, @PathVariable int page, Authentication authentication) {
 
-        Long userId = (Long) httpServletRequest.getSession().getAttribute(ATT_USER_ID);
+        Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 
         List<CommentDTO> commentModelDTOList = commentDataService.getPostCommentsFromLastId(postId, page, userId);
 
