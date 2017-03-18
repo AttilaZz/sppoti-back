@@ -34,6 +34,8 @@ public class SppotiMember
     @JoinColumn(name = "team_member_id")
     private TeamMemberEntity teamMember;
 
+    private Boolean hasRateOtherSppoter;
+
     public GlobalAppStatus getStatus() {
         return status;
     }
@@ -90,22 +92,12 @@ public class SppotiMember
         this.teamMember = teamMember;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SppotiMember)) return false;
-        if (!super.equals(o)) return false;
+    public Boolean getHasRateOtherSppoter() {
+        return hasRateOtherSppoter;
+    }
 
-        SppotiMember that = (SppotiMember) o;
-
-        if (status != null ? !status.equals(that.status) : that.status != null) return false;
-        if (invitationDate != null ? !invitationDate.equals(that.invitationDate) : that.invitationDate != null)
-            return false;
-        if (acceptationDate != null ? !acceptationDate.equals(that.acceptationDate) : that.acceptationDate != null)
-            return false;
-        if (xPosition != null ? !xPosition.equals(that.xPosition) : that.xPosition != null) return false;
-        return yPosition != null ? yPosition.equals(that.yPosition) : that.yPosition == null;
-
+    public void setHasRateOtherSppoter(Boolean hasRateOtherSppoter) {
+        this.hasRateOtherSppoter = hasRateOtherSppoter;
     }
 
     @Override
@@ -116,6 +108,7 @@ public class SppotiMember
         result = 31 * result + (acceptationDate != null ? acceptationDate.hashCode() : 0);
         result = 31 * result + (xPosition != null ? xPosition.hashCode() : 0);
         result = 31 * result + (yPosition != null ? yPosition.hashCode() : 0);
+        result = 31 * result + (hasRateOtherSppoter != null ? 1: 0);
         return result;
     }
 }

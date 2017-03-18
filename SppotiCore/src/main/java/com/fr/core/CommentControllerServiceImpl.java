@@ -16,7 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.fr.transformers.EntityToDtoTransformer;
+import com.fr.transformers.CommentEntityToDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -66,7 +66,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
 
             }
 
-            return EntityToDtoTransformer.commentEntityToDto(commentEntity.get(), getUserById(userId));
+            return CommentEntityToDtoTransformer.commentEntityToDto(commentEntity.get(), getUserById(userId));
         }
 
         return null;

@@ -22,12 +22,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import com.fr.transformers.EntityToDtoTransformer;
+import com.fr.transformers.CommentEntityToDtoTransformer;
 import com.fr.transformers.TeamMemberTransformer;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.fr.transformers.UserTransformer.getUserCoverAndAvatar;
 
 @Transactional(readOnly = true)
 @Component("abstractService")
@@ -275,7 +277,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 //            if (!userDaoService.getLastAvatar(userId).isEmpty())
 //                cm.setAuthorAvatar(userDaoService.getLastAvatar(userId).get(0).getUrl());
 
-            UserDTO userCoverAndAvatar = EntityToDtoTransformer.getUserCoverAndAvatar(
+            UserDTO userCoverAndAvatar = getUserCoverAndAvatar(
                     commentEntity.getUser());
             cm.setAuthorAvatar(userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null);
             cm.setAuthorFirstName(commentEntity.getUser().getFirstName());
@@ -409,7 +411,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         /*
         Manage resources
          */
-        UserDTO user_cover_avatar = EntityToDtoTransformer.getUserCoverAndAvatar(targetUser);
+        UserDTO user_cover_avatar = getUserCoverAndAvatar(targetUser);
         user.setCover(user_cover_avatar.getCover());
         user.setAvatar(user_cover_avatar.getAvatar());
         user.setCoverType(user_cover_avatar.getCoverType());

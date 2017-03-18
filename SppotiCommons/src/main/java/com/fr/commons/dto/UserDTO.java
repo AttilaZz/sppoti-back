@@ -62,6 +62,7 @@ public class UserDTO extends AbstractCommonDTO {
     private Boolean teamCaptain;
 
     private Double rating;
+    private Boolean hasRateOtherSppoters;
 
     public UserDTO() {
     }
@@ -83,16 +84,6 @@ public class UserDTO extends AbstractCommonDTO {
         this.yPosition = yPosition;
         this.teamCaptain = teamCaptain;
         this.rating = rating;
-    }
-
-    public UserDTO(int uuid, String firstName, String lastName, String username, String cover, String avatar, Integer coverType) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.cover = cover;
-        this.avatar = avatar;
-        this.coverType = coverType;
-        this.id = uuid;
     }
 
     public String getFirstName() {
@@ -293,5 +284,13 @@ public class UserDTO extends AbstractCommonDTO {
 
     public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public Boolean getHasRateOtherSppoters() {
+        return hasRateOtherSppoters;
+    }
+
+    public void setHasRateOtherSppoters(Boolean hasRateOtherSppoters) {
+        this.hasRateOtherSppoters = hasRateOtherSppoters;
     }
 }

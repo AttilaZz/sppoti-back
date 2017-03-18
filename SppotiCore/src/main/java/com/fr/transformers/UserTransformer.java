@@ -1,8 +1,6 @@
 package com.fr.transformers;
 
-import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.CommentEntity;
 import com.fr.entities.ResourcesEntity;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
@@ -13,32 +11,31 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by djenanewail on 2/11/17.
+ * Created by djenanewail on 3/18/17.
  */
-
 @Component
-@Transactional(readOnly = true)
-public class EntityToDtoTransformer {
-
+@Transactional
+public class UserTransformer {
 
     /**
-     * @param commentEntity like entity to map.
-     * @param userEntity user entity to map.
-     * @return like dto.
+     *
+     * @param entity user entity to transform.
+     * @return user DTO.
      */
-    public static CommentDTO commentEntityToDto(CommentEntity commentEntity, UserEntity userEntity) {
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setAuthorFirstName(userEntity != null ? userEntity.getFirstName() : null);
-        commentDTO.setAuthorLastName(userEntity != null ? userEntity.getLastName() : null);
-        commentDTO.setAuthorUsername(userEntity != null ? userEntity.getUsername() : null);
-        commentDTO.setId(commentEntity.getUuid());
-        commentDTO.setAuthorUsername(userEntity != null ? userEntity.getUsername() : null);
-        commentDTO.setText(commentEntity.getContent());
-        commentDTO.setImageLink(commentEntity.getImageLink() != null ? commentEntity.getImageLink() : null);
-        commentDTO.setVideoLink(commentEntity.getVideoLink() != null ? commentEntity.getVideoLink() : null);
-        commentDTO.setCreationDate(commentEntity.getDatetimeCreated());
+    public UserDTO entityToDto(UserEntity entity) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(entity.getUuid());
+        userDTO.setFirstName(entity.getFirstName());
+        userDTO.setLastName(entity.getLastName());
+        userDTO.setUsername(entity.getUsername());
 
-        return commentDTO;
+        UserDTO userRessources = getUserCoverAndAvatar(entity);
+
+        userDTO.setAvatar(userRessources.getAvatar());
+        userDTO.setCover(userRessources.getCover());
+        userDTO.setCoverType(userRessources.getCoverType());
+
+        return userDTO;
     }
 
     /**
@@ -85,5 +82,4 @@ public class EntityToDtoTransformer {
 
         return user;
     }
-
 }

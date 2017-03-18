@@ -456,14 +456,24 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public void rateSppoter(SppotiRatingDTO sppotiRatingDTO) {
 
-        Optional<SppotiEntity> sppotiEntity = Optional.ofNullable(sppotiRepository.findByUuid(sppotiRatingDTO.getSppotiId()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId) {
+
+        Optional<SppotiEntity> sppotiEntity = Optional.ofNullable(sppotiRepository.findByUuid(sppotiId));
 
         sppotiEntity.ifPresent(
-                se -> {
-                    Optional<SppotiMember> ratedSppoter = Optional.of(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(sppotiRatingDTO.getSppoterRatedId(), se.getUuid()));
+                se -> sppotiRatingDTO.forEach(sppoter ->
+                {
+                    Optional<SppotiMember> ratedSppoter = Optional.of(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(sppoter.getSppoterRatedId(), se.getUuid()));
                     ratedSppoter.ifPresent(
                             rs -> {
-                                if(rs.getStatus().equals(GlobalAppStatus.PENDING)){
+                                if (rs.getStatus().equals(GlobalAppStatus.PENDING)) {
                                     throw new BusinessGlobalException("Sppoter hasn't accepted sppoti yet");
                                 }
 
@@ -472,15 +482,18 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
                                 sppotiRatingEntity.setRatedSppoter(rs.getTeamMember().getUsers());
                                 sppotiRatingEntity.setRatingDate(new Date());
                                 sppotiRatingEntity.setRaterSppoter(getConnectedUser());
-                                sppotiRatingEntity.setStarsCount(sppotiRatingDTO.getStars());
+                                sppotiRatingEntity.setStarsCount(sppoter.getStars());
 
                                 ratingRepository.save(sppotiRatingEntity);
                             }
                     );
                     ratedSppoter.orElseThrow(() -> new EntityNotFoundException("Sppoter not found"));
-                }
+                })
         );
+
         sppotiEntity.orElseThrow(() -> new EntityNotFoundException("Sppoti not found"));
+
+
     }
 
     /**

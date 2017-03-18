@@ -12,11 +12,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import com.fr.transformers.EntityToDtoTransformer;
+import com.fr.transformers.CommentEntityToDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.*;
+
+import static com.fr.transformers.UserTransformer.getUserCoverAndAvatar;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
@@ -277,7 +279,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                     if (!commentsListTemp.isEmpty()) {
                         CommentEntity commentEntity = commentsListTemp.get(commentEntities.size() - 1);
 
-                        CommentDTO commentModelDTO = new CommentDTO(commentEntity, EntityToDtoTransformer.getUserCoverAndAvatar(commentEntity.getUser()));
+                        CommentDTO commentModelDTO = new CommentDTO(commentEntity, getUserCoverAndAvatar(commentEntity.getUser()));
                         commentModelDTO.setMyComment(commentEntity.getUser().getId().equals(userPost.getId()));
                         commentModelDTO.setLikedByUser(isContentLikedByUser(commentEntity, userPost.getId()));
                         commentModelDTO.setLikeCount(commentEntity.getLikes().size());

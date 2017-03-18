@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.fr.transformers.EntityToDtoTransformer.getUserCoverAndAvatar;
+import static com.fr.transformers.UserTransformer.getUserCoverAndAvatar;
 
 /**
  * Created by djenanewail on 2/19/17.

@@ -1,8 +1,8 @@
 package com.fr.core;
 
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
-import com.fr.commons.dto.UserDTO;
 import com.fr.entities.SportEntity;
 import com.fr.entities.TeamEntity;
 import com.fr.entities.TeamMemberEntity;
@@ -13,7 +13,9 @@ import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.TeamControllerService;
 import com.fr.transformers.TeamTransformer;
+import com.fr.transformers.UserTransformer;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.fr.transformers.EntityToDtoTransformer.getUserCoverAndAvatar;
-
 /**
  * Created by djenanewail on 1/22/17.
  */
@@ -39,6 +39,13 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
     @Value("${key.teamsPerPage}")
     private int teamPageSize;
+
+    private UserTransformer userTransformer;
+
+    @Autowired
+    public void setUserTransformer(UserTransformer userTransformer) {
+        this.userTransformer = userTransformer;
+    }
 
     /**
      * {@inheritDoc}
@@ -234,9 +241,9 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public UserDTO addMember(int teamId, UserDTO userParam) {
 
-        UserEntity user = getUserByUuId(userParam.getId());
+        UserEntity teamMemberAsUser = getUserByUuId(userParam.getId());
 
-        if (user == null) {
+        if (teamMemberAsUser == null) {
             throw new EntityNotFoundException("UserDTO with id (" + userParam.getId() + ") Not found");
         }
 
@@ -246,7 +253,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             throw new EntityNotFoundException("TeamEntity with id (" + teamId + ") Not found");
         }
 
-        if(teamMembersRepository.findByTeamUuidAndAdminTrue(teamList.get(0).getUuid()).getUsers().getUuid() != user.getUuid()){
+        if(teamMembersRepository.findByTeamUuidAndAdminTrue(teamList.get(0).getUuid()).getUsers().getUuid() != teamMemberAsUser.getUuid()){
             //NOT TEAM ADMIN.
             throw new NotAdminException("You must be the team admin to access this service");
         }
@@ -255,7 +262,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         TeamMemberEntity teamMembers = new TeamMemberEntity();
         teamMembers.setTeam(team);
-        teamMembers.setUsers(user);
+        teamMembers.setUsers(teamMemberAsUser);
 
         if (StringUtils.isEmpty(userParam.getxPosition())) {
             teamMembers.setxPosition(userParam.getxPosition());
@@ -265,14 +272,9 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             teamMembers.setyPosition(userParam.getyPosition());
         }
 
-        TeamMemberEntity newMember = teamMembersRepository.save(teamMembers);
+        teamMembersRepository.save(teamMembers);
 
-        UserDTO userCoverAndAvatar = getUserCoverAndAvatar(user);
-
-        return new UserDTO(newMember.getUuid(), user.getFirstName(), user.getLastName(), user.getUsername(),
-                userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
-                userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
-                userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null);
+        return userTransformer.entityToDto(teamMemberAsUser);
 
     }
 

@@ -4,7 +4,6 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.entities.SppotiEntity;
 import com.fr.entities.SppotiRatingEntity;
 import com.fr.entities.TeamMemberEntity;
-import com.fr.models.GlobalAppStatus;
 import com.fr.repositories.RatingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,7 @@ public class TeamMemberTransformer {
      */
     public UserDTO teamMemberEntityToDto(TeamMemberEntity memberEntity, SppotiEntity sppoti, Integer sppoterStatus) {
 
-        UserDTO userCoverAndAvatar = EntityToDtoTransformer.getUserCoverAndAvatar(memberEntity.getUsers());
+        UserDTO userCoverAndAvatar = UserTransformer.getUserCoverAndAvatar(memberEntity.getUsers());
 
         Integer sppotiId = sppoti != null ? sppoti.getUuid() : 0;
 

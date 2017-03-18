@@ -97,4 +97,12 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param sppotiRatingDTO rating object.
      */
     void rateSppoter(SppotiRatingDTO sppotiRatingDTO);
+
+    /**
+     * rating many sppoters at a time.
+     *
+     * @param sppotiRatingDTO list of sppoters to rate.
+     * @param sppotiId
+     */
+    void rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId);
 }
