@@ -111,12 +111,11 @@ public interface TeamControllerService extends AbstractControllerService {
 
     /**
      *
-     * @param teamRequestDTO team data to update.
      * @param teamId team id.
-     * @param connectedUserId connected user id.
+     * @param teamRequestDTO team data to update.
      * @return updated team.
      */
-    TeamResponseDTO updateTeam(int teamId, int connectedUserId, TeamRequestDTO teamRequestDTO);
+    TeamResponseDTO updateTeam(int teamId, TeamRequestDTO teamRequestDTO);
 
     /**
      *

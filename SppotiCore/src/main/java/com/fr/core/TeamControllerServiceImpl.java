@@ -310,20 +310,29 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
      */
     @Transactional
     @Override
-    public TeamResponseDTO updateTeam(int teamId, int connectedUserId, TeamRequestDTO teamRequestDTO) {
+    public TeamResponseDTO updateTeam(int connectedUserId, TeamRequestDTO teamRequestDTO) {
 
-        TeamMemberEntity teamMemberEntity = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, teamId);
+        TeamMemberEntity teamMemberEntity = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, teamRequestDTO.getId());
 
         if (teamMemberEntity == null) {
             throw new NotAdminException("You must be the team admin to access this service");
         }
 
-        TeamEntity teamEntity = TeamTransformer.teamDtoToEntity(teamRequestDTO);
-        teamEntity.setId(teamMemberEntity.getTeam().getId());
-        teamEntity.setVersion(teamMemberEntity.getTeam().getVersion());
-        teamEntity.setSport(teamMemberEntity.getTeam().getSport());
+        TeamEntity teamEntity = teamMemberEntity.getTeam();
 
-        return TeamTransformer.teamEntityToDto(teamRepository.saveAndFlush(teamEntity));
+        if(teamRequestDTO.getName() != null){
+            teamEntity.setName(teamRequestDTO.getName());
+        }
+
+        if(teamRequestDTO.getLogoPath() != null){
+            teamEntity.setName(teamRequestDTO.getLogoPath());
+        }
+
+        if(teamRequestDTO.getCoverPath() != null){
+            teamEntity.setName(teamRequestDTO.getCoverPath());
+        }
+
+        return TeamTransformer.teamEntityToDto(teamRepository.save(teamEntity));
     }
 
     /**

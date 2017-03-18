@@ -53,8 +53,9 @@ public class UpdateTeamController {
         }
 
         int connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getUuid();
+        teamRequestDTO.setId(teamId);
         if (canUpdate) {
-            teamControllerService.updateTeam(teamId, connectedUserId, teamRequestDTO);
+            teamControllerService.updateTeam(connectedUserId, teamRequestDTO);
         } else {
             LOGGER.error("Update impossible");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
