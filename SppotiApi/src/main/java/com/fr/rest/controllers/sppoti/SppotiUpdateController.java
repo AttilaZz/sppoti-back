@@ -129,8 +129,8 @@ public class SppotiUpdateController {
 
     /**
      *
-     * @param sppotiId sppoti id.
-     * @param teamId team id.
+     * @param sppotiId id of the challenged sppoti.
+     * @param teamId team id to add in the challenge.
      */
     @PutMapping("/challenge/send/{sppotiId}/{teamId}")
     public ResponseEntity<SppotiResponseDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId, Authentication authentication) {
