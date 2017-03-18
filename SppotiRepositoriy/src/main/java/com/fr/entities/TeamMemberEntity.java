@@ -5,7 +5,6 @@ import com.fr.models.GlobalAppStatus;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Created by djenanewail on 2/4/17.
@@ -45,7 +44,7 @@ public class TeamMemberEntity
     private UserEntity users;
 
     @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SppotiMember> sppotiMembers;
+    private Set<SppotiMemberEntity> sppotiMembers;
 
     public GlobalAppStatus getStatus() {
         return status;
@@ -103,7 +102,7 @@ public class TeamMemberEntity
         this.yPosition = yPosition;
     }
 
-    public Set<SppotiMember> getSppotiMembers() {
+    public Set<SppotiMemberEntity> getSppotiMembers() {
         return sppotiMembers;
     }
 
@@ -115,7 +114,7 @@ public class TeamMemberEntity
         this.admin = admin;
     }
 
-    public void setSppotiMembers(Set<SppotiMember> sppotiMembers) {
+    public void setSppotiMembers(Set<SppotiMemberEntity> sppotiMembers) {
         this.sppotiMembers = sppotiMembers;
     }
 

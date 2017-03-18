@@ -253,7 +253,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             throw new EntityNotFoundException("TeamEntity with id (" + teamId + ") Not found");
         }
 
-        if(teamMembersRepository.findByTeamUuidAndAdminTrue(teamList.get(0).getUuid()).getUsers().getUuid() != teamMemberAsUser.getUuid()){
+        if(!teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers().getId().equals(getConnectedUser().getId())){
             //NOT TEAM ADMIN.
             throw new NotAdminException("You must be the team admin to access this service");
         }

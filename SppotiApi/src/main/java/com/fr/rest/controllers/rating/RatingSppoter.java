@@ -31,7 +31,7 @@ public class RatingSppoter {
     private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
     /**
-     * @return rate.
+     *  Evaluate other sppoters in same sppoti.
      */
     @PostMapping("/sppoter/{sppotiId}")
     public ResponseEntity<Void> rateSppoter(@PathVariable int sppotiId, @RequestBody List<SppotiRatingDTO> sppotiRatingDTO) {

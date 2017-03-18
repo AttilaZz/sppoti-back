@@ -10,7 +10,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "SPPOTI_MEMBER")
-public class SppotiMember
+public class SppotiMemberEntity
         extends AbstractCommonEntity {
 
     @Enumerated(EnumType.STRING)
@@ -34,7 +34,7 @@ public class SppotiMember
     @JoinColumn(name = "team_member_id")
     private TeamMemberEntity teamMember;
 
-    private Boolean hasRateOtherSppoter;
+    private Boolean hasRateOtherSppoter = Boolean.FALSE;
 
     public GlobalAppStatus getStatus() {
         return status;

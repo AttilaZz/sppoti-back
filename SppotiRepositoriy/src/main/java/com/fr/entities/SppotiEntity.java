@@ -8,7 +8,6 @@ import com.fr.models.GlobalAppStatus;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -73,7 +72,7 @@ public class SppotiEntity
     private GlobalAppStatus teamAdverseStatus = GlobalAppStatus.NO_CHALLENGE_YET;
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SppotiMember> sppotiMembers;
+    private Set<SppotiMemberEntity> sppotiMembers;
 
     public Date getDatetimeCreated() {
         return datetimeCreated;
@@ -171,11 +170,11 @@ public class SppotiEntity
         this.deleted = deleted;
     }
 
-    public Set<SppotiMember> getSppotiMembers() {
+    public Set<SppotiMemberEntity> getSppotiMembers() {
         return sppotiMembers;
     }
 
-    public void setSppotiMembers(Set<SppotiMember> sppotiMembers) {
+    public void setSppotiMembers(Set<SppotiMemberEntity> sppotiMembers) {
         this.sppotiMembers = sppotiMembers;
     }
 

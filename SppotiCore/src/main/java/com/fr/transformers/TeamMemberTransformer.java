@@ -2,9 +2,11 @@ package com.fr.transformers;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.SppotiEntity;
+import com.fr.entities.SppotiMemberEntity;
 import com.fr.entities.SppotiRatingEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.repositories.RatingRepository;
+import com.fr.repositories.SppotiMembersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,9 @@ public class TeamMemberTransformer {
     @Autowired
     private RatingRepository ratingRepository;
 
+    @Autowired
+    private SppotiMembersRepository sppotiMembersRepository;
+
     /**
      * Transform a team member entity to userDTO.
      * <p>
@@ -37,18 +42,38 @@ public class TeamMemberTransformer {
 
         Integer sppotiId = sppoti != null ? sppoti.getUuid() : 0;
 
-        return new UserDTO(memberEntity.getUuid(), memberEntity.getUsers().getFirstName(), memberEntity.getUsers().getLastName(), memberEntity.getUsers().getUsername(),
-                userCoverAndAvatar.getCover() != null ? userCoverAndAvatar.getCover() : null,
-                userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null,
-                userCoverAndAvatar.getCoverType() != null ? userCoverAndAvatar.getCoverType() : null,
-                memberEntity.getAdmin(),
-                sppoti != null && sppoti.getUserSppoti().getId() != null && memberEntity.getUsers().getId().equals(sppoti.getUserSppoti().getId()) ? true : null,
-                memberEntity.getStatus().getValue(),
-                sppoti != null && sppoti.getUserSppoti().getId() != null ? sppoterStatus : null, memberEntity.getUsers().getUuid(),
-                memberEntity.getxPosition() != null ? memberEntity.getxPosition() : null,
-                memberEntity.getyPosition() != null ? memberEntity.getyPosition() : null,
-                memberEntity.getTeamCaptain() != null ? memberEntity.getTeamCaptain() : null,
-                getRatingStars(memberEntity.getUsers().getUuid(), sppotiId));
+        UserDTO userDTO = new UserDTO();
+
+        userDTO.setUserId(memberEntity.getUsers().getUuid());
+        userDTO.setFirstName(memberEntity.getUsers().getFirstName());
+        userDTO.setLastName(memberEntity.getUsers().getLastName());
+        userDTO.setUsername(memberEntity.getUsers().getUsername());
+        userDTO.setAvatar(userCoverAndAvatar.getCover());
+        userDTO.setCover(userCoverAndAvatar.getAvatar());
+        userDTO.setCoverType(userCoverAndAvatar.getCoverType());
+
+        userDTO.setId(memberEntity.getUuid());//team member id.
+        userDTO.setTeamAdmin(memberEntity.getAdmin());
+        userDTO.setTeamStatus(memberEntity.getStatus().getValue());
+        userDTO.setTeamCaptain(memberEntity.getTeamCaptain());
+        userDTO.setxPosition(memberEntity.getxPosition());
+        userDTO.setyPosition(memberEntity.getyPosition());
+
+        userDTO.setSppotiStatus(sppoterStatus);
+        if (sppoti != null) {
+            if (memberEntity.getUsers().getId().equals(sppoti.getUserSppoti().getId())) {
+                userDTO.setSppotiAdmin(Boolean.TRUE);
+            }else{
+                userDTO.setSppotiAdmin(Boolean.FALSE);
+            }
+
+            userDTO.setRating(getRatingStars(memberEntity.getUsers().getUuid(), sppotiId));
+        }
+
+        Optional<SppotiMemberEntity> optional = Optional.ofNullable(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(memberEntity.getUsers().getUuid(), sppotiId));
+        optional.ifPresent(sm -> userDTO.setHasRateOtherSppoters(sm.getHasRateOtherSppoter()));
+
+        return userDTO;
     }
 
     /**

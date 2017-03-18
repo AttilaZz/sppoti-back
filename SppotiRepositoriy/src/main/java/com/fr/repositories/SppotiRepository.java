@@ -1,7 +1,6 @@
 package com.fr.repositories;
 
 import com.fr.entities.SppotiEntity;
-import com.fr.entities.SppotiMember;
 import com.fr.models.GlobalAppStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

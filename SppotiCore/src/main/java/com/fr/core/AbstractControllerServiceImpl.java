@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import com.fr.transformers.CommentEntityToDtoTransformer;
 import com.fr.transformers.TeamMemberTransformer;
 
 import java.util.*;
@@ -457,7 +456,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             UserEntity u = getUserByUuId(user.getId());
 
             TeamMemberEntity teamMember = new TeamMemberEntity();
-            SppotiMember sppoter = new SppotiMember();
+            SppotiMemberEntity sppoter = new SppotiMemberEntity();
 
             if (u != null) {
 
@@ -500,7 +499,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     }
 
                     /** Convert team members to sppoters. */
-                    Set<SppotiMember> sppotiMembers = new HashSet<>();
+                    Set<SppotiMemberEntity> sppotiMembers = new HashSet<>();
                     sppoter.setTeamMember(teamMember);
                     sppoter.setSppoti(sppoti);
                     sppotiMembers.add(sppoter);
@@ -560,7 +559,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             if (sppoti != null) {
                 //get status for the selected sppoti
                 if (!StringUtils.isEmpty(memberEntity.getSppotiMembers())) {
-                    for (SppotiMember sppoter : memberEntity.getSppotiMembers()) {
+                    for (SppotiMemberEntity sppoter : memberEntity.getSppotiMembers()) {
                         if (sppoter.getTeamMember().getId().equals(memberEntity.getId()) && sppoter.getSppoti().getId().equals(sppoti.getId())) {
                             sppoterStatus = sppoter.getStatus().getValue();
                         }
