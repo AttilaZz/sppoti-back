@@ -154,7 +154,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         teamMembers.setStatus(GlobalAppStatus.CONFIRMED);
 
         if (teamMembersRepository.save(teamMembers) != null) {
-            addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null);
+            addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null, null);
         }
 
     }
@@ -175,7 +175,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         teamMembers.setStatus(GlobalAppStatus.REFUSED);
 
         if (teamMembersRepository.save(teamMembers) != null) {
-            addNotification(NotificationType.X_REFUSED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null);
+            addNotification(NotificationType.X_REFUSED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null, null);
 
         }
 

@@ -30,6 +30,7 @@ public interface NotificationControllerService {
      * Update open status to true
      *
      * @param notifId notif id.
+     * @param connectedUserId
      */
-    void openNotification(int notifId);
+    void openNotification(int notifId, Long connectedUserId);
 }

@@ -448,7 +448,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         Set<TeamMemberEntity> teamUsers = new HashSet<TeamMemberEntity>();
         Set<NotificationEntity> notificationEntities = new HashSet<>();
 
-        Long adminId = getConnectedUser().getId();
+        Long connectedUserId = getConnectedUser().getId();
 
         for (UserDTO user : users) {
 
@@ -459,7 +459,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
             if (u != null) {
 
-                if (u.getId().equals(adminId)) {
+                if (u.getId().equals(connectedUserId)) {
                     teamMember.setAdmin(true);
                     teamMember.setTeamCaptain(true);
                     /** Admin is member of the team, status should be confirmed. */
@@ -506,14 +506,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     teamMember.setSppotiMembers(sppotiMembers);
                     sppoti.setSppotiMembers(sppotiMembers);
 
-                    /** send TEAM notification to the invited user. */
-                    if (!u.getId().equals(adminId)) {
-                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u, null);
-                    }
+                    /** send TEAM && Sppoti notification to the invited user. */
+                    if (!u.getId().equals(connectedUserId)) {
+                        notificationEntities.add(getNotificationEntity(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, getUserById(connectedUserId), u, null, sppoti));
 
-                    /** send SPPOTI notification to all the team. */
-                    if (!u.getId().equals(adminId)) {
-                        addNotification(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, getUserById(adminId), u, null);
+                        sendTeamNotification(team, notificationEntities, connectedUserId, u);
                     }
 
                 } else {
@@ -527,14 +524,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                     }
 
                     /** send TEAM notification to the invited user. */
-                    if (!u.getId().equals(adminId)) {
-                        notificationEntities.add(getNotificationEntity(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u, team));
-                        if(team.getNotificationEntities() != null) {
-                            team.getNotificationEntities().addAll(notificationEntities);
-                        }else{
-                            team.setNotificationEntities(notificationEntities);
-                        }
-                    }
+                    sendTeamNotification(team, notificationEntities, connectedUserId, u);
                 }
 
 
@@ -549,7 +539,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         return teamUsers;
 
     }
-
 
     /**
      * @param team team to map.
@@ -590,6 +579,22 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
     }
 
+    /**
+     * @param team                 team info.
+     * @param notificationEntities list of notif to send.
+     * @param adminId              connected user id
+     * @param u                    user to notify.
+     */
+    private void sendTeamNotification(TeamEntity team, Set<NotificationEntity> notificationEntities, Long adminId, UserEntity u) {
+
+        notificationEntities.add(getNotificationEntity(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u, team, null));
+        if (team.getNotificationEntities() != null) {
+            team.getNotificationEntities().addAll(notificationEntities);
+        } else {
+            team.setNotificationEntities(notificationEntities);
+        }
+
+    }
 
     /**
      * Add notification.
@@ -598,20 +603,25 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
      * @param userFrom         notif sender.
      * @param userTo           notif receiver.
      * @param teamEntity       team information.
+     * @param sppoti           sppoti info.
      */
     @Transactional
-    protected void addNotification(NotificationType notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity) {
-        NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity);
+    protected void addNotification(NotificationType notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity, SppotiEntity sppoti) {
+        NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity, sppoti);
 
         notificationRepository.save(notification);
     }
 
-    private NotificationEntity getNotificationEntity(NotificationType notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity) {
+    /**
+     * Init notif entity.
+     */
+    private NotificationEntity getNotificationEntity(NotificationType notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity, SppotiEntity sppotiEntity) {
         NotificationEntity notification = new NotificationEntity();
         notification.setNotificationType(notificationType);
         notification.setFrom(userFrom);
         notification.setTo(userTo);
         notification.setTeam(teamEntity);
+        notification.setSppoti(sppotiEntity);
         return notification;
     }
 
@@ -661,9 +671,9 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
 
             if (userToNotify != null) {
                 if (commentEntity != null) {
-                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(), userToNotify, null);
+                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(), userToNotify, null, null);
                 } else if (postEntity != null) {
-                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify, null);
+                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify, null, null);
                 }
 
             }

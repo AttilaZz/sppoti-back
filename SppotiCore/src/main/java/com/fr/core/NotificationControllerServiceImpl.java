@@ -3,6 +3,7 @@ package com.fr.core;
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationResponseDTO;
 import com.fr.entities.NotificationEntity;
+import com.fr.exceptions.NotAdminException;
 import com.fr.rest.service.NotificationControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import com.fr.transformers.NotificationTransformer;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -59,14 +61,21 @@ public class NotificationControllerServiceImpl extends AbstractControllerService
      */
     @Transactional
     @Override
-    public void openNotification(int notifId) {
-        NotificationEntity notification = notificationRepository.findByUuid(notifId);
+    public void openNotification(int notifId, Long connectedUserId) {
+        Optional<NotificationEntity> notification = Optional.ofNullable(notificationRepository.findByUuid(notifId));
 
-        if (notification == null) {
-            throw new EntityNotFoundException("Notification not Found");
-        }
+        notification.ifPresent(
+                n -> {
+                    if(!n.getTo().getId().equals(connectedUserId)){
+                        throw new NotAdminException("ACCESS DENIED TO THIS SERVICE");
+                    }
 
-        notification.setOpened(true);
-        notificationRepository.save(notification);
+                    n.setOpened(true);
+                    notificationRepository.save(n);
+                }
+        );
+
+        notification.orElseThrow(() -> new EntityNotFoundException("Notification not Found"));
+
     }
 }

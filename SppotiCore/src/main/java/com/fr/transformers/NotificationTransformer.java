@@ -3,8 +3,12 @@ package com.fr.transformers;
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.NotificationEntity;
+import com.fr.entities.SppotiEntity;
+import com.fr.entities.TeamEntity;
 import com.fr.entities.UserEntity;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static com.fr.transformers.EntityToDtoTransformer.getUserCoverAndAvatar;
 
@@ -27,9 +31,11 @@ public class NotificationTransformer {
         notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
         notificationDTO.setOpened(notification.isOpened());
 
-        if (notification.getTeam() != null) {
-            TeamTransformer.teamEntityToDto(notification.getTeam());
-        }
+        Optional<TeamEntity> optionalTeam = Optional.ofNullable(notification.getTeam());
+        optionalTeam.ifPresent(t -> notificationDTO.setTeamResponseDTO(TeamTransformer.teamEntityToDto(notification.getTeam())));
+
+        Optional<SppotiEntity> optionalSppoti = Optional.ofNullable(notification.getSppoti());
+        optionalSppoti.ifPresent(t -> notificationDTO.setSppotiResponseDTO(SppotiTransformer.sppotiEntityToDto(notification.getSppoti())));
 
         return notificationDTO;
     }

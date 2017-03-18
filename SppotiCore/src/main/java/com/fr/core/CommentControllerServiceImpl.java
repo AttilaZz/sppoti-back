@@ -8,7 +8,6 @@ import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
-import com.fr.entities.UserEntity;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.CommentControllerService;
 import org.apache.log4j.Logger;
@@ -59,7 +58,7 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
 
                 //like on other posts not mine
                 if (commentEntity.get().getUser().getUuid() != commentEntity.get().getPost().getTargetUserProfileUuid()) {
-                    addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getUser(), getUserByUuId(commentEntity.get().getPost().getTargetUserProfileUuid()), null);
+                    addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getUser(), getUserByUuId(commentEntity.get().getPost().getTargetUserProfileUuid()), null, null);
 
                 }
 

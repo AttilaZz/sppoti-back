@@ -40,6 +40,9 @@ public class SppotiEntity
     private int maxMembersCount;
 
     @Column
+    private String cover;
+
+    @Column
     private String tags;
 
     @Column
@@ -184,6 +187,14 @@ public class SppotiEntity
         this.teamAdverseStatus = teamAdverseStatus;
     }
 
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -214,6 +225,7 @@ public class SppotiEntity
         result = 31 * result + (datetimeCreated != null ? datetimeCreated.hashCode() : 0);
         result = 31 * result + (dateTimeStart != null ? dateTimeStart.hashCode() : 0);
         result = 31 * result + (location != null ? location.hashCode() : 0);
+        result = 31 * result + (cover != null ? cover.hashCode() : 0);
         result = 31 * result + maxMembersCount;
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         result = 31 * result + (deleted ? 1 : 0);

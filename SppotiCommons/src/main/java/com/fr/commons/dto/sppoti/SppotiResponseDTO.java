@@ -34,6 +34,8 @@ public class SppotiResponseDTO extends AbstractCommonDTO {
 
     private String tags;
 
+    private String cover;
+
     @JsonProperty("sport")
     private SportEntity relatedSport;
 
@@ -200,5 +202,13 @@ public class SppotiResponseDTO extends AbstractCommonDTO {
 
     public void setTeamAdverseStatus(Integer teamAdverseStatus) {
         this.teamAdverseStatus = teamAdverseStatus;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }

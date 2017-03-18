@@ -2,10 +2,12 @@ package com.fr.rest.controllers.notifications;
 
 import com.fr.commons.dto.notification.NotificationResponseDTO;
 import com.fr.rest.service.NotificationControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -50,10 +52,12 @@ public class NotificationController {
      * @return 200 http status if notif were updated, 404 http status if notif not found, 500 http status otherwise.
      */
     @PutMapping("/{notifId}")
-    public ResponseEntity<Void> openNotification(@PathVariable int notifId) {
+    public ResponseEntity<Void> openNotification(@PathVariable int notifId, Authentication authentication) {
+
+        Long connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 
         try {
-            notificationControllerService.openNotification(notifId);
+            notificationControllerService.openNotification(notifId, connectedUserId);
         } catch (EntityNotFoundException e) {
             LOGGER.error("Can not update notif open status! (" + notifId + ")", e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

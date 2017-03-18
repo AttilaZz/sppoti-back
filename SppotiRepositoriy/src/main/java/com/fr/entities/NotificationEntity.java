@@ -40,6 +40,10 @@ public class NotificationEntity
     @JoinColumn(name = "team_id")
     private TeamEntity team;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sppoti_id")
+    private SppotiEntity sppoti;
+
     public UserEntity getFrom() {
         return from;
     }
@@ -86,6 +90,14 @@ public class NotificationEntity
 
     public void setTeam(TeamEntity team) {
         this.team = team;
+    }
+
+    public SppotiEntity getSppoti() {
+        return sppoti;
+    }
+
+    public void setSppoti(SppotiEntity sppoti) {
+        this.sppoti = sppoti;
     }
 
     @Override

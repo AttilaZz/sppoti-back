@@ -19,13 +19,13 @@ public class TeamTransformer {
      */
     public static TeamResponseDTO teamEntityToDto(TeamEntity teamEntity) {
         TeamResponseDTO teamResponseDTO = new TeamResponseDTO();
+
+        teamResponseDTO.setId(teamEntity.getUuid());
+        teamResponseDTO.setVersion(teamEntity.getVersion());
+
         teamResponseDTO.setName(teamEntity.getName());
-        if (teamEntity.getCoverPath() != null) {
-            teamResponseDTO.setCoverPath(teamEntity.getCoverPath());
-        }
-        if (teamEntity.getLogoPath() != null) {
-            teamResponseDTO.setLogoPath(teamEntity.getLogoPath());
-        }
+        teamResponseDTO.setCoverPath(teamEntity.getCoverPath());
+        teamResponseDTO.setLogoPath(teamEntity.getLogoPath());
 
         return teamResponseDTO;
     }
@@ -39,16 +39,12 @@ public class TeamTransformer {
     public static TeamEntity teamDtoToEntity(TeamRequestDTO teamRequestDTO) {
         TeamEntity entity = new TeamEntity();
 
-        if (teamRequestDTO.getName() != null) {
-            entity.setName(teamRequestDTO.getName());
-        }
+        entity.setUuid(teamRequestDTO.getId());
+        entity.setVersion(teamRequestDTO.getVersion());
 
-        if (teamRequestDTO.getCoverPath() != null) {
-            entity.setCoverPath(teamRequestDTO.getCoverPath());
-        }
-        if (teamRequestDTO.getLogoPath() != null) {
-            entity.setLogoPath(teamRequestDTO.getLogoPath());
-        }
+        entity.setName(teamRequestDTO.getName());
+        entity.setCoverPath(teamRequestDTO.getCoverPath());
+        entity.setLogoPath(teamRequestDTO.getLogoPath());
 
         return entity;
     }
