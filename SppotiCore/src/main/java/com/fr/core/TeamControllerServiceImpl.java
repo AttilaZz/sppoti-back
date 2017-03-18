@@ -12,6 +12,7 @@ import com.fr.exceptions.NotAdminException;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.TeamControllerService;
+import com.fr.transformers.TeamTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -307,9 +308,22 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
-    public TeamResponseDTO updateTeam(int teamId, TeamRequestDTO teamRequestDTO) {
-        return null;
+    public TeamResponseDTO updateTeam(int teamId, int connectedUserId, TeamRequestDTO teamRequestDTO) {
+
+        TeamMemberEntity teamMemberEntity = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, teamId);
+
+        if (teamMemberEntity == null) {
+            throw new NotAdminException("You must be the team admin to access this service");
+        }
+
+        TeamEntity teamEntity = TeamTransformer.teamDtoToEntity(teamRequestDTO);
+        teamEntity.setId(teamMemberEntity.getTeam().getId());
+        teamEntity.setVersion(teamMemberEntity.getTeam().getVersion());
+        teamEntity.setSport(teamMemberEntity.getTeam().getSport());
+
+        return TeamTransformer.teamEntityToDto(teamRepository.saveAndFlush(teamEntity));
     }
 
     /**

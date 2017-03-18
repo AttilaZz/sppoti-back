@@ -3,10 +3,12 @@ package com.fr.rest.controllers.team;
 import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.rest.service.TeamControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -29,22 +31,31 @@ public class UpdateTeamController {
      * This method update general team informations,
      * Title, Logos, Cover
      *
-     * @param teamId             team teamId.
+     * @param teamId         team teamId.
      * @param teamRequestDTO data to update.
      * @return The updated team.
      */
     @PutMapping("/{teamId}")
-    public ResponseEntity<TeamResponseDTO> updateTeam(@PathVariable int teamId, @RequestBody TeamRequestDTO teamRequestDTO) {
+    public ResponseEntity<TeamResponseDTO> updateTeam(@PathVariable int teamId, @RequestBody TeamRequestDTO teamRequestDTO, Authentication authentication) {
 
         boolean canUpdate = false;
 
-        if (teamRequestDTO.getName() == null || teamRequestDTO.getName().isEmpty()) {
+        if (teamRequestDTO.getName() != null && !teamRequestDTO.getName().isEmpty()) {
             canUpdate = true;
         }
 
-        if(canUpdate){
-            teamControllerService.updateTeam(teamId, teamRequestDTO);
-        }else{
+        if (teamRequestDTO.getLogoPath() != null && !teamRequestDTO.getLogoPath().isEmpty()) {
+            canUpdate = true;
+        }
+
+        if (teamRequestDTO.getCoverPath() != null && !teamRequestDTO.getCoverPath().isEmpty()) {
+            canUpdate = true;
+        }
+
+        int connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getUuid();
+        if (canUpdate) {
+            teamControllerService.updateTeam(teamId, connectedUserId, teamRequestDTO);
+        } else {
             LOGGER.error("Update impossible");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
