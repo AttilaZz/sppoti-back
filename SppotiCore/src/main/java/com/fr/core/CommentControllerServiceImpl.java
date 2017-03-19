@@ -54,13 +54,14 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
 
         if (commentEntity.isPresent()) {
             int targetUser = commentEntity.get().getPost().getTargetUserProfileUuid();
-            if (targetUser != 0 && targetUser != connectedUserId) {
+            if (targetUser != 0 && targetUser != getConnectedUser().getUuid()) {
 
                 //like on other posts not mine
                 if (commentEntity.get().getUser().getUuid() != commentEntity.get().getPost().getTargetUserProfileUuid()) {
                     addNotification(NotificationType.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getUser(), getUserByUuId(commentEntity.get().getPost().getTargetUserProfileUuid()), null, null);
 
                 }
+
 
                 addTagNotification(null, commentEntity.get());
 
