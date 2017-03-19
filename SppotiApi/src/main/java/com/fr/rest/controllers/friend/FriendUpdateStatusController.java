@@ -2,10 +2,12 @@ package com.fr.rest.controllers.friend;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.rest.service.FriendControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/friend")
 public class FriendUpdateStatusController {
 
-    private static final String ATT_USER_ID = "USER_ID";
     private Logger LOGGER = Logger.getLogger(FriendUpdateStatusController.class);
     private FriendControllerService friendControllerService;
 
@@ -33,14 +34,14 @@ public class FriendUpdateStatusController {
     }
 
     /**
-     * @param user
-     * @param request
+     * @param user friend id.
+     * @param authentication spring auth.
      * @return 200 http status if updated, 400 otherwise
      */
     @PutMapping
-    public ResponseEntity updateFriend(@RequestBody UserDTO user, HttpServletRequest request) {
+    public ResponseEntity updateFriend(@RequestBody UserDTO user, Authentication authentication) {
 
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 
         if (user == null || user.getFriendUuid() == 0) {
             LOGGER.error("UPDATE-FRIEND: No data found in the body");

@@ -29,4 +29,6 @@ public interface FriendShipRepository extends CrudRepository<FriendShipEntity, L
     @Query("SELECT f FROM FriendShipEntity f WHERE f.friend.username LIKE CONCAT('%',:prefix,'%') AND f.status = :status AND f.deleted = false")
     List<FriendShipEntity> findFriendByUsernameAndStatus(@Param("prefix") String part, @Param("status") String status, Pageable pageable);
 
+    @Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.uuid = :user1 AND f.user.uuid =:user2) OR (f.friend.uuid = :user2 AND f.user.uuid =:user1) AND f.deleted = false")
+    FriendShipEntity findFriendShip(@Param("user1") int user1, @Param("user2") int user2);
 }

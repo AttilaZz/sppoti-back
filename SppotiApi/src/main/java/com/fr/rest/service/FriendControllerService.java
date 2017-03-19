@@ -61,7 +61,13 @@ public interface FriendControllerService extends AbstractControllerService {
     /**
      * Delete friendship by the sender
      *
-     * @param friendShip
+     * @param friendShip friendship.
      */
     void deleteFriendShip(FriendShipEntity friendShip);
+
+    /**
+     *
+     * @return friendship between two users.
+     */
+    FriendShipEntity findFriendShip(int user1, int user2);
 }

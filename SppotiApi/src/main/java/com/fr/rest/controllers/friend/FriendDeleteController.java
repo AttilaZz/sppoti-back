@@ -3,10 +3,12 @@ package com.fr.rest.controllers.friend;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.rest.service.FriendControllerService;
+import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,34 +38,26 @@ public class FriendDeleteController {
     }
 
     /**
-     *
-     * @param friendId
-     * @param request
+     * @param friendId       friend id.
+     * @param authentication spring auth.
      * @return 200 http status if friendship deleted, 400 status otherwise
      */
     @DeleteMapping("/{friend_id}")
-    public ResponseEntity deleteFriend(@PathVariable("friend_id") int friendId, HttpServletRequest request) {
+    public ResponseEntity deleteFriend(@PathVariable("friend_id") int friendId, Authentication authentication) {
 
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity connectedUser = friendControllerService.getUserById(userId);
 
         /*
         Check if friendship exist
          */
-        FriendShipEntity friendShip = friendControllerService.getByFriendUuidAndUser(friendId, connectedUser.getUuid());
+        FriendShipEntity friendShip = friendControllerService.findFriendShip(friendId, connectedUser.getUuid());
         if (friendShip == null) {
             LOGGER.error("UPDATE-FRIEND: No friendship found to delete !");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        try {
-            friendControllerService.deleteFriendShip(friendShip);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            LOGGER.error("DELETE-FRIEND: Failed to delete ! see logs.");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        friendControllerService.deleteFriendShip(friendShip);
 
         LOGGER.error("DELETE-FRIEND: Friend deleted");
         return new ResponseEntity<>(HttpStatus.OK);

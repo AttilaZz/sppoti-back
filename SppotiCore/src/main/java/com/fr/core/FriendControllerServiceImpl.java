@@ -41,8 +41,8 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
      * {@inheritDoc}
      */
     @Override
-    public FriendShipEntity getByFriendUuidAndUser(int uuid, int uuid1) {
-        return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(uuid, uuid1);
+    public FriendShipEntity getByFriendUuidAndUser(int friendId, int userId) {
+        return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friendId, userId);
     }
 
     /**
@@ -110,5 +110,13 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
         friendShip.setDeleted(true);
         friendShipRepository.save(friendShip);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public FriendShipEntity findFriendShip(int user1, int user2) {
+        return friendShipRepository.findFriendShip(user1, user2);
     }
 }
