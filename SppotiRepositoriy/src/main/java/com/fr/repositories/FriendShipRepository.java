@@ -20,7 +20,7 @@ public interface FriendShipRepository extends CrudRepository<FriendShipEntity, L
 
     List<FriendShipEntity> findByFriendUuidAndStatusAndDeletedFalse(int friend, GlobalAppStatus name, Pageable pageable);
 
-    List<FriendShipEntity> findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(int connectedUser, int uuid, String name);
+    List<FriendShipEntity> findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(int connectedUser, int uuid, GlobalAppStatus status);
 
     //    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
     @Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.firstName LIKE CONCAT('%',:part1,'%') AND f.friend.lastName LIKE CONCAT('%',:part2,'%')) OR (f.friend.firstName LIKE CONCAT('%',:part2,'%') AND f.friend.lastName LIKE CONCAT('%',:part1,'%')) AND f.status = :status AND f.deleted = false")

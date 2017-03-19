@@ -62,7 +62,6 @@ public class CommentControllerServiceImpl extends AbstractControllerServiceImpl 
 
                 }
 
-
                 addTagNotification(null, commentEntity.get());
 
             }

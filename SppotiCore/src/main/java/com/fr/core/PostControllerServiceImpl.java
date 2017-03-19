@@ -106,7 +106,8 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
             throw new EntityNotFoundException("Post (" + postId + ") not found");
         }
 
-        postRepository.delete(postEntity.get(0));
+        postEntity.get(0).setDeleted(true);
+        postRepository.save(postEntity.get(0));
 
     }
 

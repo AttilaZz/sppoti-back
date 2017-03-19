@@ -35,17 +35,15 @@ public class PostController {
 
     private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
-    private static final String ATT_USER_ID = "USER_ID";
-
     /**
      * @param postId  post postId.
-     * @param request request object.
+     * @param authentication auth object.
      * @return all post details.
      */
     @GetMapping(value = "/{postId}")
-    public ResponseEntity<PostResponseDTO> detailsPost(@PathVariable int postId, HttpServletRequest request) {
+    public ResponseEntity<PostResponseDTO> detailsPost(@PathVariable int postId, Authentication authentication) {
 
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 
 
         PostResponseDTO prep = postDataService.fillPostToSend(postId, userId);
@@ -86,14 +84,12 @@ public class PostController {
 
         //if user_unique_id is not the connected user
 
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-
         if (posts == null || posts.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         List<PostResponseDTO> postResponseDTOs = new ArrayList<>();
-        posts.forEach(t -> postResponseDTOs.add(postDataService.fillPostToSend(t.getUuid(), userId)));
+        posts.forEach(t -> postResponseDTOs.add(postDataService.fillPostToSend(t.getUuid(), connectedUserId)));
 
 //        PostResponseDTO prep = postDataService.fillPostToSend(postResponseDTOs, userId);
         LOGGER.info("ALL_POST: All post have been returned");
@@ -188,24 +184,6 @@ public class PostController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-    }
-
-    /**
-     * @param postId post postId.
-     * @return 200 status if post deleted.
-     */
-    @DeleteMapping(value = "/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable int postId) {
-
-        try {
-            postDataService.deletePost(postId);
-
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("POST_DELETE: can't retrieve post", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

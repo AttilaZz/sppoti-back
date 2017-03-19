@@ -396,7 +396,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 /*
                 Manage request sent by me
                  */
-                if (!friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid(), GlobalAppStatus.PENDING.name()).isEmpty()) {
+                if (!friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid(), GlobalAppStatus.PENDING).isEmpty()) {
                     user.setFriendStatus(GlobalAppStatus.PENDING_SENT.getValue());
                 }
             }
