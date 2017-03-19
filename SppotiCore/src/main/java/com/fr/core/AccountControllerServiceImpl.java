@@ -2,9 +2,11 @@ package com.fr.core;
 
 import com.fr.commons.dto.SignUpRequestDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.entities.AddressEntity;
 import com.fr.entities.ResourcesEntity;
 import com.fr.entities.RoleEntity;
 import com.fr.entities.UserEntity;
+import com.fr.enums.CoverType;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;
 import com.fr.models.UserRoleType;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
@@ -120,14 +123,6 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public RoleEntity getProfileEntity(String profileType) {
-        return roleRepository.getByName(profileType);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Transactional
     @Override
     public boolean tryActivateAccount(String code) {
@@ -155,7 +150,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
      * Send account email activation code.
      *
      * @param email user email.
-     * @param code account confirmation code.
+     * @param code  account confirmation code.
      */
     private void sendConfirmationEmail(String email, String code) {
 
@@ -179,10 +174,45 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
      */
     @Transactional
     @Override
-    public boolean updateUser(UserEntity connected_user) {
+    public void updateUser(UserDTO userDTO) {
 
-        userRepository.save(connected_user);
-        return true;
+        UserEntity connectedUser = getConnectedUser();
+
+        if (!StringUtils.isEmpty(userDTO.getFirstName())) {
+            connectedUser.setFirstName(userDTO.getFirstName());
+        }
+        //last name
+        if (!StringUtils.isEmpty(userDTO.getLastName())) {
+            connectedUser.setLastName(userDTO.getLastName());
+        }
+        //address
+        if (!StringUtils.isEmpty(userDTO.getAddress())) {
+            connectedUser.getAddresses().add(new AddressEntity(userDTO.getAddress()));
+        }
+        //username
+        if (!StringUtils.isEmpty(userDTO.getUsername())) {
+            connectedUser.setUsername(userDTO.getUsername());
+        }
+        //phone
+        if (!StringUtils.isEmpty(userDTO.getPhone())) {
+            connectedUser.setTelephone(userDTO.getPhone());
+        }
+        //password
+        if (!StringUtils.isEmpty(userDTO.getPassword())) {
+            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+            connectedUser.setPassword(encodedPassword);
+        }
+        //email
+        if (!StringUtils.isEmpty(userDTO.getEmail())) {
+            connectedUser.setEmail(userDTO.getEmail());
+
+            String confirmationCode = UUID.randomUUID().toString();
+            connectedUser.setConfirmationCode(confirmationCode);
+
+            sendConfirmationEmail(userDTO.getEmail(), confirmationCode);
+        }
+
+        userRepository.save(connectedUser);
     }
 
     /**
@@ -212,5 +242,35 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     @Override
     public UserDTO fillUserResponse(UserEntity targetUser, UserEntity connectedUser) {
         return super.fillUserResponse(targetUser, connectedUser);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateAvatarAndCover(UserDTO user) {
+
+        UserEntity connectedUser = getConnectedUser();
+
+        ResourcesEntity resource = new ResourcesEntity();
+        resource.setSelected(true);
+
+        if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
+            resource.setUrl(user.getAvatar());
+            resource.setType(1);
+            resource.setTypeExtension(1);
+            this.unSelectOldResource(connectedUser.getId(), 1);
+        } else if (user.getCover() != null && !user.getCover().isEmpty() && (CoverType.IMAGE.type() == user.getCoverType()
+                || CoverType.VIDEO.type() == user.getCoverType())) {
+            resource.setUrl(user.getCover());
+            resource.setType(2);
+            resource.setTypeExtension(user.getCoverType());
+            this.unSelectOldResource(connectedUser.getId(), 2);
+        }
+
+        resource.setUser(connectedUser);
+        connectedUser.getResources().add(resource);
+
+        userRepository.save(connectedUser);
     }
 }
