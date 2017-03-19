@@ -12,7 +12,7 @@ import com.fr.entities.CommentEntity;
  * Created by: Wail DJENANE on Aug 12, 2016
  */
 @JsonInclude(Include.NON_EMPTY)
-public class CommentDTO extends AbstractCommonDTO{
+public class CommentDTO extends AbstractCommonDTO {
 
     private int postId;
 
@@ -21,7 +21,7 @@ public class CommentDTO extends AbstractCommonDTO{
     private String authorUsername;
     private String authorAvatar;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+1")
     private Date creationDate;
 
     private String text;

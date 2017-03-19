@@ -11,6 +11,8 @@ import com.fr.entities.AddressEntity;
 import com.fr.entities.PostEntity;
 import com.fr.entities.SppotiEntity;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +26,8 @@ public class PostResponseDTO extends AbstractCommonDTO {
 
     private Long sportId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+1")
     private Date datetimeCreated;
 
     @JsonProperty("text")
