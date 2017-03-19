@@ -19,15 +19,15 @@ import java.util.*;
 public class UserEntity
         extends AbstractCommonEntity {
 
-    @Column
+    @Column(nullable = false)
     private String lastName;
 
-    @Column
+    @Column(nullable = false)
     private String firstName;
 
     @Temporal(TemporalType.DATE)
     @Past
-    @Column
+    @Column(nullable = false)
     private Date dateBorn;
 
     @Column
@@ -81,7 +81,7 @@ public class UserEntity
     @JsonIgnore
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     @Where(clause = "is_selected='1'")
-    private Set<ResourcesEntity> ressources;
+    private Set<ResourcesEntity> resources;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", nullable = false)
@@ -89,7 +89,7 @@ public class UserEntity
     private Set<RoleEntity> roles;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "sport_id", nullable = false)
+    @JoinColumn(name = "sport_id")
     @JsonIgnore
     private Set<SportEntity> relatedSports;
 
@@ -164,12 +164,12 @@ public class UserEntity
         this.likes = likes;
     }
 
-    public Set<ResourcesEntity> getRessources() {
-        return ressources;
+    public Set<ResourcesEntity> getResources() {
+        return resources;
     }
 
-    public void setRessources(Set<ResourcesEntity> ressources) {
-        this.ressources = ressources;
+    public void setResources(Set<ResourcesEntity> resources) {
+        this.resources = resources;
     }
 
     public String getConfirmationCode() {

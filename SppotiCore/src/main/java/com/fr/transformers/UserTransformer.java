@@ -45,7 +45,7 @@ public class UserTransformer {
     public static UserDTO getUserCoverAndAvatar(UserEntity targetUser) {
 
         UserDTO user = new UserDTO();
-        Set<ResourcesEntity> resources = targetUser.getRessources();
+        Set<ResourcesEntity> resources = targetUser.getResources();
 
         List<ResourcesEntity> resources_Entity_temp = new ArrayList<ResourcesEntity>();
         resources_Entity_temp.addAll(resources);

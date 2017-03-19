@@ -75,7 +75,7 @@ public class AccountUpdateController {
             }
 
             resource.setUser(connected_user);
-            connected_user.getRessources().add(resource);
+            connected_user.getResources().add(resource);
 
         } else {
             if (user.getFirstName() != null && !user.getFirstName().isEmpty()) {

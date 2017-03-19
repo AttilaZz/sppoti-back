@@ -181,7 +181,7 @@ public class PostAddController {
         postRep.setUsername(user.getUsername());
 
         List<ResourcesEntity> resources = new ArrayList<>();
-        resources.addAll(user.getRessources());
+        resources.addAll(user.getResources());
 
         if (!resources.isEmpty()) {
             if (resources.get(0) != null && resources.get(0).getType() == 1) {

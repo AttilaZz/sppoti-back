@@ -1,6 +1,9 @@
 package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sun.istack.internal.NotNull;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.util.Date;
 
@@ -9,14 +12,33 @@ import java.util.Date;
  */
 public class SignUpRequestDTO extends AbstractCommonDTO{
 
+    @NotNull
+    @NotBlank
     private String lastName;
+
+    @NotNull
+    @NotBlank
     private String firstName;
+
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date dateBorn;
+
     private String sexe;
+
+    @NotBlank
+    @NotNull
+    @Email
     private String email;
+
+    @NotNull
+    @NotBlank
     private String password;
+
+    @NotNull
+    @NotBlank
     private String username;
+
     private Long[] sportId;
 
     public String getLastName() {

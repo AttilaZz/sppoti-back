@@ -12,7 +12,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import com.fr.transformers.CommentEntityToDtoTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -309,7 +308,7 @@ public class PostControllerServiceImpl extends AbstractControllerServiceImpl imp
                     pres.setUsername(owner.getUsername());
 
                     List<ResourcesEntity> resources = new ArrayList<ResourcesEntity>();
-                    resources.addAll(owner.getRessources());
+                    resources.addAll(owner.getResources());
 
                     if (!resources.isEmpty()) {
                         if (resources.get(0) != null && resources.get(0).getType() == 1) {
