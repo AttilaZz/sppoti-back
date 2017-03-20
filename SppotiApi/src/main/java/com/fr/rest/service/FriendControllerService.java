@@ -1,5 +1,6 @@
 package com.fr.rest.service;
 
+import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShipEntity;
 import com.fr.models.GlobalAppStatus;
 import org.springframework.data.domain.Pageable;
@@ -45,16 +46,16 @@ public interface FriendControllerService extends AbstractControllerService {
     /**
      * Save the friendship and send notification
      *
-     * @param friendShip
+     * @param friendShip friendship.
      */
     void saveFriendShip(FriendShipEntity friendShip);
 
     /**
      * Update status (ACCEPT/REFUSE) friend request and send notification
      *
-     * @param userId
-     * @param friendUuid
-     * @param friendStatus
+     * @param userId user id.
+     * @param friendUuid friend id.
+     * @param friendStatus friend status.
      */
     void updateFriendShip(Long userId, int friendUuid, int friendStatus);
 
@@ -70,4 +71,11 @@ public interface FriendControllerService extends AbstractControllerService {
      * @return friendship between two users.
      */
     FriendShipEntity findFriendShip(int user1, int user2);
+
+    /**
+     *
+     * @param userId user id.
+     * @return all confirmed friend requests.
+     */
+    List<UserDTO> getConfirmedFriendList(int userId, int page);
 }

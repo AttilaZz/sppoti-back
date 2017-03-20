@@ -32,8 +32,6 @@ import java.util.List;
 @RequestMapping("/friend")
 public class FriendGetController {
 
-    private static final String ATT_USER_ID = "USER_ID";
-
     private Logger LOGGER = Logger.getLogger(FriendGetController.class);
 
     private AccountControllerService accountControllerService;
@@ -50,30 +48,21 @@ public class FriendGetController {
         this.accountControllerService = accountControllerService;
     }
 
-
     @Value("${key.friendShipPerPage}")
     private int friend_list_size;
 
     /**
      * @param userId         connected user id.
      * @param page           page number.
-     * @param authentication spring security.
      * @return confirmed friend list.
      */
     @GetMapping("/confirmed/{userId}/{page}")
-    public ResponseEntity<FriendResponseDTO> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page, Authentication authentication) {
+    public ResponseEntity<List<UserDTO>> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page) {
 
-        Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
-        UserEntity connectedUser = friendControllerService.getUserById(connected_user);
-
-        Pageable pageable = new PageRequest(page, friend_list_size);
-
-        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.CONFIRMED, pageable);
-
-        FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
+        List<UserDTO> friendList = friendControllerService.getConfirmedFriendList(userId, page);
 
         LOGGER.info("FRIEND_LIST: user friend list has been returned");
-        return new ResponseEntity<>(friendResponse, HttpStatus.OK);
+        return new ResponseEntity<>(friendList, HttpStatus.OK);
 
     }
 

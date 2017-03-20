@@ -1,17 +1,22 @@
 package com.fr.core;
 
+import com.fr.commons.dto.FriendResponseDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.rest.service.FriendControllerService;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by djenanewail on 1/22/17.
@@ -20,6 +25,9 @@ import java.util.List;
 public class FriendControllerServiceImpl extends AbstractControllerServiceImpl implements FriendControllerService {
 
     private Logger LOGGER = Logger.getLogger(FriendControllerServiceImpl.class);
+
+    @Value("${key.friendShipPerPage}")
+    private int friend_list_size;
 
     /**
      * {@inheritDoc}
@@ -118,5 +126,21 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public FriendShipEntity findFriendShip(int user1, int user2) {
         return friendShipRepository.findFriendShip(user1, user2);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UserDTO> getConfirmedFriendList(int userId, int page) {
+
+        Pageable pageable = new PageRequest(page, friend_list_size);
+
+        List<FriendShipEntity> friendShips = this.getByUserAndStatus(userId, GlobalAppStatus.CONFIRMED, pageable);
+
+        return  friendShips.stream()
+                .map( f -> this.fillUserResponse(f.getFriend(), null))
+                .collect(Collectors.toList());
+
     }
 }
