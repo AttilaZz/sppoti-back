@@ -388,7 +388,7 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     public List<SppotiResponseDTO> getAllJoinedSppoties(int userId, int page) {
         Pageable pageable = new PageRequest(page, sppotiSize);
 
-        List<SppotiMemberEntity> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable);
+        List<SppotiMemberEntity> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuidAndStatusNot(userId, GlobalAppStatus.REFUSED, pageable);
 
         return sppotiMembers.stream()
                 .map(s -> getSppotiResponse(s.getSppoti()))
