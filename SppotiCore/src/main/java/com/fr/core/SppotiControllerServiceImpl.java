@@ -506,6 +506,21 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public List<SppotiResponseDTO> getAllConfirmedSppoties(int userId, int page) {
+
+        Pageable pageable = new PageRequest(page, sppotiSize);
+
+        return sppotiMembersRepository.findByTeamMemberUsersUuidAndStatus(userId, pageable, GlobalAppStatus.CONFIRMED)
+                .stream()
+                .map(s -> getSppotiResponse(s.getSppoti()))
+                .collect(Collectors.toList());
+    }
+
+    /**
      * @param challengeTeam adverse team.
      * @param sppoti        sppoti id.
      * @return all adverse team as sppoters.

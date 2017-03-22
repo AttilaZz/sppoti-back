@@ -124,4 +124,13 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param connectedUserId connected user id.
      */
     void updateTeamCaptain(int teamId, int memberId, int connectedUserId);
+
+    /**
+     * Get all joined teams, except my teams.
+     *
+     * @param userId user iod.
+     * @param page page number.
+     * @return all teams.
+     */
+    List<TeamResponseDTO> getAllJoinedTeamsByUserId(int userId, int page);
 }

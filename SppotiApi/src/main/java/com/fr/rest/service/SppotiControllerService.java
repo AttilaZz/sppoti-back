@@ -105,4 +105,12 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param sppotiId
      */
     void rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId);
+
+    /**
+     *
+     * @param userId user id.
+     * @param page page number.
+     * @return all confirmed sppoties.
+     */
+    List<SppotiResponseDTO> getAllConfirmedSppoties(int userId, int page);
 }

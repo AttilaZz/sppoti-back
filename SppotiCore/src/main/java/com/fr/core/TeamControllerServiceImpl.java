@@ -131,6 +131,10 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     @Override
     public List<TeamResponseDTO> getAllTeamsByUserId(int userId, int page) {
 
+        if(getConnectedUser().getUuid() != userId){
+            throw new NotAdminException("Unauthorized access");
+        }
+
         Pageable pageable = new PageRequest(page, teamPageSize);
 
         List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndAdminTrue(userId, pageable);
@@ -253,7 +257,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
             throw new EntityNotFoundException("TeamEntity with id (" + teamId + ") Not found");
         }
 
-        if(!teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers().getId().equals(getConnectedUser().getId())){
+        if (!teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers().getId().equals(getConnectedUser().getId())) {
             //NOT TEAM ADMIN.
             throw new NotAdminException("You must be the team admin to access this service");
         }
@@ -322,15 +326,15 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
 
         TeamEntity teamEntity = teamMemberEntity.getTeam();
 
-        if(teamRequestDTO.getName() != null){
+        if (teamRequestDTO.getName() != null) {
             teamEntity.setName(teamRequestDTO.getName());
         }
 
-        if(teamRequestDTO.getLogoPath() != null){
+        if (teamRequestDTO.getLogoPath() != null) {
             teamEntity.setName(teamRequestDTO.getLogoPath());
         }
 
-        if(teamRequestDTO.getCoverPath() != null){
+        if (teamRequestDTO.getCoverPath() != null) {
             teamEntity.setName(teamRequestDTO.getCoverPath());
         }
 
@@ -359,6 +363,23 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         });
         teamMembersRepository.save(teamMemberEntity);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<TeamResponseDTO> getAllJoinedTeamsByUserId(int userId, int page) {
+        Pageable pageable = new PageRequest(page, teamPageSize);
+
+        if(getConnectedUser().getUuid() != userId){
+            throw new NotAdminException("Unauthorized access");
+        }
+
+        return teamMembersRepository.findByUsersUuidAndStatus(userId, GlobalAppStatus.CONFIRMED, pageable)
+                .stream()
+                .map(t -> TeamTransformer.teamEntityToDto(t.getTeam()))
+                .collect(Collectors.toList());
     }
 
     /**

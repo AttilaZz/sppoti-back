@@ -56,27 +56,28 @@ public class TeamGetController {
 
     /**
      * @param userId user id.
-     * @param page page number.
+     * @param page   page number.
      * @return All teams for a giver user Id.
      */
     @GetMapping("/all/{userId}/{page}")
     public ResponseEntity getAllTeams(@PathVariable int userId, @PathVariable int page) {
 
-        List<TeamResponseDTO> response;
+        List<TeamResponseDTO> response = teamControllerService.getAllTeamsByUserId(userId, page);
 
-        try {
-            response = teamControllerService.getAllTeamsByUserId(userId, page);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
-            if (response.isEmpty()) {
-                LOGGER.info("UserDTO id (" + userId + ") has no teams");
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
+    /**
+     * Get all joined teams except created by me.
+     *
+     * @param userId user id.
+     * @param page   page number.
+     * @return All teams for a giver user Id.
+     */
+    @GetMapping("/all/joined/{userId}/{page}")
+    public ResponseEntity getAllJoinedTeams(@PathVariable int userId, @PathVariable int page) {
 
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            LOGGER.error("Error trying to get teams: " + e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        List<TeamResponseDTO> response = teamControllerService.getAllJoinedTeamsByUserId(userId, page);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

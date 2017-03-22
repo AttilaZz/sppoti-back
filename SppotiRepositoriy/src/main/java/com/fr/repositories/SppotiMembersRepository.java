@@ -37,4 +37,13 @@ public interface SppotiMembersRepository extends JpaRepository<SppotiMemberEntit
      * @return return all joined sppoties, unless refused ones.
      */
     List<SppotiMemberEntity> findByTeamMemberUsersUuidAndStatusNot(int userId, GlobalAppStatus refused, Pageable pageable);
+
+    /**
+     *
+     * @param userId user id.
+     * @param pageable page number.
+     * @param confirmed sppoti status.
+     * @return all confirmed sppoties.
+     */
+    List<SppotiMemberEntity> findByTeamMemberUsersUuidAndStatus(int userId, Pageable pageable, GlobalAppStatus confirmed);
 }
