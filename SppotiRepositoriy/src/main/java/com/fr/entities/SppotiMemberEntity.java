@@ -108,7 +108,7 @@ public class SppotiMemberEntity
         result = 31 * result + (acceptationDate != null ? acceptationDate.hashCode() : 0);
         result = 31 * result + (xPosition != null ? xPosition.hashCode() : 0);
         result = 31 * result + (yPosition != null ? yPosition.hashCode() : 0);
-        result = 31 * result + (hasRateOtherSppoter != null ? 1: 0);
+        result = 31 * result + (hasRateOtherSppoter != null ? hasRateOtherSppoter.hashCode() : 0);
         return result;
     }
 }

@@ -70,7 +70,7 @@ public class SppotiAddController {
 
 
     /**
-     * @param id
+     * @param id sppoti id.
      * @return 200 status if deleted, 400 status otherwise.
      */
     @DeleteMapping("/{id}")

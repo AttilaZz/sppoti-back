@@ -75,17 +75,17 @@ INSERT INTO sppoti.team_member (id, uuid, version, admin, invitation_date, join_
 VALUES (1, -22613402, 0, TRUE, '2017-02-23 11:56:55', NULL, 'CONFIRMED', TRUE, 98765498, 876543, 2, 11);
 
 INSERT INTO sppoti.team_member (id, uuid, version, admin, invitation_date, join_date, status, team_captain, x_position, y_position, team_id, user_id)
-VALUES (2, -22684522, 0, FALSE, '2017-02-23 11:56:55', NULL, 'PENDING', TRUE, NULL, NULL, 2, 12);
+VALUES (2, -22684522, 0, FALSE, '2017-02-23 11:56:55', NULL, 'PENDING', FALSE, NULL, NULL, 2, 12);
 
 #team2
 INSERT INTO sppoti.team (id, uuid, version, cover_path, deleted, logo_path, name, sport_id)
 VALUES (3, -219854122, 0, NULL, FALSE, NULL, 'my adverse team', 2);
 
 INSERT INTO sppoti.team_member (id, uuid, version, admin, invitation_date, join_date, status, team_captain, x_position, y_position, team_id, user_id)
-VALUES (3, -15813402, 0, TRUE, '2017-02-23 11:56:55', NULL, 'CONFIRMED', TRUE, 98765498, 876543, 3, 12);
+VALUES (3, -15813402, 0, TRUE, '2017-02-23 11:56:55', NULL, 'CONFIRMED', TRUE , 98765498, 876543, 3, 12);
 
 INSERT INTO sppoti.team_member (id, uuid, version, admin, invitation_date, join_date, status, team_captain, x_position, y_position, team_id, user_id)
-VALUES (4, -16284522, 0, FALSE, '2017-02-23 11:56:55', NULL, 'PENDING', TRUE, NULL, NULL, 3, 14);
+VALUES (4, -16284522, 0, FALSE, '2017-02-23 11:56:55', NULL, 'PENDING', FALSE, NULL, NULL, 3, 14);
 
 /* ------------------------------------
   INSERT - SPPOTI && SPPOTERS
