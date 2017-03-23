@@ -512,9 +512,28 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     @Override
     public List<SppotiResponseDTO> getAllConfirmedSppoties(int userId, int page) {
 
+        CheckConnectedUserAccessPriviliges(userId);
+
         Pageable pageable = new PageRequest(page, sppotiSize);
 
         return sppotiMembersRepository.findByTeamMemberUsersUuidAndStatus(userId, pageable, GlobalAppStatus.CONFIRMED)
+                .stream()
+                .map(s -> getSppotiResponse(s.getSppoti()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public List<SppotiResponseDTO> getAllRefusedSppoties(int userId, int page) {
+
+        CheckConnectedUserAccessPriviliges(userId);
+
+        Pageable pageable = new PageRequest(page, sppotiSize);
+
+        return sppotiMembersRepository.findByTeamMemberUsersUuidAndStatus(userId, pageable, GlobalAppStatus.REFUSED)
                 .stream()
                 .map(s -> getSppotiResponse(s.getSppoti()))
                 .collect(Collectors.toList());

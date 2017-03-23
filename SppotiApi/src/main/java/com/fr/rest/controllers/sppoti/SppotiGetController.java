@@ -95,4 +95,19 @@ public class SppotiGetController {
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
+
+    /**
+     * @param userId   user id.
+     * @param page page number.
+     * @return All confirmed sppoties that user joined.
+     */
+    @GetMapping("/all/refused/{userId}/{page}")
+    public ResponseEntity<List<SppotiResponseDTO>> getAllRefusedSppoties(@PathVariable int userId, @PathVariable int page) {
+
+        List<SppotiResponseDTO> response = sppotiControllerService.getAllRefusedSppoties(userId, page);
+        LOGGER.info("The user (" + userId + ") has joined (" + response.size() + ") sppoties");
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
 }

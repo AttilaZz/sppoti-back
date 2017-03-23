@@ -6,6 +6,7 @@ import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.*;
+import com.fr.exceptions.NotAdminException;
 import com.fr.exceptions.TeamMemberNotFoundException;
 import com.fr.mail.ApplicationMailer;
 import com.fr.models.GlobalAppStatus;
@@ -680,5 +681,16 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             }
         }
 
+    }
+
+    /**
+     * Check if the user id in parameter is same as connected user id.
+     *
+     * @param userId user id resource.
+     */
+    protected void CheckConnectedUserAccessPriviliges(int userId) {
+        if(getConnectedUser().getUuid() != userId){
+            throw new NotAdminException("Unauthorized access");
+        }
     }
 }

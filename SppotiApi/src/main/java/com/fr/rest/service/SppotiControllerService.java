@@ -113,4 +113,12 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @return all confirmed sppoties.
      */
     List<SppotiResponseDTO> getAllConfirmedSppoties(int userId, int page);
+
+    /**
+     *
+     * @param userId user id.
+     * @param page page number.
+     * @return all refused sppoties.
+     */
+    List<SppotiResponseDTO> getAllRefusedSppoties(int userId, int page);
 }
