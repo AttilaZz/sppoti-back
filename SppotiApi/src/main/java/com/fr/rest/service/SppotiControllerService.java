@@ -93,16 +93,10 @@ public interface SppotiControllerService extends AbstractControllerService {
     SppotiResponseDTO sendChallenge(int sppotiId, int teamId, Long connectedUserId);
 
     /**
-     *
-     * @param sppotiRatingDTO rating object.
-     */
-    void rateSppoter(SppotiRatingDTO sppotiRatingDTO);
-
-    /**
      * rating many sppoters at a time.
      *
      * @param sppotiRatingDTO list of sppoters to rate.
-     * @param sppotiId
+     * @param sppotiId sppoti id.
      */
     void rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId);
 

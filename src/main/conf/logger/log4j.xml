@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	
+	<appender name="APP_CONSOLE" class="org.apache.log4j.ConsoleAppender">
+      <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="[%d{ABSOLUTE}] %X{session} %X{utilisateur} %5p (%c) - %m %x %n"/>
+      </layout>
+    </appender>
+	
+	<appender name="file-appender" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log4j.file}" />
+		<param name="MaxFileSize" value="2000KB" />
+		<param name="MaxBackupIndex" value="10" />
+		<param name="Threshold" value="INFO" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{dd-MM-yyyy HH:mm:ss,SSS} %X{session} %X{utilisateur} %5p (%c) - %m %x %n" />
+		</layout>
+	</appender>
+	
+	<appender name="security-log" class="org.apache.log4j.RollingFileAppender">
+		<param name="File" value="${log4j.security.file}" />
+		<param name="MaxFileSize" value="2000KB" />
+		<param name="MaxBackupIndex" value="10" />
+		<param name="Threshold" value="INFO" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{dd-MM-yyyy HH:mm:ss};%m%n" />
+		</layout>
+	</appender>
+	
+	<logger name="mon.projet.service.impl.securite">
+		<level value="${log4j.securite.level}" />
+		<appender-ref ref="${log4j.appender.security}" />
+	</logger>
+	
+	<!-- Application logger -->
+	<logger name="mon.projet" additivity="false">
+		<level value="${log4j.sivss.level}" />
+		<appender-ref ref="${log4j.appender}" />
+	</logger>
+	
+    <category name="org.apache" additivity="false">
+        <level value="${log4j.dependencies.level}"/>
+        <appender-ref ref="${log4j.appender}"/>
+	</category>
+	
+	<category name="org.apache.camel" additivity="false">
+		<level value="${log4j.dependencies.level}"/>
+        <appender-ref ref="${log4j.appender}"/>
+	</category>
+
+    <category name="org.springframework">
+        <level value="${log4j.dependencies.level}"/>
+        <appender-ref ref="${log4j.appender}"/>
+	</category>
+	
+    <category name="org.springframework.security">
+        <level value="${log4j.dependencies.level}"/>
+        <appender-ref ref="${log4j.appender}"/>
+	</category>
+	
+    <category name="fr.opensagres.xdocreport">
+        <level value="${log4j.dependencies.level}"/>
+        <appender-ref ref="${log4j.appender}"/>
+	</category>
+	
+	<category name="java.sql">
+        <level value="${log4j.sql.level}"/>
+        <appender-ref ref="${log4j.appender}"/>
+	</category>
+		
+	<category name="org.hibernate">
+        <level value="${log4j.dependencies.level}"/>
+        <appender-ref ref="${log4j.appender}"/>
+	</category>
+	
+	<category name="net.sf.ehcache">
+        <level value="${log4j.dependencies.level}"/>
+        <appender-ref ref="${log4j.appender}"/>
+	</category>
+	
+    <root>
+        <level value="${log4j.root.level}"/>
+        <appender-ref ref="${log4j.appender}"/>
+    </root>
+
+</log4j:configuration>

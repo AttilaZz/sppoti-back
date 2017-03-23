@@ -129,9 +129,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
     }
 
     @Autowired
-    protected ApplicationMailer mailer;
-
-    @Autowired
     private Environment environment;
 
     @Autowired

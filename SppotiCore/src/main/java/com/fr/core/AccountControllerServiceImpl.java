@@ -9,17 +9,16 @@ import com.fr.entities.UserEntity;
 import com.fr.enums.CoverType;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;
+import com.fr.mail.AccountMailer;
 import com.fr.models.UserRoleType;
 import com.fr.rest.service.AccountControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,14 +33,13 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
 
     private Logger LOGGER = Logger.getLogger(AccountControllerServiceImpl.class);
 
-    @Value("${key.originBack}")
-    private String rootAddress;
-
-
     private PasswordEncoder passwordEncoder;
 
+    private final AccountMailer accountMailer;
+
     @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+    public AccountControllerServiceImpl(AccountMailer accountMailer, PasswordEncoder passwordEncoder) {
+        this.accountMailer = accountMailer;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -154,19 +152,10 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
      */
     private void sendConfirmationEmail(String email, String code) {
 
-        // String rootAddress =
-        // globalAddressConfigProperties().getProperty("originBack");
-        String link = rootAddress + "SppotiWebAppGui/inscription/create/user/" + code;
-        String body = "<H2>Account confirmation</H2><br/><br/>"
-                + "<p>Please Click the link or copy/paste in the browser to corfirm your account</p><br/>" + "<p>" + link
-                + "</p>";
-
-        try {
-            mailer.sendMail2(email, "Account Confirmation", body);
-        } catch (MessagingException e) {
-            LOGGER.error("Could not send account confirmation email to user: " + email, e);
-        }
-
+        final Thread thread = new Thread(() -> {
+            this.accountMailer.sendAccountConfirmationEmail(email, code);
+        });
+        thread.start();
     }
 
     /**

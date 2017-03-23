@@ -455,15 +455,6 @@ public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl i
     /**
      * {@inheritDoc}
      */
-    @Transactional
-    @Override
-    public void rateSppoter(SppotiRatingDTO sppotiRatingDTO) {
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Transactional
     public void rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId) {
