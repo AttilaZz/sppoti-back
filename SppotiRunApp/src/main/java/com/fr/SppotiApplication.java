@@ -11,7 +11,8 @@ import org.springframework.context.annotation.PropertySources;
 @SpringBootApplication
 @PropertySources({
         @PropertySource(value = "classpath:pagination.properties", ignoreResourceNotFound = true, encoding = "UTF-8"),
-        @PropertySource(value = "classpath:headerConfig.properties", ignoreResourceNotFound = true, encoding = "UTF-8")
+        @PropertySource(value = "classpath:headerConfig.properties", ignoreResourceNotFound = true, encoding = "UTF-8"),
+        @PropertySource(value = "classpath:email.properties", ignoreResourceNotFound = true, encoding = "UTF-8")
 })
 public class SppotiApplication {
 

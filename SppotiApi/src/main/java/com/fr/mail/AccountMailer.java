@@ -19,9 +19,8 @@ import java.util.Scanner;
  * 3- Confirmation du changement d'adresse email principale
  **/
 @Component
-@ConfigurationProperties(prefix = "spring.app")
 public class AccountMailer
-    extends AbstractApplicationMailer
+    extends ApplicationMailer
 {
 
     private static final String ACTIVATE_ACCOUNT_BUTTON_TEXT = "ACTIVER LE COMPTE";
@@ -31,28 +30,28 @@ public class AccountMailer
     // ci-dessous pour activer votre compte REGISTRE";
 
     // Password recover
-    @Value("${mail.account.path.recover}")
+    @Value("${spring.app.mail.account.path.recover}")
     private String pathToRecoverAccount;
-    @Value("${mail.account.recover.message}")
+    @Value("${spring.app.mail.account.recover.message}")
     private String recoverPasswordMessage;
-    @Value("${mail.account.recover.subject}")
+    @Value("${spring.app.mail.account.recover.subject}")
     private String recoverAccountSubject;
 
     // path to activate account and validate new email address
-    @Value("${mail.account.path.validate.account}")
+    @Value("${spring.app.mail.account.path.validate.account}")
     private String pathToValidateAccount;
     // Account confirmation
-    @Value("${mail.account.confirmation.message}")
+    @Value("${spring.app.mail.account.confirmation.message}")
     private String confirmationAccountMessage;
-    @Value("${mail.account.confirmation.subject}")
+    @Value("${spring.app.mail.account.confirmation.subject}")
     private String confirmationAccountSubject;
 
-    @Value("${mail.account.path.validate.email}")
+    @Value("${spring.app.mail.account.path.validate.email}")
     private String pathToValidateEmail;
     // Email update confirmation
-    @Value("${mail.update_email.confirmation.message}")
+    @Value("${spring.app.mail.update_email.confirmation.message}")
     private String updateAccountEmailMessage;
-    @Value("${mail.update_email.confirmation.subject}")
+    @Value("${spring.app.mail.update_email.confirmation.subject}")
     private String updateAccountEmailSubject;
 
     @Value("${spring.app.originFront}")

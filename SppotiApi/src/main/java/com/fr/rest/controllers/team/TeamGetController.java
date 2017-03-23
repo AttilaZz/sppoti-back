@@ -55,6 +55,8 @@ public class TeamGetController {
     }
 
     /**
+     * Get all user teams.
+     *
      * @param userId user id.
      * @param page   page number.
      * @return All teams for a giver user Id.

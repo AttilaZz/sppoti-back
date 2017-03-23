@@ -21,10 +21,10 @@ import static com.fr.filter.HeadersValues.Origins;
 @EnableWebSocketMessageBroker
 public class AppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
-    @Value("${key.originBack}")
+    @Value("${spring.app.originBack}")
     private String backOrigin;
 
-    @Value("${key.appName}")
+    @Value("${spring.app.appName}")
     private String applicationName;
 
     @Bean
