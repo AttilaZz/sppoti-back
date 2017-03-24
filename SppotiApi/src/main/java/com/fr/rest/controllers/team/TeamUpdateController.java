@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/team")
-public class UpdateTeamController {
+public class TeamUpdateController {
 
     private TeamControllerService teamControllerService;
     private Logger LOGGER = Logger.getLogger(TeamAddController.class);

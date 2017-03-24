@@ -331,11 +331,11 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
         }
 
         if (teamRequestDTO.getLogoPath() != null) {
-            teamEntity.setName(teamRequestDTO.getLogoPath());
+            teamEntity.setLogoPath(teamRequestDTO.getLogoPath());
         }
 
         if (teamRequestDTO.getCoverPath() != null) {
-            teamEntity.setName(teamRequestDTO.getCoverPath());
+            teamEntity.setCoverPath(teamRequestDTO.getCoverPath());
         }
 
         return TeamTransformer.teamEntityToDto(teamRepository.save(teamEntity));

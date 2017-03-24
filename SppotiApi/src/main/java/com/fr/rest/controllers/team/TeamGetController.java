@@ -43,13 +43,7 @@ public class TeamGetController {
 
         TeamResponseDTO teamResponseDTO;
 
-        try {
-            teamResponseDTO = teamControllerService.getTeamById(teamId);
-        } catch (RuntimeException e) {
-            LOGGER.error("Error retrieving team: " + e);
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        teamResponseDTO = teamControllerService.getTeamById(teamId);
 
         return new ResponseEntity<>(teamResponseDTO, HttpStatus.OK);
     }
