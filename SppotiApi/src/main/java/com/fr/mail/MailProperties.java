@@ -16,6 +16,7 @@ package com.fr.mail;
  */
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.Map;
  * @since 1.2.0
  */
 @ConfigurationProperties(prefix = "spring.mail")
+@Component
 public class MailProperties {
 
     private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");

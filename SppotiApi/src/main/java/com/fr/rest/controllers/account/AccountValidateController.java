@@ -1,14 +1,13 @@
 package com.fr.rest.controllers.account;
 
+import com.fr.commons.dto.UserDTO;
 import com.fr.rest.service.AccountControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by djenanewail on 2/12/17.
@@ -30,18 +29,31 @@ public class AccountValidateController {
     @PutMapping(value = "/validate/{code}")
     public ResponseEntity<Void> confirmUserEmail(@PathVariable("code") String code) {
 
-        if (code == null || code.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (StringUtils.isEmpty(code)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         // if given code exist in database confirm registration
-        if (accountControllerService.tryActivateAccount(code)) {
+        if(accountControllerService.tryActivateAccount(code)){
             LOGGER.info("Account with code (" + code + ") has been confirmed");
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
 
-        // code is not valid
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+    }
+
+    @PutMapping(value = "/recover")
+    public ResponseEntity<Void> confirmUserEmail(@RequestBody UserDTO userDTO) {
+
+        if (StringUtils.isEmpty(userDTO.getEmail())) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // if given code exist in database confirm registration
+        accountControllerService.sendRecoverAccountEmail(userDTO.getEmail());
+
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 

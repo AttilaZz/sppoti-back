@@ -19,14 +19,21 @@ import javax.mail.internet.MimeMessage;
 @Component
 public abstract class ApplicationMailer {
 
-    protected static final String UN_PROBLÈME_A_SURVENU_LORS_DE_L_ENVOI_DU_MAIL_VEUILLEZ_RÉESSAYER_DANS_QUELQUES_INSTANTS = "Un problème a survenu lors de l'envoi de l'email de confirmation, Veuillez réessayer dans quelques instants";
-    protected static final String PATH_TO_EMAIL_TEMPLATE = "email/email_template.html";
-    protected static final String CHARSET_NAME = "UTF-8";
     protected static final String LECTURE_TEMPLATE_EMAIL_IMPOSSIBLE = "Impossible de lire le fichier de modèle de mail";
+    protected static final String EMAIL_SENDING_PROBLEM = "Un problème a survenu lors de l'envoi de l'email de confirmation, Veuillez réessayer dans quelques instants";
+
+    protected static final String PATH_TO_ACCOUNT_TEMPLATE = "templates/account/accountConfirm.html";
+    protected static final String PATH_TO_TEAM_TEMPLATE = "templates/team/joinTeam.html";
+    protected static final String PATH_TO_RESET_PASSWORD_TEMPLATE = "templates/password/confirmPassword.html";
+
+    protected static final String CHARSET_NAME = "UTF-8";
     protected static final String ERREUR_D_ENVOI_DE_MAIL = "Erreur d'envoi de mail: ";
     protected static Logger LOGGER = LoggerFactory.getLogger(ApplicationMailer.class);
 
     private final JavaMailSender sender;
+
+    @Autowired
+    private MailProperties mailProperties;
 
     @Autowired
     public ApplicationMailer(JavaMailSender sender) {
@@ -45,6 +52,7 @@ public abstract class ApplicationMailer {
         try {
             final MimeMessageHelper helper = new MimeMessageHelper(mail, false, CHARSET_NAME);
 
+            helper.setFrom(mailProperties.getUsername());
             helper.setTo(to);
             helper.setSubject(subject);
 

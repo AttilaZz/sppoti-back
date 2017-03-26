@@ -1,8 +1,8 @@
 package com.fr.mail;
 
+import com.fr.commons.dto.UserDTO;
 import com.fr.exceptions.BusinessGlobalException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -20,39 +20,29 @@ import java.util.Scanner;
  **/
 @Component
 public class AccountMailer
-    extends ApplicationMailer
-{
-
-    private static final String ACTIVATE_ACCOUNT_BUTTON_TEXT = "ACTIVER LE COMPTE";
-    private static final String RECOVER_ACCOUNT_BUTTON_TEXT = "RÉCUPÉRER LE COMPTE";
-    private static final String VALIDATE_EMAIL_BUTTON_TEXT = "VALIDER LA NOUVELLLE ADRESSE";
-    // public static final String ACTIVATION_ACCOUNT_MESSAGE_BODY = "Veuillez cliquer sur le boutton
-    // ci-dessous pour activer votre compte REGISTRE";
+        extends ApplicationMailer {
 
     // Password recover
-    @Value("${spring.app.mail.account.path.recover}")
+    @Value("${spring.app.mail.account.recover.path}")
     private String pathToRecoverAccount;
     @Value("${spring.app.mail.account.recover.message}")
-    private String recoverPasswordMessage;
+    private String recoverAccountMessage;
     @Value("${spring.app.mail.account.recover.subject}")
     private String recoverAccountSubject;
+    @Value("${spring.app.mail.account.recover.button}")
+    private String recoverAccountButtonText;
 
     // path to activate account and validate new email address
-    @Value("${spring.app.mail.account.path.validate.account}")
+    @Value("${spring.app.mail.account.confirmation.path}")
     private String pathToValidateAccount;
     // Account confirmation
     @Value("${spring.app.mail.account.confirmation.message}")
     private String confirmationAccountMessage;
     @Value("${spring.app.mail.account.confirmation.subject}")
     private String confirmationAccountSubject;
+    @Value("${spring.app.mail.account.confirmation.button}")
+    private String confirmationAccountButtonText;
 
-    @Value("${spring.app.mail.account.path.validate.email}")
-    private String pathToValidateEmail;
-    // Email update confirmation
-    @Value("${spring.app.mail.update_email.confirmation.message}")
-    private String updateAccountEmailMessage;
-    @Value("${spring.app.mail.update_email.confirmation.subject}")
-    private String updateAccountEmailSubject;
 
     @Value("${spring.app.originFront}")
     private String frontRootPath;
@@ -62,77 +52,80 @@ public class AccountMailer
     }
 
     /**
-     * @param to receiver.
+     * @param to               receiver.
      * @param confirmationCode Send email to user to confirm account
      */
-    public void sendAccountConfirmationEmail(final String to, final String confirmationCode)
-    {
+    public void sendAccountConfirmationEmail(final UserDTO to, final String confirmationCode) {
 
-        final String activateLink = this.frontRootPath + this.pathToValidateAccount;
-        final String activateLinkTag = "<a target='_blank' href='" + activateLink + "'>"
-                + ACTIVATE_ACCOUNT_BUTTON_TEXT + "</a>";
+        final String activateLink = this.frontRootPath + this.pathToValidateAccount + confirmationCode;
 
         this.prepareAndSendEmail(to, this.confirmationAccountSubject,
-                this.confirmationAccountMessage, PATH_TO_EMAIL_TEMPLATE, activateLinkTag);
+                this.confirmationAccountMessage, PATH_TO_ACCOUNT_TEMPLATE, confirmationAccountButtonText, activateLink);
     }
 
     /**
-     * @param to récepteur.
+     * @param to               récepteur.
      * @param confirmationCode send email to user to confirm the new email
      */
-    public void sendEmailUpdateConfirmation(final String to, final String confirmationCode)
-    {
+    public void sendEmailUpdateConfirmation(final String to, final String confirmationCode) {
 
     }
 
     /**
-     * @param to récepteur.
+     * @param to               récepteur.
      * @param confirmationCode Send email to use with a token to recover the account
      */
-    public void sendRecoverPasswordEmail(final String to, final String confirmationCode)
-    {
+    public void sendRecoverPasswordEmail(final UserDTO to, final String confirmationCode) {
+        final String recoverLink = this.frontRootPath + this.pathToRecoverAccount + confirmationCode;
 
+        this.prepareAndSendEmail(to, this.recoverAccountSubject,
+                this.recoverAccountMessage, PATH_TO_ACCOUNT_TEMPLATE,
+                this.recoverAccountButtonText, recoverLink);
     }
 
     /**
      * Prepare email to send
      *
-     * @param to récepteur.
-     * @param subject sujet.
-     * @param message message à envoyer.
-     * @param mailFile fichier de template.
-     * @param activateLinkTag lien d'activation.
+     * @param to              receiver.
+     * @param subject         email subject.
+     * @param message         message to send.
+     * @param mailFile        email tmplate file.
+     * @param buttonText      button text.
+     * @param activateLinkTag activation link.
      */
-    private void prepareAndSendEmail(final String to, final String subject, final String message,
-            final String mailFile, final String activateLinkTag)
-    {
+    private void prepareAndSendEmail(final UserDTO to, final String subject, final String message,
+                                     final String mailFile, final String buttonText, final String activateLinkTag) {
 
-        String content = null;
         try {
 
-            content = new Scanner(new ClassPathResource(mailFile).getInputStream(), CHARSET_NAME)
+            String content = new Scanner(new ClassPathResource(mailFile).getInputStream(), CHARSET_NAME)
                     .useDelimiter("\\Z").next();
 
-            // content = content.replaceAll("(.*)LINK_HATVP_EMAIL_MESSAGE(.*)",
-            // ACTIVATION_ACCOUNT_MESSAGE_BODY);
-            content = content.replaceAll("(.*)LINK_HATVP_EMAIL_BUTTON(.*)", activateLinkTag);
+            String emailTitle = "<h3 class=\"email-title\">" + to.getFirstName() + ", Just one more step...</h3>";
+            content = content.replaceAll("(.*)EMAIL_TITLE(.*)", emailTitle);
 
-            Thread.sleep(2000);
+            Thread.sleep(300);
+            String messageToWrite = "<p class=\"lead account-message\" >" + message + "</p>";
+            content = content.replaceAll("(.*)ACTIVATE_ACCOUNT_MESSAGE(.*)", messageToWrite);
 
-            content = content.replaceAll("(.*)LINK_HATVP_EMAIL_MESSAGE(.*)", message);
+            Thread.sleep(300);
+            String button = "<p class=\"reset button-text\"><a href=\"" + activateLinkTag + "\" class=\"link-account-path\">"
+                    + buttonText + "</a></p>";
+            content = content.replaceAll("(.*)ACCOUNT_BUTTON_TEXT(.*)", button);
 
-        }
-        catch (final IOException e) {
+            Thread.sleep(300);
+            String notYourAccountMessage = "<span class=\"remove-your-email\"> This message was sent to " + to.getEmail()
+                    + " and intended for " + to.getUsername() + ". Not your account? Remove your email from this account.</span>";
+            content = content.replaceAll("(.*)REMOVE_YOUR_EMAIL(.*)", notYourAccountMessage);
 
+            super.prepareAndSendEmail(to.getEmail(), subject, content);
+
+        } catch (final IOException e) {
             LOGGER.error(LECTURE_TEMPLATE_EMAIL_IMPOSSIBLE, e);
-            throw new BusinessGlobalException(
-                    UN_PROBLÈME_A_SURVENU_LORS_DE_L_ENVOI_DU_MAIL_VEUILLEZ_RÉESSAYER_DANS_QUELQUES_INSTANTS);
-
-        }
-        catch (final InterruptedException e) {
+            throw new BusinessGlobalException(EMAIL_SENDING_PROBLEM);
+        } catch (final InterruptedException e) {
             LOGGER.error("Problème dans l'exécution du thread d'attente", e);
         }
-        super.prepareAndSendEmail(to, subject, content);
 
     }
 

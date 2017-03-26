@@ -2,6 +2,7 @@ package com.fr.core;
 
 import com.fr.commons.dto.SignUpRequestDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.AddressEntity;
 import com.fr.entities.ResourcesEntity;
 import com.fr.entities.RoleEntity;
@@ -60,7 +61,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
         newUser.setSexe(user.getSexe());
         newUser.setEmail(user.getEmail());
 
-        String confirmationCode = UUID.randomUUID().toString();
+        String confirmationCode = UUID.randomUUID().toString() + "-" + SppotiUtils.randomString(40) + UUID.randomUUID().toString();
         newUser.setConfirmationCode(confirmationCode);
 
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -110,8 +111,13 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
             /*
              * Send email to confirm account
 			 */
+            UserDTO userDTO = new UserDTO();
+            userDTO.setEmail(user.getEmail());
+            userDTO.setUsername(user.getUsername());
+            userDTO.setFirstName(user.getFirstName());
+            userDTO.setLastName(user.getLastName());
             Thread thread = new Thread(() -> {
-                this.sendConfirmationEmail(newUser.getEmail(), confirmationCode);
+                this.sendConfirmationEmail(userDTO, confirmationCode);
                 LOGGER.info("Confirmation email has been sent successfully !");
             });
             thread.start();
@@ -131,29 +137,22 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
             return false;
         }
 
-        try {
-
-            users.setConfirmed(true);
-            userRepository.save(users);
-            return true;
-
-        } catch (Exception e) {
-            LOGGER.error("Account activation error", e);
-            return false;
-        }
+        users.setConfirmed(true);
+        userRepository.save(users);
+        return true;
 
     }
 
     /**
      * Send account email activation code.
      *
-     * @param email user email.
-     * @param code  account confirmation code.
+     * @param userDTO user to reach.
+     * @param code    account confirmation code.
      */
-    private void sendConfirmationEmail(String email, String code) {
+    private void sendConfirmationEmail(UserDTO userDTO, String code) {
 
         final Thread thread = new Thread(() -> {
-            this.accountMailer.sendAccountConfirmationEmail(email, code);
+            this.accountMailer.sendAccountConfirmationEmail(userDTO, code);
         });
         thread.start();
     }
@@ -198,7 +197,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
             String confirmationCode = UUID.randomUUID().toString();
             connectedUser.setConfirmationCode(confirmationCode);
 
-            sendConfirmationEmail(userDTO.getEmail(), confirmationCode);
+            sendConfirmationEmail(userDTO, confirmationCode);
         }
 
         userRepository.save(connectedUser);
@@ -261,5 +260,13 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
         connectedUser.getResources().add(resource);
 
         userRepository.save(connectedUser);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void sendRecoverAccountEmail(String email) {
+
     }
 }
