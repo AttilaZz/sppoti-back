@@ -50,7 +50,7 @@ public class UserEntity
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    private Date accountCreationDate;
+    private Date accountCreationDate = new Date();
 
     @Column(nullable = false)
     private String password;

@@ -72,7 +72,7 @@ public class AccountMailer
         final String recoverLink = this.frontRootPath + this.pathToRecoverAccount + confirmationCode;
 
         this.prepareAndSendEmail(to, this.recoverAccountSubject,
-                this.recoverAccountMessage, PATH_TO_ACCOUNT_TEMPLATE,
+                this.recoverAccountMessage, PATH_TO_RESET_PASSWORD_TEMPLATE,
                 this.recoverAccountButtonText, recoverLink);
     }
 

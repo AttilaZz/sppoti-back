@@ -28,6 +28,7 @@ public class UserTransformer {
         userDTO.setFirstName(entity.getFirstName());
         userDTO.setLastName(entity.getLastName());
         userDTO.setUsername(entity.getUsername());
+        userDTO.setEmail(entity.getEmail());
 
         UserDTO userRessources = getUserCoverAndAvatar(entity);
 

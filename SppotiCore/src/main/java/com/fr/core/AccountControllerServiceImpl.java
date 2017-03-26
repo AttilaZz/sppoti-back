@@ -14,6 +14,7 @@ import com.fr.exceptions.ConflictUsernameException;
 import com.fr.mail.AccountMailer;
 import com.fr.models.UserRoleType;
 import com.fr.rest.service.AccountControllerService;
+import com.fr.transformers.UserTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,13 +41,16 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
 
     private final AccountMailer accountMailer;
 
+    private final UserTransformer userTransformer;
+
     @Value("${spring.app.account.recover.expiry.date}")
     private int daysBeforeExpiration;
 
     @Autowired
-    public AccountControllerServiceImpl(AccountMailer accountMailer, PasswordEncoder passwordEncoder) {
+    public AccountControllerServiceImpl(AccountMailer accountMailer, PasswordEncoder passwordEncoder, UserTransformer userTransformer) {
         this.accountMailer = accountMailer;
         this.passwordEncoder = passwordEncoder;
+        this.userTransformer = userTransformer;
     }
 
     /**
@@ -277,9 +281,17 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
      */
     @Override
     public void sendRecoverAccountEmail(UserDTO userDTO) {
-        String code = SppotiUtils.generateConfirmationKey();
-        final Thread thread = new Thread(() -> this.accountMailer.sendRecoverPasswordEmail(userDTO, code));
-        thread.start();
+
+        Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByEmail(userDTO.getEmail()));
+
+        optional.ifPresent(u -> {
+            String code = SppotiUtils.generateConfirmationKey();
+
+            final Thread thread = new Thread(() -> this.accountMailer.sendRecoverPasswordEmail(userTransformer.entityToDto(u), code));
+            thread.start();
+        });
+
+        optional.orElseThrow(() -> new EntityNotFoundException("Email not found"));
     }
 
     /**
