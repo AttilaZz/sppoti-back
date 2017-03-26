@@ -81,7 +81,7 @@ public class SppotiUtils {
 
         LocalDate dateToVerify = dateToCheck.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        return !dateToVerify.plusDays(expiryDate).isAfter(LocalDate.now());
+        return dateToVerify.isAfter(LocalDate.now());
     }
 
     /**
