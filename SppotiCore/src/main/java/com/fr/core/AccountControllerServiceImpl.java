@@ -8,6 +8,7 @@ import com.fr.entities.ResourcesEntity;
 import com.fr.entities.RoleEntity;
 import com.fr.entities.UserEntity;
 import com.fr.enums.CoverType;
+import com.fr.exceptions.BusinessGlobalException;
 import com.fr.exceptions.ConflictEmailException;
 import com.fr.exceptions.ConflictUsernameException;
 import com.fr.mail.AccountMailer;
@@ -15,6 +16,7 @@ import com.fr.models.UserRoleType;
 import com.fr.rest.service.AccountControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +24,8 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Created by: Wail DJENANE On June 01, 2016
@@ -37,6 +39,9 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
     private PasswordEncoder passwordEncoder;
 
     private final AccountMailer accountMailer;
+
+    @Value("${spring.app.account.recover.expiry.date}")
+    private int daysBeforeExpiration;
 
     @Autowired
     public AccountControllerServiceImpl(AccountMailer accountMailer, PasswordEncoder passwordEncoder) {
@@ -61,7 +66,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
         newUser.setSexe(user.getSexe());
         newUser.setEmail(user.getEmail());
 
-        String confirmationCode = UUID.randomUUID().toString() + "-" + SppotiUtils.randomString(40) + UUID.randomUUID().toString();
+        String confirmationCode = SppotiUtils.generateConfirmationKey();
         newUser.setConfirmationCode(confirmationCode);
 
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -129,17 +134,22 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
      */
     @Transactional
     @Override
-    public boolean tryActivateAccount(String code) {
+    public void tryActivateAccount(String code) {
 
-        UserEntity users = userRepository.getByConfirmationCode(code);
+        Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByConfirmationCode(code));
 
-        if (users.isConfirmed()) {
-            return false;
-        }
+        optional.ifPresent(u -> {
 
-        users.setConfirmed(true);
-        userRepository.save(users);
-        return true;
+            if (SppotiUtils.isDateExpired(u.getAccountCreationDate(), daysBeforeExpiration)) {
+                LOGGER.info("Token expired for user: " + u.getEmail());
+                throw new BusinessGlobalException("Your token has been expired - click here to generate a new token");
+            }
+
+            u.setConfirmed(true);
+            userRepository.save(u);
+        });
+
+        optional.orElseThrow(() -> new EntityNotFoundException("Account not found !"));
 
     }
 
@@ -194,7 +204,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
         if (!StringUtils.isEmpty(userDTO.getEmail())) {
             connectedUser.setEmail(userDTO.getEmail());
 
-            String confirmationCode = UUID.randomUUID().toString();
+            String confirmationCode = SppotiUtils.generateConfirmationKey();
             connectedUser.setConfirmationCode(confirmationCode);
 
             sendConfirmationEmail(userDTO, confirmationCode);
@@ -266,7 +276,32 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
      * {@inheritDoc}
      */
     @Override
-    public void sendRecoverAccountEmail(String email) {
+    public void sendRecoverAccountEmail(UserDTO userDTO) {
+        String code = SppotiUtils.generateConfirmationKey();
+        final Thread thread = new Thread(() -> this.accountMailer.sendRecoverPasswordEmail(userDTO, code));
+        thread.start();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void recoverAccount(UserDTO userDTO, String code) {
+
+        Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByConfirmationCode(code));
+
+        optional.ifPresent(u -> {
+
+            if (SppotiUtils.isDateExpired(u.getExpiryCodeCreationDate(), daysBeforeExpiration)) {
+                LOGGER.info("Token expired for user: " + u.getEmail());
+                throw new BusinessGlobalException("Your token has been expired");
+            }
+
+            u.setPassword(userDTO.getPassword());
+            userRepository.save(u);
+        });
+
+        optional.orElseThrow(() -> new EntityNotFoundException("Account not found !"));
 
     }
 }

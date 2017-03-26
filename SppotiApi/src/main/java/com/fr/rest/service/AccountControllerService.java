@@ -6,10 +6,11 @@ import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface AccountControllerService extends AbstractControllerService{
+public interface AccountControllerService extends AbstractControllerService {
 
     /**
-     *  save new user.
+     * save new user.
+     *
      * @param user {@link UserDTO} to save.
      */
     void saveNewUser(SignUpRequestDTO user);
@@ -20,7 +21,7 @@ public interface AccountControllerService extends AbstractControllerService{
      * @param code activation code.
      * @return activation state.
      */
-    boolean tryActivateAccount(String code);
+    void tryActivateAccount(String code);
 
     /**
      * UPDATE ACCOUNT DATA.
@@ -33,7 +34,7 @@ public interface AccountControllerService extends AbstractControllerService{
      * Unselect avatar or cover.
      *
      * @param userId user id.
-     * @param i resoirce index.
+     * @param i      resoirce index.
      */
     void unSelectOldResource(Long userId, int i);
 
@@ -46,8 +47,7 @@ public interface AccountControllerService extends AbstractControllerService{
     UserEntity getUserByUsername(String username);
 
     /**
-     *
-     * @param targetUser target user account.
+     * @param targetUser     target user account.
      * @param connected_user connected user id.
      * @return UserDTO
      */
@@ -62,7 +62,16 @@ public interface AccountControllerService extends AbstractControllerService{
 
     /**
      * send recover account email.
-     * @param email user email.
+     *
+     * @param user user data.
      */
-    void sendRecoverAccountEmail(String email);
+    void sendRecoverAccountEmail(UserDTO user);
+
+    /**
+     * Update password if confirmation code found.
+     *
+     * @param userDTO user data.
+     * @param code    account recover code.
+     */
+    void recoverAccount(UserDTO userDTO, String code);
 }

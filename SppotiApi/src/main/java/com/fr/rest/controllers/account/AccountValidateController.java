@@ -26,6 +26,12 @@ public class AccountValidateController {
         this.accountControllerService = accountControllerService;
     }
 
+    /**
+     * Confirm email to get access to sppoti.
+     *
+     * @param code confirmation code.
+     * @return 202 status if account enabled.
+     */
     @PutMapping(value = "/validate/{code}")
     public ResponseEntity<Void> confirmUserEmail(@PathVariable("code") String code) {
 
@@ -34,16 +40,40 @@ public class AccountValidateController {
         }
 
         // if given code exist in database confirm registration
-        if(accountControllerService.tryActivateAccount(code)){
-            LOGGER.info("Account with code (" + code + ") has been confirmed");
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        accountControllerService.tryActivateAccount(code);
+        LOGGER.info("Account with code (" + code + ") has been confirmed");
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
     }
 
-    @PutMapping(value = "/recover")
+    /**
+     * Confirm email recover account by editing the password.
+     *
+     * @param code    confirmation code.
+     * @param userDTO user data.
+     * @return 202 status if account recovered correctly.
+     */
+    @PutMapping("/validate/password/{code}")
+    ResponseEntity<Void> confirmUserEmail(@RequestBody UserDTO userDTO, @PathVariable("code") String code) {
+
+        if (StringUtils.isEmpty(code) || StringUtils.isEmpty(userDTO.getPassword())) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // if given code exist in database confirm registration
+        accountControllerService.recoverAccount(userDTO, code);
+        LOGGER.info("Account with code (" + code + ") has been confirmed");
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+
+    }
+
+    /**
+     * Send email to recover account.
+     *
+     * @param userDTO user data.
+     * @return 200 if email found and email sent.
+     */
+    @PutMapping("/recover")
     public ResponseEntity<Void> confirmUserEmail(@RequestBody UserDTO userDTO) {
 
         if (StringUtils.isEmpty(userDTO.getEmail())) {
@@ -51,7 +81,7 @@ public class AccountValidateController {
         }
 
         // if given code exist in database confirm registration
-        accountControllerService.sendRecoverAccountEmail(userDTO.getEmail());
+        accountControllerService.sendRecoverAccountEmail(userDTO);
 
         return new ResponseEntity<>(HttpStatus.OK);
 

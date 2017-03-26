@@ -7,7 +7,10 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.Past;
-import java.util.*;
+import java.util.Date;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -42,25 +45,26 @@ public class UserEntity
     @Column(nullable = false, unique = true)
     private String username;
 
-    @JsonIgnore
     @Column(nullable = false, unique = true)
     private String confirmationCode;
 
-    @JsonIgnore
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date accountCreationDate;
+
     @Column(nullable = false)
     private String password;
 
-    @JsonIgnore
     private boolean deleted = false;
-
-    @JsonIgnore
     private boolean confirmed = false;
 
-    @Column
     private String job;
-
-    @Column
     private String description;
+
+    private String recoverCode;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date expiryCodeCreationDate;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("datetimeCreated DESC")
@@ -96,14 +100,6 @@ public class UserEntity
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
     @OrderBy("dateTime DESC")
     private SortedSet<AddressEntity> addresses;
-
-    //    @ManyToMany(cascade = CascadeType.PERSIST)
-    //    @JoinColumn(name = "team_id")
-    //    @JsonIgnore
-    //    private Set<TeamEntity> team;
-
-    //    @ElementCollection
-    //    private Map<TeamEntity, Boolean> teamStatus = new TreeMap<TeamEntity, Boolean>();
 
     public boolean isDeleted() {
         return deleted;
@@ -284,6 +280,30 @@ public class UserEntity
         this.username = username;
     }
 
+    public String getRecoverCode() {
+        return recoverCode;
+    }
+
+    public void setRecoverCode(String recoverCode) {
+        this.recoverCode = recoverCode;
+    }
+
+    public Date getExpiryCodeCreationDate() {
+        return expiryCodeCreationDate;
+    }
+
+    public void setExpiryCodeCreationDate(Date expiryCodeCreationDate) {
+        this.expiryCodeCreationDate = expiryCodeCreationDate;
+    }
+
+    public Date getAccountCreationDate() {
+        return accountCreationDate;
+    }
+
+    public void setAccountCreationDate(Date accountCreationDate) {
+        this.accountCreationDate = accountCreationDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -303,8 +323,11 @@ public class UserEntity
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
         if (confirmationCode != null ? !confirmationCode.equals(that.confirmationCode) : that.confirmationCode != null)
             return false;
+        if (accountCreationDate != null ? !accountCreationDate.equals(that.accountCreationDate) : that.accountCreationDate != null) return false;
         if (password != null ? !password.equals(that.password) : that.password != null) return false;
         if (job != null ? !job.equals(that.job) : that.job != null) return false;
+        if (recoverCode != null ? !recoverCode.equals(that.recoverCode) : that.recoverCode != null) return false;
+        if (expiryCodeCreationDate != null ? !expiryCodeCreationDate.equals(that.expiryCodeCreationDate) : that.expiryCodeCreationDate != null) return false;
         return description != null ? description.equals(that.description) : that.description == null;
 
     }
@@ -325,6 +348,9 @@ public class UserEntity
         result = 31 * result + (confirmed ? 1 : 0);
         result = 31 * result + (job != null ? job.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (recoverCode != null ? recoverCode.hashCode() : 0);
+        result = 31 * result + (expiryCodeCreationDate != null ? expiryCodeCreationDate.hashCode() : 0);
+        result = 31 * result + (accountCreationDate != null ? accountCreationDate.hashCode() : 0);
         return result;
     }
 }

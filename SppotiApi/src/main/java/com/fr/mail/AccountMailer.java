@@ -60,20 +60,13 @@ public class AccountMailer
         final String activateLink = this.frontRootPath + this.pathToValidateAccount + confirmationCode;
 
         this.prepareAndSendEmail(to, this.confirmationAccountSubject,
-                this.confirmationAccountMessage, PATH_TO_ACCOUNT_TEMPLATE, confirmationAccountButtonText, activateLink);
+                this.confirmationAccountMessage, PATH_TO_ACCOUNT_TEMPLATE,
+                this.confirmationAccountButtonText, activateLink);
     }
 
     /**
-     * @param to               récepteur.
-     * @param confirmationCode send email to user to confirm the new email
-     */
-    public void sendEmailUpdateConfirmation(final String to, final String confirmationCode) {
-
-    }
-
-    /**
-     * @param to               récepteur.
-     * @param confirmationCode Send email to use with a token to recover the account
+     * @param to               receiver.
+     * @param confirmationCode Send email to use with a token to recover the account.
      */
     public void sendRecoverPasswordEmail(final UserDTO to, final String confirmationCode) {
         final String recoverLink = this.frontRootPath + this.pathToRecoverAccount + confirmationCode;
@@ -81,6 +74,14 @@ public class AccountMailer
         this.prepareAndSendEmail(to, this.recoverAccountSubject,
                 this.recoverAccountMessage, PATH_TO_ACCOUNT_TEMPLATE,
                 this.recoverAccountButtonText, recoverLink);
+    }
+
+    /**
+     * @param to               receiver.
+     * @param confirmationCode send email to user to confirm the new email.
+     */
+    public void sendEmailUpdateConfirmation(final String to, final String confirmationCode) {
+
     }
 
     /**
