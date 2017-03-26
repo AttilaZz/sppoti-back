@@ -18,7 +18,7 @@ public class SppotiUtils {
      * @param content string to code.
      * @return une chaine de caractère.
      */
-    public static String convertTo64(final String content) {
+    public static String encodeTo64(final String content) {
         final byte[] encodedBytes = Base64.encode(content.getBytes());
         return new String(encodedBytes);
     }
@@ -81,9 +81,18 @@ public class SppotiUtils {
 
         LocalDate dateToVerify = dateToCheck.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        if (dateToVerify.plusDays(expiryDate).isAfter(LocalDate.now())) {
-            return false;
-        }
-        return true;
+        return !dateToVerify.plusDays(expiryDate).isAfter(LocalDate.now());
+    }
+
+    /**
+     *
+     * @param expiryDateNumber number of days before expiration.
+     * @return expiry date.
+     */
+    public static Date generateExpiryDate(int expiryDateNumber){
+
+        LocalDate expiryLocalDate = (new Date()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        return Date.from((expiryLocalDate.plusDays(expiryDateNumber)).atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 }

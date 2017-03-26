@@ -64,7 +64,7 @@ public class UserEntity
     private String recoverCode;
 
     @Temporal(TemporalType.TIMESTAMP)
-    private Date expiryCodeCreationDate;
+    private Date recoverCodeCreationDate;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     @OrderBy("datetimeCreated DESC")
@@ -288,12 +288,12 @@ public class UserEntity
         this.recoverCode = recoverCode;
     }
 
-    public Date getExpiryCodeCreationDate() {
-        return expiryCodeCreationDate;
+    public Date getRecoverCodeCreationDate() {
+        return recoverCodeCreationDate;
     }
 
-    public void setExpiryCodeCreationDate(Date expiryCodeCreationDate) {
-        this.expiryCodeCreationDate = expiryCodeCreationDate;
+    public void setRecoverCodeCreationDate(Date recoverCodeCreationDate) {
+        this.recoverCodeCreationDate = recoverCodeCreationDate;
     }
 
     public Date getAccountCreationDate() {
@@ -327,7 +327,7 @@ public class UserEntity
         if (password != null ? !password.equals(that.password) : that.password != null) return false;
         if (job != null ? !job.equals(that.job) : that.job != null) return false;
         if (recoverCode != null ? !recoverCode.equals(that.recoverCode) : that.recoverCode != null) return false;
-        if (expiryCodeCreationDate != null ? !expiryCodeCreationDate.equals(that.expiryCodeCreationDate) : that.expiryCodeCreationDate != null) return false;
+        if (recoverCodeCreationDate != null ? !recoverCodeCreationDate.equals(that.recoverCodeCreationDate) : that.recoverCodeCreationDate != null) return false;
         return description != null ? description.equals(that.description) : that.description == null;
 
     }
@@ -349,7 +349,7 @@ public class UserEntity
         result = 31 * result + (job != null ? job.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (recoverCode != null ? recoverCode.hashCode() : 0);
-        result = 31 * result + (expiryCodeCreationDate != null ? expiryCodeCreationDate.hashCode() : 0);
+        result = 31 * result + (recoverCodeCreationDate != null ? recoverCodeCreationDate.hashCode() : 0);
         result = 31 * result + (accountCreationDate != null ? accountCreationDate.hashCode() : 0);
         return result;
     }

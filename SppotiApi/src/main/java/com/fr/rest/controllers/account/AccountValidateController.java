@@ -83,7 +83,7 @@ public class AccountValidateController {
         // if given code exist in database confirm registration
         accountControllerService.sendRecoverAccountEmail(userDTO);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
     }
 

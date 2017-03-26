@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -280,6 +281,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void sendRecoverAccountEmail(UserDTO userDTO) {
 
         Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByEmail(userDTO.getEmail()));
@@ -287,7 +289,13 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
         optional.ifPresent(u -> {
             String code = SppotiUtils.generateConfirmationKey();
 
-            final Thread thread = new Thread(() -> this.accountMailer.sendRecoverPasswordEmail(userTransformer.entityToDto(u), code));
+            Date tokenExpiryDate = SppotiUtils.generateExpiryDate(daysBeforeExpiration);
+
+            u.setRecoverCodeCreationDate(tokenExpiryDate);
+            u.setRecoverCode(code);
+            userRepository.save(u);
+
+            final Thread thread = new Thread(() -> this.accountMailer.sendRecoverPasswordEmail(userTransformer.entityToDto(u), code, tokenExpiryDate));
             thread.start();
         });
 
@@ -304,7 +312,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
 
         optional.ifPresent(u -> {
 
-            if (SppotiUtils.isDateExpired(u.getExpiryCodeCreationDate(), daysBeforeExpiration)) {
+            if (SppotiUtils.isDateExpired(u.getRecoverCodeCreationDate(), daysBeforeExpiration)) {
                 LOGGER.info("Token expired for user: " + u.getEmail());
                 throw new BusinessGlobalException("Your token has been expired");
             }

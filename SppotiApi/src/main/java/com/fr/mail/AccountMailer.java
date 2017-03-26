@@ -1,6 +1,7 @@
 package com.fr.mail;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.exceptions.BusinessGlobalException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
@@ -8,6 +9,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -67,9 +70,13 @@ public class AccountMailer
     /**
      * @param to               receiver.
      * @param confirmationCode Send email to use with a token to recover the account.
+     * @param currentDate      link expiry date.
      */
-    public void sendRecoverPasswordEmail(final UserDTO to, final String confirmationCode) {
-        final String recoverLink = this.frontRootPath + this.pathToRecoverAccount + confirmationCode;
+    public void sendRecoverPasswordEmail(final UserDTO to, final String confirmationCode, Date currentDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        String dateToEncode = formatter.format(currentDate.getTime());
+
+        final String recoverLink = this.frontRootPath + this.pathToRecoverAccount + confirmationCode + "/" + SppotiUtils.encodeTo64(dateToEncode);
 
         this.prepareAndSendEmail(to, this.recoverAccountSubject,
                 this.recoverAccountMessage, PATH_TO_RESET_PASSWORD_TEMPLATE,
@@ -102,7 +109,7 @@ public class AccountMailer
             String content = new Scanner(new ClassPathResource(mailFile).getInputStream(), CHARSET_NAME)
                     .useDelimiter("\\Z").next();
 
-            String emailTitle = "<h3 class=\"email-title\">" + to.getFirstName() + ", Just one more step...</h3>";
+            String emailTitle = "<h3 class=\"email-title\">" + to.getFirstName() + ",</h3>";
             content = content.replaceAll("(.*)EMAIL_TITLE(.*)", emailTitle);
 
             Thread.sleep(300);
