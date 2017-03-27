@@ -251,6 +251,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void updateAvatarAndCover(UserDTO user) {
 
         UserEntity connectedUser = getConnectedUser();
@@ -306,6 +307,7 @@ public class AccountControllerServiceImpl extends AbstractControllerServiceImpl 
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void recoverAccount(UserDTO userDTO, String code) {
 
         Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByConfirmationCode(code));

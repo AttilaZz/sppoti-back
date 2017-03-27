@@ -308,7 +308,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         }
 
         return myList;
-
     }
 
     /**
@@ -336,9 +335,7 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                 return true;
             }
         }
-
         return false;
-
     }
 
     /**
@@ -389,7 +386,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
                         user.setFriendStatus(GlobalAppStatus.REFUSED.getValue());
 
                     }
-
                 }
                 /*
                 Manage request sent by me
@@ -400,7 +396,6 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             }
 
             user.setMyProfile(connectedUser.getId().equals(targetUser.getId()));
-
         } else {
             user.setMyProfile(true);
         }
@@ -415,24 +410,17 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
         /*
         End resource manager
          */
-
         List<SportDTO> sportDTOs = new ArrayList<SportDTO>();
 
         for (SportEntity sportEntity : targetUser.getRelatedSports()) {
             SportDTO sportDTO = new SportDTO();
             sportDTO.setId(sportEntity.getId());
             sportDTO.setName(sportEntity.getName());
-
             sportDTOs.add(sportDTO);
         }
 
         user.setSportDTOs(sportDTOs);
-
-        try {
-            user.setAddress(targetUser.getAddresses().first().getAddress());
-        } catch (Exception e) {
-            LOGGER.warn("UserDTO has no address yet !");
-        }
+        user.setAddress(targetUser.getAddresses().first().getAddress());
 
         return user;
     }
