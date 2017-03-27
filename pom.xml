@@ -19,7 +19,7 @@
     <modules>
         <module>SppotiRepository</module>
         <module>SppotiCommons</module>
-        <module>SppotiBusinessCore</module>
+        <module>SppotiBusiness</module>
         <module>SppotiRestApi</module>
         <module>SppotiRunApp</module>
     </modules>
@@ -50,7 +50,7 @@
             </dependency>
             <dependency>
                 <groupId>com.sppoti</groupId>
-                <artifactId>SppotiBusinessCore</artifactId>
+                <artifactId>SppotiBusiness</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

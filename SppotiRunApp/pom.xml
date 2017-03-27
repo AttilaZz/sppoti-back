@@ -23,7 +23,7 @@
 
         <dependency>
             <groupId>com.sppoti</groupId>
-            <artifactId>SppotiBusinessCore</artifactId>
+            <artifactId>SppotiRestApi</artifactId>
         </dependency>
 
         <dependency>

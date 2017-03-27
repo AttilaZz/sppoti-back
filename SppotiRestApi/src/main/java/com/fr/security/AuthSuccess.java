@@ -31,7 +31,7 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
 
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -49,14 +49,6 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
         LOGGER.info("UserDTO has been logged :-)");
 
         request.getSession().setAttribute(ATT_USER_ID, getAuthenticationId());
-
-        //request.getSession().setMaxInactiveInterval(0);
-//        CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
-//        if (csrf != null) {
-//            Cookie cookie = new Cookie("XSRF-TOKEN", csrf.getToken());
-//            cookie.setPath("/");
-//            response.addCookie(cookie);
-//        }
 
         response.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
         response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
