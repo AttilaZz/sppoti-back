@@ -2,15 +2,19 @@ package com.fr.api.team;
 
 import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
-import com.fr.service.TeamControllerService;
 import com.fr.security.AccountUserDetails;
+import com.fr.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -40,12 +44,12 @@ public class TeamAddController {
     @PostMapping
     public ResponseEntity<TeamResponseDTO> createTeam(@RequestBody TeamRequestDTO team, Authentication authentication) {
 
-        if (team.getName() == null || team.getName().isEmpty()) {
+        if (StringUtils.isEmpty(team.getName())) {
             LOGGER.error("TeamEntity (name) not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        if (team.getMembers() == null || team.getMembers().isEmpty()) {
+        if (StringUtils.isEmpty(team.getMembers())) {
             LOGGER.error("TeamEntity (members) not found");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

@@ -59,14 +59,13 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
         }
 
         TeamEntity teamToSave = new TeamEntity();
-
         teamToSave.setName(team.getName());
 
-        if (team.getCoverPath() != null && !team.getCoverPath().isEmpty()) {
+        if (!StringUtils.isEmpty(team.getCoverPath())) {
             teamToSave.setCoverPath(team.getCoverPath());
         }
 
-        if (team.getLogoPath() != null && !team.getLogoPath().isEmpty()) {
+        if (!StringUtils.isEmpty(team.getLogoPath())) {
             teamToSave.setLogoPath(team.getLogoPath());
         }
 

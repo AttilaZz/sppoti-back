@@ -513,7 +513,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
                     }
 
                     /** send TEAM notification to the invited user. */
-                    sendTeamNotification(team, notificationEntities, connectedUserId, u);
+                    if (!u.getId().equals(connectedUserId)) {
+                        sendTeamNotification(team, notificationEntities, connectedUserId, u);
+                    }
                 }
 
 
