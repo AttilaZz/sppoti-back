@@ -1,13 +1,11 @@
 package com.fr.commons.dto;
 
-import java.util.List;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fr.commons.dto.post.PostResponseDTO;
-import com.fr.entities.MessageEntity;
-import com.fr.entities.SportEntity;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by: Wail DJENANE on Jun 11, 2016
@@ -28,8 +26,8 @@ public class ProfilePageDTO extends AbstractCommonDTO{
     private String profileName;
 
     private List<PostResponseDTO> userPosts;
-    private Set<SportEntity> userSports;
-    private List<MessageEntity> userMessages;
+    private Set<SportDTO> userSports;
+//    private List<MessageEntity> userMessages;
     private Set<String> userAddresses;
 
     // when switching to another profile
@@ -132,20 +130,12 @@ public class ProfilePageDTO extends AbstractCommonDTO{
         this.userPosts = userPosts;
     }
 
-    public Set<SportEntity> getUserSports() {
+    public Set<SportDTO> getUserSports() {
         return userSports;
     }
 
-    public void setUserSports(Set<SportEntity> sportEntitySet) {
-        this.userSports = sportEntitySet;
-    }
-
-    public List<MessageEntity> getUserMessages() {
-        return userMessages;
-    }
-
-    public void setUserMessages(List<MessageEntity> userMessages) {
-        this.userMessages = userMessages;
+    public void setUserSports(Set<SportDTO> userSports) {
+        this.userSports = userSports;
     }
 
     public String getUsername() {

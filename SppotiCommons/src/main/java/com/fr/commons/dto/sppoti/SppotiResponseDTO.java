@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.commons.SportDTO;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
-import com.fr.entities.SportEntity;
 
 import java.util.Date;
 
@@ -37,7 +37,7 @@ public class SppotiResponseDTO extends AbstractCommonDTO {
     private String cover;
 
     @JsonProperty("sport")
-    private SportEntity relatedSport;
+    private SportDTO relatedSport;
 
     private TeamResponseDTO teamHost;
 
@@ -53,15 +53,6 @@ public class SppotiResponseDTO extends AbstractCommonDTO {
     private Integer connectedUserId;
 
     public SppotiResponseDTO() {
-    }
-
-    public SppotiResponseDTO(String titre, Date datetimeCreated, Date dateTimeStart, String location, Integer maxMembersCount, SportEntity relatedSport) {
-        this.titre = titre;
-        this.datetimeCreated = datetimeCreated;
-        this.dateTimeStart = dateTimeStart;
-        this.location = location;
-        this.maxMembersCount = maxMembersCount;
-        this.relatedSport = relatedSport;
     }
 
     public Integer getId() {
@@ -132,11 +123,11 @@ public class SppotiResponseDTO extends AbstractCommonDTO {
         this.tags = tags;
     }
 
-    public SportEntity getRelatedSport() {
+    public SportDTO getRelatedSport() {
         return relatedSport;
     }
 
-    public void setRelatedSport(SportEntity relatedSport) {
+    public void setRelatedSport(SportDTO relatedSport) {
         this.relatedSport = relatedSport;
     }
 

@@ -3,7 +3,6 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 import java.util.List;
@@ -25,7 +24,6 @@ public class UserDTO extends AbstractCommonDTO {
     private Integer xPosition;
     private Integer yPosition;
 
-    @SerializedName("sports")
     @JsonProperty("sports")
     private List<SportDTO> sportDTOs;
 
@@ -38,11 +36,9 @@ public class UserDTO extends AbstractCommonDTO {
 
     private Integer coverType;
 
-    @SerializedName("friend_id")
     @JsonProperty("friend_id")
     private Integer friendUuid;
 
-    @SerializedName("friend_status")
     @JsonProperty(value = "friend_status")
     private Integer friendStatus;
 

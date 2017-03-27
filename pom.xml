@@ -17,10 +17,10 @@
     </properties>
 
     <modules>
-        <module>SppotiApi</module>
-        <module>SppotiRepositoriy</module>
+        <module>SppotiRepository</module>
         <module>SppotiCommons</module>
-        <module>SppotiCore</module>
+        <module>SppotiBusinessCore</module>
+        <module>SppotiRestApi</module>
         <module>SppotiRunApp</module>
     </modules>
 
@@ -35,12 +35,12 @@
         <dependencies>
             <dependency>
                 <groupId>com.sppoti</groupId>
-                <artifactId>SppotiApi</artifactId>
+                <artifactId>SppotiRestApi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.sppoti</groupId>
-                <artifactId>SppotiRepositoriy</artifactId>
+                <artifactId>SppotiRepository</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -50,7 +50,12 @@
             </dependency>
             <dependency>
                 <groupId>com.sppoti</groupId>
-                <artifactId>SppotiCore</artifactId>
+                <artifactId>SppotiBusinessCore</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sppoti</groupId>
+                <artifactId>SppotiBusinessApi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

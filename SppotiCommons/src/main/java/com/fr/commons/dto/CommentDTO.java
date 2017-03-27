@@ -1,12 +1,11 @@
 package com.fr.commons.dto;
 
-import java.util.Date;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.entities.CommentEntity;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
@@ -38,22 +37,6 @@ public class CommentDTO extends AbstractCommonDTO {
     private List<HeaderDataDTO> commentLikers;
 
     public CommentDTO() {
-    }
-
-    public CommentDTO(CommentEntity commentEntity, UserDTO authorComment) {
-        this.id = commentEntity.getUuid();
-
-        this.authorAvatar = authorComment.getAvatar();
-        this.authorFirstName = commentEntity.getUser().getFirstName();
-        this.authorUsername = commentEntity.getUser().getUsername();
-        this.authorLastName = commentEntity.getUser().getLastName();
-
-        this.creationDate = commentEntity.getDatetimeCreated();
-        this.text = commentEntity.getContent();
-        this.imageLink = commentEntity.getImageLink();
-        this.videoLink = commentEntity.getVideoLink();
-
-        this.isEdited = !commentEntity.getEditList().isEmpty();
     }
 
     public List<HeaderDataDTO> getCommentLikers() {

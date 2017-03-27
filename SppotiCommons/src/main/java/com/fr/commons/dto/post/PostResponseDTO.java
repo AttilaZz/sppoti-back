@@ -7,16 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.HeaderDataDTO;
-import com.fr.entities.AddressEntity;
-import com.fr.entities.PostEntity;
-import com.fr.entities.SppotiEntity;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 
 /**
  * Created by: Wail DJENANE on Aug 7, 2016
@@ -26,7 +20,6 @@ public class PostResponseDTO extends AbstractCommonDTO {
 
     private Long sportId;
 
-    @Temporal(TemporalType.DATE)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+1")
     private Date datetimeCreated;
 
@@ -39,8 +32,6 @@ public class PostResponseDTO extends AbstractCommonDTO {
     @JsonProperty("video")
     private String videoLink;
 
-    private SppotiEntity game;
-
     private List<CommentDTO> comment;
     private int commentsCount;
 
@@ -50,7 +41,6 @@ public class PostResponseDTO extends AbstractCommonDTO {
     private boolean edited;
 
     private List<HeaderDataDTO> likers;
-    private SortedSet<AddressEntity> addresses;
 
     private int visibility;
 
@@ -62,10 +52,6 @@ public class PostResponseDTO extends AbstractCommonDTO {
     private TargetUser targetUser;
 
     private boolean myPost;
-
-    public PostResponseDTO(PostEntity post) {
-        this.content = post.getContent();
-    }
 
     public String getFirstName() {
         return firstName;
@@ -136,14 +122,6 @@ public class PostResponseDTO extends AbstractCommonDTO {
         this.videoLink = videoLink;
     }
 
-    public SppotiEntity getGame() {
-        return game;
-    }
-
-    public void setGame(SppotiEntity game) {
-        this.game = game;
-    }
-
     public Long getSportId() {
         return sportId;
     }
@@ -182,14 +160,6 @@ public class PostResponseDTO extends AbstractCommonDTO {
 
     public void setMyPost(boolean isMyPost) {
         this.myPost = isMyPost;
-    }
-
-    public SortedSet<AddressEntity> getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(SortedSet<AddressEntity> addresses) {
-        this.addresses = addresses;
     }
 
     public int getCommentsCount() {

@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.commons.dto.AbstractCommonDTO;
-import com.fr.entities.AddressEntity;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.Set;
 
@@ -20,8 +18,6 @@ public class PostRequestDTO extends AbstractCommonDTO {
     private Long gameId;
 
     private Data content;
-
-    private AddressEntity address;
 
     private String avatar;
 
@@ -88,14 +84,6 @@ public class PostRequestDTO extends AbstractCommonDTO {
         this.cover = cover;
     }
 
-    public AddressEntity getAddress() {
-        return address;
-    }
-
-    public void setAddress(AddressEntity address) {
-        this.address = address;
-    }
-
     public int getTargetUserUuid() {
         return targetUserUuid;
     }
@@ -106,7 +94,6 @@ public class PostRequestDTO extends AbstractCommonDTO {
 
     public class Data {
 
-        @SerializedName("text")
         @JsonProperty("text")
         private String content;
         private Set<String> imageLink;
