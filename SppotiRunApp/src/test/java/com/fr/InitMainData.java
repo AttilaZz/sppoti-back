@@ -1,6 +1,4 @@
-package com.fr; /**
- * Created by djenanewail on 12/8/16.
- */
+package com.fr;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.entities.SportEntity;
@@ -19,6 +17,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Insert Roles and sports in database.
+ *
+ * Created by djenanewail on 12/8/16.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @org.springframework.boot.test.IntegrationTest("server.port:0")

@@ -4,9 +4,9 @@
 /*
 FIRST USER
  */
-INSERT INTO sppoti.user (id, uuid, version, confirmation_code, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
+INSERT INTO sppoti.user (id, uuid, version, confirmation_code, account_creation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
 VALUES
-  (11, 12345678, 1, 'code', TRUE, curdate(), FALSE, NULL, 'wail.djenane@gmail.com', 'wail', NULL, 'djenane',
+  (11, 12345678, 1, 'code', curdate(), TRUE, curdate(), FALSE, NULL, 'wail.djenane@gmail.com', 'wail', NULL, 'djenane',
    'piratusse1',
    NULL , NULL, 'piratusse1');
 
@@ -17,8 +17,8 @@ INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) 
 /*
 SECOND USER
  */
-INSERT INTO sppoti.user (id, uuid, version, confirmation_code, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
-VALUES (12, 12377778, 2, 'code1', TRUE, curdate(), FALSE, NULL, 'wail.djenane@gmail.co', 'bachir', NULL, 'bouacheria',
+INSERT INTO sppoti.user (id, uuid, version, confirmation_code, account_creation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
+VALUES (12, 12377778, 2, 'code1', curdate(), TRUE, curdate(), FALSE, NULL, 'wail.djenane@gmail.co', 'bachir', NULL, 'bouacheria',
         'bachir31', NULL , NULL, 'bachir31');
 
 INSERT INTO sppoti.user_roles (users_id, roles_id) VALUES (12, 1);
@@ -29,9 +29,9 @@ INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) 
 /*
 THIRD USER
  */
-INSERT INTO sppoti.user (id, uuid, version, confirmation_code, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
+INSERT INTO sppoti.user (id, uuid, version, confirmation_code, account_creation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
 VALUES
-  (13, 12999678, 3, 'code2', TRUE, curdate(), FALSE, NULL, 'wail.djenane@gmail.c', 'amar', NULL, 'sebaa', 'amar31', NULL ,
+  (13, 12999678, 3, 'code2', curdate(), TRUE, curdate(), FALSE, NULL, 'wail.djenane@gmail.c', 'amar', NULL, 'sebaa', 'amar31', NULL ,
    NULL, 'amar31');
 
 INSERT INTO sppoti.user_roles (users_id, roles_id) VALUES (13, 1);
@@ -42,9 +42,9 @@ INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) 
 /*
 FOURTH USER
  */
-INSERT INTO sppoti.user (id, uuid, version, confirmation_code, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
+INSERT INTO sppoti.user (id, uuid, version, confirmation_code, account_creation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
 VALUES
-  (14, 10459678, 0, 'code4', TRUE, curdate(), FALSE, NULL, 'gg.gg@gg.gg', 'koko', NULL, 'MUkA', 'KAKA31', NULL ,
+  (14, 10459678, 0, 'code4', curdate(), TRUE, curdate(), FALSE, NULL, 'gg.gg@gg.gg', 'koko', NULL, 'MUkA', 'KAKA31', NULL ,
    NULL, 'kaka31');
 
 INSERT INTO sppoti.user_roles (users_id, roles_id) VALUES (14, 1);
@@ -54,9 +54,9 @@ INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) 
 /*
 FIFTH USER
  */
-INSERT INTO sppoti.user (id, uuid, version, confirmation_code, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
+INSERT INTO sppoti.user (id, uuid, version, confirmation_code, account_creation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, sexe, telephone, username)
 VALUES
-  (15, 10415388, 0, 'code5', TRUE, curdate(), FALSE, NULL, 'gg.gg@kk.kk', 'koko', NULL, 'KOKO', 'koko31', NULL ,
+  (15, 10415388, 0, 'code5', curdate(), TRUE, curdate(), FALSE, NULL, 'gg.gg@kk.kk', 'koko', NULL, 'KOKO', 'koko31', NULL ,
    NULL, 'koko31');
 
 INSERT INTO sppoti.user_roles (users_id, roles_id) VALUES (15, 1);

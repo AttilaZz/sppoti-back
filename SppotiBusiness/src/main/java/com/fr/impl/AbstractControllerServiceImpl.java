@@ -418,9 +418,11 @@ public abstract class AbstractControllerServiceImpl implements AbstractControlle
             sportDTO.setName(sportEntity.getName());
             sportDTOs.add(sportDTO);
         }
-
         user.setSportDTOs(sportDTOs);
-        user.setAddress(targetUser.getAddresses().first().getAddress());
+
+        if(!targetUser.getAddresses().isEmpty()){
+            user.setAddress(targetUser.getAddresses().first().getAddress());
+        }
 
         return user;
     }
