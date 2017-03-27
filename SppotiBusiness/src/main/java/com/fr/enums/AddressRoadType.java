@@ -1,12 +1,9 @@
-/**
- *
- */
 package com.fr.enums;
 
 /**
  * Created by: Wail DJENANE on Sep 20, 2016
  */
-public enum AddressRoadType {
+enum AddressRoadType {
     RUE("Rue"), AVENUE("Avenue");
 
     private String type;

@@ -33,10 +33,8 @@ import java.util.stream.Collectors;
  */
 
 @Component
-public class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements TeamControllerService {
-
-    private Logger LOGGER = Logger.getLogger(TeamControllerServiceImpl.class);
-
+class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements TeamControllerService {
+    
     @Value("${key.teamsPerPage}")
     private int teamPageSize;
 
@@ -372,7 +370,7 @@ public class TeamControllerServiceImpl extends AbstractControllerServiceImpl imp
     public List<TeamResponseDTO> getAllJoinedTeamsByUserId(int userId, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
-        if(getConnectedUser().getUuid() != userId){
+        if (getConnectedUser().getUuid() != userId) {
             throw new NotAdminException("Unauthorized access");
         }
 

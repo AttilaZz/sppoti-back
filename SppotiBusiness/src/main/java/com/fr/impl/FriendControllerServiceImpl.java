@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * Created by djenanewail on 1/22/17.
  */
 @Component
-public class FriendControllerServiceImpl extends AbstractControllerServiceImpl implements FriendControllerService {
+class FriendControllerServiceImpl extends AbstractControllerServiceImpl implements FriendControllerService {
 
     private Logger LOGGER = Logger.getLogger(FriendControllerServiceImpl.class);
 
@@ -138,8 +138,8 @@ public class FriendControllerServiceImpl extends AbstractControllerServiceImpl i
 
         List<FriendShipEntity> friendShips = this.getByUserAndStatus(userId, GlobalAppStatus.CONFIRMED, pageable);
 
-        return  friendShips.stream()
-                .map( f -> this.fillUserResponse(f.getFriend(), null))
+        return friendShips.stream()
+                .map(f -> this.fillUserResponse(f.getFriend(), null))
                 .collect(Collectors.toList());
 
     }

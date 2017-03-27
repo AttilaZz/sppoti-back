@@ -7,13 +7,13 @@ import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
 import com.fr.models.NotificationType;
 import com.fr.service.CommentControllerService;
+import com.fr.transformers.CommentTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import com.fr.transformers.CommentTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.Optional;
  * Created by: Wail DJENANE on Aug 12, 2016
  */
 @Component
-public class CommentControllerServiceImpl extends AbstractControllerServiceImpl implements CommentControllerService {
+class CommentControllerServiceImpl extends AbstractControllerServiceImpl implements CommentControllerService {
 
     private Logger LOGGER = Logger.getLogger(CommentControllerServiceImpl.class);
 

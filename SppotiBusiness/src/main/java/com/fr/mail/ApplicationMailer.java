@@ -11,13 +11,12 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 /**
- *
  * Created by wdjenane on 09/02/2017.
  * <p>
  * Cette classe contient les paramètres commun d'envoi de mail
  **/
 @Component
-public abstract class ApplicationMailer {
+abstract class ApplicationMailer {
 
     protected static final String LECTURE_TEMPLATE_EMAIL_IMPOSSIBLE = "Impossible de lire le fichier de modèle de mail";
     protected static final String EMAIL_SENDING_PROBLEM = "Un problème a survenu lors de l'envoi de l'email de confirmation, Veuillez réessayer dans quelques instants";

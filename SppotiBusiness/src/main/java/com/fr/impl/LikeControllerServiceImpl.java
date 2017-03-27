@@ -20,7 +20,7 @@ import java.util.List;
  * Created by djenanewail on 12/24/16.
  */
 @Component
-public class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements LikeControllerService {
+class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements LikeControllerService {
 
     private Logger LOGGER = Logger.getLogger(LikeControllerServiceImpl.class);
 

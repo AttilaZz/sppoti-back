@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * Created by djenanewail on 1/22/17.
  */
 @Component
-public class LoginServiceImpl extends AbstractControllerServiceImpl implements LoginService {
+class LoginServiceImpl extends AbstractControllerServiceImpl implements LoginService {
     @Override
     public UserEntity getByEmail(String username) {
         return userRepository.getByEmail(username);

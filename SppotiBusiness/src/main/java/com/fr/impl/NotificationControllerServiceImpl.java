@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * Created by djenanewail on 2/11/17.
  */
 @Component
-public class NotificationControllerServiceImpl extends AbstractControllerServiceImpl implements NotificationControllerService {
+class NotificationControllerServiceImpl extends AbstractControllerServiceImpl implements NotificationControllerService {
 
     private Logger LOGGER = Logger.getLogger(NotificationControllerServiceImpl.class);
 
@@ -66,7 +66,7 @@ public class NotificationControllerServiceImpl extends AbstractControllerService
 
         notification.ifPresent(
                 n -> {
-                    if(!n.getTo().getId().equals(connectedUserId)){
+                    if (!n.getTo().getId().equals(connectedUserId)) {
                         throw new NotAdminException("ACCESS DENIED TO THIS SERVICE");
                     }
 

@@ -15,7 +15,7 @@ import com.fr.service.MessageControllerService;
  */
 
 @Component
-public class MessageControllerServiceImpl extends AbstractControllerServiceImpl implements MessageControllerService {
+class MessageControllerServiceImpl extends AbstractControllerServiceImpl implements MessageControllerService {
 
 
     @Override

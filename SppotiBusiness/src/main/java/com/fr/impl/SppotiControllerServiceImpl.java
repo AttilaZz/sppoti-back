@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  */
 
 @Component
-public class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService {
+class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService {
 
     private static final String TEAM_ID_NOT_FOUND = "TeamEntity id not found";
     private Logger LOGGER = Logger.getLogger(SppotiControllerServiceImpl.class);

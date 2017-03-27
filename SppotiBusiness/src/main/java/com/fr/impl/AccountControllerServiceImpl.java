@@ -34,7 +34,7 @@ import java.util.Set;
  */
 
 @Component
-public class AccountControllerServiceImpl extends AbstractControllerServiceImpl implements AccountControllerService {
+class AccountControllerServiceImpl extends AbstractControllerServiceImpl implements AccountControllerService {
 
     private Logger LOGGER = Logger.getLogger(AccountControllerServiceImpl.class);
 

@@ -34,11 +34,13 @@ public class AccountUpdateController {
 
         boolean update = false;
 
-        if ((user.getAvatar() != null && !user.getAvatar().isEmpty()) || (user.getCover() != null && !user.getCover().isEmpty() && user.getCoverType() != 0)) {
+        if (!StringUtils.isEmpty(user.getAvatar()) || (!StringUtils.isEmpty(user.getCover()) && user.getCoverType() != null)) {
 
             //resources
             accountControllerService.updateAvatarAndCover(user);
 
+            LOGGER.info("USER-UPDATE: UserDTO has been updated!");
+            return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
         } else {
             //first name
             if (!StringUtils.isEmpty(user.getFirstName())) {
@@ -69,17 +71,17 @@ public class AccountUpdateController {
                 update = true;
             }
             //TODO: Update sports
+
+            if (update) {
+                accountControllerService.updateUser(user);
+                LOGGER.info("USER-UPDATE: UserDTO has been updated!");
+                return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
+            }
+
         }
 
-        if (update) {
-            accountControllerService.updateUser(user);
-            LOGGER.info("USER-UPDATE: UserDTO has been updated!");
-            return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
-        } else {
-            LOGGER.error("USER-UPDATE: Nothing to update OR missing parameter");
-            return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
-        }
-
+        LOGGER.error("USER-UPDATE: Nothing to update OR missing parameter");
+        return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
     }
 
 }

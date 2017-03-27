@@ -1,12 +1,9 @@
-/**
- *
- */
 package com.fr.enums;
 
 /**
  * Created by: Wail DJENANE on Oct 10, 2016
  */
-public enum VisibilityRestriction {
+enum VisibilityRestriction {
     PUBLIC(0), FRIEND(1), ONLY_ME(2);
 
     private int visibility;

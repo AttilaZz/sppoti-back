@@ -1,12 +1,9 @@
-/**
- *
- */
 package com.fr.enums;
 
 /**
  * Created by: Wail DJENANE on Aug 16, 2016
  */
-public enum AccountState {
+enum AccountState {
 
     ACTIVE("Active"), INACTIVE("Inactive"), DELETED("Deleted"), LOCKED("Locked");
 

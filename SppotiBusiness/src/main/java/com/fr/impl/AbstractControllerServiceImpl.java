@@ -31,7 +31,7 @@ import static com.fr.transformers.UserTransformer.getUserCoverAndAvatar;
 
 @Transactional(readOnly = true)
 @Component("abstractService")
-public abstract class AbstractControllerServiceImpl implements AbstractControllerService {
+abstract class AbstractControllerServiceImpl implements AbstractControllerService {
 
     protected UserRepository userRepository;
     protected SportRepository sportRepository;

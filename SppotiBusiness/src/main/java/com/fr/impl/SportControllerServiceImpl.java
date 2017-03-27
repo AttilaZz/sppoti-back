@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 @Component
-public class SportControllerServiceImpl extends AbstractControllerServiceImpl implements SportControllerService {
+class SportControllerServiceImpl extends AbstractControllerServiceImpl implements SportControllerService {
 
     @Override
     public List<SportEntity> getAllSports() {

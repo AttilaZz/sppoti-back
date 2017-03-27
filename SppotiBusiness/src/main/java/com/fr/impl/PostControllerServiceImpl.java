@@ -23,7 +23,7 @@ import java.util.*;
  */
 
 @Component
-public class PostControllerServiceImpl extends AbstractControllerServiceImpl implements PostControllerService {
+class PostControllerServiceImpl extends AbstractControllerServiceImpl implements PostControllerService {
 
     private static Logger LOGGER = Logger.getLogger(PostControllerServiceImpl.class);
 

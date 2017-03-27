@@ -1,12 +1,9 @@
-/**
- *
- */
 package com.fr.enums;
 
 /**
  * Created by: Wail DJENANE on Oct 6, 2016
  */
-public enum RessourceType {
+enum RessourceType {
 
     AVATAR(0), COVER(1);
 
