@@ -16,17 +16,17 @@ import java.util.Optional;
 @Service
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    UserEntity getByEmail(String email);
+    UserEntity getByEmailAndDeletedFalse(String email);
 
-    UserEntity getByTelephone(String telephone);
+    UserEntity getByTelephoneAndDeletedFalse(String telephone);
 
-    UserEntity getByUsername(String username);
+    UserEntity getByUsernameAndDeletedFalse(String username);
 
-    UserEntity getByConfirmationCode(String code);
+    UserEntity getByConfirmationCodeAndDeletedFalse(String code);
 
     UserEntity getByIdAndDeletedFalse(Long id);
 
-    Optional<UserEntity> getByUuid(int id);
+    Optional<UserEntity> getByUuidAndDeletedFalse(int id);
 
     @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
     @Query("SELECT u from UserEntity u WHERE u.username LIKE CONCAT('%',:prefix,'%') OR u.firstName LIKE CONCAT('%',:prefix,'%') OR u.lastName LIKE CONCAT('%',:prefix,'%') ")
@@ -36,4 +36,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u from UserEntity u WHERE (u.firstName LIKE CONCAT('%',:part1,'%') AND u.lastName LIKE CONCAT('%',:part2,'%')) OR (u.firstName LIKE CONCAT('%',:part2,'%') AND u.lastName LIKE CONCAT('%',:part1,'%')) ")
     List<UserEntity> getSearchedUsersByFirstNameAndLastName(@Param("part1") String part1, @Param("part2") String part2, Pageable pageable);
 
+    UserEntity getByRecoverCodeAndDeletedFalse(String code);
 }

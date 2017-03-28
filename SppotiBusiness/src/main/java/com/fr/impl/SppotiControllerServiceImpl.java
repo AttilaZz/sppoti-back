@@ -275,7 +275,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         optional.ifPresent(
                 sm -> {
-                    //update status as sppoti memeber.
+                    //update status as sppoti member.
                     sm.setStatus(GlobalAppStatus.CONFIRMED);
                     SppotiMemberEntity updatedSppoter = sppotiMembersRepository.save(sm);
 

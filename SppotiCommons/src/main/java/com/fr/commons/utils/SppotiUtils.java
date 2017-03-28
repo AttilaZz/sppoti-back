@@ -74,14 +74,13 @@ public class SppotiUtils {
 
     /**
      * @param dateToCheck date to verify.
-     * @param expiryDate  number of days before expiry.
      * @return true if expired.
      */
-    public static boolean isDateExpired(Date dateToCheck, int expiryDate) {
+    public static boolean isDateExpired(Date dateToCheck) {
 
         LocalDate dateToVerify = dateToCheck.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        return dateToVerify.isAfter(LocalDate.now());
+        return !dateToVerify.isAfter(LocalDate.now());
     }
 
     /**

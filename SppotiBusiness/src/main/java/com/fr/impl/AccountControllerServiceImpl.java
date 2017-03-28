@@ -106,13 +106,13 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         roles.add(profile);
         newUser.setRoles(roles);
 
-        if (userRepository.getByEmail(user.getEmail()) != null) {
+        if (userRepository.getByEmailAndDeletedFalse(user.getEmail()) != null) {
             throw new ConflictEmailException("Email already exists");
         }
-//        else if (userRepository.getByTelephone(user.getTelephone()) != null) {
+//        else if (userRepository.getByTelephoneAndDeletedFalse(user.getTelephone()) != null) {
 //            throw new ConflictPhoneException("Phone already exists");
 //        }
-        else if (userRepository.getByUsername(user.getUsername()) != null) {
+        else if (userRepository.getByUsernameAndDeletedFalse(user.getUsername()) != null) {
             throw new ConflictUsernameException("Username already exists");
         } else {
             UserEntity u = userRepository.save(newUser);
@@ -141,11 +141,11 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
     @Override
     public void tryActivateAccount(String code) {
 
-        Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByConfirmationCode(code));
+        Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByConfirmationCodeAndDeletedFalse(code));
 
         optional.ifPresent(u -> {
 
-            if (SppotiUtils.isDateExpired(u.getAccountCreationDate(), daysBeforeExpiration)) {
+            if (SppotiUtils.isDateExpired(u.getAccountCreationDate())) {
                 LOGGER.info("Token expired for user: " + u.getEmail());
                 throw new BusinessGlobalException("Your token has been expired - click here to generate a new token");
             }
@@ -236,7 +236,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
      */
     @Override
     public UserEntity getUserByUsername(String username) {
-        return userRepository.getByUsername(username);
+        return userRepository.getByUsernameAndDeletedFalse(username);
     }
 
     /**
@@ -285,7 +285,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
     @Transactional
     public void sendRecoverAccountEmail(UserDTO userDTO) {
 
-        Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByEmail(userDTO.getEmail()));
+        Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
 
         optional.ifPresent(u -> {
             String code = SppotiUtils.generateConfirmationKey();
@@ -310,11 +310,11 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
     @Transactional
     public void recoverAccount(UserDTO userDTO, String code) {
 
-        Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByConfirmationCode(code));
+        Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByRecoverCodeAndDeletedFalse(code));
 
         optional.ifPresent(u -> {
 
-            if (SppotiUtils.isDateExpired(u.getRecoverCodeCreationDate(), daysBeforeExpiration)) {
+            if (SppotiUtils.isDateExpired(u.getRecoverCodeCreationDate())) {
                 LOGGER.info("Token expired for user: " + u.getEmail());
                 throw new BusinessGlobalException("Your token has been expired");
             }

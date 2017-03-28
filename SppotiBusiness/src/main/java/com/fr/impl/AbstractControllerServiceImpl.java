@@ -202,7 +202,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
     @Override
     public UserEntity getUserByUuId(int id) {
 
-        Optional<UserEntity> usersList = userRepository.getByUuid(id);
+        Optional<UserEntity> usersList = userRepository.getByUuidAndDeletedFalse(id);
 
         return usersList.orElse(null);
 
@@ -251,11 +251,11 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
         String numberRegex = "[0-9]+";
 
         if (username.contains("@")) {
-            return this.userRepository.getByEmail(username);
+            return this.userRepository.getByEmailAndDeletedFalse(username);
         } else if (username.matches(numberRegex)) {
-            return this.userRepository.getByTelephone(username);
+            return this.userRepository.getByTelephoneAndDeletedFalse(username);
         } else {
-            return this.userRepository.getByUsername(username);
+            return this.userRepository.getByUsernameAndDeletedFalse(username);
         }
     }
 
@@ -658,7 +658,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
         for (String username : tags) {
             UserEntity userToNotify;
 
-            userToNotify = userRepository.getByUsername(username);
+            userToNotify = userRepository.getByUsernameAndDeletedFalse(username);
 
             if (userToNotify != null) {
                 if (commentEntity != null) {
