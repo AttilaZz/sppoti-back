@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/account")
-public class AccountValidateController {
+class AccountValidateController {
 
     private Logger LOGGER = Logger.getLogger(AccountValidateController.class);
 
     private AccountControllerService accountControllerService;
 
     @Autowired
-    public void setAccountControllerService(AccountControllerService accountControllerService) {
+    void setAccountControllerService(AccountControllerService accountControllerService) {
         this.accountControllerService = accountControllerService;
     }
 
@@ -33,7 +33,7 @@ public class AccountValidateController {
      * @return 202 status if account enabled.
      */
     @PutMapping(value = "/validate/{code}")
-    public ResponseEntity<Void> confirmUserEmail(@PathVariable("code") String code) {
+    ResponseEntity<Void> confirmUserEmail(@PathVariable("code") String code) {
 
         if (StringUtils.isEmpty(code)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -74,7 +74,7 @@ public class AccountValidateController {
      * @return 200 if email found and email sent.
      */
     @PutMapping("/recover")
-    public ResponseEntity<Void> confirmUserEmail(@RequestBody UserDTO userDTO) {
+    ResponseEntity<Void> confirmUserEmail(@RequestBody UserDTO userDTO) {
 
         if (StringUtils.isEmpty(userDTO.getEmail())) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

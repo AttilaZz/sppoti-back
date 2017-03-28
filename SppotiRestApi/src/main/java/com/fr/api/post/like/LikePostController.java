@@ -22,18 +22,18 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/like")
-public class LikePostController {
+class LikePostController {
 
     private PostControllerService postDataService;
     private LikeControllerService likeControllerService;
 
     @Autowired
-    public void setLikeControllerService(LikeControllerService likeControllerService) {
+    void setLikeControllerService(LikeControllerService likeControllerService) {
         this.likeControllerService = likeControllerService;
     }
 
     @Autowired
-    public void setPostDataService(PostControllerService postDataService) {
+    void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
@@ -42,12 +42,12 @@ public class LikePostController {
     private static final String ATT_USER_ID = "USER_ID";
 
     /**
-     * @param id post id.
+     * @param id      post id.
      * @param request
      * @return Like post
      */
     @PutMapping(value = "/post/{id}")
-    public ResponseEntity<Void> likePost(@PathVariable("id") int id, HttpServletRequest request) {
+    ResponseEntity<Void> likePost(@PathVariable("id") int id, HttpServletRequest request) {
 
         PostEntity postToLike = postDataService.findPost(id);
 
@@ -91,7 +91,6 @@ public class LikePostController {
         }
 
     }
-
 
 
 }

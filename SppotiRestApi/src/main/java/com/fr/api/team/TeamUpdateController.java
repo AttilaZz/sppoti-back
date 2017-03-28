@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/team")
-public class TeamUpdateController {
+class TeamUpdateController {
 
     private TeamControllerService teamControllerService;
     private Logger LOGGER = Logger.getLogger(TeamAddController.class);
 
     @Autowired
-    public void setTeamControllerService(TeamControllerService teamControllerService) {
+    void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
     }
 
@@ -36,7 +36,7 @@ public class TeamUpdateController {
      * @return The updated team.
      */
     @PutMapping("/{teamId}")
-    public ResponseEntity<TeamResponseDTO> updateTeam(@PathVariable int teamId, @RequestBody TeamRequestDTO teamRequestDTO, Authentication authentication) {
+    ResponseEntity<TeamResponseDTO> updateTeam(@PathVariable int teamId, @RequestBody TeamRequestDTO teamRequestDTO, Authentication authentication) {
 
         boolean canUpdate = false;
 

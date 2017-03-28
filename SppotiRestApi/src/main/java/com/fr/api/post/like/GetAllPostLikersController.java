@@ -22,18 +22,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/like")
-public class GetAllPostLikersController {
+class GetAllPostLikersController {
 
     private PostControllerService postDataService;
     private LikeControllerService likeControllerService;
 
     @Autowired
-    public void setLikeControllerService(LikeControllerService likeControllerService) {
+    void setLikeControllerService(LikeControllerService likeControllerService) {
         this.likeControllerService = likeControllerService;
     }
 
     @Autowired
-    public void setPostDataService(PostControllerService postDataService) {
+    void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
@@ -45,7 +45,7 @@ public class GetAllPostLikersController {
      * @return list of people who liked the post.
      */
     @GetMapping(value = "/post/{id}/{page}")
-    public ResponseEntity<PostResponseDTO> getPostLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
+    ResponseEntity<PostResponseDTO> getPostLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
 
         PostEntity currentPost = postDataService.findPost(id);
 

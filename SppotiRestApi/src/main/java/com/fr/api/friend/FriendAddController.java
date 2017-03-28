@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/friend")
-public class FriendAddController {
+class FriendAddController {
 
 
     private static final String ATT_USER_ID = "USER_ID";
@@ -32,17 +32,17 @@ public class FriendAddController {
     private FriendControllerService friendControllerService;
 
     @Autowired
-    public void setFriendControllerService(FriendControllerService friendControllerService) {
+    void setFriendControllerService(FriendControllerService friendControllerService) {
         this.friendControllerService = friendControllerService;
     }
 
     /**
-     * @param user friend to add.
+     * @param user    friend to add.
      * @param request spring secu object.
      * @return created friend.
      */
     @PostMapping
-    public ResponseEntity<Object> addFriend(@RequestBody UserDTO user, HttpServletRequest request) {
+    ResponseEntity<Object> addFriend(@RequestBody UserDTO user, HttpServletRequest request) {
 
         /*
         Chekck received data

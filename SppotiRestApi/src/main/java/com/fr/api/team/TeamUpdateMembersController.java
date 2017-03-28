@@ -1,12 +1,11 @@
 package com.fr.api.team;
 
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
-import com.fr.commons.dto.UserDTO;
 import com.fr.models.GlobalAppStatus;
-import com.fr.api.sppoti.SppotiAddController;
-import com.fr.service.TeamControllerService;
 import com.fr.security.AccountUserDetails;
+import com.fr.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,16 +19,16 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/team/{teamId}/member")
-public class TeamUpdateMembersController {
+ class TeamUpdateMembersController {
 
     private TeamControllerService teamControllerService;
 
     @Autowired
-    public void setTeamControllerService(TeamControllerService teamControllerService) {
+     void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
     }
 
-    private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
+    private Logger LOGGER = Logger.getLogger(TeamUpdateMembersController.class);
 
     /**
      * Accept/Refuse team information.
@@ -39,7 +38,7 @@ public class TeamUpdateMembersController {
      * @return The updated member information.
      */
     @PutMapping("/{memberId}")
-    public ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamRequestDTO teamDto) {
+     ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamRequestDTO teamDto) {
 
         boolean canUpdate = false;
 
@@ -79,7 +78,7 @@ public class TeamUpdateMembersController {
      * @return 202 status if captain updated.
      */
     @PutMapping("/captain/{memberId}")
-    public ResponseEntity<TeamResponseDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
+     ResponseEntity<TeamResponseDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
@@ -95,7 +94,7 @@ public class TeamUpdateMembersController {
      * @return 200 status if memeber has been added
      */
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> deleteMember(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
+     ResponseEntity<Void> deleteMember(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
@@ -111,7 +110,7 @@ public class TeamUpdateMembersController {
      * @return 201 status if memeber has been added.
      */
     @PostMapping
-    public ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody UserDTO user) {
+     ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody UserDTO user) {
 
         if (user.getId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

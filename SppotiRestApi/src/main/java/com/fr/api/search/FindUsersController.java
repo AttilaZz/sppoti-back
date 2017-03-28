@@ -27,7 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/find/users")
-public class FindUsersController {
+class FindUsersController {
 
     @Value("${key.friendShipPerPage}")
     private int friend_size;
@@ -38,20 +38,19 @@ public class FindUsersController {
     private Logger LOGGER = Logger.getLogger(FindUsersController.class);
 
     @Autowired
-    public FindUsersController(UserRepository userRepository, AccountControllerService accountControllerService) {
+    FindUsersController(UserRepository userRepository, AccountControllerService accountControllerService) {
         this.userRepository = userRepository;
         this.accountControllerService = accountControllerService;
     }
 
     /**
-     * @param userPrefix
-     * @param page
-     * @param request
+     * @param userPrefix user prefix to find.
+     * @param page page number.
      * @return List of all users containing the STRING in request
      */
     @GetMapping(value = "/{user}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<UserDTO>> searchUser(@PathVariable("user") String userPrefix,
-                                                    @PathVariable("page") int page, HttpServletRequest request) {
+    ResponseEntity<List<UserDTO>> searchUser(@PathVariable("user") String userPrefix,
+                                             @PathVariable("page") int page) {
 
         //TODO: move implementation to CORE MODULE
 

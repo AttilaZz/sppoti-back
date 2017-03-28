@@ -20,18 +20,18 @@ import com.fr.commons.dto.demo.Result;
  */
 
 @Controller
-public class WebSocketController {
+class WebSocketController {
 
     @MessageMapping("/add")
     @SendTo("/topic/showResult")
-    public Result addNum(CalcInput input) throws Exception {
+    Result addNum(CalcInput input) throws Exception {
         Thread.sleep(1000);
         return new Result(input.getNum1() + "+" + input.getNum2() + "=" + (input.getNum1() + input.getNum2()));
     }
 
     @MessageMapping("/trade")
     @SendToUser("/queue/position-updates")
-    public Result executeTrade(Message input, Principal principal) throws InterruptedException {
+    Result executeTrade(Message input, Principal principal) throws InterruptedException {
         // ...
         Thread.sleep(1000);
         Result result = new Result(input.getValue());
@@ -41,19 +41,20 @@ public class WebSocketController {
 
     // @MessageExceptionHandler
     // @SendToUser(destinations = "/queue/errors", broadcast = false)
-    // public ApplicationError handleException(MyBusinessException exception) {
+    //  ApplicationError handleException(MyBusinessException exception) {
     // // ...
     // return appError;
     // }
 
     @RequestMapping("/start")
-    public String start() {
+    String start() {
         return "start";
     }
 
     @MessageMapping("/search")
-    @SendToUser // <- maps to "/user/queue/search"
-    public String search(@Payload String xxx) {
+    @SendToUser
+        // <- maps to "/user/queue/search"
+    String search(@Payload String xxx) {
         return "TEST1234";
     }
 
@@ -62,7 +63,7 @@ public class WebSocketController {
 
         private String message;
 
-        public String getValue() {
+        String getValue() {
             return message;
         }
 

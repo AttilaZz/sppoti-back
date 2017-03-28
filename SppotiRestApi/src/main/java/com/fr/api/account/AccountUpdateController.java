@@ -18,19 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/account")
-public class AccountUpdateController {
+class AccountUpdateController {
 
     private Logger LOGGER = Logger.getLogger(AccountUpdateController.class);
 
     private AccountControllerService accountControllerService;
 
     @Autowired
-    public void setAccountControllerService(AccountControllerService accountControllerService) {
+    void setAccountControllerService(AccountControllerService accountControllerService) {
         this.accountControllerService = accountControllerService;
     }
 
     @PutMapping
-    public ResponseEntity<UserDTO> editUserInfo(@RequestBody UserDTO user) {
+    ResponseEntity<UserDTO> editUserInfo(@RequestBody UserDTO user) {
 
         boolean update = false;
 

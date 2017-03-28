@@ -26,7 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/find/friends")
-public class FindFriendController {
+class FindFriendController {
 
 
     @Value("${key.friendShipPerPage}")
@@ -39,19 +39,19 @@ public class FindFriendController {
     private Logger LOGGER = Logger.getLogger(FindFriendController.class);
 
     @Autowired
-    public FindFriendController(FriendShipRepository friendShipRepository, AccountControllerService accountControllerService) {
+    FindFriendController(FriendShipRepository friendShipRepository, AccountControllerService accountControllerService) {
         this.friendShipRepository = friendShipRepository;
         this.accountControllerService = accountControllerService;
     }
 
     /**
-     * @param userPrefix
-     * @param page
+     * @param userPrefix user prefix to search.
+     * @param page page number.
      * @return All confirmed friends of connected user
      */
     @GetMapping(value = "/{motif}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<UserDTO>> searchConfimedFriend(@PathVariable("motif") String userPrefix,
-                                                              @PathVariable("page") int page) {
+    ResponseEntity<List<UserDTO>> searchConfimedFriend(@PathVariable("motif") String userPrefix,
+                                                       @PathVariable("page") int page) {
 
 
         if (userPrefix.isEmpty()) {

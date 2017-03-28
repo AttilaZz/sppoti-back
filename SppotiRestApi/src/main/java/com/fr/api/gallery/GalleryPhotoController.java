@@ -19,23 +19,23 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/gallery/photo/{userId}")
-public class GalleryPhotoController {
+class GalleryPhotoController {
 
     private PostControllerService postControllerService;
 
     @Autowired
-    public void setPostControllerService(PostControllerService postControllerService) {
+    void setPostControllerService(PostControllerService postControllerService) {
         this.postControllerService = postControllerService;
     }
 
     private Logger LOGGER = Logger.getLogger(GalleryPhotoController.class);
 
     /**
-     * @param page    page number.
+     * @param page page number.
      * @return List of all photos posted by a user.
      */
     @GetMapping(value = "/{page}")
-    public ResponseEntity<List<PostResponseDTO>> photoGallery(@PathVariable int page, @PathVariable int userId) {
+    ResponseEntity<List<PostResponseDTO>> photoGallery(@PathVariable int page, @PathVariable int userId) {
 
         List<PostResponseDTO> photoGallery = postControllerService.getPhotoGallery(userId, page);
 

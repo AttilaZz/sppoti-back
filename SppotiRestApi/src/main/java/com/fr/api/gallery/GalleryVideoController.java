@@ -18,11 +18,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/gallery/video/{userId}")
-public class GalleryVideoController {
+class GalleryVideoController {
     private PostControllerService postControllerService;
 
     @Autowired
-    public void setPostControllerService(PostControllerService postControllerService) {
+    void setPostControllerService(PostControllerService postControllerService) {
         this.postControllerService = postControllerService;
     }
 
@@ -34,7 +34,7 @@ public class GalleryVideoController {
      * @return all videos posted by user.
      */
     @GetMapping(value = "/{page}")
-    public ResponseEntity<List<PostResponseDTO>> videoGallery(@PathVariable int page, @PathVariable int userId) {
+    ResponseEntity<List<PostResponseDTO>> videoGallery(@PathVariable int page, @PathVariable int userId) {
 
         List<PostResponseDTO> videoGallery = postControllerService.getVideoGallery(userId, page);
 

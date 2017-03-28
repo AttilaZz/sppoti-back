@@ -30,7 +30,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/friend")
-public class FriendGetController {
+class FriendGetController {
 
     private Logger LOGGER = Logger.getLogger(FriendGetController.class);
 
@@ -39,12 +39,12 @@ public class FriendGetController {
     private FriendControllerService friendControllerService;
 
     @Autowired
-    public void setFriendControllerService(FriendControllerService friendControllerService) {
+    void setFriendControllerService(FriendControllerService friendControllerService) {
         this.friendControllerService = friendControllerService;
     }
 
     @Autowired
-    public void setAccountControllerService(AccountControllerService accountControllerService) {
+    void setAccountControllerService(AccountControllerService accountControllerService) {
         this.accountControllerService = accountControllerService;
     }
 
@@ -52,12 +52,12 @@ public class FriendGetController {
     private int friend_list_size;
 
     /**
-     * @param userId         connected user id.
-     * @param page           page number.
+     * @param userId connected user id.
+     * @param page   page number.
      * @return confirmed friend list.
      */
     @GetMapping("/confirmed/{userId}/{page}")
-    public ResponseEntity<List<UserDTO>> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page) {
+    ResponseEntity<List<UserDTO>> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page) {
 
         List<UserDTO> friendList = friendControllerService.getConfirmedFriendList(userId, page);
 
@@ -73,7 +73,7 @@ public class FriendGetController {
      * @return all refused friend requests.
      */
     @GetMapping("/refused/{userId}/{page}")
-    public ResponseEntity<FriendResponseDTO> getRefusedFriendList(@PathVariable int userId, @PathVariable int page, Authentication authentication) {
+    ResponseEntity<FriendResponseDTO> getRefusedFriendList(@PathVariable int userId, @PathVariable int page, Authentication authentication) {
 
         Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity connectedUser = friendControllerService.getUserById(connected_user);
@@ -102,7 +102,7 @@ public class FriendGetController {
      * @return all pending requests.
      */
     @GetMapping("/pending/sent/{page}")
-    public ResponseEntity<FriendResponseDTO> getSentPendingFriendList(@PathVariable int page, Authentication authentication) {
+    ResponseEntity<FriendResponseDTO> getSentPendingFriendList(@PathVariable int page, Authentication authentication) {
 
         Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity connectedUser = friendControllerService.getUserById(connected_user);
@@ -129,7 +129,7 @@ public class FriendGetController {
      * @return all friend pending requests.
      */
     @GetMapping("/pending/received/{page}")
-    public ResponseEntity<FriendResponseDTO> getReceivedPendingFriendList(@PathVariable int page, Authentication authentication) {
+    ResponseEntity<FriendResponseDTO> getReceivedPendingFriendList(@PathVariable int page, Authentication authentication) {
 
         Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity connectedUser = friendControllerService.getUserById(connected_user);
@@ -161,9 +161,9 @@ public class FriendGetController {
         for (FriendShipEntity friendShip : friendShips) {
             UserEntity user;
 
-            if(friendShip.getFriend().getId().equals(connectedUser)){
+            if (friendShip.getFriend().getId().equals(connectedUser)) {
                 user = friendShip.getUser();
-            }else {
+            } else {
                 user = friendShip.getFriend();
             }
 

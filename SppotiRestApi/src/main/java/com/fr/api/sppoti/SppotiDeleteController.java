@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/sppoti")
-public class SppotiDeleteController {
+class SppotiDeleteController {
 }

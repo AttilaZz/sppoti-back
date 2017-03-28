@@ -21,13 +21,13 @@ import javax.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/sppoti")
-public class SppotiUpdateController {
+class SppotiUpdateController {
 
 
     private SppotiControllerService sppotiControllerService;
 
     @Autowired
-    public void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
+    void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
         this.sppotiControllerService = sppotiControllerService;
     }
 
@@ -40,17 +40,18 @@ public class SppotiUpdateController {
      * @return 200 status with the updated sppoti, 400 status otherwise.
      */
     @PutMapping("/{sppotiId}")
-    public ResponseEntity<SppotiResponseDTO> updateSppoti(@PathVariable int sppotiId, @RequestBody SppotiRequestDTO sppotiRequest, Authentication authentication) {
+    ResponseEntity<SppotiResponseDTO> updateSppoti(@PathVariable int sppotiId, @RequestBody SppotiRequestDTO sppotiRequest,
+                                                   Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
         //throws exception if user is not the sppoti admin
         try {
             sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId());
-        }catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             LOGGER.error("Sppoti not found", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }catch (NotAdminException e){
+        } catch (NotAdminException e) {
             LOGGER.error("Acceess denied, u're not the sppoti admin");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
@@ -109,7 +110,9 @@ public class SppotiUpdateController {
      * @return All sppoti with updated status.
      */
     @PutMapping("/challenge/{sppotiId}/{response}")
-    public ResponseEntity<SppotiResponseDTO> updateTeamAdverseChallengeStatus(@PathVariable("response") int adverseTeamResponseStatus, @PathVariable int sppotiId) {
+    ResponseEntity<SppotiResponseDTO> updateTeamAdverseChallengeStatus(@PathVariable("response")
+                                                                               int adverseTeamResponseStatus,
+                                                                       @PathVariable int sppotiId) {
 
         if (adverseTeamResponseStatus != 4 && adverseTeamResponseStatus != 5) {
             LOGGER.error("Accepted status are 4 && 5: found:" + adverseTeamResponseStatus);
@@ -118,7 +121,8 @@ public class SppotiUpdateController {
 
         SppotiResponseDTO sppotiResponseDTO;
         try {
-            sppotiResponseDTO = sppotiControllerService.updateTeamAdverseChallengeStatus(sppotiId, adverseTeamResponseStatus);
+            sppotiResponseDTO = sppotiControllerService.updateTeamAdverseChallengeStatus(sppotiId,
+                    adverseTeamResponseStatus);
         } catch (NoRightToAcceptOrRefuseChallenge e) {
             LOGGER.error("User must be the admin to update status, sppoti sppotiId: " + sppotiId, e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -128,18 +132,18 @@ public class SppotiUpdateController {
     }
 
     /**
-     *
      * @param sppotiId id of the challenged sppoti.
-     * @param teamId team id to add in the challenge.
+     * @param teamId   team id to add in the challenge.
      */
     @PutMapping("/challenge/send/{sppotiId}/{teamId}")
-    public ResponseEntity<SppotiResponseDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId, Authentication authentication) {
+    ResponseEntity<SppotiResponseDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId,
+                                                    Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
-        try{
+        try {
             sppotiControllerService.sendChallenge(sppotiId, teamId, accountUserDetails.getId());
-        }catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             LOGGER.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

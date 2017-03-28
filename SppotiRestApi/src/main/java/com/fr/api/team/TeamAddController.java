@@ -24,13 +24,13 @@ import javax.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/team")
-public class TeamAddController {
+class TeamAddController {
 
     private TeamControllerService teamControllerService;
     private Logger LOGGER = Logger.getLogger(TeamAddController.class);
 
     @Autowired
-    public void setTeamControllerService(TeamControllerService teamControllerService) {
+    void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
     }
 
@@ -42,7 +42,7 @@ public class TeamAddController {
      * @return Created team data
      */
     @PostMapping
-    public ResponseEntity<TeamResponseDTO> createTeam(@RequestBody TeamRequestDTO team, Authentication authentication) {
+    ResponseEntity<TeamResponseDTO> createTeam(@RequestBody TeamRequestDTO team, Authentication authentication) {
 
         if (StringUtils.isEmpty(team.getName())) {
             LOGGER.error("TeamEntity (name) not found");

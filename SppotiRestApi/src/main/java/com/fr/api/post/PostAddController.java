@@ -25,12 +25,12 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/post")
-public class PostAddController {
+ class PostAddController {
 
     private PostControllerService postDataService;
 
     @Autowired
-    public void setPostDataService(PostControllerService postDataService) {
+     void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
@@ -47,7 +47,7 @@ public class PostAddController {
      */
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-    public ResponseEntity<PostResponseDTO> addPost(@RequestBody PostRequestDTO newPostReq, HttpServletRequest request) {
+     ResponseEntity<PostResponseDTO> addPost(@RequestBody PostRequestDTO newPostReq, HttpServletRequest request) {
 
         // get current logged user
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);

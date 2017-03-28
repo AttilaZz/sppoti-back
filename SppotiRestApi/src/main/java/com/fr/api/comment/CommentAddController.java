@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/comment")
-public class CommentAddController {
+class CommentAddController {
 
     private static final String ATT_USER_ID = "USER_ID";
     private Logger LOGGER = Logger.getLogger(CommentAddController.class);
@@ -28,12 +28,12 @@ public class CommentAddController {
     private CommentControllerService commentDataService;
 
     @Autowired
-    public void setCommentDataService(CommentControllerService commentDataService) {
+    void setCommentDataService(CommentControllerService commentDataService) {
         this.commentDataService = commentDataService;
     }
 
     @PostMapping
-    public ResponseEntity<CommentDTO> addComment(@RequestBody CommentDTO newComment, HttpServletRequest request) {
+    ResponseEntity<CommentDTO> addComment(@RequestBody CommentDTO newComment, HttpServletRequest request) {
 
         CommentEntity commentEntityToSave = new CommentEntity();
 

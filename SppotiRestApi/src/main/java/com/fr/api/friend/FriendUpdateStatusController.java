@@ -21,23 +21,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/friend")
-public class FriendUpdateStatusController {
+class FriendUpdateStatusController {
 
     private Logger LOGGER = Logger.getLogger(FriendUpdateStatusController.class);
     private FriendControllerService friendControllerService;
 
     @Autowired
-    public void setFriendControllerService(FriendControllerService friendControllerService) {
+    void setFriendControllerService(FriendControllerService friendControllerService) {
         this.friendControllerService = friendControllerService;
     }
 
     /**
-     * @param user friend id.
+     * @param user           friend id.
      * @param authentication spring auth.
      * @return 200 http status if updated, 400 otherwise
      */
     @PutMapping
-    public ResponseEntity updateFriend(@RequestBody UserDTO user, Authentication authentication) {
+    ResponseEntity updateFriend(@RequestBody UserDTO user, Authentication authentication) {
 
         Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/message/draft")
-public class MessageDraftController {
+class MessageDraftController {
 
 //    @Autowired
 //    private MessageControllerService messageControllerService;
@@ -22,7 +22,7 @@ public class MessageDraftController {
 //    // private static final String ATT_USER_ID = "USER_ID";
 //
 //    @RequestMapping(value = "/update/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<MessageEntity> updateUser(@PathVariable("id") Long id, @RequestBody
+//     ResponseEntity<MessageEntity> updateUser(@PathVariable("id") Long id, @RequestBody
 //            MessageEntity newMsg) {
 //
 //        if (id > 0) {

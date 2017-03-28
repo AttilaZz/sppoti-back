@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/account")
-public class AccountGetController {
+class AccountGetController {
 
     private Logger LOGGER = Logger.getLogger(AccountGetController.class);
     private static final String ATT_USER_ID = "USER_ID";
@@ -32,13 +32,13 @@ public class AccountGetController {
     private AccountControllerService accountControllerService;
 
     @Autowired
-    public void setAccountControllerService(AccountControllerService accountControllerService) {
+    void setAccountControllerService(AccountControllerService accountControllerService) {
         this.accountControllerService = accountControllerService;
     }
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<UserDTO> connectedUserInfo(Authentication authentication) {
+    ResponseEntity<UserDTO> connectedUserInfo(Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
         UserEntity targetUser = accountControllerService.getUserById(accountUserDetails.getId());
@@ -51,7 +51,7 @@ public class AccountGetController {
 
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/other/{username}/**")
-    public ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") String username, HttpServletRequest request) {
+    ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") String username, HttpServletRequest request) {
 
 //        String path = (String) httpServletRequest.getAttribute(
 //                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);

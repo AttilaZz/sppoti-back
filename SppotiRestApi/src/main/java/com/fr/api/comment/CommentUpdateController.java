@@ -17,19 +17,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/comment")
-public class CommentUpdateController {
+class CommentUpdateController {
 
     private CommentControllerService commentDataService;
 
     @Autowired
-    public void setCommentDataService(CommentControllerService commentDataService) {
+    void setCommentDataService(CommentControllerService commentDataService) {
         this.commentDataService = commentDataService;
     }
 
     private Logger LOGGER = Logger.getLogger(CommentUpdateController.class);
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CommentDTO> updateComment(@PathVariable int id, @RequestBody CommentDTO newComment) {
+    ResponseEntity<CommentDTO> updateComment(@PathVariable int id, @RequestBody CommentDTO newComment) {
 
         CommentEntity commentEntityToEdit = commentDataService.findComment(id);
 

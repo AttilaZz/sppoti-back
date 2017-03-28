@@ -20,13 +20,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/comment")
-public class CommentGetHistoryController {
+ class CommentGetHistoryController {
 
     private Logger LOGGER = Logger.getLogger(CommentGetHistoryController.class);
     private CommentControllerService commentDataService;
 
     @Autowired
-    public void setCommentDataService(CommentControllerService commentDataService) {
+     void setCommentDataService(CommentControllerService commentDataService) {
         this.commentDataService = commentDataService;
     }
 
@@ -37,7 +37,7 @@ public class CommentGetHistoryController {
      * @return List of like DTO
      */
     @GetMapping("/history/{id}/{page}")
-    public ResponseEntity<List<ContentEditedResponseDTO>> getAllCommentModification(@PathVariable int id, @PathVariable int page, HttpServletRequest httpServletRequest) {
+     ResponseEntity<List<ContentEditedResponseDTO>> getAllCommentModification(@PathVariable int id, @PathVariable int page, HttpServletRequest httpServletRequest) {
 
         List<ContentEditedResponseDTO> commentModelList = commentDataService.getAllCommentHistory(id, page);
 

@@ -23,12 +23,12 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/post")
-public class PostController {
+class PostController {
 
     private PostControllerService postDataService;
 
     @Autowired
-    public void setPostDataService(PostControllerService postDataService) {
+    void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
@@ -36,12 +36,12 @@ public class PostController {
     private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
     /**
-     * @param postId  post postId.
+     * @param postId         post postId.
      * @param authentication auth object.
      * @return all post details.
      */
     @GetMapping(value = "/{postId}")
-    public ResponseEntity<PostResponseDTO> detailsPost(@PathVariable int postId, Authentication authentication) {
+    ResponseEntity<PostResponseDTO> detailsPost(@PathVariable int postId, Authentication authentication) {
 
         Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 
@@ -53,7 +53,7 @@ public class PostController {
     }
 
     @GetMapping(value = "/all/{user_unique_id}/{page}")
-    public ResponseEntity<List<PostResponseDTO>> getAllPosts(@PathVariable int user_unique_id, @PathVariable int page, HttpServletRequest request, Authentication authentication) {
+    ResponseEntity<List<PostResponseDTO>> getAllPosts(@PathVariable int user_unique_id, @PathVariable int page, HttpServletRequest request, Authentication authentication) {
 
         //if user_unique_id is the connected user
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
@@ -103,8 +103,8 @@ public class PostController {
      * @return Update post data.
      */
     @PutMapping(value = "/{postId}")
-    public ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("postId") int postId,
-                                                               @RequestBody ContentEditedResponseDTO newData) {
+    ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("postId") int postId,
+                                                        @RequestBody ContentEditedResponseDTO newData) {
 
         PostEntity postToEdit = postDataService.findPost(postId);
 
@@ -192,7 +192,7 @@ public class PostController {
      * @return List of post history edition.
      */
     @GetMapping(value = "/history/{postId}/{page}")
-    public ResponseEntity<List<ContentEditedResponseDTO>> getPostHistory(@PathVariable int postId, @PathVariable int page) {
+    ResponseEntity<List<ContentEditedResponseDTO>> getPostHistory(@PathVariable int postId, @PathVariable int page) {
 
         List<ContentEditedResponseDTO> contentEditedResponseDTOs = postDataService.getAllPostHistory(postId, page);
 
@@ -207,7 +207,7 @@ public class PostController {
      * @return 202 status if visibility has been edited.
      */
     @PutMapping(value = "/{postId}/{visibility}")
-    public ResponseEntity<Void> editVisibility(@PathVariable int id, @PathVariable int visibility) {
+    ResponseEntity<Void> editVisibility(@PathVariable int id, @PathVariable int visibility) {
 
         try {
             postDataService.editPostVisibility(id, visibility);

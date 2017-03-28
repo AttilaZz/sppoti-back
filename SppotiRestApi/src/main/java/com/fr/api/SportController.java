@@ -17,13 +17,13 @@ import java.util.List;
  */
 
 @RestController
-public class SportController {
+class SportController {
 
     @Autowired
     private SportControllerService sportService;
 
     @GetMapping(value = "/sport/all")
-    public ResponseEntity<Object> getAllSports() {
+    ResponseEntity<Object> getAllSports() {
 
         List<SportEntity> allSports = sportService.getAllSports();
 
@@ -37,7 +37,7 @@ public class SportController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(value = "/sport")
-    public ResponseEntity<Object> addSports() {
+    ResponseEntity<Object> addSports() {
 
         return new ResponseEntity<>(HttpStatus.OK);
 

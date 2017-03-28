@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/messages")
-public class MessageController {
+class MessageController {
 
    /* private final MessageControllerService messageControllerService;
 
@@ -17,12 +17,12 @@ public class MessageController {
     private static final String ATT_USER_ID = "USER_ID";
 
     @Autowired
-    public MessageController(MessageControllerService messageControllerService) {
+     MessageController(MessageControllerService messageControllerService) {
         this.messageControllerService = messageControllerService;
     }
 
     @RequestMapping(value = "/sent/{bottomMajId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MessageRequestDTO> getSentMessages(@PathVariable("bottomMajId") int bottomMajId,
+     ResponseEntity<MessageRequestDTO> getSentMessages(@PathVariable("bottomMajId") int bottomMajId,
                                                              HttpServletRequest request) {
 
         MessageRequestDTO response = new MessageRequestDTO();
@@ -46,7 +46,7 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/received/{bottomMajId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MessageRequestDTO> getReceivedMessages(@PathVariable("bottomMajId") int bottomMajId,
+     ResponseEntity<MessageRequestDTO> getReceivedMessages(@PathVariable("bottomMajId") int bottomMajId,
                                                                  HttpServletRequest request) {
 
         MessageRequestDTO response = new MessageRequestDTO();
@@ -70,7 +70,7 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/send", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<MessageEntity> addPost(@RequestBody MessageRequestDTO newMessage, UriComponentsBuilder ucBuilder,
+     ResponseEntity<MessageEntity> addPost(@RequestBody MessageRequestDTO newMessage, UriComponentsBuilder ucBuilder,
                                                  HttpServletRequest request) {
 
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
@@ -103,7 +103,7 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
+     ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
 
         // bad argument parameter
         if (id < 1) {

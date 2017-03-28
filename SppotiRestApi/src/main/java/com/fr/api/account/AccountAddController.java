@@ -19,25 +19,24 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping(value = "/account")
-public class AccountAddController {
+class AccountAddController {
 
     private Logger LOGGER = Logger.getLogger(AccountAddController.class);
 
     private AccountControllerService accountControllerService;
 
     @Autowired
-    public void setAccountControllerService(AccountControllerService accountControllerService) {
+    void setAccountControllerService(AccountControllerService accountControllerService) {
         this.accountControllerService = accountControllerService;
     }
 
     /**
-     *
      * @param user user to add.
      * @return http status 201 if created, ...
      */
     @PostMapping(value = "/create")
     @ResponseBody
-    public ResponseEntity createUser(@RequestBody @Valid SignUpRequestDTO user) {
+    ResponseEntity createUser(@RequestBody @Valid SignUpRequestDTO user) {
 
         try {
             accountControllerService.saveNewUser(user);

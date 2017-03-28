@@ -17,24 +17,24 @@ import javax.persistence.EntityNotFoundException;
  */
 @RestController
 @RequestMapping("/notification/{userId}")
-public class NotificationController {
+class NotificationController {
 
     private Logger LOGGER = Logger.getLogger(NotificationController.class);
 
     private NotificationControllerService notificationControllerService;
 
     @Autowired
-    public void setNotificationControllerService(NotificationControllerService notificationControllerService) {
+    void setNotificationControllerService(NotificationControllerService notificationControllerService) {
         this.notificationControllerService = notificationControllerService;
     }
 
     /**
      * @param userId user id.
-     * @param page number.
+     * @param page   number.
      * @return all unread user notifications.
      */
     @GetMapping("/{page}")
-    public ResponseEntity<NotificationResponseDTO> getAllUserNotifications(@PathVariable int userId, @PathVariable int page) {
+    ResponseEntity<NotificationResponseDTO> getAllUserNotifications(@PathVariable int userId, @PathVariable int page) {
 
         NotificationResponseDTO notificationResponseDTO = notificationControllerService.getAllReceivedNotifications(userId, page);
 
@@ -52,7 +52,7 @@ public class NotificationController {
      * @return 200 http status if notif were updated, 404 http status if notif not found, 500 http status otherwise.
      */
     @PutMapping("/{notifId}")
-    public ResponseEntity<Void> openNotification(@PathVariable int notifId, Authentication authentication) {
+    ResponseEntity<Void> openNotification(@PathVariable int notifId, Authentication authentication) {
 
         Long connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 

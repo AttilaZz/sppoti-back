@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sppoti")
-public class SppotiAddController {
+class SppotiAddController {
 
     private SppotiControllerService sppotiControllerService;
 
     @Autowired
-    public void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
+    void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
         this.sppotiControllerService = sppotiControllerService;
     }
 
@@ -31,7 +31,7 @@ public class SppotiAddController {
      * @return 201 status && SppotiEntity object with the inserted data, 400 status otherwise.
      */
     @PostMapping
-    public ResponseEntity<SppotiResponseDTO> addPost(@RequestBody SppotiRequestDTO newSppoti) {
+    ResponseEntity<SppotiResponseDTO> addPost(@RequestBody SppotiRequestDTO newSppoti) {
 
         if (newSppoti.getAddress() == null || newSppoti.getAddress().isEmpty()) {
             LOGGER.error("AddressEntity not found");
@@ -73,7 +73,7 @@ public class SppotiAddController {
      * @return 200 status if deleted, 400 status otherwise.
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteSppoti(@PathVariable int id) {
+    ResponseEntity deleteSppoti(@PathVariable int id) {
 
         try {
             sppotiControllerService.deleteSppoti(id);

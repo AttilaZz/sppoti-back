@@ -22,24 +22,24 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/like")
-public class UnlikeCommentController {
+class UnlikeCommentController {
 
     private PostControllerService postDataService;
     private CommentControllerService commentControllerService;
     private LikeControllerService likeControllerService;
 
     @Autowired
-    public void setLikeControllerService(LikeControllerService likeControllerService) {
+    void setLikeControllerService(LikeControllerService likeControllerService) {
         this.likeControllerService = likeControllerService;
     }
 
     @Autowired
-    public void setCommentControllerService(CommentControllerService commentControllerService) {
+    void setCommentControllerService(CommentControllerService commentControllerService) {
         this.commentControllerService = commentControllerService;
     }
 
     @Autowired
-    public void setPostDataService(PostControllerService postDataService) {
+    void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
@@ -54,7 +54,7 @@ public class UnlikeCommentController {
      * @return 200 status if comment has been unliked or 404 if not.
      */
     @DeleteMapping(value = "/comment/{id}")
-    public ResponseEntity<Void> unLikeComment(@PathVariable("id") int id, HttpServletRequest request) {
+    ResponseEntity<Void> unLikeComment(@PathVariable("id") int id, HttpServletRequest request) {
 
         CommentEntity commentEntityToLike = commentControllerService.findComment(id);
 

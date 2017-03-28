@@ -23,24 +23,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/like")
-public class GetAllCommentLikesController {
+class GetAllCommentLikesController {
 
     private PostControllerService postDataService;
     private CommentControllerService commentControllerService;
     private LikeControllerService likeControllerService;
 
     @Autowired
-    public void setLikeControllerService(LikeControllerService likeControllerService) {
+    void setLikeControllerService(LikeControllerService likeControllerService) {
         this.likeControllerService = likeControllerService;
     }
 
     @Autowired
-    public void setCommentControllerService(CommentControllerService commentControllerService) {
+    void setCommentControllerService(CommentControllerService commentControllerService) {
         this.commentControllerService = commentControllerService;
     }
 
     @Autowired
-    public void setPostDataService(PostControllerService postDataService) {
+    void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
@@ -50,12 +50,12 @@ public class GetAllCommentLikesController {
 
 
     /**
-     * @param id comment id.
+     * @param id   comment id.
      * @param page page number.
      * @return list of likers for a comment
      */
     @GetMapping(value = "/comment/{id}/{page}")
-    public ResponseEntity<PostResponseDTO> getCommentLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
+    ResponseEntity<PostResponseDTO> getCommentLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
 
         CommentEntity currentCommentEntity = commentControllerService.findComment(id);
 

@@ -18,19 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/comment")
-public class CommentDeleteController {
+ class CommentDeleteController {
 
     private Logger LOGGER = Logger.getLogger(CommentDeleteController.class);
 
     private CommentControllerService commentDataService;
 
     @Autowired
-    public void setCommentDataService(CommentControllerService commentDataService) {
+     void setCommentDataService(CommentControllerService commentDataService) {
         this.commentDataService = commentDataService;
     }
 
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable("commentId") int id, Authentication authentication) {
+     ResponseEntity<Void> deleteComment(@PathVariable("commentId") int id, Authentication authentication) {
 
 
         CommentEntity commentEntityToDelete = commentDataService.findComment(id);

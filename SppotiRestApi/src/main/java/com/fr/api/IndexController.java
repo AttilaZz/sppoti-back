@@ -16,7 +16,7 @@ import java.nio.file.Paths;
  * Created by: Wail DJENANE On June 01, 2016
  */
 @Controller
-public class IndexController {
+class IndexController {
 
 
     //Save the uploaded file to this folder
@@ -25,12 +25,12 @@ public class IndexController {
     private static Logger LOGGER = Logger.getLogger(IndexController.class);
 
 //    @GetMapping(value = {"/", "/login"})
-//    public String homePage() {
+//     String homePage() {
 //        return "index";
 //    }
 
     @PostMapping("/upload")
-    public ResponseEntity handleFileUpload(@RequestParam("file") MultipartFile file) {
+    ResponseEntity handleFileUpload(@RequestParam("file") MultipartFile file) {
 
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Please select a file to upload");

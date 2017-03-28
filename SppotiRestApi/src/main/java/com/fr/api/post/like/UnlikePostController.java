@@ -23,18 +23,18 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/like")
-public class UnlikePostController {
+class UnlikePostController {
 
     private PostControllerService postDataService;
     private LikeControllerService likeControllerService;
 
     @Autowired
-    public void setLikeControllerService(LikeControllerService likeControllerService) {
+    void setLikeControllerService(LikeControllerService likeControllerService) {
         this.likeControllerService = likeControllerService;
     }
 
     @Autowired
-    public void setPostDataService(PostControllerService postDataService) {
+    void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
@@ -48,7 +48,7 @@ public class UnlikePostController {
      * @return unlike post
      */
     @DeleteMapping(value = "/post/{id}")
-    public ResponseEntity<Void> unLikePost(@PathVariable("id") int id, HttpServletRequest request, Authentication authentication) {
+    ResponseEntity<Void> unLikePost(@PathVariable("id") int id, HttpServletRequest request, Authentication authentication) {
 
         PostEntity postToUnlike = postDataService.findPost(id);
 

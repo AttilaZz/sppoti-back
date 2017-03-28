@@ -21,12 +21,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/comment")
-public class CommentGetController {
+ class CommentGetController {
 
     private CommentControllerService commentDataService;
 
     @Autowired
-    public void setCommentDataService(CommentControllerService commentDataService) {
+     void setCommentDataService(CommentControllerService commentDataService) {
         this.commentDataService = commentDataService;
     }
 
@@ -43,7 +43,7 @@ public class CommentGetController {
      * @return List of like DTO.
      */
     @GetMapping("/{postId}/{page}")
-    public ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable int postId, @PathVariable int page, Authentication authentication) {
+     ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable int postId, @PathVariable int page, Authentication authentication) {
 
         Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 

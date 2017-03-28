@@ -19,12 +19,12 @@ import javax.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/post")
-public class PostDeleteController {
+class PostDeleteController {
 
     private PostControllerService postDataService;
 
     @Autowired
-    public void setPostDataService(PostControllerService postDataService) {
+    void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
@@ -36,7 +36,7 @@ public class PostDeleteController {
      * @return 200 status if post deleted.
      */
     @DeleteMapping(value = "/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable int postId) {
+    ResponseEntity<Void> deletePost(@PathVariable int postId) {
 
         try {
             postDataService.deletePost(postId);

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/team")
-public class TeamDeleteTeam {
+class TeamDeleteTeam {
 
     private static final String ATT_USER_ID = "USER_ID";
 
@@ -24,7 +24,7 @@ public class TeamDeleteTeam {
     private Logger LOGGER = Logger.getLogger(TeamAddController.class);
 
     @Autowired
-    public void setTeamControllerService(TeamControllerService teamControllerService) {
+    void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
     }
 
@@ -35,7 +35,7 @@ public class TeamDeleteTeam {
      * @return 200 status if team was deleted, 400 status otherwise
      */
     @DeleteMapping("{/id}")
-    public ResponseEntity deleteTeam(@PathVariable int id) {
+    ResponseEntity deleteTeam(@PathVariable int id) {
 
         try {
 

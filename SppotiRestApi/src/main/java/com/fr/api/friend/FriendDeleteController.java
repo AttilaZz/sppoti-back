@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/friend")
-public class FriendDeleteController {
+class FriendDeleteController {
 
 
     private static final String ATT_USER_ID = "USER_ID";
@@ -29,9 +29,8 @@ public class FriendDeleteController {
 
     private FriendControllerService friendControllerService;
 
-
     @Autowired
-    public void setFriendControllerService(FriendControllerService friendControllerService) {
+    void setFriendControllerService(FriendControllerService friendControllerService) {
         this.friendControllerService = friendControllerService;
     }
 
@@ -41,7 +40,7 @@ public class FriendDeleteController {
      * @return 200 http status if friendship deleted, 400 status otherwise
      */
     @DeleteMapping("/{friend_id}")
-    public ResponseEntity deleteFriend(@PathVariable("friend_id") int friendId, Authentication authentication) {
+    ResponseEntity deleteFriend(@PathVariable("friend_id") int friendId, Authentication authentication) {
 
         Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity connectedUser = friendControllerService.getUserById(userId);

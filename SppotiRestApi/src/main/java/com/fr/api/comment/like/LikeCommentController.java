@@ -23,24 +23,24 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/like")
-public class LikeCommentController {
+class LikeCommentController {
 
     private PostControllerService postDataService;
     private CommentControllerService commentControllerService;
     private LikeControllerService likeControllerService;
 
     @Autowired
-    public void setLikeControllerService(LikeControllerService likeControllerService) {
+    void setLikeControllerService(LikeControllerService likeControllerService) {
         this.likeControllerService = likeControllerService;
     }
 
     @Autowired
-    public void setCommentControllerService(CommentControllerService commentControllerService) {
+    void setCommentControllerService(CommentControllerService commentControllerService) {
         this.commentControllerService = commentControllerService;
     }
 
     @Autowired
-    public void setPostDataService(PostControllerService postDataService) {
+    void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
@@ -55,7 +55,7 @@ public class LikeCommentController {
      * @return status 200 if comment were liked or 404 if not
      */
     @PutMapping(value = "/comment/{id}")
-    public ResponseEntity<Void> likeComment(@PathVariable("id") int id, HttpServletRequest request) {
+    ResponseEntity<Void> likeComment(@PathVariable("id") int id, HttpServletRequest request) {
 
         CommentEntity commentEntityToLike = commentControllerService.findComment(id);
 

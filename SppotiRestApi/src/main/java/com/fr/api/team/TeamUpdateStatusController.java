@@ -1,8 +1,7 @@
 package com.fr.api.team;
 
-import com.fr.api.sppoti.SppotiAddController;
-import com.fr.service.TeamControllerService;
 import com.fr.security.AccountUserDetails;
+import com.fr.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,18 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/team/{teamId}/")
-public class TeamUpdateStatusController {
+ class TeamUpdateStatusController {
 
     private TeamControllerService teamControllerService;
-    private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
+    private Logger LOGGER = Logger.getLogger(TeamUpdateStatusController.class);
 
     @Autowired
-    public void setTeamControllerService(TeamControllerService teamControllerService) {
+     void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
     }
 
     @PutMapping("/accept")
-    public ResponseEntity<Void> acceptTeam(@PathVariable int teamId, Authentication authentication) {
+     ResponseEntity<Void> acceptTeam(@PathVariable int teamId, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
@@ -48,7 +47,7 @@ public class TeamUpdateStatusController {
     }
 
     @PutMapping("/refuse")
-    public ResponseEntity<Void> refuseTeam(@PathVariable int teamId, Authentication authentication) {
+     ResponseEntity<Void> refuseTeam(@PathVariable int teamId, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 

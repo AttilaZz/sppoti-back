@@ -1,9 +1,7 @@
 package com.fr.api.team;
 
 import com.fr.commons.dto.team.TeamResponseDTO;
-import com.fr.api.sppoti.SppotiAddController;
 import com.fr.service.TeamControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,15 +18,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/team")
-public class TeamGetController {
-
-    private static final String ATT_USER_ID = "USER_ID";
+class TeamGetController {
 
     private TeamControllerService teamControllerService;
-    private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
     @Autowired
-    public void setTeamControllerService(TeamControllerService teamControllerService) {
+    void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
     }
 
@@ -39,7 +34,7 @@ public class TeamGetController {
      * @return target team.
      */
     @GetMapping("/{teamId}")
-    public ResponseEntity<TeamResponseDTO> getTeamById(@PathVariable int teamId) {
+    ResponseEntity<TeamResponseDTO> getTeamById(@PathVariable int teamId) {
 
         TeamResponseDTO teamResponseDTO;
 
@@ -56,7 +51,7 @@ public class TeamGetController {
      * @return All teams for a giver user Id.
      */
     @GetMapping("/all/{userId}/{page}")
-    public ResponseEntity getAllTeams(@PathVariable int userId, @PathVariable int page) {
+    ResponseEntity getAllTeams(@PathVariable int userId, @PathVariable int page) {
 
         List<TeamResponseDTO> response = teamControllerService.getAllTeamsByUserId(userId, page);
 
@@ -71,7 +66,7 @@ public class TeamGetController {
      * @return All teams for a giver user Id.
      */
     @GetMapping("/all/joined/{userId}/{page}")
-    public ResponseEntity getAllJoinedTeams(@PathVariable int userId, @PathVariable int page) {
+    ResponseEntity getAllJoinedTeams(@PathVariable int userId, @PathVariable int page) {
 
         List<TeamResponseDTO> response = teamControllerService.getAllJoinedTeamsByUserId(userId, page);
 

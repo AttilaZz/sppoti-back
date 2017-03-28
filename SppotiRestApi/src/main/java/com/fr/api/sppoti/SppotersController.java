@@ -11,22 +11,22 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/sppoti/{sppotiId}/sppoter")
-public class SppotersController {
+class SppotersController {
 
     private SppotiControllerService sppotiControllerService;
 
     @Autowired
-    public void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
+    void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
         this.sppotiControllerService = sppotiControllerService;
     }
-    
+
     /**
      * @param sppotiId sppoti id.
      * @param userId   user id.
      * @return 202 status if sppoti status updated.
      */
     @PutMapping("/accept/{userId}")
-    public ResponseEntity<String> acceptSppoti(@PathVariable int sppotiId, @PathVariable int userId) {
+    ResponseEntity<String> acceptSppoti(@PathVariable int sppotiId, @PathVariable int userId) {
 
         sppotiControllerService.acceptSppoti(sppotiId, userId);
 
@@ -40,7 +40,7 @@ public class SppotersController {
      * @return 202 status if sppoti status updated.
      */
     @PutMapping("/refuse/{userId}")
-    public ResponseEntity<Void> refuseSppoti(@PathVariable int sppotiId, @PathVariable int userId) {
+    ResponseEntity<Void> refuseSppoti(@PathVariable int sppotiId, @PathVariable int userId) {
 
         sppotiControllerService.refuseSppoti(userId, sppotiId);
 
