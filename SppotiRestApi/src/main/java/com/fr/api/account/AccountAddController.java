@@ -46,9 +46,6 @@ class AccountAddController {
         } catch (ConflictEmailException e) {
             LOGGER.error("Error creating user : " + user.getFirstName() + " " + user.getLastName() + " Email already exist!");
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (ConflictPhoneException e) {
-            LOGGER.error("Error creating user : " + user.getFirstName() + " " + user.getLastName() + " Phone already exist!");
-            return ResponseEntity.status(410).build();
         } catch (ConflictUsernameException e) {
             LOGGER.error("Error creating user : " + user.getFirstName() + " " + user.getLastName() + " Username already exist!");
             return ResponseEntity.status(411).build();

@@ -4,6 +4,7 @@ import com.fr.commons.dto.SignUpRequestDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.ConflictEmailException;
+import com.fr.commons.exception.ConflictPhoneException;
 import com.fr.commons.exception.ConflictUsernameException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.AddressEntity;
@@ -18,6 +19,7 @@ import com.fr.transformers.UserTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,32 +108,53 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         roles.add(profile);
         newUser.setRoles(roles);
 
-        if (userRepository.getByEmailAndDeletedFalse(user.getEmail()) != null) {
-            throw new ConflictEmailException("Email already exists");
-        }
-//        else if (userRepository.getByTelephoneAndDeletedFalse(user.getTelephone()) != null) {
-//            throw new ConflictPhoneException("Phone already exists");
-//        }
-        else if (userRepository.getByUsernameAndDeletedFalse(user.getUsername()) != null) {
-            throw new ConflictUsernameException("Username already exists");
-        } else {
-            UserEntity u = userRepository.save(newUser);
-            LOGGER.info("Account has been created: " + u);
+        Optional<UserEntity> userTocheckExistance = Optional.empty();
 
-            /*
-             * Send email to confirm account
-			 */
-            UserDTO userDTO = new UserDTO();
-            userDTO.setEmail(user.getEmail());
-            userDTO.setUsername(user.getUsername());
-            userDTO.setFirstName(user.getFirstName());
-            userDTO.setLastName(user.getLastName());
-            Thread thread = new Thread(() -> {
-                this.sendConfirmationEmail(userDTO, confirmationCode);
-                LOGGER.info("Confirmation email has been sent successfully !");
-            });
-            thread.start();
+        switch (getUserLoginType(user.getUsername())) {
+            case 1:
+                userTocheckExistance = Optional.ofNullable(userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
+                break;
+            case 2:
+                userTocheckExistance = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(user.getUsername()));
+                break;
+            case 3:
+                break;
         }
+
+        userTocheckExistance.ifPresent(u -> {
+
+            //TODO:
+            //if username exist, validation token expired(or not) and account not validated notify user, and send a new validation mail.
+
+            //TODO:
+            //if username exist, account valid, reject sign_up
+
+            if (getUserLoginType(user.getUsername()) == 2) {
+
+                throw new ConflictUsernameException("username already exist");
+            }
+            throw new ConflictUsernameException("username already exist");
+        });
+
+        //check if
+
+        userRepository.save(newUser);
+        LOGGER.info("Account has been created for user : " + user.getEmail());
+
+        /*
+         * Send email to confirm account
+         */
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(user.getEmail());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        Thread thread = new Thread(() -> {
+            this.sendConfirmationEmail(userDTO, confirmationCode);
+            LOGGER.info("Confirmation email has been sent successfully !");
+        });
+        thread.start();
+
     }
 
     /**
