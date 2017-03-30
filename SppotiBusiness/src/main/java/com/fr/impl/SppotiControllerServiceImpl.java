@@ -11,6 +11,7 @@ import com.fr.entities.*;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.service.SppotiControllerService;
+import com.fr.transformers.SportTransformer;
 import com.fr.transformers.SppotiTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -172,6 +173,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         sppotiResponseDTO.setTeamHost(teamHostResponse);
         sppotiResponseDTO.setId(sppoti.getUuid());
+        sppotiResponseDTO.setRelatedSport(SportTransformer.modelToDto(sppoti.getSport()));
 
         List<SppotiMemberEntity> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiSportId(sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId());
 
