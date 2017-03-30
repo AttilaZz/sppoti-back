@@ -31,20 +31,13 @@ class TeamDeleteTeam {
     /**
      * This method delete a team
      *
-     * @param id
+     * @param id team id.
      * @return 200 status if team was deleted, 400 status otherwise
      */
     @DeleteMapping("{/id}")
     ResponseEntity deleteTeam(@PathVariable int id) {
 
-        try {
-
-            teamControllerService.deleteTeam(id);
-
-        } catch (RuntimeException e) {
-            LOGGER.error("Error deleting team id:" + id + " - ", e);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+        teamControllerService.deleteTeam(id);
 
         LOGGER.info("TeamEntity has been deleted (" + id + ")");
         return new ResponseEntity(HttpStatus.OK);

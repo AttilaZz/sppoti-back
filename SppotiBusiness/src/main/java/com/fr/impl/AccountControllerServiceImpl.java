@@ -58,8 +58,6 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 
     /**
      * {@inheritDoc}
-     *
-     * @param user
      */
     @Transactional
     @Override
@@ -108,20 +106,20 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         roles.add(profile);
         newUser.setRoles(roles);
 
-        Optional<UserEntity> userTocheckExistance = Optional.empty();
+        Optional<UserEntity> userToCheckExistence = Optional.empty();
 
         switch (getUserLoginType(user.getUsername())) {
             case 1:
-                userTocheckExistance = Optional.ofNullable(userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
+                userToCheckExistence = Optional.ofNullable(userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
                 break;
             case 2:
-                userTocheckExistance = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(user.getUsername()));
+                userToCheckExistence = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(user.getUsername()));
                 break;
             case 3:
                 break;
         }
 
-        userTocheckExistance.ifPresent(u -> {
+        userToCheckExistence.ifPresent(u -> {
 
             //TODO:
             //if username exist, validation token expired(or not) and account not validated notify user, and send a new validation mail.
