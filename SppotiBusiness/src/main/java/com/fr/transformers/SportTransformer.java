@@ -11,20 +11,6 @@ import com.fr.entities.SportEntity;
 public class SportTransformer {
 
     /**
-     * Transform sport dto to entity.
-     *
-     * @param sportDTO sport DTO to transform.
-     * @return SportEntity
-     */
-    public static SportEntity dtoToModel(SportDTO sportDTO){
-        SportEntity sportEntity = new SportEntity();
-        sportEntity.setUuid(sportDTO.getId());
-        sportEntity.setVersion(sportDTO.getVersion());
-        sportEntity.setName(sportDTO.getName());
-        return sportEntity;
-    }
-
-    /**
      * Transform sport entity to dto.
      *
      * @param sportEntity sport entity to transform.
@@ -32,8 +18,7 @@ public class SportTransformer {
      */
     public static SportDTO modelToDto(SportEntity sportEntity){
         SportDTO sportDTO = new SportDTO();
-        sportDTO.setId(sportEntity.getUuid());
-        sportDTO.setVersion(sportEntity.getVersion());
+        sportDTO.setId(sportEntity.getId());
         sportDTO.setName(sportEntity.getName());
         return sportDTO;
     }

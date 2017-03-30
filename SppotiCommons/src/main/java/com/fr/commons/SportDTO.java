@@ -1,13 +1,12 @@
 package com.fr.commons;
 
-import com.fr.commons.dto.AbstractCommonDTO;
-
 /**
  * Created by djenanewail on 3/26/17.
  */
-public class SportDTO extends AbstractCommonDTO{
+public class SportDTO {
 
     private String name;
+    private Long id;
 
     public String getName() {
         return name;
@@ -15,5 +14,13 @@ public class SportDTO extends AbstractCommonDTO{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
