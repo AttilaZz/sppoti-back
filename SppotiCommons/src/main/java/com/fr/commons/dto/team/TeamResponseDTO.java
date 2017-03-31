@@ -1,6 +1,7 @@
 package com.fr.commons.dto.team;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fr.commons.SportDTO;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.UserDTO;
 
@@ -16,7 +17,7 @@ public class TeamResponseDTO extends AbstractCommonDTO {
     private String name;
     private String logoPath;
     private String coverPath;
-    private Long sportId;
+    private SportDTO sport;
 
     private List<UserDTO> teamMembers;
 
@@ -52,11 +53,11 @@ public class TeamResponseDTO extends AbstractCommonDTO {
         this.teamMembers = teamMembers;
     }
 
-    public Long getSportId() {
-        return sportId;
+    public SportDTO getSport() {
+        return sport;
     }
 
-    public void setSportId(Long sportId) {
-        this.sportId = sportId;
+    public void setSport(SportDTO sport) {
+        this.sport = sport;
     }
 }

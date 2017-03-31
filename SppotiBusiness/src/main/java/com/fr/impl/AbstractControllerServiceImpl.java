@@ -13,6 +13,7 @@ import com.fr.models.NotificationType;
 import com.fr.repositories.*;
 import com.fr.service.AbstractControllerService;
 import com.fr.transformers.TeamMemberTransformer;
+import com.fr.transformers.TeamTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -537,10 +538,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
      */
     protected TeamResponseDTO fillTeamResponse(TeamEntity team, SppotiEntity sppoti) {
 
-        TeamResponseDTO teamResponseDTO = new TeamResponseDTO();
-        teamResponseDTO.setId(team.getUuid());
-
-        List<UserDTO> teamUsers = new ArrayList<UserDTO>();
+        List<UserDTO> teamUsers = new ArrayList<>();
 
         for (TeamMemberEntity memberEntity : team.getTeamMembers()) {
 
@@ -559,12 +557,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 
             teamUsers.add(teamMemberTransformer.teamMemberEntityToDto(memberEntity, sppoti, sppoterStatus));
         }
-
+        TeamResponseDTO teamResponseDTO = TeamTransformer.teamEntityToDto(team);
         teamResponseDTO.setTeamMembers(teamUsers);
-        teamResponseDTO.setCoverPath(team.getCoverPath());
-        teamResponseDTO.setLogoPath(team.getLogoPath());
-        teamResponseDTO.setName(team.getName());
-        teamResponseDTO.setSportId(team.getSport().getId());
 
         return teamResponseDTO;
 

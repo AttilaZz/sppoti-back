@@ -22,10 +22,10 @@ public class TeamTransformer {
 
         teamResponseDTO.setId(teamEntity.getUuid());
         teamResponseDTO.setVersion(teamEntity.getVersion());
-
         teamResponseDTO.setName(teamEntity.getName());
         teamResponseDTO.setCoverPath(teamEntity.getCoverPath());
         teamResponseDTO.setLogoPath(teamEntity.getLogoPath());
+        teamResponseDTO.setSport(SportTransformer.modelToDto(teamEntity.getSport()));
 
         return teamResponseDTO;
     }
