@@ -133,4 +133,12 @@ public interface TeamControllerService extends AbstractControllerService {
      * @return all teams.
      */
     List<TeamResponseDTO> getAllJoinedTeamsByUserId(int userId, int page);
+
+    /**
+     *
+     * @param userId user id.
+     * @param page page number.
+     * @return all deleted teams.
+     */
+    List<TeamResponseDTO> getAllDeletedTeamsByUserId(int userId, int page);
 }

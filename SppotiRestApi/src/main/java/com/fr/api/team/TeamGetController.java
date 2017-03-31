@@ -62,9 +62,20 @@ class TeamGetController {
      * @return All teams for a giver user Id.
      */
     @GetMapping("/all/joined/{userId}/{page}")
-    ResponseEntity getAllJoinedTeams(@PathVariable int userId, @PathVariable int page, @AuthenticationPrincipal User activeUser) {
+    ResponseEntity getAllJoinedTeams(@PathVariable int userId, @PathVariable int page) {
 
         return new ResponseEntity<>(teamControllerService.getAllJoinedTeamsByUserId(userId, page), HttpStatus.OK);
+    }
+
+    /**
+     *
+     * @param userId user id.
+     * @param page page number.
+     * @return deleted teams.
+     */
+    @GetMapping("/all/deleted/{userId}/{page}")
+    ResponseEntity getAllDeletedTeams(@PathVariable int userId, @PathVariable int page){
+        return new ResponseEntity<>(teamControllerService.getAllDeletedTeamsByUserId(userId, page), HttpStatus.OK);
     }
 
 }

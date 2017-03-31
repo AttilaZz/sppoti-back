@@ -82,7 +82,15 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
      * @param userId user id.
      * @param confirmed team status.
      * @param pageable page number.
-     * @return all entries.
+     * @return all confirmed teams.
      */
     List<TeamMemberEntity> findByUsersUuidAndStatus(int userId, GlobalAppStatus confirmed, Pageable pageable);
+
+    /**
+     *
+     * @param uuid user unique id.
+     * @param pageable page number.
+     * @return all deleted teams.
+     */
+    List<TeamMemberEntity> findByUsersUuidAndTeamDeletedFalse(int uuid, Pageable pageable);
 }

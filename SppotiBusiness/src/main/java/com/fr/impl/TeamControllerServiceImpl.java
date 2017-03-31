@@ -14,7 +14,6 @@ import com.fr.models.NotificationType;
 import com.fr.service.TeamControllerService;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -127,10 +126,6 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      */
     @Override
     public List<TeamResponseDTO> getAllTeamsByUserId(int userId, int page) {
-
-//        if(getConnectedUser().getUuid() != userId){
-//            throw new NotAdminException("Unauthorized access");
-//        }
 
         Pageable pageable = new PageRequest(page, teamPageSize);
 
@@ -377,6 +372,21 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
         return teamMembersRepository.findByUsersUuidAndStatus(userId, GlobalAppStatus.CONFIRMED, pageable)
                 .stream()
                 .map(t -> TeamTransformer.teamEntityToDto(t.getTeam()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<TeamResponseDTO> getAllDeletedTeamsByUserId(int userId, int page) {
+        Pageable pageable = new PageRequest(page, teamPageSize);
+
+        List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndTeamDeletedFalse(getConnectedUser()
+                .getUuid(), pageable);
+
+        return myTeams.stream()
+                .map(t -> fillTeamResponse(t.getTeam(), null))
                 .collect(Collectors.toList());
     }
 
