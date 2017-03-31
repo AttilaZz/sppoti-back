@@ -36,11 +36,7 @@ class TeamGetController {
     @GetMapping("/{teamId}")
     ResponseEntity<TeamResponseDTO> getTeamById(@PathVariable int teamId) {
 
-        TeamResponseDTO teamResponseDTO;
-
-        teamResponseDTO = teamControllerService.getTeamById(teamId);
-
-        return new ResponseEntity<>(teamResponseDTO, HttpStatus.OK);
+        return new ResponseEntity<>(teamControllerService.getTeamById(teamId), HttpStatus.OK);
     }
 
     /**
@@ -53,9 +49,7 @@ class TeamGetController {
     @GetMapping("/all/{userId}/{page}")
     ResponseEntity getAllTeams(@PathVariable int userId, @PathVariable int page) {
 
-        List<TeamResponseDTO> response = teamControllerService.getAllTeamsByUserId(userId, page);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(teamControllerService.getAllTeamsByUserId(userId, page), HttpStatus.OK);
     }
 
     /**
@@ -68,9 +62,7 @@ class TeamGetController {
     @GetMapping("/all/joined/{userId}/{page}")
     ResponseEntity getAllJoinedTeams(@PathVariable int userId, @PathVariable int page) {
 
-        List<TeamResponseDTO> response = teamControllerService.getAllJoinedTeamsByUserId(userId, page);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(teamControllerService.getAllJoinedTeamsByUserId(userId, page), HttpStatus.OK);
     }
 
 }

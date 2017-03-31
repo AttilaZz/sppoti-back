@@ -224,6 +224,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
     @Override
     public void deleteTeam(int id) {
 
+        //TODO: logical delete
         List<TeamEntity> team = teamRepository.findByUuid(id);
 
         if (team == null || team.isEmpty()) {
