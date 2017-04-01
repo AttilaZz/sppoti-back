@@ -36,9 +36,7 @@ class TeamGetController {
      * @return target team.
      */
     @GetMapping("/{teamId}")
-    ResponseEntity<TeamResponseDTO> getTeamById(@PathVariable int teamId, @AuthenticationPrincipal User activeUser) {
-
-        activeUser.getUsername();
+    ResponseEntity<TeamResponseDTO> getTeamById(@PathVariable int teamId) {
 
         return new ResponseEntity<>(teamControllerService.getTeamById(teamId), HttpStatus.OK);
     }

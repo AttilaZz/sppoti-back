@@ -1,5 +1,6 @@
 package com.fr.transformers;
 
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.TeamEntity;
@@ -7,6 +8,8 @@ import com.fr.repositories.TeamMembersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 /**
  * Created by djenanewail on 3/5/17.
@@ -38,6 +41,14 @@ public class TeamTransformer {
         teamResponseDTO.setSport(SportTransformer.modelToDto(teamEntity.getSport()));
 
         teamResponseDTO.setTeamAdmin(teamMemberTransformer.modelToDto(teamMembersRepository.findByTeamUuidAndAdminTrue(teamEntity.getUuid()), null));
+
+        teamResponseDTO.setTeamMembers(
+                teamEntity.getTeamMembers().stream()
+                        .map(m -> {
+                            UserDTO user = teamMemberTransformer.modelToDto(m, null);
+                            return user;
+                        }).collect(Collectors.toList())
+        );
 
         return teamResponseDTO;
     }

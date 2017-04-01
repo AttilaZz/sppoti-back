@@ -96,7 +96,7 @@ public class AccountMailer
      * @param buttonText      button text.
      * @param activateLinkTag activation link.
      */
-    private void prepareAndSendEmail(final UserDTO to, final String subject, final String message,
+    public void prepareAndSendEmail(final UserDTO to, final String subject, final String message,
                                      final String buttonText, final String activateLinkTag, int op) {
 
         Context context = new Context();
@@ -121,5 +121,4 @@ public class AccountMailer
         super.prepareAndSendEmail(to.getEmail(), subject, text);
 
     }
-
 }

@@ -1,11 +1,13 @@
 package com.fr.mail;
 
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.TeamMemberEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 /**
  * Created by djenanewail on 3/23/17.
@@ -14,7 +16,8 @@ import org.thymeleaf.TemplateEngine;
  */
 
 @Component
-public class TeamMailer extends ApplicationMailer{
+public class TeamMailer
+        extends ApplicationMailer {
 
     @Value("${spring.app.mail.team.add.message}")
     private String addTeamMessage;
@@ -44,11 +47,12 @@ public class TeamMailer extends ApplicationMailer{
 
     /**
      * Send email to the team members.
-     * @param member team memeber.
+     * @param to team memeber.
+     * @param from team admin.
      * @param team team data.
      */
-    public void sendJoinTeamEmail(final TeamResponseDTO team, final TeamMemberEntity member){
-
+    public void sendJoinTeamEmail(final TeamResponseDTO team, final UserDTO to, final UserDTO from){
+        prepareAndSendEmail(to, from, team, joinTeamSubject, joinTeamMessage);
     }
 
     /**
@@ -59,5 +63,29 @@ public class TeamMailer extends ApplicationMailer{
      */
     public void sendConfirmJoinTeamEmail(final TeamResponseDTO team, final TeamMemberEntity member){
 
+    }
+
+    /**
+     * Send email.
+     */
+    private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final TeamResponseDTO team, final String subject, final String content){
+
+        Context context = new Context();
+        context.setVariable("title", to.getFirstName());
+
+        context.setVariable("sentFromName", from.getFirstName() + " " + from.getLastName());
+        context.setVariable("sentToValidationLink", "");
+        context.setVariable("sentToDiscoverLink", "");
+
+        context.setVariable("body", content);
+        context.setVariable("sentToTeamName", team.getName());
+        context.setVariable("sentToTeamMembersCount", team.getTeamMembers().size());
+        context.setVariable("sentToFirstName", to.getFirstName());
+        context.setVariable("sentToEmail", to.getEmail());
+        context.setVariable("sentToUsername", to.getUsername());
+
+        String text = templateEngine.process(PATH_TO_TEAM_TEMPLATE, context);
+
+        super.prepareAndSendEmail(to.getEmail(), subject, text);
     }
 }

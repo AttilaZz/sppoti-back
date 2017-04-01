@@ -9,11 +9,14 @@ import com.fr.entities.SportEntity;
 import com.fr.entities.TeamEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.entities.UserEntity;
+import com.fr.mail.TeamMailer;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.service.TeamControllerService;
+import com.fr.transformers.TeamMemberTransformer;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -33,17 +36,23 @@ import java.util.stream.Collectors;
 
 @Component
 class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements TeamControllerService {
-    
+
+    private Logger LOGGER = Logger.getLogger(TeamControllerServiceImpl.class);
+
     @Value("${key.teamsPerPage}")
     private int teamPageSize;
 
     private final UserTransformer userTransformer;
     private final TeamTransformer teamTransformer;
+    private final TeamMemberTransformer teamMemberTransformer;
+    private final TeamMailer teamMailer;
 
     @Autowired
-    public TeamControllerServiceImpl(UserTransformer userTransformer, TeamTransformer teamTransformer) {
+    public TeamControllerServiceImpl(UserTransformer userTransformer, TeamTransformer teamTransformer, TeamMemberTransformer teamMemberTransformer, TeamMailer teamMailer) {
         this.userTransformer = userTransformer;
         this.teamTransformer = teamTransformer;
+        this.teamMemberTransformer = teamMemberTransformer;
+        this.teamMailer = teamMailer;
     }
 
 
@@ -222,7 +231,6 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
     @Override
     public void deleteTeam(int id) {
 
-        //TODO: logical delete
         List<TeamEntity> team = teamRepository.findByUuid(id);
 
         if (team == null || team.isEmpty()) {
@@ -253,13 +261,13 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             throw new EntityNotFoundException("TeamEntity with id (" + teamId + ") Not found");
         }
 
-        if (!teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers().getId().equals(getConnectedUser().getId())) {
+        TeamMemberEntity teamAdmin = teamMembersRepository.findByTeamUuidAndAdminTrue(teamId);
+        if (!teamAdmin.getUsers().getId().equals(getConnectedUser().getId())) {
             //NOT TEAM ADMIN.
             throw new NotAdminException("You must be the team admin to access this service");
         }
 
         TeamEntity team = teamList.get(0);
-
         TeamMemberEntity teamMembers = new TeamMemberEntity();
         teamMembers.setTeam(team);
         teamMembers.setUsers(teamMemberAsUser);
@@ -272,10 +280,34 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             teamMembers.setyPosition(userParam.getyPosition());
         }
 
+        //save ne member.
         teamMembersRepository.save(teamMembers);
 
-        return userTransformer.entityToDto(teamMemberAsUser);
+        //transform entities.
+        UserDTO teamMember = userTransformer.modelToDto(teamMemberAsUser);
+        UserDTO admin = teamMemberTransformer.modelToDto(teamAdmin, null);
 
+        //Send email to the new member.
+        sendJoinTeamEmail(teamTransformer.modelToDto(team), teamMember, admin);
+
+        //return new member.
+        return teamMember;
+
+    }
+
+    /**
+     * Send Email to the invited member to join the team.
+     *
+     * @param team team to add memeber.
+     * @param to   added memeber.
+     * @param from team admin.
+     */
+    private void sendJoinTeamEmail(TeamResponseDTO team, UserDTO to, UserDTO from) {
+        Thread thread = new Thread(() -> {
+            teamMailer.sendJoinTeamEmail(team, to, from);
+            LOGGER.info("Join team email has been sent successfully !");
+        });
+        thread.start();
     }
 
     /**

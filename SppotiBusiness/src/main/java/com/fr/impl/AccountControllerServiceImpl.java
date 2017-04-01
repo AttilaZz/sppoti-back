@@ -3,8 +3,6 @@ package com.fr.impl;
 import com.fr.commons.dto.SignUpRequestDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.commons.exception.ConflictEmailException;
-import com.fr.commons.exception.ConflictPhoneException;
 import com.fr.commons.exception.ConflictUsernameException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.AddressEntity;
@@ -19,7 +17,6 @@ import com.fr.transformers.UserTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -317,7 +314,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
             u.setRecoverCode(code);
             userRepository.save(u);
 
-            final Thread thread = new Thread(() -> this.accountMailer.sendRecoverPasswordEmail(userTransformer.entityToDto(u), code, tokenExpiryDate));
+            final Thread thread = new Thread(() -> this.accountMailer.sendRecoverPasswordEmail(userTransformer.modelToDto(u), code, tokenExpiryDate));
             thread.start();
         });
 

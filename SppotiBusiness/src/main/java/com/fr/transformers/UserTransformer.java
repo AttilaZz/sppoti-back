@@ -22,7 +22,7 @@ public class UserTransformer {
      * @param entity user entity to transform.
      * @return user DTO.
      */
-    public UserDTO entityToDto(UserEntity entity) {
+    public UserDTO modelToDto(UserEntity entity) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(entity.getUuid());
         userDTO.setFirstName(entity.getFirstName());
