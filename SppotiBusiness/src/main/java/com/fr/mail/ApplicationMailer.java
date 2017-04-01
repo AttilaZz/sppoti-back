@@ -3,9 +3,11 @@ package com.fr.mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -13,31 +15,32 @@ import javax.mail.internet.MimeMessage;
 /**
  * Created by wdjenane on 09/02/2017.
  * <p>
- * Cette classe contient les paramètres commun d'envoi de mail
+ * Email super class configuration.
  **/
 @Component
 abstract class ApplicationMailer {
 
-    protected static final String LECTURE_TEMPLATE_EMAIL_IMPOSSIBLE = "Impossible de lire le fichier de modèle de mail";
-    protected static final String EMAIL_SENDING_PROBLEM = "Un problème a survenu lors de l'envoi de l'email de confirmation, Veuillez réessayer dans quelques instants";
-
-    protected static final String PATH_TO_ACCOUNT_TEMPLATE = "templates/account/accountConfirm.html";
-    protected static final String PATH_TO_RESET_PASSWORD_TEMPLATE = "templates/password/confirmReset.html";
-    protected static final String PATH_TO_TEAM_TEMPLATE = "templates/team/joinTeam.html";
-
+    protected static final String PATH_TO_ACCOUNT_TEMPLATE = "account/account";
+    protected static final String PATH_TO_TEAM_TEMPLATE = "team/team";
     protected static final String CHARSET_NAME = "UTF-8";
-    protected static final String ERREUR_D_ENVOI_DE_MAIL = "Erreur d'envoi de mail: ";
+    protected static final String ERROR_SENDING_MAIL = "Error sending email";
+
     protected static Logger LOGGER = LoggerFactory.getLogger(ApplicationMailer.class);
 
-    private final JavaMailSender sender;
+    final JavaMailSender sender;
+    final MailProperties mailProperties;
+    final TemplateEngine templateEngine;
+
+    @Value("${spring.app.originFront}")
+    protected String frontRootPath;
 
     @Autowired
-    private MailProperties mailProperties;
-
-    @Autowired
-    public ApplicationMailer(JavaMailSender sender) {
+    public ApplicationMailer(JavaMailSender sender, MailProperties mailProperties, TemplateEngine templateEngine) {
         this.sender = sender;
+        this.mailProperties = mailProperties;
+        this.templateEngine = templateEngine;
     }
+
 
     /**
      * @param to      email receiver.
@@ -60,7 +63,7 @@ abstract class ApplicationMailer {
             this.sender.send(mail);
 
         } catch (final MessagingException e) {
-            LOGGER.error(ERREUR_D_ENVOI_DE_MAIL, e);
+            LOGGER.error(ERROR_SENDING_MAIL, e);
         }
     }
 

@@ -27,4 +27,5 @@ public class SppotiApplication {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

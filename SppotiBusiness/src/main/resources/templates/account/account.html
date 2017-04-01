@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" >
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 	<!-- If you delete this tag, the sky will fall on your head -->
 	<meta name="viewport" content="width=device-width"/>
@@ -11,7 +11,6 @@
 
     </style>-->
 	<style>
-
 		* {
 			margin:0;
 			padding:0;
@@ -219,7 +218,7 @@
 
 		.ftr{
 			color: #abadae;
-			font-size: 12px
+			font-size: 12px;
 			margin-top:0;
 			margin-left:0;
 			padding-top:0;
@@ -239,10 +238,9 @@
 		}
 
 		p.account-message{
-			margin:0;
 			padding:0;
 			color:#565a5c;
-			margin-bottom:10px;
+			margin: 0 0 10px;
 			font-weight:normal;
 			line-height:1.6;
 			font-size:17px;
@@ -254,28 +252,23 @@
 		}
 
 		h3.email-title{
-			margin:0;
 			padding:0;
 			line-height:1.1;
-			margin-bottom:15px;
+			margin: 0 0 15px;
 			color:#000;
 			font-weight:500;
 			font-size:27px;
 		}
 
 		p.button-text{
-			margin:0;
 			padding:0;
-			margin-bottom:10px;
+			margin: 0 0 10px;
 			font-weight:normal;
 			font-size:14px;
 			line-height:1.6;
 			text-align:center;
-			background-color:#30d3c2;
-			background-image:none;
-			background-repeat:repeat;
-			background-position:top left;
-			background-attachment:scroll;color:white;
+			background: #30d3c2 none repeat scroll top left;
+			color:white;
 		}
 
 		span.sppoti-copy-right{
@@ -286,6 +279,10 @@
 		br{
 			margin:0;padding:0;
 		}
+
+		.hide{
+			display: none;
+		}
 	</style>
 </head>
 
@@ -293,34 +290,34 @@
 
 <!-- BODY -->
 <table class="body-wrap">
-	<tr style="margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;" >
-		<td style="margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;" ></td>
+	<tr>
+		<td></td>
 		<td class="container" bgcolor="#FFFFFF">
+			<div class="content">
+				<table>
+					<tr>
+						<td>
+							<p class="logo"><img src="http://sppoti.com/images/loglog.png"/></p>
 
-			<div class="content" style="font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;padding-top:15px;padding-bottom:15px;padding-right:15px;padding-left:15px;max-width:414px;margin-top:0;margin-bottom:0;margin-right:auto;margin-left:auto;display:block;" >
-				<table style="margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;width:100%;" >
-					<tr style="margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;" >
-						<td style="margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;" >
-							<p class="logo"><img src="http://sppoti.com/images/loglog.png" style="margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;max-width:100%;width:158px;" /></p>
+							<h3 class="email-title" th:text="${title}"></h3>
 
-							EMAIL_TITLE
+                            <p class="lead account-message" th:text="${body}"></p>
 
-							ACTIVATE_ACCOUNT_MESSAGE
-
-							ACCOUNT_BUTTON_TEXT
-
-							<!-- Callout Panel -->
-							<p class="callout">
-								If you ignore this message, your password will not be changed. If you didn't request a password reset <a href="#" class="recover-password-let-us-know" >let us know!</a>
-							</p><!-- /Callout Panel -->
+							<p class="reset button-text"><a th:href="${buttonLink}" class="link-account-path"
+															th:text="${textButtonLink}"></a></p>
+							<!-- Show this block only for recover password -->
+							<p th:class="${isRecoverPassword} ? 'callout' : 'hide'">
+								If you ignore this message, your password will not be changed. If you didn't request a
+								password reset <a href="#" class="recover-password-let-us-know" >let us know!</a>
+							</p>
 
 							<br/>
 
 							<p class="ftr" >
-								<span class="sppoti-copy-right" >© sppoti, 1 Hacker Way, Menlo Park, CA 94022</span>
-								REMOVE_YOUR_EMAIL
+								<span class="sppoti-copy-right">© sppoti, 1 Hacker Way, Menlo Park, CA 94022</span>
+                                <span class="remove-your-email">This message was sent to <span th:text="${receiverEmail}"></span> and intended
+									for <span th:text="${receiverUsername}"></span>. Not your account? Remove your email from this account.</span>
 							</p>
-
 						</td>
 					</tr>
 				</table>
@@ -329,7 +326,6 @@
 		</td>
 		<td></td>
 	</tr>
-</table><!-- /BODY -->
-
+</table>
 </body>
 </html>

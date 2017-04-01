@@ -63,12 +63,6 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>${org.apache.commons.version}</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-security-tests -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-security-tests</artifactId>
-                <version>${project.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>

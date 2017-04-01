@@ -6,6 +6,7 @@ import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.NotificationEntity;
 import com.fr.service.NotificationControllerService;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +25,11 @@ import java.util.stream.Collectors;
 @Component
 class NotificationControllerServiceImpl extends AbstractControllerServiceImpl implements NotificationControllerService {
 
-    private Logger LOGGER = Logger.getLogger(NotificationControllerServiceImpl.class);
-
     @Value("${key.notificationsPerPage}")
     private int notificationSize;
+
+    @Autowired
+    private NotificationTransformer notificationTransformer;
 
     /**
      * {@inheritDoc}
@@ -41,7 +43,7 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 
         NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
         notificationResponseDTO.setNotifications(notifications.stream()
-                .map(NotificationTransformer::notificationEntityToDto)
+                .map(notificationTransformer::notificationEntityToDto)
                 .collect(Collectors.toList()));
         notificationResponseDTO.setNotifCounter(notificationRepository.countByToUuid(userId));
 

@@ -10,6 +10,7 @@ import com.fr.repositories.SppotiMembersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class TeamMemberTransformer {
      *
      * @return all team member information inside a DTO.
      */
-    public UserDTO teamMemberEntityToDto(TeamMemberEntity memberEntity, SppotiEntity sppoti, Integer sppoterStatus) {
+    public UserDTO modelToDto(TeamMemberEntity memberEntity, SppotiEntity sppoti) {
 
         UserDTO userCoverAndAvatar = UserTransformer.getUserCoverAndAvatar(memberEntity.getUsers());
 
@@ -59,8 +60,17 @@ public class TeamMemberTransformer {
         userDTO.setxPosition(memberEntity.getxPosition());
         userDTO.setyPosition(memberEntity.getyPosition());
 
-        userDTO.setSppotiStatus(sppoterStatus);
         if (sppoti != null) {
+            //get status for the selected sppoti
+            if (!StringUtils.isEmpty(memberEntity.getSppotiMembers())) {
+                for (SppotiMemberEntity sppoter : memberEntity.getSppotiMembers()) {
+                    if (sppoter.getTeamMember().getId().equals(memberEntity.getId()) && sppoter.getSppoti().getId().equals(sppoti.getId())) {
+                        userDTO.setSppotiStatus(sppoter.getStatus().getValue());
+                    }
+                }
+            }
+
+            //Is sppoti admin.
             if (memberEntity.getUsers().getId().equals(sppoti.getUserSppoti().getId())) {
                 userDTO.setSppotiAdmin(Boolean.TRUE);
             }else{

@@ -17,6 +17,7 @@ public class TeamResponseDTO extends AbstractCommonDTO {
     private String name;
     private String logoPath;
     private String coverPath;
+    private UserDTO teamAdmin;
     private SportDTO sport;
 
     private List<UserDTO> teamMembers;
@@ -59,5 +60,13 @@ public class TeamResponseDTO extends AbstractCommonDTO {
 
     public void setSport(SportDTO sport) {
         this.sport = sport;
+    }
+
+    public UserDTO getTeamAdmin() {
+        return teamAdmin;
+    }
+
+    public void setTeamAdmin(UserDTO teamAdmin) {
+        this.teamAdmin = teamAdmin;
     }
 }

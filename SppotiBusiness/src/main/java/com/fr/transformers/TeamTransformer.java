@@ -3,13 +3,23 @@ package com.fr.transformers;
 import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.TeamEntity;
+import com.fr.repositories.TeamMembersRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by djenanewail on 3/5/17.
  */
 @Transactional(readOnly = true)
+@Component
 public class TeamTransformer {
+
+    @Autowired
+    private TeamMemberTransformer teamMemberTransformer;
+
+    @Autowired
+    private TeamMembersRepository teamMembersRepository;
 
     /**
      * Transform team entity to team DTO.
@@ -17,7 +27,7 @@ public class TeamTransformer {
      * @param teamEntity team entity top transform.
      * @return team entity as team DTO.
      */
-    public static TeamResponseDTO teamEntityToDto(TeamEntity teamEntity) {
+    public TeamResponseDTO modelToDto(TeamEntity teamEntity) {
         TeamResponseDTO teamResponseDTO = new TeamResponseDTO();
 
         teamResponseDTO.setId(teamEntity.getUuid());
@@ -26,6 +36,8 @@ public class TeamTransformer {
         teamResponseDTO.setCoverPath(teamEntity.getCoverPath());
         teamResponseDTO.setLogoPath(teamEntity.getLogoPath());
         teamResponseDTO.setSport(SportTransformer.modelToDto(teamEntity.getSport()));
+
+        teamResponseDTO.setTeamAdmin(teamMemberTransformer.modelToDto(teamMembersRepository.findByTeamUuidAndAdminTrue(teamEntity.getUuid()), null));
 
         return teamResponseDTO;
     }
@@ -36,7 +48,7 @@ public class TeamTransformer {
      * @param teamRequestDTO team dto to transform.
      * @return team entity.
      */
-    public static TeamEntity teamDtoToEntity(TeamRequestDTO teamRequestDTO) {
+    public TeamEntity dtoToModel(TeamRequestDTO teamRequestDTO) {
         TeamEntity entity = new TeamEntity();
 
         entity.setUuid(teamRequestDTO.getId());

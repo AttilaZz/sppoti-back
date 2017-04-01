@@ -22,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -542,20 +541,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 
         for (TeamMemberEntity memberEntity : team.getTeamMembers()) {
 
-            Integer sppoterStatus = null;
-
-            if (sppoti != null) {
-                //get status for the selected sppoti
-                if (!StringUtils.isEmpty(memberEntity.getSppotiMembers())) {
-                    for (SppotiMemberEntity sppoter : memberEntity.getSppotiMembers()) {
-                        if (sppoter.getTeamMember().getId().equals(memberEntity.getId()) && sppoter.getSppoti().getId().equals(sppoti.getId())) {
-                            sppoterStatus = sppoter.getStatus().getValue();
-                        }
-                    }
-                }
-            }
-
-            teamUsers.add(teamMemberTransformer.teamMemberEntityToDto(memberEntity, sppoti, sppoterStatus));
+            teamUsers.add(teamMemberTransformer.modelToDto(memberEntity, sppoti));
         }
         TeamResponseDTO teamResponseDTO = TeamTransformer.teamEntityToDto(team);
         teamResponseDTO.setTeamMembers(teamUsers);

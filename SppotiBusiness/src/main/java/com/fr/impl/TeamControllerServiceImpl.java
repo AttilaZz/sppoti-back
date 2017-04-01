@@ -37,12 +37,15 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
     @Value("${key.teamsPerPage}")
     private int teamPageSize;
 
-    private UserTransformer userTransformer;
+    private final UserTransformer userTransformer;
+    private final TeamTransformer teamTransformer;
 
     @Autowired
-    public void setUserTransformer(UserTransformer userTransformer) {
+    public TeamControllerServiceImpl(UserTransformer userTransformer, TeamTransformer teamTransformer) {
         this.userTransformer = userTransformer;
+        this.teamTransformer = teamTransformer;
     }
+
 
     /**
      * {@inheritDoc}
@@ -331,7 +334,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             teamEntity.setCoverPath(teamRequestDTO.getCoverPath());
         }
 
-        return TeamTransformer.teamEntityToDto(teamRepository.save(teamEntity));
+        return teamTransformer.modelToDto(teamRepository.save(teamEntity));
     }
 
     /**
@@ -371,7 +374,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 
         return teamMembersRepository.findByUsersUuidAndStatus(userId, GlobalAppStatus.CONFIRMED, pageable)
                 .stream()
-                .map(t -> TeamTransformer.teamEntityToDto(t.getTeam()))
+                .map(t -> teamTransformer.modelToDto(t.getTeam()))
                 .collect(Collectors.toList());
     }
 
