@@ -45,16 +45,13 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
     private final UserTransformer userTransformer;
     private final TeamTransformer teamTransformer;
     private final TeamMemberTransformer teamMemberTransformer;
-    private final TeamMailer teamMailer;
 
     @Autowired
-    public TeamControllerServiceImpl(UserTransformer userTransformer, TeamTransformer teamTransformer, TeamMemberTransformer teamMemberTransformer, TeamMailer teamMailer) {
+    public TeamControllerServiceImpl(UserTransformer userTransformer, TeamTransformer teamTransformer, TeamMemberTransformer teamMemberTransformer) {
         this.userTransformer = userTransformer;
         this.teamTransformer = teamTransformer;
         this.teamMemberTransformer = teamMemberTransformer;
-        this.teamMailer = teamMailer;
     }
-
 
     /**
      * {@inheritDoc}
@@ -283,31 +280,12 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
         //save ne member.
         teamMembersRepository.save(teamMembers);
 
-        //transform entities.
-        UserDTO teamMember = userTransformer.modelToDto(teamMemberAsUser);
-        UserDTO admin = teamMemberTransformer.modelToDto(teamAdmin, null);
-
         //Send email to the new member.
-        sendJoinTeamEmail(teamTransformer.modelToDto(team), teamMember, admin);
+        sendJoinTeamEmail(team, teamMemberAsUser, teamAdmin);
 
         //return new member.
-        return teamMember;
+        return userTransformer.modelToDto(teamMemberAsUser);
 
-    }
-
-    /**
-     * Send Email to the invited member to join the team.
-     *
-     * @param team team to add memeber.
-     * @param to   added memeber.
-     * @param from team admin.
-     */
-    private void sendJoinTeamEmail(TeamResponseDTO team, UserDTO to, UserDTO from) {
-        Thread thread = new Thread(() -> {
-            teamMailer.sendJoinTeamEmail(team, to, from);
-            LOGGER.info("Join team email has been sent successfully !");
-        });
-        thread.start();
     }
 
     /**

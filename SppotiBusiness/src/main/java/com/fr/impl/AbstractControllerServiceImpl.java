@@ -8,12 +8,14 @@ import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.exception.TeamMemberNotFoundException;
 import com.fr.entities.*;
+import com.fr.mail.TeamMailer;
 import com.fr.models.GlobalAppStatus;
 import com.fr.models.NotificationType;
 import com.fr.repositories.*;
 import com.fr.service.AbstractControllerService;
 import com.fr.transformers.TeamMemberTransformer;
 import com.fr.transformers.TeamTransformer;
+import com.fr.transformers.UserTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -33,102 +35,51 @@ import static com.fr.transformers.UserTransformer.getUserCoverAndAvatar;
 @Component("abstractService")
 abstract class AbstractControllerServiceImpl implements AbstractControllerService {
 
-    protected UserRepository userRepository;
-    protected SportRepository sportRepository;
-    protected RoleRepository roleRepository;
-    protected PostRepository postRepository;
-    protected EditHistoryRepository editHistoryRepository;
-    protected LikeRepository likeRepository;
-    protected ResourceRepository resourceRepository;
-    protected CommentRepository commentRepository;
-    protected FriendShipRepository friendShipRepository;
-    protected SppotiRepository sppotiRepository;
-    protected TeamRepository teamRepository;
-    protected TeamMembersRepository teamMembersRepository;
-    protected SppotiMembersRepository sppotiMembersRepository;
-    protected NotificationRepository notificationRepository;
-    protected RatingRepository ratingRepository;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    SportRepository sportRepository;
+    @Autowired
+    RoleRepository roleRepository;
+    @Autowired
+    PostRepository postRepository;
+    @Autowired
+    EditHistoryRepository editHistoryRepository;
+    @Autowired
+    LikeRepository likeRepository;
+    @Autowired
+    ResourceRepository resourceRepository;
+    @Autowired
+    CommentRepository commentRepository;
+    @Autowired
+    FriendShipRepository friendShipRepository;
+    @Autowired
+    SppotiRepository sppotiRepository;
+    @Autowired
+    TeamRepository teamRepository;
+    @Autowired
+    TeamMembersRepository teamMembersRepository;
+    @Autowired
+    SppotiMembersRepository sppotiMembersRepository;
+    @Autowired
+    NotificationRepository notificationRepository;
+    @Autowired
+    RatingRepository ratingRepository;
 
     @Autowired
-    public void setRatingRepository(RatingRepository ratingRepository) {
-        this.ratingRepository = ratingRepository;
-    }
-
-    @Autowired
-    public void setSppotiMembersRepository(SppotiMembersRepository sppotiMembersRepository) {
-        this.sppotiMembersRepository = sppotiMembersRepository;
-    }
-
-    @Autowired
-    public void setTeamMembersRepository(TeamMembersRepository teamMembersRepository) {
-        this.teamMembersRepository = teamMembersRepository;
-    }
-
-    @Autowired
-    public void setTeamRepository(TeamRepository teamRepository) {
-        this.teamRepository = teamRepository;
-    }
-
-    @Autowired
-    public void setSppotiRepository(SppotiRepository sppotiRepository) {
-        this.sppotiRepository = sppotiRepository;
-    }
-
-    @Autowired
-    public void setFriendShipRepository(FriendShipRepository friendShipRepository) {
-        this.friendShipRepository = friendShipRepository;
-    }
-
-    @Autowired
-    public void setCommentRepository(CommentRepository commentRepository) {
-        this.commentRepository = commentRepository;
-    }
-
-    @Autowired
-    public void setResourceRepository(ResourceRepository resourceRepository) {
-        this.resourceRepository = resourceRepository;
-    }
-
-    @Autowired
-    public void setLikeRepository(LikeRepository likeRepository) {
-        this.likeRepository = likeRepository;
-    }
-
-    @Autowired
-    public void setEditHistoryRepository(EditHistoryRepository editHistoryRepository) {
-        this.editHistoryRepository = editHistoryRepository;
-    }
-
-    @Autowired
-    public void setNotificationRepository(NotificationRepository notificationRepository) {
-        this.notificationRepository = notificationRepository;
-    }
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    @Autowired
-    public void setSportRepository(SportRepository sportRepository) {
-        this.sportRepository = sportRepository;
-    }
-
-    @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
-    }
-
-    @Autowired
-    public void setPostRepository(PostRepository postRepository) {
-        this.postRepository = postRepository;
-    }
+    TeamMailer teamMailer;
 
     @Autowired
     private Environment environment;
 
     @Autowired
     private TeamMemberTransformer teamMemberTransformer;
+
+    @Autowired
+    private UserTransformer userTransformer;
+
+    @Autowired
+    private TeamTransformer teamTransformer;
 
     private Logger LOGGER = Logger.getLogger(AbstractControllerServiceImpl.class);
 
@@ -420,7 +371,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
         }
         user.setSportDTOs(sportDTOs);
 
-        if(!targetUser.getAddresses().isEmpty()){
+        if (!targetUser.getAddresses().isEmpty()) {
             user.setAddress(targetUser.getAddresses().first().getAddress());
         }
 
@@ -441,23 +392,25 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 
         for (UserDTO user : users) {
 
-            UserEntity u = getUserByUuId(user.getId());
+            UserEntity userEntity = getUserByUuId(user.getId());
 
             TeamMemberEntity teamMember = new TeamMemberEntity();
             SppotiMemberEntity sppoter = new SppotiMemberEntity();
 
-            if (u != null) {
-
-                if (u.getId().equals(connectedUserId)) {
+            if (userEntity != null) {
+                TeamMemberEntity adminEntity = null;
+                if (userEntity.getId().equals(connectedUserId)) {
                     teamMember.setAdmin(true);
                     teamMember.setTeamCaptain(true);
                     /** Admin is member of the team, status should be confirmed. */
                     teamMember.setStatus(GlobalAppStatus.CONFIRMED);
+                    /** Mark team admin to use it in email. */
+                    adminEntity = teamMember;
                 }
-
                 teamMember.setTeam(team);
-                teamMember.setUsers(u);
+                teamMember.setUsers(userEntity);
 
+                assert (adminEntity != null);
                 if (sppoti != null) {
                     TeamMemberEntity sppoterMember = teamMembersRepository.findByUsersUuidAndTeamUuid(user.getId(), team.getUuid());
 
@@ -495,11 +448,11 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
                     teamMember.setSppotiMembers(sppotiMembers);
                     sppoti.setSppotiMembers(sppotiMembers);
 
-                    /** send TEAM && Sppoti notification to the invited user. */
-                    if (!u.getId().equals(connectedUserId)) {
-                        notificationEntities.add(getNotificationEntity(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, getUserById(connectedUserId), u, null, sppoti));
-
-                        sendTeamNotification(team, notificationEntities, connectedUserId, u);
+                    /** send TEAM && Sppoti notification And TEAM Email to the invited user. */
+                    if (!userEntity.getId().equals(connectedUserId)) {
+                        notificationEntities.add(getNotificationEntity(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI,
+                                getUserById(connectedUserId), userEntity, null, sppoti));
+                        teamNotifAndEmail(team, notificationEntities, connectedUserId, userEntity, adminEntity);
                     }
 
                 } else {
@@ -512,12 +465,11 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
                         teamMember.setyPosition(user.getyPosition());
                     }
 
-                    /** send TEAM notification to the invited user. */
-                    if (!u.getId().equals(connectedUserId)) {
-                        sendTeamNotification(team, notificationEntities, connectedUserId, u);
+                    /** send TEAM notification And TEAM Email to the invited user. */
+                    if (!userEntity.getId().equals(connectedUserId)) {
+                        teamNotifAndEmail(team, notificationEntities, connectedUserId, userEntity, adminEntity);
                     }
                 }
-
 
                 teamUsers.add(teamMember);
 
@@ -529,6 +481,13 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 
         return teamUsers;
 
+    }
+
+    /** Send team member notification and Email. */
+    private void teamNotifAndEmail(TeamEntity team, Set<NotificationEntity> notificationEntities, Long connectedUserId,
+                                   UserEntity userEntity, TeamMemberEntity adminEntity) {
+        this.sendTeamNotification(team, notificationEntities, connectedUserId, userEntity);
+        this.sendJoinTeamEmail(team, userEntity, adminEntity);
     }
 
     /**
@@ -543,7 +502,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 
             teamUsers.add(teamMemberTransformer.modelToDto(memberEntity, sppoti));
         }
-        TeamResponseDTO teamResponseDTO = TeamTransformer.teamEntityToDto(team);
+        TeamResponseDTO teamResponseDTO = teamTransformer.modelToDto(team);
         teamResponseDTO.setTeamMembers(teamUsers);
 
         return teamResponseDTO;
@@ -657,9 +616,29 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
      *
      * @param userId user id resource.
      */
-    protected void CheckConnectedUserAccessPriviliges(int userId) {
+    protected void CheckConnectedUserAccessPrivileges(int userId) {
         if (getConnectedUser().getUuid() != userId) {
             throw new NotAdminException("Unauthorized access");
         }
+    }
+
+    /**
+     * Send Email to the invited member to join the team.
+     *
+     * @param team team to add memeber.
+     * @param to   added memeber.
+     * @param from team admin.
+     */
+    protected void sendJoinTeamEmail(TeamEntity team, UserEntity to, TeamMemberEntity from) {
+
+        UserDTO member = userTransformer.modelToDto(to);
+        UserDTO admin = teamMemberTransformer.modelToDto(from, null);
+        TeamResponseDTO teamDto = teamTransformer.modelToDto(team);
+
+        Thread thread = new Thread(() -> {
+            this.teamMailer.sendJoinTeamEmail(teamDto, member, admin);
+            LOGGER.info("Join team email has been sent successfully !");
+        });
+        thread.start();
     }
 }

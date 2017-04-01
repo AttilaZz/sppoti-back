@@ -505,7 +505,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     @Override
     public List<SppotiResponseDTO> getAllConfirmedSppoties(int userId, int page) {
 
-        CheckConnectedUserAccessPriviliges(userId);
+        CheckConnectedUserAccessPrivileges(userId);
 
         Pageable pageable = new PageRequest(page, sppotiSize);
 
@@ -522,7 +522,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     @Override
     public List<SppotiResponseDTO> getAllRefusedSppoties(int userId, int page) {
 
-        CheckConnectedUserAccessPriviliges(userId);
+        CheckConnectedUserAccessPrivileges(userId);
 
         Pageable pageable = new PageRequest(page, sppotiSize);
 
