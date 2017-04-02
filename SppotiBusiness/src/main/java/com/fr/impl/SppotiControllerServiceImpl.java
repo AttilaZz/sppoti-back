@@ -120,6 +120,17 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         SppotiEntity savedSppoti = sppotiRepository.save(sppoti);
 
+        //If team has been saved with the sppoti, send email to its members.
+        if (newSppoti.getMyTeam() != null) {
+            TeamEntity team = savedSppoti.getTeamHost();
+            team.getTeamMembers().forEach(m -> sendJoinTeamEmail(team, getUserById(m.getUsers().getId()),
+                    teamMembersRepository.findByTeamUuidAndAdminTrue(team.getUuid())));
+        }
+
+        //TODO: Send email to the adverse team admin.
+
+        //TODO: Send emails to sppoti members too.
+
         return new SppotiResponseDTO(savedSppoti.getUuid());
 
     }

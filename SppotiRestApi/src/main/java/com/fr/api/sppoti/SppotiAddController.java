@@ -31,7 +31,7 @@ class SppotiAddController {
      * @return 201 status && SppotiEntity object with the inserted data, 400 status otherwise.
      */
     @PostMapping
-    ResponseEntity<SppotiResponseDTO> addPost(@RequestBody SppotiRequestDTO newSppoti) {
+    ResponseEntity<SppotiResponseDTO> addSppoti(@RequestBody SppotiRequestDTO newSppoti) {
 
         if (newSppoti.getAddress() == null || newSppoti.getAddress().isEmpty()) {
             LOGGER.error("AddressEntity not found");
