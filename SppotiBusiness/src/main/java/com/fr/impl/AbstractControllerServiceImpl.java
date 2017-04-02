@@ -9,8 +9,8 @@ import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.exception.TeamMemberNotFoundException;
 import com.fr.entities.*;
 import com.fr.mail.TeamMailer;
-import com.fr.models.GlobalAppStatus;
-import com.fr.models.NotificationType;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.repositories.*;
 import com.fr.service.AbstractControllerService;
 import com.fr.transformers.TeamMemberTransformer;
@@ -28,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.fr.transformers.UserTransformer.getUserCoverAndAvatar;
 
 @Transactional(readOnly = true)
 @Component("abstractService")
@@ -225,9 +223,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 //            if (!userDaoService.getLastAvatar(userId).isEmpty())
 //                cm.setAuthorAvatar(userDaoService.getLastAvatar(userId).get(0).getUrl());
 
-            UserDTO userCoverAndAvatar = getUserCoverAndAvatar(
+            UserDTO userCoverAndAvatar = userTransformer.getUserCoverAndAvatar(
                     commentEntity.getUser());
-            cm.setAuthorAvatar(userCoverAndAvatar.getAvatar() != null ? userCoverAndAvatar.getAvatar() : null);
+            cm.setAuthorAvatar(userCoverAndAvatar.getAvatar());
             cm.setAuthorFirstName(commentEntity.getUser().getFirstName());
             cm.setAuthorLastName(commentEntity.getUser().getLastName());
             cm.setCreationDate(commentEntity.getDatetimeCreated());
@@ -304,14 +302,12 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
         user.setPhone(targetUser.getTelephone());
         user.setId(targetUser.getUuid());
         user.setBirthDate(targetUser.getDateBorn());
-        user.setFriendStatus(GlobalAppStatus.PUBLIC_RELATION.getValue());
+        user.setFriendStatus(GlobalAppStatusEnum.PUBLIC_RELATION.getValue());
+        user.setGender(targetUser.getGender().name());
 
         if (connectedUser != null) {
-
             if (!connectedUser.getId().equals(targetUser.getId())) {
-                /*
-                manage requests sent to me
-                 */
+                /* manage requests sent to me. */
                 FriendShipEntity friendShip;
 
                 friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(connectedUser.getUuid(), targetUser.getUuid());
@@ -321,46 +317,39 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
                 }
 
                 if (friendShip == null) {
-                    user.setFriendStatus(GlobalAppStatus.PUBLIC_RELATION.getValue());
+                    user.setFriendStatus(GlobalAppStatusEnum.PUBLIC_RELATION.getValue());
                 } else {
 
-                    //We are friend
-                    if (friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED)) {
-                        user.setFriendStatus(GlobalAppStatus.CONFIRMED.getValue());
+                    //We are friend.
+                    if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+                        user.setFriendStatus(GlobalAppStatusEnum.CONFIRMED.getValue());
 
-                        //Friend request waiting to be accepted by me
-                    } else if (friendShip.getStatus().equals(GlobalAppStatus.PENDING)) {
-                        user.setFriendStatus(GlobalAppStatus.PENDING.getValue());
+                        //Friend request waiting to be accepted by me.
+                    } else if (friendShip.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
+                        user.setFriendStatus(GlobalAppStatusEnum.PENDING.getValue());
 
-                        //Friend request refused by me
-                    } else if (friendShip.getStatus().equals(GlobalAppStatus.REFUSED)) {
-                        user.setFriendStatus(GlobalAppStatus.REFUSED.getValue());
+                        //Friend request refused by me.
+                    } else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
+                        user.setFriendStatus(GlobalAppStatusEnum.REFUSED.getValue());
 
                     }
                 }
-                /*
-                Manage request sent by me
-                 */
-                if (!friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid(), GlobalAppStatus.PENDING).isEmpty()) {
-                    user.setFriendStatus(GlobalAppStatus.PENDING_SENT.getValue());
+                /*  Manage request sent by me. */
+                if (!friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid(), GlobalAppStatusEnum.PENDING).isEmpty()) {
+                    user.setFriendStatus(GlobalAppStatusEnum.PENDING_SENT.getValue());
                 }
             }
-
             user.setMyProfile(connectedUser.getId().equals(targetUser.getId()));
         } else {
             user.setMyProfile(true);
         }
 
-        /*
-        Manage resources
-         */
-        UserDTO user_cover_avatar = getUserCoverAndAvatar(targetUser);
-        user.setCover(user_cover_avatar.getCover());
-        user.setAvatar(user_cover_avatar.getAvatar());
-        user.setCoverType(user_cover_avatar.getCoverType());
-        /*
-        End resource manager
-         */
+        /* Manage resources. */
+        UserDTO userCoverAndAvatar = userTransformer.getUserCoverAndAvatar(targetUser);
+        user.setCover(userCoverAndAvatar.getCover());
+        user.setAvatar(userCoverAndAvatar.getAvatar());
+        user.setCoverType(userCoverAndAvatar.getCoverType());
+        /* End resource manager. */
         List<SportDTO> sportDTOs = new ArrayList<SportDTO>();
 
         for (SportEntity sportEntity : targetUser.getRelatedSports()) {
@@ -385,61 +374,57 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
     @Override
     public Set<TeamMemberEntity> getTeamMembersEntityFromDto(List<UserDTO> users, TeamEntity team, SppotiEntity sppoti) {
 
-        Set<TeamMemberEntity> teamUsers = new HashSet<TeamMemberEntity>();
+        Set<TeamMemberEntity> teamUsers = new HashSet<>();
         Set<NotificationEntity> notificationEntities = new HashSet<>();
 
         Long connectedUserId = getConnectedUser().getId();
 
-        for (UserDTO user : users) {
+        users.forEach(userDTO -> {
 
-            UserEntity userEntity = getUserByUuId(user.getId());
+            Optional<UserEntity> userEntity = Optional.ofNullable(getUserByUuId(userDTO.getId()));
 
             TeamMemberEntity teamMember = new TeamMemberEntity();
             SppotiMemberEntity sppoter = new SppotiMemberEntity();
 
-            if (userEntity != null) {
-                TeamMemberEntity adminEntity = null;
-                if (userEntity.getId().equals(connectedUserId)) {
+            userEntity.ifPresent(user -> {
+                if (user.getId().equals(connectedUserId)) {
                     teamMember.setAdmin(true);
                     teamMember.setTeamCaptain(true);
-                    /** Admin is member of the team, status should be confirmed. */
-                    teamMember.setStatus(GlobalAppStatus.CONFIRMED);
-                    /** Mark team admin to use it in email. */
-                    adminEntity = teamMember;
+                    /* Admin is member of the team, status should be confirmed. */
+                    teamMember.setStatus(GlobalAppStatusEnum.CONFIRMED);
                 }
                 teamMember.setTeam(team);
-                teamMember.setUsers(userEntity);
+                teamMember.setUsers(user);
 
-                assert (adminEntity != null);
                 if (sppoti != null) {
-                    TeamMemberEntity sppoterMember = teamMembersRepository.findByUsersUuidAndTeamUuid(user.getId(), team.getUuid());
+                    TeamMemberEntity sppoterMember = teamMembersRepository.findByUsersUuidAndTeamUuid(userDTO.getId(), team.getUuid());
 
-                    /** if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter. */
-                    if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
-                        sppoter.setxPosition(user.getxPosition());
+                    /* if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter. */
+                    if (userDTO.getxPosition() != null && !userDTO.getxPosition().equals(0)) {
+                        sppoter.setxPosition(userDTO.getxPosition());
                     }
 
-                    if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
-                        sppoter.setyPosition(user.getyPosition());
+                    if (userDTO.getyPosition() != null && !userDTO.getyPosition().equals(0)) {
+                        sppoter.setyPosition(userDTO.getyPosition());
                     }
 
-                    /** Admin is member of sppoti, status should be confirmed. */
+                    /* Admin is member of sppoti, status should be confirmed. */
                     if (teamMember.getAdmin() != null && teamMember.getAdmin()) {
-                        sppoter.setStatus(GlobalAppStatus.CONFIRMED);
+                        sppoter.setStatus(GlobalAppStatusEnum.CONFIRMED);
                     }
 
-                    /** if the sppoter already exist - default coordinate doesn't change. */
+                    /* if the sppoter already exist - default coordinate doesn't change. */
                     if (sppoterMember == null) {
-                        if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
-                            teamMember.setxPosition(user.getxPosition());
+                        if (userDTO.getxPosition() != null && !userDTO.getxPosition().equals(0)) {
+                            teamMember.setxPosition(userDTO.getxPosition());
                         }
 
-                        if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
-                            teamMember.setyPosition(user.getyPosition());
+                        if (userDTO.getyPosition() != null && !userDTO.getyPosition().equals(0)) {
+                            teamMember.setyPosition(userDTO.getyPosition());
                         }
                     }
 
-                    /** Convert team members to sppoters. */
+                    /* Convert team members to sppoters. */
                     Set<SppotiMemberEntity> sppotiMembers = new HashSet<>();
                     sppoter.setTeamMember(teamMember);
                     sppoter.setSppoti(sppoti);
@@ -448,46 +433,47 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
                     teamMember.setSppotiMembers(sppotiMembers);
                     sppoti.setSppotiMembers(sppotiMembers);
 
-                    /** send TEAM && Sppoti notification And TEAM Email to the invited user. */
-                    if (!userEntity.getId().equals(connectedUserId)) {
-                        notificationEntities.add(getNotificationEntity(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI,
-                                getUserById(connectedUserId), userEntity, null, sppoti));
-                        teamNotifAndEmail(team, notificationEntities, connectedUserId, userEntity, adminEntity);
+                    /* send TEAM && Sppoti notification And TEAM Email to the invited user. */
+                    if (!user.getId().equals(connectedUserId)) {
+                        notificationEntities.add(getNotificationEntity(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI,
+                                getUserById(connectedUserId), user, null, sppoti));
+                        teamNotificationAndEmail(team, notificationEntities, connectedUserId, user);
                     }
 
                 } else {
-                    /** if request coming from add team - add members only in (users_team). */
-                    if (user.getxPosition() != null && !user.getxPosition().equals(0)) {
-                        teamMember.setxPosition(user.getxPosition());
+                    /* if request coming from add team - add members only in (users_team). */
+                    if (userDTO.getxPosition() != null && !userDTO.getxPosition().equals(0)) {
+                        teamMember.setxPosition(userDTO.getxPosition());
                     }
 
-                    if (user.getyPosition() != null && !user.getyPosition().equals(0)) {
-                        teamMember.setyPosition(user.getyPosition());
+                    if (userDTO.getyPosition() != null && !userDTO.getyPosition().equals(0)) {
+                        teamMember.setyPosition(userDTO.getyPosition());
                     }
 
-                    /** send TEAM notification And TEAM Email to the invited user. */
-                    if (!userEntity.getId().equals(connectedUserId)) {
-                        teamNotifAndEmail(team, notificationEntities, connectedUserId, userEntity, adminEntity);
+                    /* send TEAM notification And TEAM Email to the invited user. */
+                    if (!user.getId().equals(connectedUserId)) {
+                        teamNotificationAndEmail(team, notificationEntities, connectedUserId, user);
                     }
                 }
 
                 teamUsers.add(teamMember);
+            });
 
-            } else {
-                throw new TeamMemberNotFoundException("team member (" + user.getId() + ") not found");
-            }
+            userEntity.orElseThrow(() -> new TeamMemberNotFoundException("team member (" + userDTO.getId() + ") not found"));
 
-        }
+        });
 
         return teamUsers;
 
     }
 
-    /** Send team member notification and Email. */
-    private void teamNotifAndEmail(TeamEntity team, Set<NotificationEntity> notificationEntities, Long connectedUserId,
-                                   UserEntity userEntity, TeamMemberEntity adminEntity) {
+    /**
+     * Send team member notification and Email.
+     */
+    private void teamNotificationAndEmail(TeamEntity team, Set<NotificationEntity> notificationEntities, Long connectedUserId,
+                                          UserEntity userEntity) {
         this.sendTeamNotification(team, notificationEntities, connectedUserId, userEntity);
-        this.sendJoinTeamEmail(team, userEntity, adminEntity);
+        //this.sendJoinTeamEmail(team, userEntity, adminEntity);
     }
 
     /**
@@ -499,7 +485,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
         List<UserDTO> teamUsers = new ArrayList<>();
 
         for (TeamMemberEntity memberEntity : team.getTeamMembers()) {
-
             teamUsers.add(teamMemberTransformer.modelToDto(memberEntity, sppoti));
         }
         TeamResponseDTO teamResponseDTO = teamTransformer.modelToDto(team);
@@ -517,7 +502,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
      */
     private void sendTeamNotification(TeamEntity team, Set<NotificationEntity> notificationEntities, Long adminId, UserEntity u) {
 
-        notificationEntities.add(getNotificationEntity(NotificationType.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u, team, null));
+        notificationEntities.add(getNotificationEntity(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u, team, null));
         if (team.getNotificationEntities() != null) {
             team.getNotificationEntities().addAll(notificationEntities);
         } else {
@@ -536,7 +521,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
      * @param sppoti           sppoti info.
      */
     @Transactional
-    protected void addNotification(NotificationType notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity, SppotiEntity sppoti) {
+    protected void addNotification(NotificationTypeEnum notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity, SppotiEntity sppoti) {
         NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity, sppoti);
 
         notificationRepository.save(notification);
@@ -545,7 +530,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
     /**
      * Init notif entity.
      */
-    private NotificationEntity getNotificationEntity(NotificationType notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity, SppotiEntity sppotiEntity) {
+    private NotificationEntity getNotificationEntity(NotificationTypeEnum notificationType, UserEntity userFrom, UserEntity userTo, TeamEntity teamEntity, SppotiEntity sppotiEntity) {
         NotificationEntity notification = new NotificationEntity();
         notification.setNotificationType(notificationType);
         notification.setFrom(userFrom);
@@ -601,9 +586,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 
             if (userToNotify != null) {
                 if (commentEntity != null) {
-                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(), userToNotify, null, null);
+                    addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(), userToNotify, null, null);
                 } else if (postEntity != null) {
-                    addNotification(NotificationType.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify, null, null);
+                    addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify, null, null);
                 }
 
             }
@@ -622,11 +607,12 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
         }
     }
 
+
     /**
      * Send Email to the invited member to join the team.
      *
-     * @param team team to add memeber.
-     * @param to   added memeber.
+     * @param team team to add member.
+     * @param to   added member.
      * @param from team admin.
      */
     protected void sendJoinTeamEmail(TeamEntity team, UserEntity to, TeamMemberEntity from) {

@@ -1,7 +1,7 @@
 package com.fr.repositories;
 
 import com.fr.entities.SppotiMemberEntity;
-import com.fr.models.GlobalAppStatus;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -36,7 +36,7 @@ public interface SppotiMembersRepository extends JpaRepository<SppotiMemberEntit
      * @param pageable page number.
      * @return return all joined sppoties, unless refused ones.
      */
-    List<SppotiMemberEntity> findByTeamMemberUsersUuidAndStatusNot(int userId, GlobalAppStatus refused, Pageable pageable);
+    List<SppotiMemberEntity> findByTeamMemberUsersUuidAndStatusNot(int userId, GlobalAppStatusEnum refused, Pageable pageable);
 
     /**
      *
@@ -45,5 +45,5 @@ public interface SppotiMembersRepository extends JpaRepository<SppotiMemberEntit
      * @param confirmed sppoti status.
      * @return all confirmed sppoties.
      */
-    List<SppotiMemberEntity> findByTeamMemberUsersUuidAndStatus(int userId, Pageable pageable, GlobalAppStatus confirmed);
+    List<SppotiMemberEntity> findByTeamMemberUsersUuidAndStatus(int userId, Pageable pageable, GlobalAppStatusEnum confirmed);
 }

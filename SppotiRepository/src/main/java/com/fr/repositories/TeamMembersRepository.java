@@ -1,7 +1,7 @@
 package com.fr.repositories;
 
 import com.fr.entities.TeamMemberEntity;
-import com.fr.models.GlobalAppStatus;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -84,7 +84,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
      * @param pageable page number.
      * @return all confirmed teams.
      */
-    List<TeamMemberEntity> findByUsersUuidAndStatus(int userId, GlobalAppStatus confirmed, Pageable pageable);
+    List<TeamMemberEntity> findByUsersUuidAndStatus(int userId, GlobalAppStatusEnum confirmed, Pageable pageable);
 
     /**
      *

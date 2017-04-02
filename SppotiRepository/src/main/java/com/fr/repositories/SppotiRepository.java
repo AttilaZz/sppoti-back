@@ -1,7 +1,7 @@
 package com.fr.repositories;
 
 import com.fr.entities.SppotiEntity;
-import com.fr.models.GlobalAppStatus;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.access.prepost.PostFilter;
@@ -24,5 +24,5 @@ public interface SppotiRepository extends JpaRepository<SppotiEntity, Long> {
      * @return return all found sppoties.
      */
     @PostFilter("!filterObject.isDeleted()")
-    List<SppotiEntity> findByUserSppotiUuidAndTeamAdverseStatusNot(Integer id, GlobalAppStatus adverseTeamStatus, Pageable pageable);
+    List<SppotiEntity> findByUserSppotiUuidAndTeamAdverseStatusNot(Integer id, GlobalAppStatusEnum adverseTeamStatus, Pageable pageable);
 }

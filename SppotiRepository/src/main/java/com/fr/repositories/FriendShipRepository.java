@@ -1,7 +1,7 @@
 package com.fr.repositories;
 
 import com.fr.entities.FriendShipEntity;
-import com.fr.models.GlobalAppStatus;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -16,11 +16,11 @@ public interface FriendShipRepository extends CrudRepository<FriendShipEntity, L
 
     FriendShipEntity findByFriendUuidAndUserUuidAndDeletedFalse(int friend_uuid, int connected_user);
 
-    List<FriendShipEntity> findByUserUuidAndStatusAndDeletedFalse(int uuid, GlobalAppStatus name, Pageable pageable);
+    List<FriendShipEntity> findByUserUuidAndStatusAndDeletedFalse(int uuid, GlobalAppStatusEnum name, Pageable pageable);
 
-    List<FriendShipEntity> findByFriendUuidAndStatusAndDeletedFalse(int friend, GlobalAppStatus name, Pageable pageable);
+    List<FriendShipEntity> findByFriendUuidAndStatusAndDeletedFalse(int friend, GlobalAppStatusEnum name, Pageable pageable);
 
-    List<FriendShipEntity> findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(int connectedUser, int uuid, GlobalAppStatus status);
+    List<FriendShipEntity> findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(int connectedUser, int uuid, GlobalAppStatusEnum status);
 
     //    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
     @Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.firstName LIKE CONCAT('%',:part1,'%') AND f.friend.lastName LIKE CONCAT('%',:part2,'%')) OR (f.friend.firstName LIKE CONCAT('%',:part2,'%') AND f.friend.lastName LIKE CONCAT('%',:part1,'%')) AND f.status = :status AND f.deleted = false")

@@ -17,6 +17,7 @@ public class UserDTO extends AbstractCommonDTO {
     private String lastName;
     private String username;
     private String address;
+    private String gender;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private Date birthDate;
@@ -266,5 +267,13 @@ public class UserDTO extends AbstractCommonDTO {
 
     public void setHasRateOtherSppoters(Boolean hasRateOtherSppoters) {
         this.hasRateOtherSppoters = hasRateOtherSppoters;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

@@ -1,9 +1,9 @@
-package com.fr.models;
+package com.fr.commons.enumeration;
 
 /**
  * Created by djenanewail on 12/26/16.
  */
-public enum GlobalAppStatus {
+public enum GlobalAppStatusEnum {
 
     PUBLIC_RELATION(1),
     PENDING_SENT(2),
@@ -14,7 +14,7 @@ public enum GlobalAppStatus {
 
     private int status;
 
-    GlobalAppStatus(int status) {
+    GlobalAppStatusEnum(int status) {
         this.status = status;
     }
 

@@ -2,7 +2,7 @@ package com.fr.api.search;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShipEntity;
-import com.fr.models.GlobalAppStatus;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.repositories.FriendShipRepository;
 import com.fr.service.AccountControllerService;
 import org.apache.log4j.Logger;
@@ -69,10 +69,10 @@ class FindFriendController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else //get users by first name and last name
             if (parts.length == 2)
-                foundFriends = friendShipRepository.findFriendsByFirstNameAndLastNameAndStatus(parts[0], parts[1], GlobalAppStatus.CONFIRMED.name(), pageable);
+                foundFriends = friendShipRepository.findFriendsByFirstNameAndLastNameAndStatus(parts[0], parts[1], GlobalAppStatusEnum.CONFIRMED.name(), pageable);
             else {
                 //get users by username, first name and last name
-                foundFriends = friendShipRepository.findFriendByUsernameAndStatus(parts[0], GlobalAppStatus.CONFIRMED.name(), pageable);
+                foundFriends = friendShipRepository.findFriendByUsernameAndStatus(parts[0], GlobalAppStatusEnum.CONFIRMED.name(), pageable);
 
             }
 

@@ -4,8 +4,8 @@ package com.fr.impl;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
-import com.fr.models.GlobalAppStatus;
-import com.fr.models.NotificationType;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.FriendControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +33,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
      * {@inheritDoc}
      */
     @Override
-    public List<FriendShipEntity> getByUserAndStatus(int uuid, GlobalAppStatus name, Pageable pageable) {
+    public List<FriendShipEntity> getByUserAndStatus(int uuid, GlobalAppStatusEnum name, Pageable pageable) {
         return friendShipRepository.findByUserUuidAndStatusAndDeletedFalse(uuid, name, pageable);
     }
 
@@ -41,7 +41,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
      * {@inheritDoc}
      */
     @Override
-    public List<FriendShipEntity> getByFriendUuidAndStatus(int uuid, GlobalAppStatus name, Pageable pageable) {
+    public List<FriendShipEntity> getByFriendUuidAndStatus(int uuid, GlobalAppStatusEnum name, Pageable pageable) {
         return friendShipRepository.findByFriendUuidAndStatusAndDeletedFalse(uuid, name, pageable);
     }
 
@@ -61,7 +61,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
     public void saveFriendShip(FriendShipEntity friendShip) {
 
         if (friendShipRepository.save(friendShip) != null) {
-            addNotification(NotificationType.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend(), null, null);
+            addNotification(NotificationTypeEnum.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend(), null, null);
         }
 
     }
@@ -90,7 +90,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
         /*
         prepare update
          */
-        for (GlobalAppStatus globalAppStatus : GlobalAppStatus.values()) {
+        for (GlobalAppStatusEnum globalAppStatus : GlobalAppStatusEnum.values()) {
             if (globalAppStatus.getValue() == friendStatus) {
                 tempFriendShip.setStatus(globalAppStatus);
             }
@@ -99,10 +99,10 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
         //update and add notification
         FriendShipEntity friendShip = friendShipRepository.save(tempFriendShip);
         if (friendShip != null) {
-            if (friendShip.getStatus().equals(GlobalAppStatus.CONFIRMED)) {
-                addNotification(NotificationType.FRIEND_REQUEST_ACCEPTED, friendShip.getFriend(), friendShip.getUser(), null, null);
-            } else if (friendShip.getStatus().equals(GlobalAppStatus.REFUSED)) {
-                addNotification(NotificationType.FRIEND_REQUEST_REFUSED, friendShip.getFriend(), friendShip.getUser(), null, null);
+            if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+                addNotification(NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED, friendShip.getFriend(), friendShip.getUser(), null, null);
+            } else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
+                addNotification(NotificationTypeEnum.FRIEND_REQUEST_REFUSED, friendShip.getFriend(), friendShip.getUser(), null, null);
             }
         }
 
@@ -136,7 +136,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShipEntity> friendShips = this.getByUserAndStatus(userId, GlobalAppStatus.CONFIRMED, pageable);
+        List<FriendShipEntity> friendShips = this.getByUserAndStatus(userId, GlobalAppStatusEnum.CONFIRMED, pageable);
 
         return friendShips.stream()
                 .map(f -> this.fillUserResponse(f.getFriend(), null))

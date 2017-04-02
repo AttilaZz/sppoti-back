@@ -9,9 +9,8 @@ import com.fr.entities.SportEntity;
 import com.fr.entities.TeamEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.entities.UserEntity;
-import com.fr.mail.TeamMailer;
-import com.fr.models.GlobalAppStatus;
-import com.fr.models.NotificationType;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.TeamControllerService;
 import com.fr.transformers.TeamMemberTransformer;
 import com.fr.transformers.TeamTransformer;
@@ -68,19 +67,16 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 
         TeamEntity teamToSave = new TeamEntity();
         teamToSave.setName(team.getName());
-
-        if (!StringUtils.isEmpty(team.getCoverPath())) {
-            teamToSave.setCoverPath(team.getCoverPath());
-        }
-
-        if (!StringUtils.isEmpty(team.getLogoPath())) {
-            teamToSave.setLogoPath(team.getLogoPath());
-        }
-
+        teamToSave.setCoverPath(team.getCoverPath());
+        teamToSave.setLogoPath(team.getLogoPath());
+        teamToSave.setSport(sportEntity);
         teamToSave.setTeamMembers(getTeamMembersEntityFromDto(team.getMembers(), teamToSave, null));
 
-        teamToSave.setSport(sportEntity);
         TeamEntity addedTeam = teamRepository.save(teamToSave);
+
+        //Send email to the invited members.
+        addedTeam.getTeamMembers().forEach(m -> sendJoinTeamEmail(addedTeam, getUserById(m.getUsers().getId()),
+                teamMembersRepository.findByTeamUuidAndAdminTrue(addedTeam.getUuid())));
 
         return fillTeamResponse(addedTeam, null);
 
@@ -100,7 +96,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
         }
 
         if (teamRequestDTO.getStatus() != null && !teamRequestDTO.getStatus().equals(0)) {
-            for (GlobalAppStatus status : GlobalAppStatus.values()) {
+            for (GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
                 if (status.getValue() == teamRequestDTO.getStatus()) {
                     usersTeam.setStatus(status);
                 }
@@ -163,10 +159,10 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             throw new EntityNotFoundException("TeamEntity not found");
         }
 
-        teamMembers.setStatus(GlobalAppStatus.CONFIRMED);
+        teamMembers.setStatus(GlobalAppStatusEnum.CONFIRMED);
 
         if (teamMembersRepository.save(teamMembers) != null) {
-            addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null, null);
+            addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null, null);
         }
 
     }
@@ -184,10 +180,10 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             throw new EntityNotFoundException("TeamEntity not found");
         }
 
-        teamMembers.setStatus(GlobalAppStatus.REFUSED);
+        teamMembers.setStatus(GlobalAppStatusEnum.REFUSED);
 
         if (teamMembersRepository.save(teamMembers) != null) {
-            addNotification(NotificationType.X_REFUSED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null, null);
+            addNotification(NotificationTypeEnum.X_REFUSED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null, null);
 
         }
 
@@ -344,7 +340,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             teamEntity.setCoverPath(teamRequestDTO.getCoverPath());
         }
 
-        return teamTransformer.modelToDto(teamRepository.save(teamEntity));
+        TeamEntity savedTeam = teamRepository.save(teamEntity);
+        return teamTransformer.modelToDto(savedTeam);
     }
 
     /**
@@ -382,7 +379,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             throw new NotAdminException("Unauthorized access");
         }
 
-        return teamMembersRepository.findByUsersUuidAndStatus(userId, GlobalAppStatus.CONFIRMED, pageable)
+        return teamMembersRepository.findByUsersUuidAndStatus(userId, GlobalAppStatusEnum.CONFIRMED, pageable)
                 .stream()
                 .map(t -> teamTransformer.modelToDto(t.getTeam()))
                 .collect(Collectors.toList());
@@ -418,5 +415,4 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
                 .collect(Collectors.toList());
 
     }
-
 }

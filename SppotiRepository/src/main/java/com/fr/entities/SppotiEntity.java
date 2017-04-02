@@ -3,7 +3,7 @@ package com.fr.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.models.GlobalAppStatus;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -69,7 +69,7 @@ public class SppotiEntity
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private GlobalAppStatus teamAdverseStatus = GlobalAppStatus.NO_CHALLENGE_YET;
+    private GlobalAppStatusEnum teamAdverseStatus = GlobalAppStatusEnum.NO_CHALLENGE_YET;
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMemberEntity> sppotiMembers;
@@ -178,11 +178,11 @@ public class SppotiEntity
         this.sppotiMembers = sppotiMembers;
     }
 
-    public GlobalAppStatus getTeamAdverseStatus() {
+    public GlobalAppStatusEnum getTeamAdverseStatus() {
         return teamAdverseStatus;
     }
 
-    public void setTeamAdverseStatus(GlobalAppStatus teamAdverseStatus) {
+    public void setTeamAdverseStatus(GlobalAppStatusEnum teamAdverseStatus) {
         this.teamAdverseStatus = teamAdverseStatus;
     }
 

@@ -1,9 +1,9 @@
-package com.fr.models;
+package com.fr.commons.enumeration;
 
 /**
  * Created by: Wail DJENANE on Aug 18, 2016
  */
-public enum SportList {
+public enum SportListEnum {
 
     FOOTBALL("Football"),
     TENNIS("Tennis"),
@@ -19,7 +19,7 @@ public enum SportList {
 
     String sportType;
 
-    SportList(String sportName) {
+    SportListEnum(String sportName) {
         this.sportType = sportName;
     }
 

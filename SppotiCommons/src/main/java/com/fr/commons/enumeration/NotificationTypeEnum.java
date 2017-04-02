@@ -1,9 +1,9 @@
-package com.fr.models;
+package com.fr.commons.enumeration;
 
 /**
  * Created by djenanewail on 2/11/17.
  */
-public enum NotificationType {
+public enum NotificationTypeEnum {
 
     //FRIEND
     FRIEND_REQUEST_SENT(51),
@@ -32,7 +32,7 @@ public enum NotificationType {
 
     private int notifType;
 
-    NotificationType(int notifType) {
+    NotificationTypeEnum(int notifType) {
         this.notifType = notifType;
     }
 

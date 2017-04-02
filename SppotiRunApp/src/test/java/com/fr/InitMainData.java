@@ -2,8 +2,8 @@ package com.fr;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fr.entities.SportEntity;
-import com.fr.models.SportList;
-import com.fr.models.UserRoleType;
+import com.fr.commons.enumeration.SportListEnum;
+import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.entities.RoleEntity;
 import com.fr.repositories.RoleRepository;
 import com.fr.repositories.SportRepository;
@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -35,8 +34,8 @@ public class InitMainData {
 
     private static Logger logger = Logger.getLogger(InitMainData.class);
 
-    private static final int sportListSize = SportList.values().length;
-    private static final int roleListSize = UserRoleType.values().length;
+    private static final int sportListSize = SportListEnum.values().length;
+    private static final int roleListSize = UserRoleTypeEnum.values().length;
 
     @Test
     public void insertSports() throws JsonProcessingException {
@@ -46,7 +45,7 @@ public class InitMainData {
             // clear list
 
             List<SportEntity> newSports = new ArrayList<>();
-            SportList[] spList = SportList.values().clone();
+            SportListEnum[] spList = SportListEnum.values().clone();
 
 			/*
              * loop the database to detect the new sports if no sports has been
@@ -125,7 +124,7 @@ public class InitMainData {
             // clear list
 
             List<RoleEntity> newRoles = new ArrayList<>();
-            UserRoleType[] uroleList = UserRoleType.values().clone();
+            UserRoleTypeEnum[] uroleList = UserRoleTypeEnum.values().clone();
 
 			/*
              * loop the database to detect the new sports if no sports has been

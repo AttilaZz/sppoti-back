@@ -8,8 +8,8 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NoRightToAcceptOrRefuseChallenge;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.*;
-import com.fr.models.GlobalAppStatus;
-import com.fr.models.NotificationType;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.SppotiControllerService;
 import com.fr.transformers.SportTransformer;
 import com.fr.transformers.SppotiTransformer;
@@ -168,7 +168,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             sppotiResponseDTO.setTeamAdverse(teamAdverseResponse);
             sppotiResponseDTO.setTeamAdverseStatus(sppoti.getTeamAdverseStatus().getValue());
         } else {
-            sppotiResponseDTO.setTeamAdverseStatus(GlobalAppStatus.NO_CHALLENGE_YET.getValue());
+            sppotiResponseDTO.setTeamAdverseStatus(GlobalAppStatusEnum.NO_CHALLENGE_YET.getValue());
         }
 
         sppotiResponseDTO.setTeamHost(teamHostResponse);
@@ -259,7 +259,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             sppoti.setTeamAdverse(adverseTeam.get(0));
         }
 
-        sppoti.setTeamAdverseStatus(GlobalAppStatus.PENDING);
+        sppoti.setTeamAdverseStatus(GlobalAppStatusEnum.PENDING);
         SppotiEntity updatedSppoti = sppotiRepository.save(sppoti);
 
         return getSppotiResponse(updatedSppoti);
@@ -278,20 +278,20 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         optional.ifPresent(
                 sm -> {
                     //update status as sppoti member.
-                    sm.setStatus(GlobalAppStatus.CONFIRMED);
+                    sm.setStatus(GlobalAppStatusEnum.CONFIRMED);
                     SppotiMemberEntity updatedSppoter = sppotiMembersRepository.save(sm);
 
                     /**
                      * Send notification to sppoti admin.
                      */
                     if (updatedSppoter != null) {
-                        addNotification(NotificationType.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sm.getTeamMember().getUsers(), sm.getSppoti().getUserSppoti(), null, null);
+                        addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sm.getTeamMember().getUsers(), sm.getSppoti().getUserSppoti(), null, null);
                     }
 
                     //update status as team member.
                     TeamMemberEntity teamMembers = sm.getTeamMember();
-                    if (!teamMembers.getStatus().equals(GlobalAppStatus.CONFIRMED)) {
-                        teamMembers.setStatus(GlobalAppStatus.CONFIRMED);
+                    if (!teamMembers.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+                        teamMembers.setStatus(GlobalAppStatusEnum.CONFIRMED);
                     }
 
                     TeamMemberEntity updatedTeamMember = teamMembersRepository.save(teamMembers);
@@ -299,11 +299,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                     /**
                      * Send notification to team admin.
                      */
-                    if (updatedTeamMember != null && !teamMembers.getStatus().equals(GlobalAppStatus.CONFIRMED)) {
+                    if (updatedTeamMember != null && !teamMembers.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
 
                         UserEntity teamAdmin = teamMembersRepository.findByTeamUuidAndAdminTrue(teamMembers.getTeam().getUuid()).getUsers();
 
-                        addNotification(NotificationType.X_ACCEPTED_YOUR_TEAM_INVITATION, sm.getTeamMember().getUsers(), teamAdmin, teamMembers.getTeam(), null);
+                        addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_TEAM_INVITATION, sm.getTeamMember().getUsers(), teamAdmin, teamMembers.getTeam(), null);
                     }
                 }
         );
@@ -324,14 +324,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             throw new EntityNotFoundException("Sppoter not found");
         }
 
-        sppotiMembers.setStatus(GlobalAppStatus.REFUSED);
+        sppotiMembers.setStatus(GlobalAppStatusEnum.REFUSED);
         SppotiMemberEntity updatedSppoter = sppotiMembersRepository.save(sppotiMembers);
 
         /**
          * Send notification to sppoti admin.
          */
         if (updatedSppoter != null) {
-            addNotification(NotificationType.X_REFUSED_YOUR_SPPOTI_INVITATION, sppotiMembers.getTeamMember().getUsers(), sppotiMembers.getSppoti().getUserSppoti(), null, null);
+            addNotification(NotificationTypeEnum.X_REFUSED_YOUR_SPPOTI_INVITATION, sppotiMembers.getTeamMember().getUsers(), sppotiMembers.getSppoti().getUserSppoti(), null, null);
         }
 
     }
@@ -355,7 +355,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         }
 
         //set new status.
-        for (GlobalAppStatus status : GlobalAppStatus.values()) {
+        for (GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
             if (status.getValue() == adverseTeamResponseStatus) {
                 sppotiEntity.setTeamAdverseStatus(status);
             }
@@ -375,7 +375,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         Pageable pageable = new PageRequest(page, sppotiSize);
 
-        List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuidAndTeamAdverseStatusNot(id, GlobalAppStatus.REFUSED, pageable);
+        List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuidAndTeamAdverseStatusNot(id, GlobalAppStatusEnum.REFUSED, pageable);
 
         return sppoties.stream()
                 .map(this::getSppotiResponse)
@@ -390,7 +390,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     public List<SppotiResponseDTO> getAllJoinedSppoties(int userId, int page) {
         Pageable pageable = new PageRequest(page, sppotiSize);
 
-        List<SppotiMemberEntity> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuidAndStatusNot(userId, GlobalAppStatus.REFUSED, pageable);
+        List<SppotiMemberEntity> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuidAndStatusNot(userId, GlobalAppStatusEnum.REFUSED, pageable);
 
         return sppotiMembers.stream()
                 .map(s -> getSppotiResponse(s.getSppoti()))
@@ -446,7 +446,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         Set<SppotiMemberEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(challengeTeam, sppotiEntity, true);
         sppotiEntity.setSppotiMembers(sppotiMembers);
         sppotiEntity.setTeamAdverse(challengeTeam);
-        sppotiEntity.setTeamAdverseStatus(GlobalAppStatus.PENDING);
+        sppotiEntity.setTeamAdverseStatus(GlobalAppStatusEnum.PENDING);
 
         //update sppoti.
         SppotiEntity savedSppoti = sppotiRepository.save(sppotiEntity);
@@ -469,7 +469,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                     Optional<SppotiMemberEntity> ratedSppoter = Optional.of(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(sppoter.getSppoterRatedId(), se.getUuid()));
                     ratedSppoter.ifPresent(
                             rs -> {
-                                if (rs.getStatus().equals(GlobalAppStatus.PENDING)) {
+                                if (rs.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
                                     throw new BusinessGlobalException("Sppoter hasn't accepted sppoti yet");
                                 }
 
@@ -509,7 +509,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         Pageable pageable = new PageRequest(page, sppotiSize);
 
-        return sppotiMembersRepository.findByTeamMemberUsersUuidAndStatus(userId, pageable, GlobalAppStatus.CONFIRMED)
+        return sppotiMembersRepository.findByTeamMemberUsersUuidAndStatus(userId, pageable, GlobalAppStatusEnum.CONFIRMED)
                 .stream()
                 .map(s -> getSppotiResponse(s.getSppoti()))
                 .collect(Collectors.toList());
@@ -526,7 +526,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         Pageable pageable = new PageRequest(page, sppotiSize);
 
-        return sppotiMembersRepository.findByTeamMemberUsersUuidAndStatus(userId, pageable, GlobalAppStatus.REFUSED)
+        return sppotiMembersRepository.findByTeamMemberUsersUuidAndStatus(userId, pageable, GlobalAppStatusEnum.REFUSED)
                 .stream()
                 .map(s -> getSppotiResponse(s.getSppoti()))
                 .collect(Collectors.toList());
@@ -545,9 +545,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                             sppotiMember.setTeamMember(sm);
                             sppotiMember.setSppoti(sppoti);
                             if (fromAdverseTeam) {
-                                if (sm.getAdmin()) sppotiMember.setStatus(GlobalAppStatus.CONFIRMED);
+                                if (sm.getAdmin()) sppotiMember.setStatus(GlobalAppStatusEnum.CONFIRMED);
                             } else {
-                                sppotiMember.setStatus(GlobalAppStatus.PENDING);
+                                sppotiMember.setStatus(GlobalAppStatusEnum.PENDING);
                             }
                             return sppotiMember;
                         }

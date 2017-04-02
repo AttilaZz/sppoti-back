@@ -3,7 +3,7 @@ package com.fr.api.friend;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
-import com.fr.models.GlobalAppStatus;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.service.FriendControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +83,7 @@ class FriendAddController {
         Check if friendship exist
          */
         FriendShipEntity tempFriendShip = friendControllerService.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid());
-        if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatus.PUBLIC_RELATION)) {
+        if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
             LOGGER.error("ADD-FRIEND: You are already friends");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -91,9 +91,9 @@ class FriendAddController {
         FriendShipEntity friendShip = new FriendShipEntity();
 
         //friendship aleady exist in a different status
-        if (tempFriendShip != null && tempFriendShip.getStatus().equals(GlobalAppStatus.PUBLIC_RELATION)) {
+        if (tempFriendShip != null && tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
             friendShip = tempFriendShip;
-            friendShip.setStatus(GlobalAppStatus.PENDING);
+            friendShip.setStatus(GlobalAppStatusEnum.PENDING);
         } else {
             UserEntity u = friendControllerService.getUserByUuId(user.getFriendUuid());
             friendShip.setFriend(u);

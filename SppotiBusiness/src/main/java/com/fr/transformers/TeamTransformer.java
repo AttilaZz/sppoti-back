@@ -1,6 +1,5 @@
 package com.fr.transformers;
 
-import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
 import com.fr.entities.TeamEntity;
@@ -44,10 +43,7 @@ public class TeamTransformer {
 
         teamResponseDTO.setTeamMembers(
                 teamEntity.getTeamMembers().stream()
-                        .map(m -> {
-                            UserDTO user = teamMemberTransformer.modelToDto(m, null);
-                            return user;
-                        }).collect(Collectors.toList())
+                        .map(m -> teamMemberTransformer.modelToDto(m, null)).collect(Collectors.toList())
         );
 
         return teamResponseDTO;

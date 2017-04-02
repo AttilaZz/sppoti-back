@@ -29,12 +29,13 @@ public class UserTransformer {
         userDTO.setLastName(entity.getLastName());
         userDTO.setUsername(entity.getUsername());
         userDTO.setEmail(entity.getEmail());
+        userDTO.setGender(entity.getGender().name());
 
-        UserDTO userRessources = getUserCoverAndAvatar(entity);
+        UserDTO userResources = getUserCoverAndAvatar(entity);
 
-        userDTO.setAvatar(userRessources.getAvatar());
-        userDTO.setCover(userRessources.getCover());
-        userDTO.setCoverType(userRessources.getCoverType());
+        userDTO.setAvatar(userResources.getAvatar());
+        userDTO.setCover(userResources.getCover());
+        userDTO.setCoverType(userResources.getCoverType());
 
         return userDTO;
     }
@@ -43,7 +44,7 @@ public class UserTransformer {
      * @param targetUser user entity to map.
      * @return userDto with only avatar and cover.
      */
-    public static UserDTO getUserCoverAndAvatar(UserEntity targetUser) {
+    public UserDTO getUserCoverAndAvatar(UserEntity targetUser) {
 
         UserDTO user = new UserDTO();
         Set<ResourcesEntity> resources = targetUser.getResources();

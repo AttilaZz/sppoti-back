@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.fr.transformers.UserTransformer.getUserCoverAndAvatar;
-
 /**
  * Created by djenanewail on 2/19/17.
  */
@@ -22,10 +20,12 @@ import static com.fr.transformers.UserTransformer.getUserCoverAndAvatar;
 public class NotificationTransformer {
 
     private final TeamTransformer teamTransformer;
+    private final UserTransformer userTransformer;
 
     @Autowired
-    public NotificationTransformer(TeamTransformer teamTransformer) {
+    public NotificationTransformer(TeamTransformer teamTransformer, UserTransformer userTransformer) {
         this.teamTransformer = teamTransformer;
+        this.userTransformer = userTransformer;
     }
 
     /**
@@ -55,7 +55,7 @@ public class NotificationTransformer {
      * @return user DTO used in notifications.
      */
     public UserDTO notificationUserEntityToDto(UserEntity userEntity) {
-        UserDTO userDTO = new UserDTO(), resourceUserDto = getUserCoverAndAvatar(userEntity);
+        UserDTO userDTO = new UserDTO(), resourceUserDto = userTransformer.getUserCoverAndAvatar(userEntity);
         userDTO.setFirstName(userEntity.getFirstName());
         userDTO.setLastName(userEntity.getLastName());
         userDTO.setEmail(userDTO.getEmail());

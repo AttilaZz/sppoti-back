@@ -4,7 +4,7 @@ import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
-import com.fr.models.GlobalAppStatus;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.service.AccountControllerService;
 import com.fr.service.FriendControllerService;
 import com.fr.security.AccountUserDetails;
@@ -81,7 +81,7 @@ class FriendGetController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.REFUSED, pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.REFUSED, pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_REFUSED_FRIEND_REQUEST: No sent friend request found !");
@@ -109,7 +109,7 @@ class FriendGetController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING, pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_SENT: No sent friend request found !");
@@ -136,7 +136,7 @@ class FriendGetController {
 
         Pageable pageable = new PageRequest(page, friend_list_size);
 
-        List<FriendShipEntity> friendShips = friendControllerService.getByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatus.PENDING, pageable);
+        List<FriendShipEntity> friendShips = friendControllerService.getByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
 
         if (friendShips.isEmpty()) {
             LOGGER.error("GET_PENDING_RECEIVED: No received request friend found !");

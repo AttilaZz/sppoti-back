@@ -3,7 +3,7 @@ package com.fr.api.team;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamResponseDTO;
-import com.fr.models.GlobalAppStatus;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.TeamControllerService;
 import org.apache.log4j.Logger;
@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.*;
         boolean canUpdate = false;
 
         if (teamDto.getStatus() != null && !teamDto.getStatus().equals(0)) {
-            for (GlobalAppStatus status : GlobalAppStatus.values()) {
+            for (GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
                 if (status.getValue() == teamDto.getStatus()) {
                     canUpdate = true;
                 }

@@ -2,6 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.SignUpRequestDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.GenderEnum;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.ConflictUsernameException;
 import com.fr.commons.utils.SppotiUtils;
@@ -11,7 +12,7 @@ import com.fr.entities.RoleEntity;
 import com.fr.entities.UserEntity;
 import com.fr.enums.CoverType;
 import com.fr.mail.AccountMailer;
-import com.fr.models.UserRoleType;
+import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.service.AccountControllerService;
 import com.fr.transformers.UserTransformer;
 import org.apache.log4j.Logger;
@@ -65,7 +66,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
         newUser.setDateBorn(user.getDateBorn());
-        newUser.setSexe(user.getSexe());
+        newUser.setGender(GenderEnum.valueOf(user.getGender()));
         newUser.setEmail(user.getEmail());
 
         String confirmationCode = SppotiUtils.generateConfirmationKey();
@@ -93,10 +94,10 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		/*
          * processing user Profile
 		 */
-        RoleEntity profile = roleRepository.getByName(UserRoleType.USER.name());
+        RoleEntity profile = roleRepository.getByName(UserRoleTypeEnum.USER.name());
 
         if (profile == null) {
-            throw new EntityNotFoundException("Profile name <" + UserRoleType.USER.name() + "> not found !!");
+            throw new EntityNotFoundException("Profile name <" + UserRoleTypeEnum.USER.name() + "> not found !!");
         }
 
         Set<RoleEntity> roles = new HashSet<>();

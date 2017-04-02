@@ -43,7 +43,6 @@ class AccountGetController {
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
         UserEntity targetUser = accountControllerService.getUserById(accountUserDetails.getId());
 
-
         return new ResponseEntity<>(accountControllerService.fillUserResponse(targetUser, null), HttpStatus.OK);
 
     }

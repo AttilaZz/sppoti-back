@@ -1,6 +1,6 @@
 package com.fr.entities;
 
-import com.fr.models.GlobalAppStatus;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,7 +16,7 @@ public class TeamMemberEntity
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private GlobalAppStatus status = GlobalAppStatus.PENDING;
+    private GlobalAppStatusEnum status = GlobalAppStatusEnum.PENDING;
 
     @Column
     @Temporal(TemporalType.TIMESTAMP)
@@ -46,11 +46,11 @@ public class TeamMemberEntity
     @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMemberEntity> sppotiMembers;
 
-    public GlobalAppStatus getStatus() {
+    public GlobalAppStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(GlobalAppStatus status) {
+    public void setStatus(GlobalAppStatusEnum status) {
         this.status = status;
     }
 

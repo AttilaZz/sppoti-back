@@ -4,7 +4,7 @@ import com.fr.commons.dto.HeaderDataDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.LikeContentEntity;
 import com.fr.entities.PostEntity;
-import com.fr.models.NotificationType;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.LikeControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -129,11 +129,11 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 
             if (likeContent.getComment() != null && !likeContent.getComment().getUser().getId().equals(getConnectedUser().getId())) {
                 //Comment like
-                addNotification(NotificationType.X_LIKED_YOUR_COMMENT, likeContent.getUser(), likeContent.getComment().getUser(), null, null);
+                addNotification(NotificationTypeEnum.X_LIKED_YOUR_COMMENT, likeContent.getUser(), likeContent.getComment().getUser(), null, null);
 
             } else if (likeContent.getPost() != null && !likeContent.getPost().getUser().getId().equals(getConnectedUser().getId())) {
                 //like post
-                addNotification(NotificationType.X_LIKED_YOUR_POST, likeContent.getUser(), likeContent.getPost().getUser(), null, null);
+                addNotification(NotificationTypeEnum.X_LIKED_YOUR_POST, likeContent.getUser(), likeContent.getPost().getUser(), null, null);
             }
 
         }

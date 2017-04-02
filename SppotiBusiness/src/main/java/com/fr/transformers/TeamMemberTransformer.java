@@ -30,6 +30,8 @@ public class TeamMemberTransformer {
     @Autowired
     private SppotiMembersRepository sppotiMembersRepository;
 
+    @Autowired
+    private UserTransformer userTransformer;
     /**
      * Transform a team member entity to userDTO.
      * <p>
@@ -39,7 +41,7 @@ public class TeamMemberTransformer {
      */
     public UserDTO modelToDto(TeamMemberEntity memberEntity, SppotiEntity sppoti) {
 
-        UserDTO userCoverAndAvatar = UserTransformer.getUserCoverAndAvatar(memberEntity.getUsers());
+        UserDTO userCoverAndAvatar = userTransformer.getUserCoverAndAvatar(memberEntity.getUsers());
 
         Integer sppotiId = sppoti != null ? sppoti.getUuid() : 0;
 

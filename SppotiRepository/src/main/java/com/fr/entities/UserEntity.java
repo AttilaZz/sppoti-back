@@ -3,6 +3,7 @@ package com.fr.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fr.commons.enumeration.GenderEnum;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -33,8 +34,9 @@ public class UserEntity
     @Column(nullable = false)
     private Date dateBorn;
 
-    @Column
-    private String sexe;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private GenderEnum gender;
 
     @Column(unique = true)
     private String telephone;
@@ -248,14 +250,6 @@ public class UserEntity
         this.dateBorn = dateBorn;
     }
 
-    public String getSexe() {
-        return sexe;
-    }
-
-    public void setSexe(String sexe) {
-        this.sexe = sexe;
-    }
-
     public String getTelephone() {
         return telephone;
     }
@@ -304,6 +298,14 @@ public class UserEntity
         this.accountCreationDate = accountCreationDate;
     }
 
+    public GenderEnum getGender() {
+        return gender;
+    }
+
+    public void setGender(GenderEnum gender) {
+        this.gender = gender;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -317,7 +319,7 @@ public class UserEntity
         if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
         if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
         if (dateBorn != null ? !dateBorn.equals(that.dateBorn) : that.dateBorn != null) return false;
-        if (sexe != null ? !sexe.equals(that.sexe) : that.sexe != null) return false;
+        if (gender != null ? !gender.equals(that.gender) : that.gender != null) return false;
         if (telephone != null ? !telephone.equals(that.telephone) : that.telephone != null) return false;
         if (email != null ? !email.equals(that.email) : that.email != null) return false;
         if (username != null ? !username.equals(that.username) : that.username != null) return false;
@@ -338,7 +340,7 @@ public class UserEntity
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         result = 31 * result + (dateBorn != null ? dateBorn.hashCode() : 0);
-        result = 31 * result + (sexe != null ? sexe.hashCode() : 0);
+        result = 31 * result + (gender != null ? gender.hashCode() : 0);
         result = 31 * result + (telephone != null ? telephone.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (username != null ? username.hashCode() : 0);

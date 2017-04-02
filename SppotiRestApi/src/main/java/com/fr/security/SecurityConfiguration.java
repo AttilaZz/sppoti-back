@@ -1,7 +1,7 @@
 package com.fr.security;
 
 import com.fr.filter.CsrfHeaderFilter;
-import com.fr.models.UserRoleType;
+import com.fr.commons.enumeration.UserRoleTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -120,9 +119,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/account/**", "/sport/**").permitAll()
-                .antMatchers("/admin/**").hasRole(UserRoleType.ADMIN.getUserProfileType())
-                .antMatchers("/api/profile/**").hasAnyRole(UserRoleType.USER.getUserProfileType(),
-                UserRoleType.ADMIN.getUserProfileType())
+                .antMatchers("/admin/**").hasRole(UserRoleTypeEnum.ADMIN.getUserProfileType())
+                .antMatchers("/api/profile/**").hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(),
+                UserRoleTypeEnum.ADMIN.getUserProfileType())
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -4,7 +4,7 @@ import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.post.PostResponseDTO;
 import com.fr.entities.*;
-import com.fr.models.NotificationType;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.PostControllerService;
 import com.fr.transformers.CommentTransformer;
 import org.apache.log4j.Logger;
@@ -40,7 +40,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 
         if (postEntity != null && post.getTargetUserProfileUuid() != 0 && post.getTargetUserProfileUuid() != getConnectedUser().getUuid()) {
 
-            addNotification(NotificationType.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(), getUserByUuId(postEntity.getTargetUserProfileUuid()), null, null);
+            addNotification(NotificationTypeEnum.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(), getUserByUuId(postEntity.getTargetUserProfileUuid()), null, null);
 
             if (post.getContent() != null) {
                 addTagNotification(postEntity, null);

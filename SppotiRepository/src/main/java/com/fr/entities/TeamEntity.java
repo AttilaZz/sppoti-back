@@ -25,11 +25,11 @@ public class TeamEntity
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "team")
     private Set<TeamMemberEntity> teamMembers;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "sport_id")
     private SportEntity sport;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<NotificationEntity> notificationEntities;
 
     /**

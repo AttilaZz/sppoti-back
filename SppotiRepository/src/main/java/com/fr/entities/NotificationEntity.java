@@ -2,12 +2,10 @@ package com.fr.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.models.NotificationType;
-import org.joda.time.DateTime;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Created by: Wail DJENANE on Nov 10, 2016
@@ -31,7 +29,7 @@ public class NotificationEntity
     private Date creationDate = new Date();
 
     @Enumerated(EnumType.STRING)
-    private NotificationType notificationType;
+    private NotificationTypeEnum notificationType;
 
     @Column(nullable = false)
     private boolean opened = false;
@@ -68,11 +66,11 @@ public class NotificationEntity
         this.creationDate = creationDate;
     }
 
-    public NotificationType getNotificationType() {
+    public NotificationTypeEnum getNotificationType() {
         return notificationType;
     }
 
-    public void setNotificationType(NotificationType notificationType) {
+    public void setNotificationType(NotificationTypeEnum notificationType) {
         this.notificationType = notificationType;
     }
 

@@ -1,19 +1,19 @@
 /**
  *
  */
-package com.fr.models;
+package com.fr.commons.enumeration;
 
 /**
  * Created by: Wail DJENANE on Aug 16, 2016
  */
-public enum UserRoleType {
+public enum UserRoleTypeEnum {
     USER("USER"),
     ADMIN("ADMIN"),
     CLIENT("CLIENT");
 
     String userRoleType;
 
-    private UserRoleType(String userProfileType) {
+    private UserRoleTypeEnum(String userProfileType) {
         this.userRoleType = userProfileType;
     }
 
