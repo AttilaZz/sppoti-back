@@ -115,7 +115,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         checkEmail.ifPresent(u -> {
             if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
                 throw new ConflictEmailException("Email already exist");
-            }else {
+            } else {
                 //delete founded account to allow new user using this email
                 userRepository.delete(u);
             }
@@ -124,7 +124,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         checkUsername.ifPresent(u -> {
             if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
                 throw new ConflictUsernameException("Username already exist");
-            }else{
+            } else {
                 //delete founded account to allow new user using this username
                 userRepository.delete(u);
             }
@@ -161,16 +161,20 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 
         optional.ifPresent(u -> {
 
-            if (SppotiUtils.isDateExpired(u.getAccountCreationDate())) {
+            if (SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
+                userRepository.delete(u);
                 LOGGER.info("Token expired for user: " + u.getEmail());
-                throw new BusinessGlobalException("Your token has been expired - click here to generate a new token");
+                throw new BusinessGlobalException("Your token has been expired and deleted, try creating new account " +
+                        "and confirm before 24h");
             }
 
             u.setConfirmed(true);
             userRepository.save(u);
         });
 
-        optional.orElseThrow(() -> new EntityNotFoundException("Account not found !"));
+        optional.orElseThrow(() -> new EntityNotFoundException("Account not found, " +
+                "This account may not being confirmed for more than 24h and same information was set in another " +
+                "account"));
 
     }
 
