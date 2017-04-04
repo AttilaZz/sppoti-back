@@ -1,5 +1,6 @@
 package com.fr.impl;
 
+import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.sppoti.SppotiRequestDTO;
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
@@ -11,9 +12,12 @@ import com.fr.entities.*;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.SppotiControllerService;
-import com.fr.transformers.SportTransformer;
-import com.fr.transformers.SppotiTransformer;
+import com.fr.transformers.ScoreTransformer;
+import com.fr.transformers.impl.ScoreTransformerImpl;
+import com.fr.transformers.impl.SportTransformer;
+import com.fr.transformers.impl.SppotiTransformer;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +40,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
     @Value("${key.sppotiesPerPage}")
     private int sppotiSize;
+
+    @Autowired
+    private ScoreTransformer scoreTransformer;
 
     /**
      * {@inheritDoc}
@@ -541,6 +548,16 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                 .stream()
                 .map(s -> getSppotiResponse(s.getSppoti()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public ScoreDTO addSppotiScore(ScoreDTO scoreDTO) {
+        ScoreEntity entity = scoreTransformer.dtoToModel(scoreDTO);
+        return scoreTransformer.modelToDto(scoreRepository.save(entity));
     }
 
     /**

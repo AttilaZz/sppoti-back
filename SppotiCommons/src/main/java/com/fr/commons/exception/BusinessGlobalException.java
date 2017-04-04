@@ -12,4 +12,6 @@ public class BusinessGlobalException extends RuntimeException{
     public BusinessGlobalException(String message) {
         super(message);
     }
+
+
 }

@@ -74,6 +74,18 @@ public class SppotiEntity
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMemberEntity> sppotiMembers;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "score_id")
+    private ScoreEntity scoreEntity;
+
+    public ScoreEntity getScoreEntity() {
+        return scoreEntity;
+    }
+
+    public void setScoreEntity(ScoreEntity scoreEntity) {
+        this.scoreEntity = scoreEntity;
+    }
+
     public Date getDatetimeCreated() {
         return datetimeCreated;
     }

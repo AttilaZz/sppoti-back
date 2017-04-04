@@ -6,7 +6,7 @@ import com.fr.commons.dto.post.PostResponseDTO;
 import com.fr.entities.*;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.PostControllerService;
-import com.fr.transformers.CommentTransformer;
+import com.fr.transformers.impl.CommentTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;

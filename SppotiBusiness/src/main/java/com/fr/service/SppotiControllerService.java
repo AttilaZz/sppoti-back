@@ -1,9 +1,11 @@
 package com.fr.service;
 
+import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.sppoti.SppotiRequestDTO;
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -115,4 +117,12 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @return all refused sppoties.
      */
     List<SppotiResponseDTO> getAllRefusedSppoties(int userId, int page);
+
+    /**
+     * Add score to a sppoti.
+     *
+     * @param scoreDTO score to add.
+     * @return added score.
+     */
+    ScoreDTO addSppotiScore(ScoreDTO scoreDTO);
 }

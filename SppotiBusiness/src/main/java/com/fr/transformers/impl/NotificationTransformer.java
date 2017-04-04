@@ -1,4 +1,4 @@
-package com.fr.transformers;
+package com.fr.transformers.impl;
 
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.UserDTO;

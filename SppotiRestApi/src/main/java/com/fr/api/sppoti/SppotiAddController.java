@@ -1,5 +1,6 @@
 package com.fr.api.sppoti;
 
+import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.sppoti.SppotiRequestDTO;
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import com.fr.service.SppotiControllerService;
@@ -7,7 +8,12 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -24,6 +30,9 @@ class SppotiAddController {
         this.sppotiControllerService = sppotiControllerService;
     }
 
+    /**
+     * Logger.
+     */
     private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
     /**
@@ -67,22 +76,16 @@ class SppotiAddController {
 
     }
 
-
     /**
-     * @param id sppoti id.
-     * @return 200 status if deleted, 400 status otherwise.
+     * Add score to a sppoti.
+     *
+     * @param scoreDTO score to add.
+     * @return zdded score.
      */
-    @DeleteMapping("/{id}")
-    ResponseEntity deleteSppoti(@PathVariable int id) {
+    @PostMapping("/score/add")
+    ResponseEntity<ScoreDTO> addScore(@RequestBody @Valid ScoreDTO scoreDTO) {
 
-        try {
-            sppotiControllerService.deleteSppoti(id);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (RuntimeException e) {
-            LOGGER.error("Impossible de supprimer le sppoti: ", e);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-
+        return new ResponseEntity<>(sppotiControllerService.addSppotiScore(scoreDTO), HttpStatus.CREATED);
     }
 
 }

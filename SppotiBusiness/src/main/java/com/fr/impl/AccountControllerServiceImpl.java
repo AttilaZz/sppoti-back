@@ -14,7 +14,7 @@ import com.fr.enums.CoverType;
 import com.fr.mail.AccountMailer;
 import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.service.AccountControllerService;
-import com.fr.transformers.UserTransformer;
+import com.fr.transformers.impl.UserTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

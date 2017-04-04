@@ -13,9 +13,9 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.repositories.*;
 import com.fr.service.AbstractControllerService;
-import com.fr.transformers.TeamMemberTransformer;
-import com.fr.transformers.TeamTransformer;
-import com.fr.transformers.UserTransformer;
+import com.fr.transformers.impl.TeamMemberTransformer;
+import com.fr.transformers.impl.TeamTransformer;
+import com.fr.transformers.impl.UserTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -63,6 +63,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
     NotificationRepository notificationRepository;
     @Autowired
     RatingRepository ratingRepository;
+    @Autowired
+    ScoreRepository scoreRepository;
 
     @Autowired
     TeamMailer teamMailer;

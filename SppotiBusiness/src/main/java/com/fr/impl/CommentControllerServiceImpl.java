@@ -7,7 +7,7 @@ import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.CommentControllerService;
-import com.fr.transformers.CommentTransformer;
+import com.fr.transformers.impl.CommentTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
