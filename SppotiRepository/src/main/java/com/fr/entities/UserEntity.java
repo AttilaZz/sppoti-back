@@ -54,6 +54,10 @@ public class UserEntity
     @Column(nullable = false)
     private Date accountCreationDate = new Date();
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
+    private Date accountMaxActivationDate;
+
     @Column(nullable = false)
     private String password;
 
@@ -306,6 +310,14 @@ public class UserEntity
         this.gender = gender;
     }
 
+    public Date getAccountMaxActivationDate() {
+        return accountMaxActivationDate;
+    }
+
+    public void setAccountMaxActivationDate(Date accountMaxActivationDate) {
+        this.accountMaxActivationDate = accountMaxActivationDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -326,6 +338,7 @@ public class UserEntity
         if (confirmationCode != null ? !confirmationCode.equals(that.confirmationCode) : that.confirmationCode != null)
             return false;
         if (accountCreationDate != null ? !accountCreationDate.equals(that.accountCreationDate) : that.accountCreationDate != null) return false;
+        if (accountMaxActivationDate != null ? !accountMaxActivationDate.equals(that.accountMaxActivationDate) : that.accountMaxActivationDate != null) return false;
         if (password != null ? !password.equals(that.password) : that.password != null) return false;
         if (job != null ? !job.equals(that.job) : that.job != null) return false;
         if (recoverCode != null ? !recoverCode.equals(that.recoverCode) : that.recoverCode != null) return false;
@@ -353,6 +366,7 @@ public class UserEntity
         result = 31 * result + (recoverCode != null ? recoverCode.hashCode() : 0);
         result = 31 * result + (recoverCodeCreationDate != null ? recoverCodeCreationDate.hashCode() : 0);
         result = 31 * result + (accountCreationDate != null ? accountCreationDate.hashCode() : 0);
+        result = 31 * result + (accountMaxActivationDate != null ? accountMaxActivationDate.hashCode() : 0);
         return result;
     }
 }

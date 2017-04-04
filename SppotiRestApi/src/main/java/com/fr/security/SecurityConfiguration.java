@@ -71,16 +71,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         //auth.authenticationProvider(authenticationProvider());
     }
 
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers("/css/**");
-//        web.ignoring().antMatchers("/templates/**");
-//        web.ignoring().antMatchers("/js/**");
-//        web.ignoring().antMatchers("/images/**");
-//        web.ignoring().antMatchers("/views/**");
-//        web.ignoring().antMatchers("/upload/**");
-//    }
-
     @Autowired
     private PersistentTokenRepository tokenRepository;
 

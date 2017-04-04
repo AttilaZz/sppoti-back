@@ -4,6 +4,7 @@ import com.fr.commons.dto.SignUpRequestDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GenderEnum;
 import com.fr.commons.exception.BusinessGlobalException;
+import com.fr.commons.exception.ConflictEmailException;
 import com.fr.commons.exception.ConflictUsernameException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.AddressEntity;
@@ -73,10 +74,9 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         newUser.setConfirmationCode(confirmationCode);
 
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        newUser.setPassword(user.getPassword());
 
-        String uName = user.getUsername().trim();
-        newUser.setUsername(uName);
+        newUser.setUsername(user.getUsername().trim());
+        newUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(daysBeforeExpiration));
 
 //        for (Long sportId : user.getSportId()) {
 //            // if the parsed SportDTO exist in database == correct request
@@ -104,36 +104,33 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         roles.add(profile);
         newUser.setRoles(roles);
 
-        Optional<UserEntity> userToCheckExistence = Optional.empty();
+        /*
+            if username or email exist, account valid:
+             - reject sign_up
+             - delete old account
+         */
+        Optional<UserEntity> checkUsername = Optional.ofNullable(userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
+        Optional<UserEntity> checkEmail = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(user.getEmail()));
 
-        switch (getUserLoginType(user.getUsername())) {
-            case 1:
-                userToCheckExistence = Optional.ofNullable(userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
-                break;
-            case 2:
-                userToCheckExistence = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(user.getUsername()));
-                break;
-            case 3:
-                break;
-        }
-
-        userToCheckExistence.ifPresent(u -> {
-
-            //TODO:
-            //if username exist, validation token expired(or not) and account not validated notify user, and send a new validation mail.
-
-            //TODO:
-            //if username exist, account valid, reject sign_up
-
-            if (getUserLoginType(user.getUsername()) == 2) {
-
-                throw new ConflictUsernameException("username already exist");
+        checkEmail.ifPresent(u -> {
+            if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
+                throw new ConflictEmailException("Email already exist");
+            }else {
+                //delete founded account to allow new user using this email
+                userRepository.delete(u);
             }
-            throw new ConflictUsernameException("username already exist");
+
+        });
+        checkUsername.ifPresent(u -> {
+            if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
+                throw new ConflictUsernameException("Username already exist");
+            }else{
+                //delete founded account to allow new user using this username
+                userRepository.delete(u);
+            }
         });
 
-        //check if
-
+        //save new user.
         userRepository.save(newUser);
         LOGGER.info("Account has been created for user : " + user.getEmail());
 
