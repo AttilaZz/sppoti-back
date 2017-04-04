@@ -66,9 +66,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        //ShaPasswordEncoder encoder = new ShaPasswordEncoder();
         auth.userDetailsService(userDetailService);
-        //auth.authenticationProvider(authenticationProvider());
+        auth.authenticationProvider(authenticationProvider());
     }
 
     @Autowired
