@@ -394,6 +394,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuidAndTeamAdverseStatusNot(id, GlobalAppStatusEnum.REFUSED, pageable);
 
+        //TODO: order by sppoti creation date
         return sppoties.stream()
                 .map(this::getSppotiResponse)
                 .collect(Collectors.toList());

@@ -46,4 +46,5 @@ public interface SppotiMembersRepository extends JpaRepository<SppotiMemberEntit
      * @return all confirmed sppoties.
      */
     List<SppotiMemberEntity> findByTeamMemberUsersUuidAndStatus(int userId, Pageable pageable, GlobalAppStatusEnum confirmed);
+
 }

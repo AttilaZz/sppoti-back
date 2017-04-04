@@ -32,6 +32,7 @@ public class TeamMemberTransformer {
 
     @Autowired
     private UserTransformer userTransformer;
+
     /**
      * Transform a team member entity to userDTO.
      * <p>
@@ -46,7 +47,6 @@ public class TeamMemberTransformer {
         Integer sppotiId = sppoti != null ? sppoti.getUuid() : 0;
 
         UserDTO userDTO = new UserDTO();
-
         userDTO.setUserId(memberEntity.getUsers().getUuid());
         userDTO.setFirstName(memberEntity.getUsers().getFirstName());
         userDTO.setLastName(memberEntity.getUsers().getLastName());
@@ -55,7 +55,7 @@ public class TeamMemberTransformer {
         userDTO.setCover(userCoverAndAvatar.getCover());
         userDTO.setCoverType(userCoverAndAvatar.getCoverType());
 
-        userDTO.setId(memberEntity.getUuid());//team member id.
+        userDTO.setId(memberEntity.getUuid());
         userDTO.setTeamAdmin(memberEntity.getAdmin());
         userDTO.setTeamStatus(memberEntity.getStatus().getValue());
         userDTO.setTeamCaptain(memberEntity.getTeamCaptain());
@@ -75,15 +75,16 @@ public class TeamMemberTransformer {
             //Is sppoti admin.
             if (memberEntity.getUsers().getId().equals(sppoti.getUserSppoti().getId())) {
                 userDTO.setSppotiAdmin(Boolean.TRUE);
-            }else{
+            } else {
                 userDTO.setSppotiAdmin(Boolean.FALSE);
             }
 
             userDTO.setRating(getRatingStars(memberEntity.getUsers().getUuid(), sppotiId));
-        }
 
-        Optional<SppotiMemberEntity> optional = Optional.ofNullable(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(memberEntity.getUsers().getUuid(), sppotiId));
-        optional.ifPresent(sm -> userDTO.setHasRateOtherSppoters(sm.getHasRateOtherSppoter()));
+            Optional<SppotiMemberEntity> optional = Optional.ofNullable(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(memberEntity.getUsers().getUuid(), sppotiId));
+            optional.ifPresent(sm -> userDTO.setHasRateOtherSppoters(sm.getHasRateOtherSppoter()));
+
+         }
 
         return userDTO;
     }
