@@ -51,8 +51,8 @@ public class TeamMemberTransformer {
         userDTO.setFirstName(memberEntity.getUsers().getFirstName());
         userDTO.setLastName(memberEntity.getUsers().getLastName());
         userDTO.setUsername(memberEntity.getUsers().getUsername());
-        userDTO.setAvatar(userCoverAndAvatar.getCover());
-        userDTO.setCover(userCoverAndAvatar.getAvatar());
+        userDTO.setAvatar(userCoverAndAvatar.getAvatar());
+        userDTO.setCover(userCoverAndAvatar.getCover());
         userDTO.setCoverType(userCoverAndAvatar.getCoverType());
 
         userDTO.setId(memberEntity.getUuid());//team member id.
