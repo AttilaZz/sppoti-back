@@ -270,9 +270,19 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         if (sppotiRequest.getVsTeam() != 0) {
             List<TeamEntity> adverseTeam = teamRepository.findByUuid(sppotiRequest.getVsTeam());
 
-            if (adverseTeam == null || adverseTeam.isEmpty()) {
+            //check if adverse team exist
+            if (adverseTeam.isEmpty()) {
                 throw new EntityNotFoundException("TeamEntity id not found: " + sppotiRequest.getVsTeam());
             }
+
+            //check if adverse team members are not in conflict with team host members
+            sppoti.getTeamHost().getTeamMembers().forEach(
+                    hostMember -> adverseTeam.get(0).getTeamMembers().forEach(adverseMember -> {
+                        if (hostMember.getUsers().getId().equals(adverseMember.getUsers().getId())) {
+                            throw new BusinessGlobalException("Conflict found between host team members and adverse team members");
+                        }
+                    })
+            );
 
             //Convert team members to sppoters.
             Set<SppotiMemberEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(adverseTeam.get(0), sppoti, false);
@@ -401,6 +411,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         //TODO: order by sppoti creation date
         return sppoties.stream()
                 .map(this::getSppotiResponse)
+                .sorted(Comparator.comparing(SppotiResponseDTO::getDatetimeCreated))
                 .collect(Collectors.toList());
 
     }
@@ -463,6 +474,15 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         if (sppotiEntity.getTeamAdverse() != null) {
             throw new BusinessGlobalException("This sppoti is challenged by an other team");
         }
+
+        //check if adverse team members are not in conflict with team host members
+        sppotiEntity.getTeamHost().getTeamMembers().forEach(
+                hostMember -> challengeTeam.getTeamMembers().forEach(adverseMember -> {
+                    if (hostMember.getUsers().getId().equals(adverseMember.getUsers().getId())) {
+                        throw new BusinessGlobalException("Conflict found between host team members and adverse team members");
+                    }
+                })
+        );
 
         //Convert team members to sppoters.
         Set<SppotiMemberEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(challengeTeam, sppotiEntity, true);

@@ -76,16 +76,4 @@ class SppotiAddController {
 
     }
 
-    /**
-     * Add score to a sppoti.
-     *
-     * @param scoreDTO score to add.
-     * @return zdded score.
-     */
-    @PostMapping("/score/add")
-    ResponseEntity<ScoreDTO> addScore(@RequestBody @Valid ScoreDTO scoreDTO) {
-
-        return new ResponseEntity<>(sppotiControllerService.addSppotiScore(scoreDTO), HttpStatus.CREATED);
-    }
-
 }
