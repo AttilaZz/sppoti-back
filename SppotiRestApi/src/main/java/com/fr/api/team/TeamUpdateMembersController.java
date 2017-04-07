@@ -2,7 +2,7 @@ package com.fr.api.team;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamRequestDTO;
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.TeamControllerService;
@@ -78,7 +78,7 @@ import org.springframework.web.bind.annotation.*;
      * @return 202 status if captain updated.
      */
     @PutMapping("/captain/{memberId}")
-     ResponseEntity<TeamResponseDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
+     ResponseEntity<TeamDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 

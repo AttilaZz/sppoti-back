@@ -1,7 +1,7 @@
 package com.fr.transformers.impl;
 
 import com.fr.commons.dto.team.TeamRequestDTO;
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.entities.TeamEntity;
 import com.fr.repositories.TeamMembersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,27 +26,28 @@ public class TeamTransformer {
     /**
      * Transform team entity to team DTO.
      *
-     * @param teamEntity team entity top transform.
+     * @param model team entity top transform.
      * @return team entity as team DTO.
      */
-    public TeamResponseDTO modelToDto(TeamEntity teamEntity) {
-        TeamResponseDTO teamResponseDTO = new TeamResponseDTO();
+    public TeamDTO modelToDto(TeamEntity model) {
+        TeamDTO teamDTO = new TeamDTO();
 
-        teamResponseDTO.setId(teamEntity.getUuid());
-        teamResponseDTO.setVersion(teamEntity.getVersion());
-        teamResponseDTO.setName(teamEntity.getName());
-        teamResponseDTO.setCoverPath(teamEntity.getCoverPath());
-        teamResponseDTO.setLogoPath(teamEntity.getLogoPath());
-        teamResponseDTO.setSport(SportTransformer.modelToDto(teamEntity.getSport()));
+        teamDTO.setId(model.getUuid());
+        teamDTO.setVersion(model.getVersion());
+        teamDTO.setName(model.getName());
+        teamDTO.setCoverPath(model.getCoverPath());
+        teamDTO.setLogoPath(model.getLogoPath());
+        teamDTO.setSport(SportTransformer.modelToDto(model.getSport()));
+        teamDTO.setCreationDate(model.getCreationDate());
 
-        teamResponseDTO.setTeamAdmin(teamMemberTransformer.modelToDto(teamMembersRepository.findByTeamUuidAndAdminTrue(teamEntity.getUuid()), null));
+        teamDTO.setTeamAdmin(teamMemberTransformer.modelToDto(teamMembersRepository.findByTeamUuidAndAdminTrue(model.getUuid()), null));
 
-        teamResponseDTO.setTeamMembers(
-                teamEntity.getTeamMembers().stream()
+        teamDTO.setTeamMembers(
+                model.getTeamMembers().stream()
                         .map(m -> teamMemberTransformer.modelToDto(m, null)).collect(Collectors.toList())
         );
 
-        return teamResponseDTO;
+        return teamDTO;
     }
 
     /**

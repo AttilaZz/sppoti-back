@@ -1,7 +1,7 @@
 package com.fr.service;
 
 import com.fr.commons.dto.team.TeamRequestDTO;
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +19,13 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param adminId admin id.
      * @return saved team data.
      */
-    TeamResponseDTO saveTeam(TeamRequestDTO team, Long adminId);
+    TeamDTO saveTeam(TeamRequestDTO team, Long adminId);
 
     /**
      * @param teamId team id.
      * @return team data.
      */
-    TeamResponseDTO getTeamById(int teamId);
+    TeamDTO getTeamById(int teamId);
 
     /**
      * Update memeber informations.
@@ -41,7 +41,7 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param page page number.
      * @return all team that user is admin
      */
-    List<TeamResponseDTO> getAllTeamsByUserId(int userId, int page);
+    List<TeamDTO> getAllTeamsByUserId(int userId, int page);
 
     /**
      * Member can accept team invitation
@@ -91,14 +91,14 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param page page number.
      * @return List of all teams that i am in.
      */
-    List<TeamResponseDTO> findAllMyTeams(String team, int page);
+    List<TeamDTO> findAllMyTeams(String team, int page);
 
     /**
      * @param team team to find.
      * @param page page number.
      * @return List of all teams.
      */
-    List<TeamResponseDTO> findAllTeams(String team, int page);
+    List<TeamDTO> findAllTeams(String team, int page);
 
     /**
      *
@@ -107,7 +107,7 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param page page number.
      * @return list of related teams.
      */
-    List<TeamResponseDTO> findAllTeamsBySport(String team, Long sport, int page);
+    List<TeamDTO> findAllTeamsBySport(String team, Long sport, int page);
 
     /**
      *
@@ -115,7 +115,7 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param teamRequestDTO team data to update.
      * @return updated team.
      */
-    TeamResponseDTO updateTeam(int teamId, TeamRequestDTO teamRequestDTO);
+    TeamDTO updateTeam(int teamId, TeamRequestDTO teamRequestDTO);
 
     /**
      *
@@ -132,7 +132,7 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param page page number.
      * @return all teams.
      */
-    List<TeamResponseDTO> getAllJoinedTeamsByUserId(int userId, int page);
+    List<TeamDTO> getAllJoinedTeamsByUserId(int userId, int page);
 
     /**
      *
@@ -140,5 +140,5 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param page page number.
      * @return all deleted teams.
      */
-    List<TeamResponseDTO> getAllDeletedTeamsByUserId(int userId, int page);
+    List<TeamDTO> getAllDeletedTeamsByUserId(int userId, int page);
 }

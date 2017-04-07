@@ -4,7 +4,7 @@ import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.sppoti.SppotiRequestDTO;
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.exception.BusinessGlobalException;
@@ -183,9 +183,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             sppotiResponseDTO.setTags(sppoti.getTags());
         }
 
-        TeamResponseDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHost(), sppoti);
+        TeamDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHost(), sppoti);
         if (sppoti.getTeamAdverse() != null) {
-            TeamResponseDTO teamAdverseResponse = fillTeamResponse(sppoti.getTeamAdverse(), sppoti);
+            TeamDTO teamAdverseResponse = fillTeamResponse(sppoti.getTeamAdverse(), sppoti);
             sppotiResponseDTO.setTeamAdverse(teamAdverseResponse);
             sppotiResponseDTO.setTeamAdverseStatus(sppoti.getTeamAdverseStatus().getValue());
         } else {
@@ -408,10 +408,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         List<SppotiEntity> sppoties = sppotiRepository.findByUserSppotiUuidAndTeamAdverseStatusNot(id, GlobalAppStatusEnum.REFUSED, pageable);
 
-        //TODO: order by sppoti creation date
         return sppoties.stream()
                 .map(this::getSppotiResponse)
-                .sorted(Comparator.comparing(SppotiResponseDTO::getDatetimeCreated))
+                .sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
                 .collect(Collectors.toList());
 
     }
@@ -427,6 +426,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         return sppotiMembers.stream()
                 .map(s -> getSppotiResponse(s.getSppoti()))
+                .sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
                 .collect(Collectors.toList());
     }
 
@@ -554,6 +554,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         return sppotiMembersRepository.findByTeamMemberUsersUuidAndStatus(userId, pageable, GlobalAppStatusEnum.CONFIRMED)
                 .stream()
                 .map(s -> getSppotiResponse(s.getSppoti()))
+                .sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
                 .collect(Collectors.toList());
     }
 
@@ -571,6 +572,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         return sppotiMembersRepository.findByTeamMemberUsersUuidAndStatus(userId, pageable, GlobalAppStatusEnum.REFUSED)
                 .stream()
                 .map(s -> getSppotiResponse(s.getSppoti()))
+                .sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
                 .collect(Collectors.toList());
     }
 

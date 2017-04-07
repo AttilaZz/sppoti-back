@@ -2,7 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamRequestDTO;
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.exception.MemberNotInAdminTeamException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.SportEntity;
@@ -57,7 +57,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      */
     @Transactional
     @Override
-    public TeamResponseDTO saveTeam(TeamRequestDTO team, Long adminId) {
+    public TeamDTO saveTeam(TeamRequestDTO team, Long adminId) {
 
         SportEntity sportEntity = sportRepository.findOne(team.getSportId());
 
@@ -115,7 +115,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public TeamResponseDTO getTeamById(int teamId) {
+    public TeamDTO getTeamById(int teamId) {
 
         List<TeamEntity> team = teamRepository.findByUuid(teamId);
 
@@ -130,20 +130,16 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<TeamResponseDTO> getAllTeamsByUserId(int userId, int page) {
+    public List<TeamDTO> getAllTeamsByUserId(int userId, int page) {
 
         Pageable pageable = new PageRequest(page, teamPageSize);
 
         List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndAdminTrue(userId, pageable);
-        List<TeamResponseDTO> teamResponseDTOs = new ArrayList<TeamResponseDTO>();
 
-
-        for (TeamMemberEntity myTeam : myTeams) {
-            teamResponseDTOs.add(fillTeamResponse(myTeam.getTeam(), null));
-        }
-
-        return teamResponseDTOs;
-
+        return myTeams.stream()
+                .map(team -> fillTeamResponse(team.getTeam(), null))
+                .sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -288,13 +284,14 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<TeamResponseDTO> findAllTeams(String team, int page) {
+    public List<TeamDTO> findAllTeams(String team, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
         List<TeamEntity> myTeams = teamRepository.findByNameContaining(team, pageable);
 
         return myTeams.stream()
                 .map(t -> fillTeamResponse(t, null))
+                .sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate()))
                 .collect(Collectors.toList());
     }
 
@@ -302,7 +299,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<TeamResponseDTO> findAllTeamsBySport(String team, Long sport, int page) {
+    public List<TeamDTO> findAllTeamsBySport(String team, Long sport, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
         List<TeamMemberEntity> myTeams = teamMembersRepository.findByTeamSportIdAndUsersUuidAndTeamNameContaining(sport,
@@ -318,7 +315,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      */
     @Transactional
     @Override
-    public TeamResponseDTO updateTeam(int connectedUserId, TeamRequestDTO teamRequestDTO) {
+    public TeamDTO updateTeam(int connectedUserId, TeamRequestDTO teamRequestDTO) {
 
         TeamMemberEntity teamMemberEntity = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, teamRequestDTO.getId());
 
@@ -372,7 +369,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<TeamResponseDTO> getAllJoinedTeamsByUserId(int userId, int page) {
+    public List<TeamDTO> getAllJoinedTeamsByUserId(int userId, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
         if (getConnectedUser().getUuid() != userId) {
@@ -382,6 +379,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
         return teamMembersRepository.findByUsersUuidAndStatus(userId, GlobalAppStatusEnum.CONFIRMED, pageable)
                 .stream()
                 .map(t -> teamTransformer.modelToDto(t.getTeam()))
+                .sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate()))
                 .collect(Collectors.toList());
     }
 
@@ -389,7 +387,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<TeamResponseDTO> getAllDeletedTeamsByUserId(int userId, int page) {
+    public List<TeamDTO> getAllDeletedTeamsByUserId(int userId, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
         List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndTeamDeletedFalse(getConnectedUser()
@@ -397,6 +395,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 
         return myTeams.stream()
                 .map(t -> fillTeamResponse(t.getTeam(), null))
+                .sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate()))
                 .collect(Collectors.toList());
     }
 
@@ -404,7 +403,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<TeamResponseDTO> findAllMyTeams(String team, int page) {
+    public List<TeamDTO> findAllMyTeams(String team, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
         List<TeamMemberEntity> myTeams = teamMembersRepository.findByUsersUuidAndTeamNameContaining(getConnectedUser()
@@ -412,6 +411,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 
         return myTeams.stream()
                 .map(t -> fillTeamResponse(t.getTeam(), null))
+                .sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate()))
                 .collect(Collectors.toList());
 
     }

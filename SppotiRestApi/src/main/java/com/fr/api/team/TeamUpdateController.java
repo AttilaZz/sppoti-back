@@ -1,7 +1,7 @@
 package com.fr.api.team;
 
 import com.fr.commons.dto.team.TeamRequestDTO;
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.service.TeamControllerService;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
@@ -36,7 +36,7 @@ class TeamUpdateController {
      * @return The updated team.
      */
     @PutMapping("/{teamId}")
-    ResponseEntity<TeamResponseDTO> updateTeam(@PathVariable int teamId, @RequestBody TeamRequestDTO teamRequestDTO, Authentication authentication) {
+    ResponseEntity<TeamDTO> updateTeam(@PathVariable int teamId, @RequestBody TeamRequestDTO teamRequestDTO, Authentication authentication) {
 
         boolean canUpdate = false;
 

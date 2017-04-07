@@ -1,7 +1,7 @@
 package com.fr.api.team;
 
 import com.fr.commons.dto.team.TeamRequestDTO;
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.TeamControllerService;
 import org.apache.log4j.Logger;
@@ -42,7 +42,7 @@ class TeamAddController {
      * @return Created team data
      */
     @PostMapping
-    ResponseEntity<TeamResponseDTO> createTeam(@RequestBody TeamRequestDTO team, Authentication authentication) {
+    ResponseEntity<TeamDTO> createTeam(@RequestBody TeamRequestDTO team, Authentication authentication) {
 
         if (StringUtils.isEmpty(team.getName())) {
             LOGGER.error("TeamEntity (name) not found");
@@ -61,9 +61,9 @@ class TeamAddController {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
-        TeamResponseDTO teamResponseDTO;
+        TeamDTO teamDTO;
         try {
-            teamResponseDTO = teamControllerService.saveTeam(team, accountUserDetails.getId());
+            teamDTO = teamControllerService.saveTeam(team, accountUserDetails.getId());
         } catch (EntityNotFoundException e) {
             LOGGER.error("Spport not found in the request: ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -72,7 +72,7 @@ class TeamAddController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-        return new ResponseEntity<>(teamResponseDTO, HttpStatus.CREATED);
+        return new ResponseEntity<>(teamDTO, HttpStatus.CREATED);
     }
 
 }

@@ -42,7 +42,7 @@ public class NotificationTransformer {
         notificationDTO.setOpened(notification.isOpened());
 
         Optional<TeamEntity> optionalTeam = Optional.ofNullable(notification.getTeam());
-        optionalTeam.ifPresent(t -> notificationDTO.setTeamResponseDTO(teamTransformer.modelToDto(notification.getTeam())));
+        optionalTeam.ifPresent(t -> notificationDTO.setTeamDTO(teamTransformer.modelToDto(notification.getTeam())));
 
         Optional<SppotiEntity> optionalSppoti = Optional.ofNullable(notification.getSppoti());
         optionalSppoti.ifPresent(t -> notificationDTO.setSppotiResponseDTO(SppotiTransformer.entityToDto(notification.getSppoti())));

@@ -1,7 +1,7 @@
 package com.fr.mail;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.entities.TeamMemberEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -41,7 +41,7 @@ public class TeamMailer
      * Send email to confirm team creation.
      * @param team ceated team.
      */
-    public void sendAddTeamEmail(final TeamResponseDTO team){
+    public void sendAddTeamEmail(final TeamDTO team){
 
     }
 
@@ -51,7 +51,7 @@ public class TeamMailer
      * @param from team admin.
      * @param team team data.
      */
-    public void sendJoinTeamEmail(final TeamResponseDTO team, final UserDTO to, final UserDTO from){
+    public void sendJoinTeamEmail(final TeamDTO team, final UserDTO to, final UserDTO from){
         prepareAndSendEmail(to, from, team, joinTeamSubject, joinTeamMessage);
     }
 
@@ -61,14 +61,14 @@ public class TeamMailer
      * @param team team data.
      * @param member team member.
      */
-    public void sendConfirmJoinTeamEmail(final TeamResponseDTO team, final TeamMemberEntity member){
+    public void sendConfirmJoinTeamEmail(final TeamDTO team, final TeamMemberEntity member){
 
     }
 
     /**
      * Send email.
      */
-    private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final TeamResponseDTO team, final String subject, final String content){
+    private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final TeamDTO team, final String subject, final String content){
 
         Context context = new Context();
         context.setVariable("title", to.getFirstName());

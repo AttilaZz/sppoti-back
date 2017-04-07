@@ -1,6 +1,6 @@
 package com.fr.api.search;
 
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ class FindTeamController {
      * @return All found teams containing the String (team).
      */
     @GetMapping("/" + MY_TEAM_SEARCH + "/{team}/{page}")
-    ResponseEntity<List<TeamResponseDTO>> findMyTeams(@PathVariable String team, @PathVariable int page) {
+    ResponseEntity<List<TeamDTO>> findMyTeams(@PathVariable String team, @PathVariable int page) {
 
         try {
             return new ResponseEntity<>(teamControllerService.findAllMyTeams(team, page), HttpStatus.OK);
@@ -54,7 +54,7 @@ class FindTeamController {
      * @return All found teams containing the String (team).
      */
     @GetMapping("/" + ALL_TEAM_SEARCH + "/{team}/{page}")
-    ResponseEntity<List<TeamResponseDTO>> findAllTeams(@PathVariable String team, @PathVariable int page) {
+    ResponseEntity<List<TeamDTO>> findAllTeams(@PathVariable String team, @PathVariable int page) {
 
         try {
             return new ResponseEntity<>(teamControllerService.findAllTeams(team, page), HttpStatus.OK);
@@ -72,7 +72,7 @@ class FindTeamController {
      * @return All found teams containing the String (team) and linked to the sport in parameter.
      */
     @GetMapping("/" + ALL_TEAM_SEARCH + "/{team}/{sportId}/{page}")
-    ResponseEntity<List<TeamResponseDTO>> findAllTeams(@PathVariable String team, @PathVariable int page, @PathVariable Long sport) {
+    ResponseEntity<List<TeamDTO>> findAllTeams(@PathVariable String team, @PathVariable int page, @PathVariable Long sport) {
 
         try {
             return new ResponseEntity<>(teamControllerService.findAllTeamsBySport(team, sport, page), HttpStatus.OK);

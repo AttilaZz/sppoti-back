@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.commons.SportDTO;
 import com.fr.commons.dto.AbstractCommonDTO;
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 
 import java.util.Date;
 
@@ -39,9 +39,9 @@ public class SppotiResponseDTO extends AbstractCommonDTO {
     @JsonProperty("sport")
     private SportDTO relatedSport;
 
-    private TeamResponseDTO teamHost;
+    private TeamDTO teamHost;
 
-    private TeamResponseDTO teamAdverse;
+    private TeamDTO teamAdverse;
     private Integer teamAdverseStatus;
 
     private Integer sppotiCounter;
@@ -131,19 +131,19 @@ public class SppotiResponseDTO extends AbstractCommonDTO {
         this.relatedSport = relatedSport;
     }
 
-    public TeamResponseDTO getTeamHost() {
+    public TeamDTO getTeamHost() {
         return teamHost;
     }
 
-    public void setTeamHost(TeamResponseDTO teamHost) {
+    public void setTeamHost(TeamDTO teamHost) {
         this.teamHost = teamHost;
     }
 
-    public TeamResponseDTO getTeamAdverse() {
+    public TeamDTO getTeamAdverse() {
         return teamAdverse;
     }
 
-    public void setTeamAdverse(TeamResponseDTO teamAdverse) {
+    public void setTeamAdverse(TeamDTO teamAdverse) {
         this.teamAdverse = teamAdverse;
     }
 

@@ -1,18 +1,14 @@
 package com.fr.api.team;
 
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.service.TeamControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * Created by djenanewail on 2/5/17.
@@ -36,7 +32,7 @@ class TeamGetController {
      * @return target team.
      */
     @GetMapping("/{teamId}")
-    ResponseEntity<TeamResponseDTO> getTeamById(@PathVariable int teamId) {
+    ResponseEntity<TeamDTO> getTeamById(@PathVariable int teamId) {
 
         return new ResponseEntity<>(teamControllerService.getTeamById(teamId), HttpStatus.OK);
     }

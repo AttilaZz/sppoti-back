@@ -4,7 +4,7 @@ import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.dto.team.TeamResponseDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.exception.TeamMemberNotFoundException;
 import com.fr.entities.*;
@@ -482,17 +482,17 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
      * @param team team to map.
      * @return a teamResponse object from TeamEntity entity.
      */
-    protected TeamResponseDTO fillTeamResponse(TeamEntity team, SppotiEntity sppoti) {
+    protected TeamDTO fillTeamResponse(TeamEntity team, SppotiEntity sppoti) {
 
         List<UserDTO> teamUsers = new ArrayList<>();
 
         for (TeamMemberEntity memberEntity : team.getTeamMembers()) {
             teamUsers.add(teamMemberTransformer.modelToDto(memberEntity, sppoti));
         }
-        TeamResponseDTO teamResponseDTO = teamTransformer.modelToDto(team);
-        teamResponseDTO.setTeamMembers(teamUsers);
+        TeamDTO teamDTO = teamTransformer.modelToDto(team);
+        teamDTO.setTeamMembers(teamUsers);
 
-        return teamResponseDTO;
+        return teamDTO;
 
     }
 
@@ -621,7 +621,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 
         UserDTO member = userTransformer.modelToDto(to);
         UserDTO admin = teamMemberTransformer.modelToDto(from, null);
-        TeamResponseDTO teamDto = teamTransformer.modelToDto(team);
+        TeamDTO teamDto = teamTransformer.modelToDto(team);
 
         Thread thread = new Thread(() -> {
             this.teamMailer.sendJoinTeamEmail(teamDto, member, admin);
