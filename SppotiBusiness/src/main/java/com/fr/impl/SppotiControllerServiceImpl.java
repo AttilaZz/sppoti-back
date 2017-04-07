@@ -1,6 +1,5 @@
 package com.fr.impl;
 
-import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.sppoti.SppotiRequestDTO;
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
@@ -40,8 +39,17 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     @Value("${key.sppotiesPerPage}")
     private int sppotiSize;
 
+    /** Score transformer. */
+    private final ScoreTransformer scoreTransformer;
+
+    /** Sppoti transformer. */
+    private final SppotiTransformer sppotiTransformer;
+
     @Autowired
-    private ScoreTransformer scoreTransformer;
+    public SppotiControllerServiceImpl(ScoreTransformer scoreTransformer, SppotiTransformer sppotiTransformer) {
+        this.scoreTransformer = scoreTransformer;
+        this.sppotiTransformer = sppotiTransformer;
+    }
 
     /**
      * {@inheritDoc}
@@ -141,7 +149,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         //TODO: Send emails to sppoti members too.
 
-        return new SppotiResponseDTO(savedSppoti.getUuid());
+        return sppotiTransformer.entityToDto(savedSppoti);
 
     }
 
@@ -173,7 +181,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             throw new EntityNotFoundException("SppotiEntity not found");
         }
 
-        SppotiResponseDTO sppotiResponseDTO = SppotiTransformer.entityToDto(sppoti);
+        SppotiResponseDTO sppotiResponseDTO = sppotiTransformer.entityToDto(sppoti);
 
         if (sppoti.getDescription() != null) {
             sppotiResponseDTO.setDescription(sppoti.getDescription());

@@ -21,7 +21,7 @@ public class TeamEntity
     private String coverPath;
 
     @Column(nullable = false, columnDefinition = "varchar (255) default '#30d3c2'")
-    private String color;
+    private String color = "#30d3c2";
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)

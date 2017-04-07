@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fr.commons.SportDTO;
 import com.fr.commons.dto.AbstractCommonDTO;
+import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.team.TeamDTO;
 
 import java.util.Date;
@@ -40,21 +41,7 @@ public class SppotiResponseDTO extends AbstractCommonDTO {
     private Integer adminTeamId;
     private Integer connectedUserId;
     private Long sppotiDuration;
-
-    public SppotiResponseDTO() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public SppotiResponseDTO(Integer id) {
-        this.id = id;
-    }
+    private ScoreDTO score;
 
     public String getTitre() {
         return titre;
@@ -198,5 +185,13 @@ public class SppotiResponseDTO extends AbstractCommonDTO {
 
     public void setSppotiDuration(Long sppotiDuration) {
         this.sppotiDuration = sppotiDuration;
+    }
+
+    public ScoreDTO getScore() {
+        return score;
+    }
+
+    public void setScore(ScoreDTO score) {
+        this.score = score;
     }
 }

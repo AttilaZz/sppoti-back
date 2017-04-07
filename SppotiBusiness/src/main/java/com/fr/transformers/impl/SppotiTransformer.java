@@ -2,11 +2,23 @@ package com.fr.transformers.impl;
 
 import com.fr.commons.dto.sppoti.SppotiResponseDTO;
 import com.fr.entities.SppotiEntity;
+import com.fr.transformers.ScoreTransformer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by djenanewail on 3/18/17.
  */
+@Component
 public class SppotiTransformer {
+
+    /** Score transformer. */
+    private final ScoreTransformer scoreTransformer;
+
+    @Autowired
+    public SppotiTransformer(ScoreTransformer scoreTransformer) {
+        this.scoreTransformer = scoreTransformer;
+    }
 
     /**
      * Transform sppoti entity to DTO.
@@ -14,7 +26,7 @@ public class SppotiTransformer {
      * @param model sppoti entity top transform.
      * @return sppoti DTP.
      */
-    public static SppotiResponseDTO entityToDto(SppotiEntity model) {
+    public SppotiResponseDTO entityToDto(SppotiEntity model) {
         SppotiResponseDTO sppotiResponseDTO = new SppotiResponseDTO();
 
         sppotiResponseDTO.setId(model.getUuid());
@@ -28,6 +40,7 @@ public class SppotiTransformer {
         sppotiResponseDTO.setMaxMembersCount(model.getMaxMembersCount());
         sppotiResponseDTO.setCover(model.getCover());
         sppotiResponseDTO.setSppotiDuration(model.getSppotiDuration());
+        sppotiResponseDTO.setScore(scoreTransformer.modelToDto(model.getScoreEntity()));
 
         return sppotiResponseDTO;
     }
