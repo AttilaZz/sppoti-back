@@ -219,15 +219,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     @Override
     public void deleteSppoti(int id) {
 
-        SppotiEntity sppoti = sppotiRepository.findByUuid(id);
+        Optional<SppotiEntity> sppoti = Optional.ofNullable(sppotiRepository.findByUuid(id));
 
-        if (sppoti != null && !sppoti.isDeleted()) {
-            sppoti.setDeleted(true);
-            sppotiRepository.save(sppoti);
-        } else {
-            throw new EntityNotFoundException("Trying to delete non existing sppoti");
-        }
+        sppoti.ifPresent(s -> {
+            s.setDeleted(true);
+            sppotiRepository.save(s);
+        });
 
+        sppoti.orElseThrow(() -> new EntityNotFoundException("Trying to delete non existing sppoti"));
     }
 
     /**

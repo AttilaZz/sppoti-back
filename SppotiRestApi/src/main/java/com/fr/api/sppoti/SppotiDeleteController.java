@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/sppoti")
 class SppotiDeleteController {
 
-    /** Logger.*/
-    private Logger LOGGER = Logger.getLogger(SppotiDeleteController.class);
-
     private SppotiControllerService sppotiControllerService;
 
     @Autowired
@@ -35,13 +32,8 @@ class SppotiDeleteController {
     @DeleteMapping("/{id}")
     ResponseEntity deleteSppoti(@PathVariable int id) {
 
-        try {
-            sppotiControllerService.deleteSppoti(id);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (RuntimeException e) {
-            LOGGER.error("Impossible de supprimer le sppoti: ", e);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+        sppotiControllerService.deleteSppoti(id);
+        return new ResponseEntity(HttpStatus.OK);
 
     }
 
