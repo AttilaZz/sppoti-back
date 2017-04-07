@@ -40,7 +40,9 @@ public class SppotiTransformer {
         sppotiResponseDTO.setMaxMembersCount(model.getMaxMembersCount());
         sppotiResponseDTO.setCover(model.getCover());
         sppotiResponseDTO.setSppotiDuration(model.getSppotiDuration());
-        sppotiResponseDTO.setScore(scoreTransformer.modelToDto(model.getScoreEntity()));
+        if(model.getScoreEntity() != null){
+            sppotiResponseDTO.setScore(scoreTransformer.modelToDto(model.getScoreEntity()));
+        }
 
         return sppotiResponseDTO;
     }
