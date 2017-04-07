@@ -1,6 +1,7 @@
 package com.fr.transformers.impl;
 
 import com.fr.commons.dto.ScoreDTO;
+import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.entities.ScoreEntity;
 import com.fr.entities.SppotiEntity;
 import com.fr.repositories.SppotiRepository;
@@ -32,10 +33,14 @@ public class ScoreTransformerImpl extends AbstractTransformerImpl<ScoreDTO, Scor
      */
     @Override
     public ScoreEntity dtoToModel(ScoreDTO dto) {
-        ScoreEntity entity = super.dtoToModel(dto);
+        ScoreEntity entity = new ScoreEntity();
+        SppotiBeanUtils.copyProperties(entity, dto);
 
         Optional<SppotiEntity> optional = Optional.ofNullable(sppotiRepository.findByUuid(dto.getSppotiId()));
-        optional.ifPresent(entity::setSppotiEntity);
+        optional.ifPresent(s -> {
+            entity.setSppotiEntity(s);
+            s.setScoreEntity(entity);
+        });
         optional.orElseThrow(() -> new EntityNotFoundException("Sppoti not found !!"));
 
         return entity;
@@ -46,7 +51,9 @@ public class ScoreTransformerImpl extends AbstractTransformerImpl<ScoreDTO, Scor
      */
     @Override
     public ScoreDTO modelToDto(ScoreEntity model) {
-        ScoreDTO scoreDTO = super.modelToDto(model);
+        ScoreDTO scoreDTO = new ScoreDTO();
+        SppotiBeanUtils.copyProperties(scoreDTO, model);
+        scoreDTO.setStatus(model.getScoreStatus().name());
         scoreDTO.setSppotiId(model.getSppotiEntity().getUuid());
         return scoreDTO;
     }

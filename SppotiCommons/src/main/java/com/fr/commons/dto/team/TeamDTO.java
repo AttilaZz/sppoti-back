@@ -21,6 +21,7 @@ public class TeamDTO extends AbstractCommonDTO {
     private String coverPath;
     private UserDTO teamAdmin;
     private SportDTO sport;
+    private String color;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Europe/Paris")
     private Date creationDate;
@@ -81,5 +82,13 @@ public class TeamDTO extends AbstractCommonDTO {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

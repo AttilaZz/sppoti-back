@@ -17,40 +17,29 @@ import java.util.Date;
 public class SppotiResponseDTO extends AbstractCommonDTO {
 
     private Integer id;
-
     private String titre;
-
     private String description;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private Date datetimeCreated;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private Date dateTimeStart;
 
     private String location;
-
     private Integer maxMembersCount;
-
     private String tags;
-
     private String cover;
-
     @JsonProperty("sport")
     private SportDTO relatedSport;
-
     private TeamDTO teamHost;
-
     private TeamDTO teamAdverse;
     private Integer teamAdverseStatus;
-
     private Integer sppotiCounter;
-
     private Boolean mySppoti;
-
     private Integer adminUserId;
     private Integer adminTeamId;
     private Integer connectedUserId;
+    private Long sppotiDuration;
 
     public SppotiResponseDTO() {
     }
@@ -201,5 +190,13 @@ public class SppotiResponseDTO extends AbstractCommonDTO {
 
     public void setCover(String cover) {
         this.cover = cover;
+    }
+
+    public Long getSppotiDuration() {
+        return sppotiDuration;
+    }
+
+    public void setSppotiDuration(Long sppotiDuration) {
+        this.sppotiDuration = sppotiDuration;
     }
 }

@@ -11,22 +11,23 @@ public class SppotiTransformer {
     /**
      * Transform sppoti entity to DTO.
      *
-     * @param sppotiEntity sppoti entity top transform.
+     * @param model sppoti entity top transform.
      * @return sppoti DTP.
      */
-    public static SppotiResponseDTO entityToDto(SppotiEntity sppotiEntity) {
+    public static SppotiResponseDTO entityToDto(SppotiEntity model) {
         SppotiResponseDTO sppotiResponseDTO = new SppotiResponseDTO();
 
-        sppotiResponseDTO.setId(sppotiEntity.getUuid());
-        sppotiResponseDTO.setVersion(sppotiEntity.getVersion());
+        sppotiResponseDTO.setId(model.getUuid());
+        sppotiResponseDTO.setVersion(model.getVersion());
 
-        sppotiResponseDTO.setTitre(sppotiEntity.getTitre());
-        sppotiResponseDTO.setLocation(sppotiEntity.getLocation());
-        sppotiResponseDTO.setDatetimeCreated(sppotiEntity.getDatetimeCreated());
-        sppotiResponseDTO.setDateTimeStart(sppotiEntity.getDateTimeStart());
-        sppotiResponseDTO.setDescription(sppotiEntity.getDescription());
-        sppotiResponseDTO.setMaxMembersCount(sppotiEntity.getMaxMembersCount());
-        sppotiResponseDTO.setCover(sppotiEntity.getCover());
+        sppotiResponseDTO.setTitre(model.getTitre());
+        sppotiResponseDTO.setLocation(model.getLocation());
+        sppotiResponseDTO.setDatetimeCreated(model.getDatetimeCreated());
+        sppotiResponseDTO.setDateTimeStart(model.getDateTimeStart());
+        sppotiResponseDTO.setDescription(model.getDescription());
+        sppotiResponseDTO.setMaxMembersCount(model.getMaxMembersCount());
+        sppotiResponseDTO.setCover(model.getCover());
+        sppotiResponseDTO.setSppotiDuration(model.getSppotiDuration());
 
         return sppotiResponseDTO;
     }

@@ -1,8 +1,7 @@
 package com.fr.api.score;
 
 import com.fr.commons.dto.ScoreDTO;
-import com.fr.service.SppotiControllerService;
-import org.apache.log4j.Logger;
+import com.fr.service.ScoreControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,27 +20,24 @@ import javax.validation.Valid;
 @RequestMapping("/score")
 public class ScoreAddController {
 
-    private SppotiControllerService sppotiControllerService;
+    /** Service des scores. */
+    private ScoreControllerService scoreControllerService;
 
+    /** Init score service. */
     @Autowired
-    void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
-        this.sppotiControllerService = sppotiControllerService;
+    public void setScoreControllerService(ScoreControllerService scoreControllerService) {
+        this.scoreControllerService = scoreControllerService;
     }
-
-    /**
-     * Logger.
-     */
-    private Logger LOGGER = Logger.getLogger(ScoreAddController.class);
 
     /**
      * Add score to a sppoti.
      *
      * @param scoreDTO score to add.
-     * @return zdded score.
+     * @return added score.
      */
-    @PostMapping("/score/add")
+    @PostMapping
     ResponseEntity<ScoreDTO> addScore(@RequestBody @Valid ScoreDTO scoreDTO) {
 
-        return new ResponseEntity<>(sppotiControllerService.addSppotiScore(scoreDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(scoreControllerService.addSppotiScore(scoreDTO), HttpStatus.CREATED);
     }
 }

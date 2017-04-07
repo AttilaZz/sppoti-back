@@ -18,10 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/team")
 class TeamDeleteTeam {
 
-    private static final String ATT_USER_ID = "USER_ID";
-
-    private TeamControllerService teamControllerService;
+    /**
+     * Class logger.
+     */
     private Logger LOGGER = Logger.getLogger(TeamAddController.class);
+
+    /**
+     * Team service.
+     */
+    private TeamControllerService teamControllerService;
 
     @Autowired
     void setTeamControllerService(TeamControllerService teamControllerService) {

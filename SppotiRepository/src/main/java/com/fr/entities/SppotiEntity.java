@@ -38,6 +38,8 @@ public class SppotiEntity
     @Column(nullable = false)
     private int maxMembersCount;
 
+    private Long sppotiDuration;
+
     @Column
     private String cover;
 
@@ -74,7 +76,7 @@ public class SppotiEntity
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMemberEntity> sppotiMembers;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "score_id")
     private ScoreEntity scoreEntity;
 
@@ -206,6 +208,14 @@ public class SppotiEntity
         this.cover = cover;
     }
 
+    public Long getSppotiDuration() {
+        return sppotiDuration;
+    }
+
+    public void setSppotiDuration(Long sppotiDuration) {
+        this.sppotiDuration = sppotiDuration;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -224,6 +234,7 @@ public class SppotiEntity
             return false;
         if (location != null ? !location.equals(that.location) : that.location != null) return false;
         if (tags != null ? !tags.equals(that.tags) : that.tags != null) return false;
+        if (sppotiDuration != null ? !sppotiDuration.equals(that.sppotiDuration) : that.sppotiDuration != null) return false;
         return teamAdverseStatus != null ? teamAdverseStatus.equals(that.teamAdverseStatus) : that.teamAdverseStatus == null;
 
     }
@@ -241,6 +252,7 @@ public class SppotiEntity
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         result = 31 * result + (deleted ? 1 : 0);
         result = 31 * result + (teamAdverseStatus != null ? teamAdverseStatus.hashCode() : 0);
+        result = 31 * result + (sppotiDuration != null ? sppotiDuration.hashCode() : 0);
         return result;
     }
 }

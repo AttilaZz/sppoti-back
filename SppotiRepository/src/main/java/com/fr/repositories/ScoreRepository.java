@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Created by wdjenane on 04/04/2017.
  */
 public interface ScoreRepository extends JpaRepository<ScoreEntity, Long>{
+    ScoreEntity findByUuid(Integer id);
 }

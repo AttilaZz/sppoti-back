@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Created by djenanewail on 1/21/17.
@@ -20,6 +19,9 @@ public class TeamEntity
     private String name;
     private String logoPath;
     private String coverPath;
+
+    @Column(nullable = false, columnDefinition = "varchar (255) default '#30d3c2'")
+    private String color;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
@@ -117,6 +119,14 @@ public class TeamEntity
         this.creationDate = creationDate;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -129,6 +139,7 @@ public class TeamEntity
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (logoPath != null ? !logoPath.equals(that.logoPath) : that.logoPath != null) return false;
         if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
+        if (color != null ? !color.equals(that.color) : that.color != null) return false;
         return coverPath != null ? coverPath.equals(that.coverPath) : that.coverPath == null;
 
     }
@@ -140,6 +151,7 @@ public class TeamEntity
         result = 31 * result + (logoPath != null ? logoPath.hashCode() : 0);
         result = 31 * result + (coverPath != null ? coverPath.hashCode() : 0);
         result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        result = 31 * result + (color != null ? color.hashCode() : 0);
         result = 31 * result + (deleted ? 1 : 0);
         return result;
     }

@@ -117,12 +117,4 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @return all refused sppoties.
      */
     List<SppotiResponseDTO> getAllRefusedSppoties(int userId, int page);
-
-    /**
-     * Add score to a sppoti.
-     *
-     * @param scoreDTO score to add.
-     * @return added score.
-     */
-    ScoreDTO addSppotiScore(ScoreDTO scoreDTO);
 }

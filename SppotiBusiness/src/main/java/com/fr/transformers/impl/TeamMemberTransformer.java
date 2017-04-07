@@ -24,14 +24,22 @@ import java.util.Set;
 @Component
 public class TeamMemberTransformer {
 
-    @Autowired
-    private RatingRepository ratingRepository;
+    /** Rating Repository. */
+    private final RatingRepository ratingRepository;
 
-    @Autowired
-    private SppotiMembersRepository sppotiMembersRepository;
+    /** Sppoti member repository. */
+    private final SppotiMembersRepository sppotiMembersRepository;
 
+    /** User transformer. */
+    private final UserTransformer userTransformer;
+
+    /** Init dependencies. */
     @Autowired
-    private UserTransformer userTransformer;
+    public TeamMemberTransformer(RatingRepository ratingRepository, SppotiMembersRepository sppotiMembersRepository, UserTransformer userTransformer) {
+        this.ratingRepository = ratingRepository;
+        this.sppotiMembersRepository = sppotiMembersRepository;
+        this.userTransformer = userTransformer;
+    }
 
     /**
      * Transform a team member entity to userDTO.

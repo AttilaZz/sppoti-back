@@ -39,6 +39,7 @@ public class TeamTransformer {
         teamDTO.setLogoPath(model.getLogoPath());
         teamDTO.setSport(SportTransformer.modelToDto(model.getSport()));
         teamDTO.setCreationDate(model.getCreationDate());
+        teamDTO.setColor(model.getColor());
 
         teamDTO.setTeamAdmin(teamMemberTransformer.modelToDto(teamMembersRepository.findByTeamUuidAndAdminTrue(model.getUuid()), null));
 

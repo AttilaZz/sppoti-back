@@ -576,16 +576,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Transactional
-    @Override
-    public ScoreDTO addSppotiScore(ScoreDTO scoreDTO) {
-        ScoreEntity entity = scoreTransformer.dtoToModel(scoreDTO);
-        return scoreTransformer.modelToDto(scoreRepository.save(entity));
-    }
-
-    /**
      * @param challengeTeam adverse team.
      * @param sppoti        sppoti id.
      * @return all adverse team as sppoters.

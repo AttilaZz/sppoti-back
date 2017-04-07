@@ -1,7 +1,9 @@
 package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.hibernate.validator.constraints.NotEmpty;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * DTO of the {@link ScoreDTO entity}.
@@ -10,14 +12,16 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ScoreDTO
-        extends AbstractCommonDTO{
+        extends AbstractCommonDTO {
 
-    @NotEmpty
+    @NotNull
     private Integer sppotiId;
-    @NotEmpty
+    @NotNull
     private Integer host;
-    @NotEmpty
+    @NotNull
     private Integer visitor;
+
+    private String status;
 
     public Integer getSppotiId() {
         return sppotiId;
@@ -41,5 +45,13 @@ public class ScoreDTO
 
     public void setVisitor(Integer visitor) {
         this.visitor = visitor;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
