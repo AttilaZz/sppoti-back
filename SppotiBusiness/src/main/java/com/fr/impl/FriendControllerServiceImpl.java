@@ -27,7 +27,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
     private Logger LOGGER = Logger.getLogger(FriendControllerServiceImpl.class);
 
     @Value("${key.friendShipPerPage}")
-    private int friend_list_size;
+    private int friendListSize;
 
     /**
      * {@inheritDoc}
@@ -134,7 +134,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
     @Override
     public List<UserDTO> getConfirmedFriendList(int userId, int page) {
 
-        Pageable pageable = new PageRequest(page, friend_list_size);
+        Pageable pageable = new PageRequest(page, friendListSize);
 
         List<FriendShipEntity> friendShips = this.getByUserAndStatus(userId, GlobalAppStatusEnum.CONFIRMED, pageable);
 

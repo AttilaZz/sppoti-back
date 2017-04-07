@@ -1,7 +1,13 @@
 package com.fr.api.contact;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fr.commons.dto.ContactDTO;
+import com.fr.service.ContactControllerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * Created by djenanewail on 4/7/17.
@@ -11,4 +17,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/contact")
 public class ContactAddController {
+
+    /** Contact service. */
+    private final ContactControllerService contactControllerService;
+
+    @Autowired
+    public ContactAddController(ContactControllerService contactControllerService) {
+        this.contactControllerService = contactControllerService;
+    }
+
+    /**
+     * Send Email to sppoti.contact@gmail.com
+     *
+     * @param contactDTO contact data.
+     * @return 200 status if email sent.
+     */
+    @PostMapping
+    public ResponseEntity sendContactEmail(@RequestBody @Valid ContactDTO contactDTO) {
+
+        contactControllerService.sendContactEmail(contactDTO);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }
