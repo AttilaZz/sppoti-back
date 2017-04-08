@@ -1,9 +1,9 @@
 package com.fr.transformers.impl;
 
-import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.entities.TeamEntity;
 import com.fr.repositories.TeamMembersRepository;
+import com.fr.transformers.TeamTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,20 +15,32 @@ import java.util.stream.Collectors;
  */
 @Transactional(readOnly = true)
 @Component
-public class TeamTransformer {
-
-    @Autowired
-    private TeamMemberTransformer teamMemberTransformer;
-
-    @Autowired
-    private TeamMembersRepository teamMembersRepository;
+public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEntity>
+        implements TeamTransformer {
 
     /**
-     * Transform team entity to team DTO.
-     *
-     * @param model team entity top transform.
-     * @return team entity as team DTO.
+     * Team member transformer.
      */
+    private final TeamMemberTransformer teamMemberTransformer;
+
+    /**
+     * Team member repository.
+     */
+    private final TeamMembersRepository teamMembersRepository;
+
+    /**
+     * Init dependencies.
+     */
+    @Autowired
+    public TeamTransformerImpl(TeamMemberTransformer teamMemberTransformer, TeamMembersRepository teamMembersRepository) {
+        this.teamMemberTransformer = teamMemberTransformer;
+        this.teamMembersRepository = teamMembersRepository;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public TeamDTO modelToDto(TeamEntity model) {
         TeamDTO teamDTO = new TeamDTO();
 
@@ -43,7 +55,7 @@ public class TeamTransformer {
 
         teamDTO.setTeamAdmin(teamMemberTransformer.modelToDto(teamMembersRepository.findByTeamUuidAndAdminTrue(model.getUuid()), null));
 
-        teamDTO.setTeamMembers(
+        teamDTO.setMembers(
                 model.getTeamMembers().stream()
                         .map(m -> teamMemberTransformer.modelToDto(m, null)).collect(Collectors.toList())
         );
@@ -52,20 +64,18 @@ public class TeamTransformer {
     }
 
     /**
-     * Transform team dto to entity.
-     *
-     * @param teamRequestDTO team dto to transform.
-     * @return team entity.
+     * {@inheritDoc}
      */
-    public TeamEntity dtoToModel(TeamRequestDTO teamRequestDTO) {
+    @Override
+    public TeamEntity dtoToModel(TeamDTO dto) {
         TeamEntity entity = new TeamEntity();
 
-        entity.setUuid(teamRequestDTO.getId());
-        entity.setVersion(teamRequestDTO.getVersion());
+        entity.setUuid(dto.getId());
+        entity.setVersion(dto.getVersion());
 
-        entity.setName(teamRequestDTO.getName());
-        entity.setCoverPath(teamRequestDTO.getCoverPath());
-        entity.setLogoPath(teamRequestDTO.getLogoPath());
+        entity.setName(dto.getName());
+        entity.setCoverPath(dto.getCoverPath());
+        entity.setLogoPath(dto.getLogoPath());
 
         return entity;
     }

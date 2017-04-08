@@ -1,6 +1,5 @@
 package com.fr.api.team;
 
-import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.TeamControllerService;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 
 /**
  * Created by djenanewail on 1/22/17.
@@ -42,22 +42,7 @@ class TeamAddController {
      * @return Created team data
      */
     @PostMapping
-    ResponseEntity<TeamDTO> createTeam(@RequestBody TeamRequestDTO team, Authentication authentication) {
-
-        if (StringUtils.isEmpty(team.getName())) {
-            LOGGER.error("TeamEntity (name) not found");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        if (StringUtils.isEmpty(team.getMembers())) {
-            LOGGER.error("TeamEntity (members) not found");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        if (team.getSportId() == null) {
-            LOGGER.error("TeamEntity (sport id) not found");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    ResponseEntity<TeamDTO> createTeam(@RequestBody @Valid TeamDTO team, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 

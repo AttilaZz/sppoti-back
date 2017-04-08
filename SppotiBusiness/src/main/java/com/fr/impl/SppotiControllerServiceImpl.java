@@ -82,7 +82,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                 hostTeam.setCoverPath(teamDTO.getCoverPath());
             }
 
-            hostTeam.setTeamMembers(getTeamMembersEntityFromDto(teamDTO.getTeamMembers(), hostTeam, sppoti));
+            hostTeam.setTeamMembers(getTeamMembersEntityFromDto(teamDTO.getMembers(), hostTeam, sppoti));
             hostTeam.setSport(sppoti.getSport());
 //            teamRepository.save(hostTeam);
 

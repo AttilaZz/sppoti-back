@@ -14,7 +14,7 @@ import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.repositories.*;
 import com.fr.service.AbstractControllerService;
 import com.fr.transformers.impl.TeamMemberTransformer;
-import com.fr.transformers.impl.TeamTransformer;
+import com.fr.transformers.impl.TeamTransformerImpl;
 import com.fr.transformers.impl.UserTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +79,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
     private UserTransformer userTransformer;
 
     @Autowired
-    private TeamTransformer teamTransformer;
+    private TeamTransformerImpl teamTransformer;
 
     private Logger LOGGER = Logger.getLogger(AbstractControllerServiceImpl.class);
 
@@ -490,7 +490,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
             teamUsers.add(teamMemberTransformer.modelToDto(memberEntity, sppoti));
         }
         TeamDTO teamDTO = teamTransformer.modelToDto(team);
-        teamDTO.setTeamMembers(teamUsers);
+        teamDTO.setMembers(teamUsers);
 
         return teamDTO;
 

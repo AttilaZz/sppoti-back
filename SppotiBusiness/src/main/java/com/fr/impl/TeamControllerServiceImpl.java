@@ -1,19 +1,18 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.exception.MemberNotInAdminTeamException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.SportEntity;
 import com.fr.entities.TeamEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.entities.UserEntity;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
-import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.TeamControllerService;
 import com.fr.transformers.impl.TeamMemberTransformer;
-import com.fr.transformers.impl.TeamTransformer;
+import com.fr.transformers.impl.TeamTransformerImpl;
 import com.fr.transformers.impl.UserTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,17 +34,37 @@ import java.util.stream.Collectors;
 @Component
 class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements TeamControllerService {
 
+    /**
+     * Class logger.
+     */
     private Logger LOGGER = Logger.getLogger(TeamControllerServiceImpl.class);
 
+    /**
+     * Team list size.
+     */
     @Value("${key.teamsPerPage}")
     private int teamPageSize;
 
+    /**
+     * User transformer.
+     */
     private final UserTransformer userTransformer;
-    private final TeamTransformer teamTransformer;
+
+    /**
+     * Team transformer.
+     */
+    private final TeamTransformerImpl teamTransformer;
+
+    /**
+     * Team members transformer.
+     */
     private final TeamMemberTransformer teamMemberTransformer;
 
+    /**
+     * Init dependencies.
+     */
     @Autowired
-    public TeamControllerServiceImpl(UserTransformer userTransformer, TeamTransformer teamTransformer, TeamMemberTransformer teamMemberTransformer) {
+    public TeamControllerServiceImpl(UserTransformer userTransformer, TeamTransformerImpl teamTransformer, TeamMemberTransformer teamMemberTransformer) {
         this.userTransformer = userTransformer;
         this.teamTransformer = teamTransformer;
         this.teamMemberTransformer = teamMemberTransformer;
@@ -57,7 +75,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      */
     @Transactional
     @Override
-    public TeamDTO saveTeam(TeamRequestDTO team, Long adminId) {
+    public TeamDTO saveTeam(TeamDTO team, Long adminId) {
 
         SportEntity sportEntity = sportRepository.findOne(team.getSportId());
 
@@ -87,7 +105,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      */
     @Transactional
     @Override
-    public void updateTeamMembers(TeamRequestDTO teamRequestDTO, int memberId, int teamId) {
+    public void updateTeamMembers(TeamDTO TeamDTO, int memberId, int teamId) {
 
         TeamMemberEntity usersTeam = teamMembersRepository.findByUsersUuidAndTeamUuid(memberId, teamId);
 
@@ -95,17 +113,17 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             throw new EntityNotFoundException("Member not found");
         }
 
-        if (teamRequestDTO.getStatus() != null && !teamRequestDTO.getStatus().equals(0)) {
+        if (TeamDTO.getStatus() != null && !TeamDTO.getStatus().equals(0)) {
             for (GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
-                if (status.getValue() == teamRequestDTO.getStatus()) {
+                if (status.getValue() == TeamDTO.getStatus()) {
                     usersTeam.setStatus(status);
                 }
             }
         }
 
-        if (teamRequestDTO.getxPosition() != null && teamRequestDTO.getyPosition() != null) {
-            usersTeam.setyPosition(teamRequestDTO.getyPosition());
-            usersTeam.setxPosition(teamRequestDTO.getxPosition());
+        if (TeamDTO.getxPosition() != null && TeamDTO.getyPosition() != null) {
+            usersTeam.setyPosition(TeamDTO.getyPosition());
+            usersTeam.setxPosition(TeamDTO.getxPosition());
         }
 
         teamMembersRepository.save(usersTeam);
@@ -315,9 +333,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      */
     @Transactional
     @Override
-    public TeamDTO updateTeam(int connectedUserId, TeamRequestDTO teamRequestDTO) {
+    public TeamDTO updateTeam(int connectedUserId, TeamDTO TeamDTO) {
 
-        TeamMemberEntity teamMemberEntity = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, teamRequestDTO.getId());
+        TeamMemberEntity teamMemberEntity = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, TeamDTO.getId());
 
         if (teamMemberEntity == null) {
             throw new NotAdminException("You must be the team admin to access this service");
@@ -325,16 +343,20 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 
         TeamEntity teamEntity = teamMemberEntity.getTeam();
 
-        if (teamRequestDTO.getName() != null) {
-            teamEntity.setName(teamRequestDTO.getName());
+        if (!StringUtils.isEmpty(TeamDTO.getName())) {
+            teamEntity.setName(TeamDTO.getName());
         }
 
-        if (teamRequestDTO.getLogoPath() != null) {
-            teamEntity.setLogoPath(teamRequestDTO.getLogoPath());
+        if (!StringUtils.isEmpty(TeamDTO.getLogoPath())) {
+            teamEntity.setLogoPath(TeamDTO.getLogoPath());
         }
 
-        if (teamRequestDTO.getCoverPath() != null) {
-            teamEntity.setCoverPath(teamRequestDTO.getCoverPath());
+        if (StringUtils.isEmpty(TeamDTO.getCoverPath())) {
+            teamEntity.setCoverPath(TeamDTO.getCoverPath());
+        }
+
+        if (!StringUtils.isEmpty(TeamDTO.getColor())) {
+            teamEntity.setColor(TeamDTO.getColor());
         }
 
         TeamEntity savedTeam = teamRepository.save(teamEntity);

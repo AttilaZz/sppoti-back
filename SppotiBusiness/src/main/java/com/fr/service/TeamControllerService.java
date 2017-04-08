@@ -1,8 +1,7 @@
 package com.fr.service;
 
-import com.fr.commons.dto.team.TeamRequestDTO;
-import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param adminId admin id.
      * @return saved team data.
      */
-    TeamDTO saveTeam(TeamRequestDTO team, Long adminId);
+    TeamDTO saveTeam(TeamDTO team, Long adminId);
 
     /**
      * @param teamId team id.
@@ -34,7 +33,7 @@ public interface TeamControllerService extends AbstractControllerService {
      * @param memberId member team id.
      * @param teamId team id.
      */
-    void updateTeamMembers(TeamRequestDTO request, int memberId, int teamId);
+    void updateTeamMembers(TeamDTO request, int memberId, int teamId);
 
     /**
      * @param userId user id.
@@ -112,10 +111,10 @@ public interface TeamControllerService extends AbstractControllerService {
     /**
      *
      * @param teamId team id.
-     * @param teamRequestDTO team data to update.
+     * @param TeamDTO team data to update.
      * @return updated team.
      */
-    TeamDTO updateTeam(int teamId, TeamRequestDTO teamRequestDTO);
+    TeamDTO updateTeam(int teamId, TeamDTO TeamDTO);
 
     /**
      *

@@ -1,14 +1,14 @@
 package com.fr.api.team;
 
-import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamDTO;
-import com.fr.service.TeamControllerService;
 import com.fr.security.AccountUserDetails;
+import com.fr.service.TeamControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -19,9 +19,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/team")
 class TeamUpdateController {
 
+    /**
+     * Team controller service.
+     */
     private TeamControllerService teamControllerService;
+
+    /**
+     * Class logger.
+     */
     private Logger LOGGER = Logger.getLogger(TeamAddController.class);
 
+    /**
+     * Init controller services.
+     */
     @Autowired
     void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
@@ -36,19 +46,27 @@ class TeamUpdateController {
      * @return The updated team.
      */
     @PutMapping("/{teamId}")
-    ResponseEntity<TeamDTO> updateTeam(@PathVariable int teamId, @RequestBody TeamRequestDTO teamRequestDTO, Authentication authentication) {
+    ResponseEntity<TeamDTO> updateTeam(@PathVariable int teamId, @RequestBody TeamDTO teamRequestDTO, Authentication authentication) {
 
         boolean canUpdate = false;
 
-        if (teamRequestDTO.getName() != null && !teamRequestDTO.getName().isEmpty()) {
+        //Update team name.
+        if (!StringUtils.isEmpty(teamRequestDTO.getName())) {
             canUpdate = true;
         }
 
-        if (teamRequestDTO.getLogoPath() != null && !teamRequestDTO.getLogoPath().isEmpty()) {
+        //Update team logos.
+        if (!StringUtils.isEmpty(teamRequestDTO.getLogoPath())) {
             canUpdate = true;
         }
 
-        if (teamRequestDTO.getCoverPath() != null && !teamRequestDTO.getCoverPath().isEmpty()) {
+        //Update team cover.
+        if (!StringUtils.isEmpty(teamRequestDTO.getCoverPath())) {
+            canUpdate = true;
+        }
+
+        //Update team color.
+        if (!StringUtils.isEmpty(teamRequestDTO.getColor())) {
             canUpdate = true;
         }
 

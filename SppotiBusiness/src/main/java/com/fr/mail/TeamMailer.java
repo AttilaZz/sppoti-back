@@ -89,7 +89,7 @@ public class TeamMailer
 
         context.setVariable("body", content);
         context.setVariable("sentToTeamName", team.getName());
-        context.setVariable("sentToTeamMembersCount", team.getTeamMembers().size());
+        context.setVariable("sentToTeamMembersCount", team.getMembers().size());
         context.setVariable("sentToFirstName", to.getFirstName());
         context.setVariable("sentToEmail", to.getEmail());
         context.setVariable("sentToUsername", to.getUsername());

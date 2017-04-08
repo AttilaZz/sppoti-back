@@ -34,10 +34,13 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
     /**
      * Team repository.
      */
-    private final TeamTransformer teamTransformer;
+    private final TeamTransformerImpl teamTransformer;
 
+    /**
+     * Init dependencies.
+     */
     @Autowired
-    public SppotiTransformerImpl(ScoreTransformer scoreTransformer, SportRepository sportRepository, TeamTransformer teamTransformer) {
+    public SppotiTransformerImpl(ScoreTransformer scoreTransformer, SportRepository sportRepository, TeamTransformerImpl teamTransformer) {
         this.scoreTransformer = scoreTransformer;
         this.sportRepository = sportRepository;
         this.teamTransformer = teamTransformer;

@@ -1,7 +1,6 @@
 package com.fr.api.team;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.dto.team.TeamRequestDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.security.AccountUserDetails;
@@ -21,13 +20,22 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/team/{teamId}/member")
  class TeamUpdateMembersController {
 
+    /**
+     * Team controller service.
+     */
     private TeamControllerService teamControllerService;
 
+    /**
+     * Init services.
+     */
     @Autowired
      void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
     }
 
+    /**
+     * Class logger.
+     */
     private Logger LOGGER = Logger.getLogger(TeamUpdateMembersController.class);
 
     /**
@@ -38,7 +46,7 @@ import org.springframework.web.bind.annotation.*;
      * @return The updated member information.
      */
     @PutMapping("/{memberId}")
-     ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamRequestDTO teamDto) {
+     ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamDTO teamDto) {
 
         boolean canUpdate = false;
 
