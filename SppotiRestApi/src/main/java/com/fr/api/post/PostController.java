@@ -25,14 +25,22 @@ import java.util.*;
 @RequestMapping("/post")
 class PostController {
 
+    /**
+     * Post controller service.
+     */
     private PostControllerService postDataService;
 
+    /**
+     * Init services.
+     */
     @Autowired
     void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
-
+    /**
+     * Class logger.
+     */
     private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
     /**

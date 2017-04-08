@@ -7,8 +7,9 @@ import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.CommentControllerService;
-import com.fr.transformers.impl.CommentTransformer;
+import com.fr.transformers.impl.CommentTransformerImpl;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,12 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 
     @Value("${key.commentsPerPage}")
     private int commentSize;
+
+    /**
+     * Comment transformer.
+     */
+    @Autowired
+    private CommentTransformerImpl commentTransformer;
 
     /**
      * {@inheritDoc}
@@ -63,7 +70,7 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 
             }
 
-            return CommentTransformer.commentEntityToDto(commentEntity.get(), getUserById(userId));
+            return commentTransformer.modelToDto(commentEntity.get());
         }
 
         return null;

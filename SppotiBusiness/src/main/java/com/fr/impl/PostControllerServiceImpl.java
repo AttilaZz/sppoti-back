@@ -3,11 +3,12 @@ package com.fr.impl;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.post.PostResponseDTO;
-import com.fr.entities.*;
 import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.entities.*;
 import com.fr.service.PostControllerService;
-import com.fr.transformers.impl.CommentTransformer;
+import com.fr.transformers.CommentTransformer;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,10 +26,29 @@ import java.util.*;
 @Component
 class PostControllerServiceImpl extends AbstractControllerServiceImpl implements PostControllerService {
 
+    /**
+     * Class logger.
+     */
     private static Logger LOGGER = Logger.getLogger(PostControllerServiceImpl.class);
 
+    /**
+     * Post list size.
+     */
     @Value("${key.postsPerPage}")
     private int postSize;
+
+    /**
+     * Comment transformer.
+     */
+    private final CommentTransformer commentTransformer;
+
+    /**
+     * Init dependencies.
+     */
+    @Autowired
+    PostControllerServiceImpl(CommentTransformer commentTransformer) {
+        this.commentTransformer = commentTransformer;
+    }
 
     /**
      * {@inheritDoc}
@@ -278,7 +298,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
                     if (!commentsListTemp.isEmpty()) {
                         CommentEntity commentEntity = commentsListTemp.get(commentEntities.size() - 1);
 
-                        CommentDTO commentModelDTO = CommentTransformer.commentEntityToDto(commentEntity, commentEntity.getUser());
+                        CommentDTO commentModelDTO = commentTransformer.modelToDto(commentEntity);
                         commentModelDTO.setMyComment(commentEntity.getUser().getId().equals(userPost.getId()));
                         commentModelDTO.setLikedByUser(isContentLikedByUser(commentEntity, userPost.getId()));
                         commentModelDTO.setLikeCount(commentEntity.getLikes().size());
