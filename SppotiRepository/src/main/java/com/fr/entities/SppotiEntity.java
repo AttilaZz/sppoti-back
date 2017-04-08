@@ -14,14 +14,13 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "SPPOTI")
-@JsonInclude(Include.NON_EMPTY)
 public class SppotiEntity
         extends AbstractCommonEntity {
 
     @Column(nullable = false)
     private String titre;
 
-    @Column
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
@@ -36,17 +35,18 @@ public class SppotiEntity
     private String location;
 
     @Column(nullable = false)
-    private int maxMembersCount;
+    private Integer maxTeamCount;
 
     private Long sppotiDuration;
-
-    @Column
     private String cover;
-
-    @Column
     private String tags;
 
-    @Column
+    @Column(nullable = false)
+    private Long altitude;
+    @Column(nullable = false)
+    private Long longitude;
+
+    @Column(nullable = false)
     private boolean deleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -62,16 +62,16 @@ public class SppotiEntity
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_host_id")
     @JsonIgnore
-    private TeamEntity teamHost;
+    private TeamEntity teamHostEntity;
 
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "team_adverse_id")
     @JsonIgnore
-    private TeamEntity teamAdverse;
+    private TeamEntity teamAdverseEntity;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private GlobalAppStatusEnum teamAdverseStatus = GlobalAppStatusEnum.NO_CHALLENGE_YET;
+    @Column(nullable = false, name = "team_adverse_status")
+    private GlobalAppStatusEnum teamAdverseStatusEnum = GlobalAppStatusEnum.NO_CHALLENGE_YET;
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppotiMemberEntity> sppotiMembers;
@@ -136,12 +136,12 @@ public class SppotiEntity
         this.description = description;
     }
 
-    public int getMaxMembersCount() {
-        return maxMembersCount;
+    public Integer getMaxTeamCount() {
+        return maxTeamCount;
     }
 
-    public void setMaxMembersCount(int maxMembersCount) {
-        this.maxMembersCount = maxMembersCount;
+    public void setMaxTeamCount(Integer maxTeamCount) {
+        this.maxTeamCount = maxTeamCount;
     }
 
     public Date getDateTimeStart() {
@@ -160,20 +160,20 @@ public class SppotiEntity
         this.tags = tags;
     }
 
-    public TeamEntity getTeamHost() {
-        return teamHost;
+    public TeamEntity getTeamHostEntity() {
+        return teamHostEntity;
     }
 
-    public void setTeamHost(TeamEntity teamHost) {
-        this.teamHost = teamHost;
+    public void setTeamHostEntity(TeamEntity teamHostEntity) {
+        this.teamHostEntity = teamHostEntity;
     }
 
-    public TeamEntity getTeamAdverse() {
-        return teamAdverse;
+    public TeamEntity getTeamAdverseEntity() {
+        return teamAdverseEntity;
     }
 
-    public void setTeamAdverse(TeamEntity teamAdverse) {
-        this.teamAdverse = teamAdverse;
+    public void setTeamAdverseEntity(TeamEntity teamAdverseEntity) {
+        this.teamAdverseEntity = teamAdverseEntity;
     }
 
     public boolean isDeleted() {
@@ -192,12 +192,12 @@ public class SppotiEntity
         this.sppotiMembers = sppotiMembers;
     }
 
-    public GlobalAppStatusEnum getTeamAdverseStatus() {
-        return teamAdverseStatus;
+    public GlobalAppStatusEnum getTeamAdverseStatusEnum() {
+        return teamAdverseStatusEnum;
     }
 
-    public void setTeamAdverseStatus(GlobalAppStatusEnum teamAdverseStatus) {
-        this.teamAdverseStatus = teamAdverseStatus;
+    public void setTeamAdverseStatusEnum(GlobalAppStatusEnum teamAdverseStatusEnum) {
+        this.teamAdverseStatusEnum = teamAdverseStatusEnum;
     }
 
     public String getCover() {
@@ -216,6 +216,22 @@ public class SppotiEntity
         this.sppotiDuration = sppotiDuration;
     }
 
+    public Long getAltitude() {
+        return altitude;
+    }
+
+    public void setAltitude(Long altitude) {
+        this.altitude = altitude;
+    }
+
+    public Long getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Long longitude) {
+        this.longitude = longitude;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -224,7 +240,6 @@ public class SppotiEntity
 
         SppotiEntity that = (SppotiEntity) o;
 
-        if (maxMembersCount != that.maxMembersCount) return false;
         if (deleted != that.deleted) return false;
         if (titre != null ? !titre.equals(that.titre) : that.titre != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
@@ -233,9 +248,12 @@ public class SppotiEntity
         if (dateTimeStart != null ? !dateTimeStart.equals(that.dateTimeStart) : that.dateTimeStart != null)
             return false;
         if (location != null ? !location.equals(that.location) : that.location != null) return false;
+        if (altitude != null ? !altitude.equals(that.altitude) : that.altitude != null) return false;
+        if (longitude != null ? !longitude.equals(that.longitude) : that.longitude != null) return false;
         if (tags != null ? !tags.equals(that.tags) : that.tags != null) return false;
         if (sppotiDuration != null ? !sppotiDuration.equals(that.sppotiDuration) : that.sppotiDuration != null) return false;
-        return teamAdverseStatus != null ? teamAdverseStatus.equals(that.teamAdverseStatus) : that.teamAdverseStatus == null;
+        if (maxTeamCount != null ? !maxTeamCount.equals(that.maxTeamCount) : that.maxTeamCount != null) return false;
+        return teamAdverseStatusEnum != null ? teamAdverseStatusEnum.equals(that.teamAdverseStatusEnum) : that.teamAdverseStatusEnum == null;
 
     }
 
@@ -248,11 +266,13 @@ public class SppotiEntity
         result = 31 * result + (dateTimeStart != null ? dateTimeStart.hashCode() : 0);
         result = 31 * result + (location != null ? location.hashCode() : 0);
         result = 31 * result + (cover != null ? cover.hashCode() : 0);
-        result = 31 * result + maxMembersCount;
+        result = 31 * result + (maxTeamCount != null ? maxTeamCount.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         result = 31 * result + (deleted ? 1 : 0);
-        result = 31 * result + (teamAdverseStatus != null ? teamAdverseStatus.hashCode() : 0);
+        result = 31 * result + (teamAdverseStatusEnum != null ? teamAdverseStatusEnum.hashCode() : 0);
         result = 31 * result + (sppotiDuration != null ? sppotiDuration.hashCode() : 0);
+        result = 31 * result + (altitude != null ? altitude.hashCode() : 0);
+        result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
         return result;
     }
 }

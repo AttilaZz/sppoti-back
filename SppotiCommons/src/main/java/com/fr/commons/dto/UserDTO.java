@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * Created by djenanewail on 12/16/16.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO extends AbstractCommonDTO {
 
     private String firstName;

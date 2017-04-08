@@ -35,7 +35,7 @@ public class ContactAddController {
     @PostMapping
     public ResponseEntity sendContactEmail(@RequestBody @Valid ContactDTO contactDTO) {
 
-        contactControllerService.sendContactEmail(contactDTO);
+        contactControllerService.sendGlobalContactEmail(contactDTO);
         return new ResponseEntity(HttpStatus.OK);
     }
 

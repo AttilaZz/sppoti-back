@@ -42,7 +42,7 @@ public class TeamEntity
      * When creating a host team from a sppotigit co, we need a reference to the sppoti,
      * in order to save team host ang get i's id, otherwise, we get a transient exception.
      */
-    @OneToMany(mappedBy = "teamHost", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teamHostEntity", cascade = CascadeType.ALL)
     private Set<SppotiEntity> sppotiEntity;
 
     private boolean deleted = false;

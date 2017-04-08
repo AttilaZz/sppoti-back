@@ -1,6 +1,6 @@
 package com.fr.api.sppoti;
 
-import com.fr.commons.dto.sppoti.SppotiResponseDTO;
+import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.service.SppotiControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +35,9 @@ class SppotiGetController {
      * @return 200 status with the target sppoti, 400 status otherwise.
      */
     @GetMapping("/{id}")
-    ResponseEntity<SppotiResponseDTO> getSppotiById(@PathVariable Integer id) {
+    ResponseEntity<SppotiDTO> getSppotiById(@PathVariable Integer id) {
 
-        SppotiResponseDTO response = sppotiControllerService.getSppotiByUuid(id);
+        SppotiDTO response = sppotiControllerService.getSppotiByUuid(id);
 
         LOGGER.info("Sppoti has been returned: " + response);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -50,10 +50,10 @@ class SppotiGetController {
      * @return All sppoties created by the given user id.
      */
     @GetMapping("/all/{userId}/{page}")
-    ResponseEntity<List<SppotiResponseDTO>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
+    ResponseEntity<List<SppotiDTO>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
 
         try {
-            List<SppotiResponseDTO> response = sppotiControllerService.getAllUserSppoties(id, page);
+            List<SppotiDTO> response = sppotiControllerService.getAllUserSppoties(id, page);
 
             LOGGER.info("The user (" + id + ") has created (" + response.size() + ") sppoties");
 
@@ -72,9 +72,9 @@ class SppotiGetController {
      * @return All sppoties that user joined.
      */
     @GetMapping("/all/joined/{userId}/{page}")
-    ResponseEntity<List<SppotiResponseDTO>> getAllJoinedUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
+    ResponseEntity<List<SppotiDTO>> getAllJoinedUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
 
-        List<SppotiResponseDTO> response = sppotiControllerService.getAllJoinedSppoties(id, page);
+        List<SppotiDTO> response = sppotiControllerService.getAllJoinedSppoties(id, page);
         LOGGER.info("The user (" + id + ") has joined (" + response.size() + ") sppoties");
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -87,9 +87,9 @@ class SppotiGetController {
      * @return All confirmed sppoties that user joined.
      */
     @GetMapping("/all/confirmed/{userId}/{page}")
-    ResponseEntity<List<SppotiResponseDTO>> getAllConfirmedSppoties(@PathVariable int userId, @PathVariable int page) {
+    ResponseEntity<List<SppotiDTO>> getAllConfirmedSppoties(@PathVariable int userId, @PathVariable int page) {
 
-        List<SppotiResponseDTO> response = sppotiControllerService.getAllConfirmedSppoties(userId, page);
+        List<SppotiDTO> response = sppotiControllerService.getAllConfirmedSppoties(userId, page);
         LOGGER.info("The user (" + userId + ") has joined (" + response.size() + ") sppoties");
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -102,9 +102,9 @@ class SppotiGetController {
      * @return All confirmed sppoties that user joined.
      */
     @GetMapping("/all/refused/{userId}/{page}")
-    ResponseEntity<List<SppotiResponseDTO>> getAllRefusedSppoties(@PathVariable int userId, @PathVariable int page) {
+    ResponseEntity<List<SppotiDTO>> getAllRefusedSppoties(@PathVariable int userId, @PathVariable int page) {
 
-        List<SppotiResponseDTO> response = sppotiControllerService.getAllRefusedSppoties(userId, page);
+        List<SppotiDTO> response = sppotiControllerService.getAllRefusedSppoties(userId, page);
         LOGGER.info("The user (" + userId + ") has joined (" + response.size() + ") sppoties");
 
         return new ResponseEntity<>(response, HttpStatus.OK);

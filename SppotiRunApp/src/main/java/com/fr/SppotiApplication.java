@@ -1,5 +1,6 @@
 package com.fr;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
         @PropertySource(value = "classpath:headerConfig.properties", ignoreResourceNotFound = true, encoding = "UTF-8"),
         @PropertySource(value = "classpath:email.properties", ignoreResourceNotFound = true, encoding = "UTF-8")
 })
-public class SppotiApplication {
+public class SppotiApplication implements CommandLineRunner{
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(SppotiApplication.class, args);
@@ -28,4 +29,8 @@ public class SppotiApplication {
         return new BCryptPasswordEncoder();
     }
 
+    @Override
+    public void run(String... strings) throws Exception {
+
+    }
 }

@@ -24,5 +24,5 @@ public interface SppotiRepository extends JpaRepository<SppotiEntity, Long> {
      * @return return all found sppoties.
      */
     @PostFilter("!filterObject.isDeleted()")
-    List<SppotiEntity> findByUserSppotiUuidAndTeamAdverseStatusNot(Integer id, GlobalAppStatusEnum adverseTeamStatus, Pageable pageable);
+    List<SppotiEntity> findByUserSppotiUuidAndTeamAdverseStatusEnumNot(Integer id, GlobalAppStatusEnum adverseTeamStatus, Pageable pageable);
 }

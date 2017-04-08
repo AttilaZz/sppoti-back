@@ -21,10 +21,10 @@ public class NotificationTransformer {
 
     private final TeamTransformer teamTransformer;
     private final UserTransformer userTransformer;
-    private final SppotiTransformer sppotiTransformer;
+    private final SppotiTransformerImpl sppotiTransformer;
 
     @Autowired
-    public NotificationTransformer(TeamTransformer teamTransformer, UserTransformer userTransformer, SppotiTransformer sppotiTransformer) {
+    public NotificationTransformer(TeamTransformer teamTransformer, UserTransformer userTransformer, SppotiTransformerImpl sppotiTransformer) {
         this.teamTransformer = teamTransformer;
         this.userTransformer = userTransformer;
         this.sppotiTransformer = sppotiTransformer;
@@ -47,7 +47,7 @@ public class NotificationTransformer {
         optionalTeam.ifPresent(t -> notificationDTO.setTeamDTO(teamTransformer.modelToDto(notification.getTeam())));
 
         Optional<SppotiEntity> optionalSppoti = Optional.ofNullable(notification.getSppoti());
-        optionalSppoti.ifPresent(t -> notificationDTO.setSppotiResponseDTO(sppotiTransformer.entityToDto(notification.getSppoti())));
+        optionalSppoti.ifPresent(t -> notificationDTO.setSppotiDTO(sppotiTransformer.modelToDto(notification.getSppoti())));
 
         return notificationDTO;
     }

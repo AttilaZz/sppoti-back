@@ -14,5 +14,5 @@ public interface ContactControllerService extends AbstractControllerService{
      *
      * @param contactDTO contact data.
      */
-    void sendContactEmail(ContactDTO contactDTO);
+    void sendGlobalContactEmail(ContactDTO contactDTO);
 }

@@ -13,7 +13,6 @@ import java.util.List;
  * Created by djenanewail on 1/26/17.
  */
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TeamDTO extends AbstractCommonDTO {
 
     private String name;
@@ -22,11 +21,10 @@ public class TeamDTO extends AbstractCommonDTO {
     private UserDTO teamAdmin;
     private SportDTO sport;
     private String color;
+    private List<UserDTO> teamMembers;
 
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Europe/Paris")
     private Date creationDate;
-
-    private List<UserDTO> teamMembers;
 
     public String getName() {
         return name;
@@ -52,12 +50,12 @@ public class TeamDTO extends AbstractCommonDTO {
         this.coverPath = coverPath;
     }
 
-    public List<UserDTO> getTeamMembers() {
-        return teamMembers;
+    public UserDTO getTeamAdmin() {
+        return teamAdmin;
     }
 
-    public void setTeamMembers(List<UserDTO> teamMembers) {
-        this.teamMembers = teamMembers;
+    public void setTeamAdmin(UserDTO teamAdmin) {
+        this.teamAdmin = teamAdmin;
     }
 
     public SportDTO getSport() {
@@ -68,12 +66,20 @@ public class TeamDTO extends AbstractCommonDTO {
         this.sport = sport;
     }
 
-    public UserDTO getTeamAdmin() {
-        return teamAdmin;
+    public String getColor() {
+        return color;
     }
 
-    public void setTeamAdmin(UserDTO teamAdmin) {
-        this.teamAdmin = teamAdmin;
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public List<UserDTO> getTeamMembers() {
+        return teamMembers;
+    }
+
+    public void setTeamMembers(List<UserDTO> teamMembers) {
+        this.teamMembers = teamMembers;
     }
 
     public Date getCreationDate() {
@@ -82,13 +88,5 @@ public class TeamDTO extends AbstractCommonDTO {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 }

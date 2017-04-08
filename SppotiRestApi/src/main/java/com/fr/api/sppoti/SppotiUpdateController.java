@@ -1,7 +1,6 @@
 package com.fr.api.sppoti;
 
-import com.fr.commons.dto.sppoti.SppotiRequestDTO;
-import com.fr.commons.dto.sppoti.SppotiResponseDTO;
+import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.exception.NoRightToAcceptOrRefuseChallenge;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.service.SppotiControllerService;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
@@ -40,8 +40,8 @@ class SppotiUpdateController {
      * @return 200 status with the updated sppoti, 400 status otherwise.
      */
     @PutMapping("/{sppotiId}")
-    ResponseEntity<SppotiResponseDTO> updateSppoti(@PathVariable int sppotiId, @RequestBody SppotiRequestDTO sppotiRequest,
-                                                   Authentication authentication) {
+    ResponseEntity<SppotiDTO> updateSppoti(@PathVariable int sppotiId, @RequestBody SppotiDTO sppotiRequest,
+                                           Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
@@ -58,23 +58,23 @@ class SppotiUpdateController {
 
         boolean canUpdate = false;
 
-        if (sppotiRequest.getTags() != null && !sppotiRequest.getTags().isEmpty()) {
+        if (!StringUtils.isEmpty(sppotiRequest.getTags())) {
             canUpdate = true;
         }
 
-        if (sppotiRequest.getDescription() != null && !sppotiRequest.getDescription().isEmpty()) {
+        if (!StringUtils.isEmpty(sppotiRequest.getDescription())) {
             canUpdate = true;
         }
 
-        if (sppotiRequest.getAddress() != null && !sppotiRequest.getAddress().isEmpty()) {
+        if (sppotiRequest.getDateTimeStart() != null) {
             canUpdate = true;
         }
 
-        if (sppotiRequest.getDatetimeStart() != null) {
+        if (!StringUtils.isEmpty(sppotiRequest.getTitre())) {
             canUpdate = true;
         }
 
-        if (sppotiRequest.getTitre() != null && !sppotiRequest.getTitre().isEmpty()) {
+        if (!StringUtils.isEmpty(sppotiRequest.getLocation())) {
             canUpdate = true;
         }
 
@@ -110,25 +110,25 @@ class SppotiUpdateController {
      * @return All sppoti with updated status.
      */
     @PutMapping("/challenge/{sppotiId}/{response}")
-    ResponseEntity<SppotiResponseDTO> updateTeamAdverseChallengeStatus(@PathVariable("response")
+    ResponseEntity<SppotiDTO> updateTeamAdverseChallengeStatus(@PathVariable("response")
                                                                                int adverseTeamResponseStatus,
-                                                                       @PathVariable int sppotiId) {
+                                                               @PathVariable int sppotiId) {
 
         if (adverseTeamResponseStatus != 4 && adverseTeamResponseStatus != 5) {
             LOGGER.error("Accepted status are 4 && 5: found:" + adverseTeamResponseStatus);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        SppotiResponseDTO sppotiResponseDTO;
+        SppotiDTO sppotiDTO;
         try {
-            sppotiResponseDTO = sppotiControllerService.updateTeamAdverseChallengeStatus(sppotiId,
+            sppotiDTO = sppotiControllerService.updateTeamAdverseChallengeStatus(sppotiId,
                     adverseTeamResponseStatus);
         } catch (NoRightToAcceptOrRefuseChallenge e) {
             LOGGER.error("User must be the admin to update status, sppoti sppotiId: " + sppotiId, e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(sppotiResponseDTO, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(sppotiDTO, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -136,8 +136,8 @@ class SppotiUpdateController {
      * @param teamId   team id to add in the challenge.
      */
     @PutMapping("/challenge/send/{sppotiId}/{teamId}")
-    ResponseEntity<SppotiResponseDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId,
-                                                    Authentication authentication) {
+    ResponseEntity<SppotiDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId,
+                                            Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 

@@ -1,11 +1,8 @@
 package com.fr.service;
 
-import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.SppotiRatingDTO;
-import com.fr.commons.dto.sppoti.SppotiRequestDTO;
-import com.fr.commons.dto.sppoti.SppotiResponseDTO;
+import com.fr.commons.dto.sppoti.SppotiDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,19 +18,19 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param newSppoti sppoti to save.
      * @return saved sppoti.
      */
-    SppotiResponseDTO saveSppoti(SppotiRequestDTO newSppoti);
+    SppotiDTO saveSppoti(SppotiDTO newSppoti);
 
     /**
      * @param uuid sppoti unique id.
      * @return found sppoti.
      */
-    SppotiResponseDTO getSppotiByUuid(Integer uuid);
+    SppotiDTO getSppotiByUuid(Integer uuid);
 
     /**
      * @param id user id.
      * @return all sppoties created by a user.
      */
-    List<SppotiResponseDTO> getAllUserSppoties(Integer id, int page);
+    List<SppotiDTO> getAllUserSppoties(Integer id, int page);
 
     /**
      * @param id sppoti id.
@@ -45,7 +42,7 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param id            sppoti id.
      * @return sppoti DTO with updated data.
      */
-    SppotiResponseDTO updateSppoti(SppotiRequestDTO sppotiRequest, int id);
+    SppotiDTO updateSppoti(SppotiDTO sppotiRequest, int id);
 
     /**
      * ACCEPT sppoti and add notification.
@@ -72,14 +69,14 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param adverseTeamResponseStatus adverse team response to challenge.
      * @return sppotiDTO with updated data.
      */
-    SppotiResponseDTO updateTeamAdverseChallengeStatus(int sppotiId, int adverseTeamResponseStatus);
+    SppotiDTO updateTeamAdverseChallengeStatus(int sppotiId, int adverseTeamResponseStatus);
 
     /**
      * @param id   user id.
      * @param page page  umber.
      * @return all sppoties that user has joined.
      */
-    List<SppotiResponseDTO> getAllJoinedSppoties(int id, int page);
+    List<SppotiDTO> getAllJoinedSppoties(int id, int page);
 
     /**
      * @param userId   id of the connected user.
@@ -92,7 +89,7 @@ public interface SppotiControllerService extends AbstractControllerService {
      *  @param sppotiId sppoti id.
      * @param teamId   team id.
      */
-    SppotiResponseDTO sendChallenge(int sppotiId, int teamId, Long connectedUserId);
+    SppotiDTO sendChallenge(int sppotiId, int teamId, Long connectedUserId);
 
     /**
      * rating many sppoters at a time.
@@ -108,7 +105,7 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param page page number.
      * @return all confirmed sppoties.
      */
-    List<SppotiResponseDTO> getAllConfirmedSppoties(int userId, int page);
+    List<SppotiDTO> getAllConfirmedSppoties(int userId, int page);
 
     /**
      *
@@ -116,5 +113,5 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param page page number.
      * @return all refused sppoties.
      */
-    List<SppotiResponseDTO> getAllRefusedSppoties(int userId, int page);
+    List<SppotiDTO> getAllRefusedSppoties(int userId, int page);
 }

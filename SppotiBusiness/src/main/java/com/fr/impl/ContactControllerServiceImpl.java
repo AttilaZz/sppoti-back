@@ -1,9 +1,10 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.ContactDTO;
+import com.fr.mail.ContactMailer;
 import com.fr.service.ContactControllerService;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,21 +15,41 @@ import org.springframework.stereotype.Component;
 public class ContactControllerServiceImpl extends AbstractControllerServiceImpl implements ContactControllerService {
 
     /**
+     * Contact mailer.
+     */
+    private final ContactMailer contactMailer;
+
+    /**
      * Class logger.
      */
     private Logger LOGGER = Logger.getLogger(ContactControllerServiceImpl.class);
 
     /**
-     * Email contact to which send the information.
+     * Init class dependencies.
      */
-    @Value("${spring.app.contact.email}")
-    private String emailContact;
+    @Autowired
+    public ContactControllerServiceImpl(ContactMailer contactMailer) {
+        this.contactMailer = contactMailer;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void sendContactEmail(ContactDTO contactDTO) {
+    public void sendGlobalContactEmail(ContactDTO contactDTO) {
+        this.sendContactEmail(contactDTO);
+    }
 
+    /**
+     * Common method for sending contact emails.
+     *
+     * @param contact contact data.
+     */
+    private void sendContactEmail(ContactDTO contact) {
+        Thread thread = new Thread(() -> {
+            this.contactMailer.sendContactEmail(contact);
+            LOGGER.info("Confirmation email has been sent successfully !");
+        });
+        thread.start();
     }
 }
