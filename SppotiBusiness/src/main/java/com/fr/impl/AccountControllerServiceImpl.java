@@ -2,9 +2,9 @@ package com.fr.impl;
 
 import com.fr.commons.dto.SignUpRequestDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.enumeration.GenderEnum;
+import com.fr.commons.enumeration.UserRoleTypeEnum;
+import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.commons.exception.ConflictEmailException;
 import com.fr.commons.exception.ConflictUsernameException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.AddressEntity;
@@ -13,9 +13,9 @@ import com.fr.entities.RoleEntity;
 import com.fr.entities.UserEntity;
 import com.fr.enums.CoverType;
 import com.fr.mail.AccountMailer;
-import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.service.AccountControllerService;
-import com.fr.transformers.impl.UserTransformer;
+import com.fr.transformers.UserTransformer;
+import com.fr.transformers.impl.UserTransformerImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +49,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
     private int daysBeforeExpiration;
 
     @Autowired
-    public AccountControllerServiceImpl(AccountMailer accountMailer, PasswordEncoder passwordEncoder, UserTransformer userTransformer) {
+    public AccountControllerServiceImpl(AccountMailer accountMailer, PasswordEncoder passwordEncoder, UserTransformerImpl userTransformer) {
         this.accountMailer = accountMailer;
         this.passwordEncoder = passwordEncoder;
         this.userTransformer = userTransformer;
@@ -62,20 +62,19 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
     @Override
     public void saveNewUser(SignUpRequestDTO user) {
 
-        UserEntity newUser = new UserEntity();
+        /*
+            if username or email exist, account valid:
+             - reject sign_up
+             - delete old account
+         */
+        Optional<UserEntity> checkUsername = Optional.ofNullable(userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
+        Optional<UserEntity> checkEmail = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(user.getEmail()));
 
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
-        newUser.setDateBorn(user.getDateBorn());
-        newUser.setGender(GenderEnum.valueOf(user.getGender()));
-        newUser.setEmail(user.getEmail());
+        checkEmail.ifPresent(this::checkifAccountExist);
+        checkUsername.ifPresent(this::checkifAccountExist);
 
-        String confirmationCode = SppotiUtils.generateConfirmationKey();
-        newUser.setConfirmationCode(confirmationCode);
+        UserEntity newUser = userTransformer.signUpDtoToEntity(user);
 
-        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        newUser.setUsername(user.getUsername().trim());
         newUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(daysBeforeExpiration));
 
 //        for (Long sportId : user.getSportId()) {
@@ -94,7 +93,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		/*
          * processing user Profile
 		 */
-        RoleEntity profile = roleRepository.getByName(UserRoleTypeEnum.USER.name());
+        RoleEntity profile = roleRepository.getByName(UserRoleTypeEnum.USER);
 
         if (profile == null) {
             throw new EntityNotFoundException("Profile name <" + UserRoleTypeEnum.USER.name() + "> not found !!");
@@ -103,32 +102,6 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         Set<RoleEntity> roles = new HashSet<>();
         roles.add(profile);
         newUser.setRoles(roles);
-
-        /*
-            if username or email exist, account valid:
-             - reject sign_up
-             - delete old account
-         */
-        Optional<UserEntity> checkUsername = Optional.ofNullable(userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
-        Optional<UserEntity> checkEmail = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(user.getEmail()));
-
-        checkEmail.ifPresent(u -> {
-            if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
-                throw new ConflictEmailException("Email already exist");
-            } else {
-                //delete founded account to allow new user using this email
-                userRepository.delete(u);
-            }
-
-        });
-        checkUsername.ifPresent(u -> {
-            if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
-                throw new ConflictUsernameException("Username already exist");
-            } else {
-                //delete founded account to allow new user using this username
-                userRepository.delete(u);
-            }
-        });
 
         //save new user.
         userRepository.save(newUser);
@@ -143,11 +116,20 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         Thread thread = new Thread(() -> {
-            this.sendConfirmationEmail(userDTO, confirmationCode);
+            this.sendConfirmationEmail(userDTO, newUser.getConfirmationCode());
             LOGGER.info("Confirmation email has been sent successfully !");
         });
         thread.start();
 
+    }
+
+    private void checkifAccountExist(UserEntity u) {
+        if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate()) || u.isConfirmed()) {
+            throw new ConflictUsernameException("Username already exist");
+        }
+        else if (!u.isConfirmed()){
+            throw new AccountConfirmationLinkExpiredException("Account exist, but not confirmed yet ! Ask for another confirmation code.");
+        }
     }
 
     /**

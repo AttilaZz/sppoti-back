@@ -2,6 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.ScoreEntity;
 import com.fr.repositories.ScoreRepository;
 import com.fr.service.ScoreControllerService;
@@ -41,16 +42,20 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
      */
     @Override
     @Transactional
-    public void updateScore(ScoreDTO scoreDTO) {
-        Optional<ScoreEntity> scoreEntity = Optional.ofNullable(scoreRepository.findByUuid(scoreDTO.getId()));
+    public void updateScore(ScoreDTO scoreDTO, Long connectedUserId) {
+        Optional<ScoreEntity> scoreEntity = Optional.ofNullable(scoreRepository.findBySppotiEntityUuid(scoreDTO.getSppotiId()));
 
         scoreEntity.ifPresent(s -> {
+            if(!s.getSppotiEntity().getUserSppoti().getId().equals(connectedUserId)){
+                throw new NotAdminException("You're not the sppoti admin");
+            }
+
             s.setScoreStatus(GlobalAppStatusEnum.valueOf(scoreDTO.getStatus()));
             scoreRepository.save(s);
-            LOGGER.info("Score has been saved: " + scoreDTO);
+            LOGGER.info("Score has been updated: " + scoreDTO);
         });
 
-        scoreEntity.orElseThrow(() -> new EntityNotFoundException("Score not found ! "));
+        scoreEntity.orElseThrow(() -> new EntityNotFoundException("Sppoti has no score yet! "));
     }
 
 

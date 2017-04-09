@@ -1,6 +1,7 @@
 package com.fr.api.account;
 
 import com.fr.commons.dto.SignUpRequestDTO;
+import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
 import com.fr.commons.exception.ConflictEmailException;
 import com.fr.commons.exception.ConflictPhoneException;
 import com.fr.commons.exception.ConflictUsernameException;
@@ -45,10 +46,13 @@ class AccountAddController {
 
         } catch (ConflictEmailException e) {
             LOGGER.error("Error creating user : " + user.getFirstName() + " " + user.getLastName() + " Email already exist!");
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (ConflictUsernameException e) {
             LOGGER.error("Error creating user : " + user.getFirstName() + " " + user.getLastName() + " Username already exist!");
-            return ResponseEntity.status(411).build();
+            return ResponseEntity.status(411).body(e.getMessage());
+        }catch (AccountConfirmationLinkExpiredException e) {
+            LOGGER.error("Error creating user : " + user.getFirstName() + " " + user.getLastName() + " Username already exist!");
+            return ResponseEntity.status(413).body(e.getMessage());
         }
 
     }

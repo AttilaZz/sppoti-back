@@ -1,5 +1,6 @@
 package com.fr.repositories;
 
+import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.entities.RoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -8,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface RoleRepository extends JpaRepository<RoleEntity, Long> {
 
-    RoleEntity getByName(String name);
+    RoleEntity getByName(UserRoleTypeEnum name);
 
 }

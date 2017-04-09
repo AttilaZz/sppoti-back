@@ -2,19 +2,12 @@ package com.fr.entities;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fr.commons.enumeration.UserRoleTypeEnum;
 
 @Entity
 @Table(name = "ROLES")
@@ -23,26 +16,26 @@ public class RoleEntity
         extends AbstractCommonEntity {
 
     @Column(name = "name", nullable = false)
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private UserRoleTypeEnum name;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles", cascade = CascadeType.ALL)
     private Set<UserEntity> users;
 
     public RoleEntity() {
-        super();
     }
 
-    public RoleEntity(String name) {
+    public RoleEntity(UserRoleTypeEnum definedRole) {
         super();
-        this.name = name;
+        this.name = definedRole;
     }
 
-    public String getName() {
+    public UserRoleTypeEnum getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(UserRoleTypeEnum name) {
         this.name = name;
     }
 
@@ -57,19 +50,20 @@ public class RoleEntity
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof RoleEntity)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
         RoleEntity that = (RoleEntity) o;
 
-        return name != null ? name.equals(that.name) : that.name == null;
-
+        if (name != that.name) return false;
+        return users != null ? users.equals(that.users) : that.users == null;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (users != null ? users.hashCode() : 0);
         return result;
     }
 }

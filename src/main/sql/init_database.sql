@@ -4,7 +4,7 @@
 /*
 FIRST USER
  */
-INSERT INTO sppoti.user (id, uuid, version, gender, confirmation_code, account_creation_date, account_max_activation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, telephone, username)
+INSERT INTO sppoti.user (id, uuid, version, genderType, confirmation_code, account_creation_date, account_max_activation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, telephone, username)
 VALUES
   (11, 12345678, 1, 'MALE', 'code', curdate(), curdate(), TRUE, curdate(), FALSE, NULL, 'wail.djenane@gmail.com', 'wail', NULL,
    'djenane',
@@ -18,7 +18,7 @@ INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) 
 /*
 SECOND USER
  */
-INSERT INTO sppoti.user (id, uuid, version, gender, confirmation_code, account_creation_date, account_max_activation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, telephone, username)
+INSERT INTO sppoti.user (id, uuid, version, genderType, confirmation_code, account_creation_date, account_max_activation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, telephone, username)
 VALUES
   (12, 12377778, 2, 'MALE', 'code1', curdate(), curdate(), TRUE, curdate(), FALSE, NULL, 'wail.djenane@gmail.co', 'bachir', NULL,
    'bouacheria',
@@ -32,7 +32,7 @@ INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) 
 /*
 THIRD USER
  */
-INSERT INTO sppoti.user (id, uuid, version, gender, confirmation_code, account_creation_date, account_max_activation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, telephone, username)
+INSERT INTO sppoti.user (id, uuid, version, genderType, confirmation_code, account_creation_date, account_max_activation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, telephone, username)
 VALUES
   (13, 12999678, 3, 'MALE', 'code2', curdate(), curdate(), TRUE, curdate(), FALSE, NULL, 'wail.djenane@gmail.c', 'amar', NULL,
    'sebaa', 'amar31', NULL, 'amar31');
@@ -45,7 +45,7 @@ INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) 
 /*
 FOURTH USER
  */
-INSERT INTO sppoti.user (id, uuid, version, gender, confirmation_code, account_creation_date, account_max_activation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, telephone, username)
+INSERT INTO sppoti.user (id, uuid, version, genderType, confirmation_code, account_creation_date, account_max_activation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, telephone, username)
 VALUES
   (14, 10459678, 0, 'MALE', 'code4', curdate(), curdate(), TRUE , curdate(), FALSE, NULL, 'gg.gg@gg.gg', 'koko', NULL, 'MUkA',
    'KAKA31', NULL, 'kaka31');
@@ -57,7 +57,7 @@ INSERT INTO sppoti.user_related_sports (subscribed_users_id, related_sports_id) 
 /*
 FIFTH USER
  */
-INSERT INTO sppoti.user (id, uuid, version, gender, confirmation_code, account_creation_date, account_max_activation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, telephone, username)
+INSERT INTO sppoti.user (id, uuid, version, genderType, confirmation_code, account_creation_date, account_max_activation_date, confirmed, date_born, deleted, description, email, first_name, job, last_name, password, telephone, username)
 VALUES
   (15, 10415388, 0, 'MALE', 'code5', curdate(), curdate(), TRUE,  curdate(), FALSE, NULL, 'gg.gg@kk.kk', 'koko', NULL, 'KOKO',
    'koko31', NULL, 'koko31');

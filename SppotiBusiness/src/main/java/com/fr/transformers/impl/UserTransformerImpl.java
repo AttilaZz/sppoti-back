@@ -1,8 +1,15 @@
 package com.fr.transformers.impl;
 
+import com.fr.commons.dto.SignUpRequestDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.GenderEnum;
+import com.fr.commons.utils.SppotiBeanUtils;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.ResourcesEntity;
 import com.fr.entities.UserEntity;
+import com.fr.transformers.UserTransformer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,21 +22,36 @@ import java.util.Set;
  */
 @Component
 @Transactional
-public class UserTransformer {
+public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEntity>
+        implements UserTransformer {
+
 
     /**
-     *
-     * @param entity user entity to transform.
-     * @return user DTO.
+     * Sprig security crypt password.
      */
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserEntity dtoToModel(UserDTO dto) {
+        return super.dtoToModel(dto);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public UserDTO modelToDto(UserEntity entity) {
         UserDTO userDTO = new UserDTO();
+        SppotiBeanUtils.copyProperties(userDTO, entity);
         userDTO.setId(entity.getUuid());
-        userDTO.setFirstName(entity.getFirstName());
-        userDTO.setLastName(entity.getLastName());
-        userDTO.setUsername(entity.getUsername());
-        userDTO.setEmail(entity.getEmail());
-        userDTO.setGender(entity.getGender().name());
+//        userDTO.setFirstName(entity.getFirstName());
+//        userDTO.setLastName(entity.getLastName());
+//        userDTO.setUsername(entity.getUsername());
+//        userDTO.setEmail(entity.getEmail());
 
         UserDTO userResources = getUserCoverAndAvatar(entity);
 
@@ -83,5 +105,22 @@ public class UserTransformer {
         }
 
         return user;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserEntity signUpDtoToEntity(SignUpRequestDTO dto) {
+        UserEntity entity = new UserEntity();
+        SppotiBeanUtils.copyProperties(entity, dto);
+        entity.setGender(GenderEnum.valueOf(dto.getGenderType()));
+        String confirmationCode = SppotiUtils.generateConfirmationKey();
+        entity.setConfirmationCode(confirmationCode);
+
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        entity.setUsername(dto.getUsername().trim());
+        return entity;
     }
 }

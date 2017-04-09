@@ -11,8 +11,9 @@ public interface ScoreControllerService extends AbstractControllerService{
 
     /**
      * @param scoreDTO score to update.
+     * @param id
      */
-    void updateScore(ScoreDTO scoreDTO);
+    void updateScore(ScoreDTO scoreDTO, Long id);
 
     /**
      * Add score to a sppoti.

@@ -15,7 +15,7 @@ import com.fr.repositories.*;
 import com.fr.service.AbstractControllerService;
 import com.fr.transformers.impl.TeamMemberTransformer;
 import com.fr.transformers.impl.TeamTransformerImpl;
-import com.fr.transformers.impl.UserTransformer;
+import com.fr.transformers.impl.UserTransformerImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -76,7 +76,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
     private TeamMemberTransformer teamMemberTransformer;
 
     @Autowired
-    private UserTransformer userTransformer;
+    private UserTransformerImpl userTransformer;
 
     @Autowired
     private TeamTransformerImpl teamTransformer;

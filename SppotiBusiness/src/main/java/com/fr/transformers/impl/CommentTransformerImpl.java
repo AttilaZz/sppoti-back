@@ -18,10 +18,10 @@ public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, 
 implements CommentTransformer {
 
     /** User transformer. */
-    private final UserTransformer userTransformer;
+    private final UserTransformerImpl userTransformer;
 
     @Autowired
-    public CommentTransformerImpl(UserTransformer userTransformer) {
+    public CommentTransformerImpl(UserTransformerImpl userTransformer) {
         this.userTransformer = userTransformer;
     }
 

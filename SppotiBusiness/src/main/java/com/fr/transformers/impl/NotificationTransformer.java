@@ -20,11 +20,11 @@ import java.util.Optional;
 public class NotificationTransformer {
 
     private final TeamTransformerImpl teamTransformer;
-    private final UserTransformer userTransformer;
+    private final UserTransformerImpl userTransformer;
     private final SppotiTransformerImpl sppotiTransformer;
 
     @Autowired
-    public NotificationTransformer(TeamTransformerImpl teamTransformer, UserTransformer userTransformer, SppotiTransformerImpl sppotiTransformer) {
+    public NotificationTransformer(TeamTransformerImpl teamTransformer, UserTransformerImpl userTransformer, SppotiTransformerImpl sppotiTransformer) {
         this.teamTransformer = teamTransformer;
         this.userTransformer = userTransformer;
         this.sppotiTransformer = sppotiTransformer;

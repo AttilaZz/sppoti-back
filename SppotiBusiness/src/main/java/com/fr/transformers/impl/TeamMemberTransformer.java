@@ -31,11 +31,11 @@ public class TeamMemberTransformer {
     private final SppotiMembersRepository sppotiMembersRepository;
 
     /** User transformer. */
-    private final UserTransformer userTransformer;
+    private final UserTransformerImpl userTransformer;
 
     /** Init dependencies. */
     @Autowired
-    public TeamMemberTransformer(RatingRepository ratingRepository, SppotiMembersRepository sppotiMembersRepository, UserTransformer userTransformer) {
+    public TeamMemberTransformer(RatingRepository ratingRepository, SppotiMembersRepository sppotiMembersRepository, UserTransformerImpl userTransformer) {
         this.ratingRepository = ratingRepository;
         this.sppotiMembersRepository = sppotiMembersRepository;
         this.userTransformer = userTransformer;

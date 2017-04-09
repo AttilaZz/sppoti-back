@@ -136,7 +136,7 @@ public class InitMainData {
 				 */
                 for (int i = 0; i < roleListSize; i++) {
                     boolean exist = false;
-                    String definedRole = uroleList[i].getUserProfileType();
+                    UserRoleTypeEnum definedRole = uroleList[i];
 
                     for (RoleEntity sport : databaseProfileList) {
 
@@ -157,7 +157,7 @@ public class InitMainData {
 				 * insert all
 				 */
                 for (int i = 0; i < roleListSize; i++) {
-                    String definedUserRole = uroleList[i].getUserProfileType();
+                    UserRoleTypeEnum definedUserRole = uroleList[i];
                     RoleEntity ur = new RoleEntity(definedUserRole);
                     newRoles.add(ur);
                 }

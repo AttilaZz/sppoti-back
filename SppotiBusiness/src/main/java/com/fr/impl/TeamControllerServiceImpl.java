@@ -13,7 +13,7 @@ import com.fr.entities.UserEntity;
 import com.fr.service.TeamControllerService;
 import com.fr.transformers.impl.TeamMemberTransformer;
 import com.fr.transformers.impl.TeamTransformerImpl;
-import com.fr.transformers.impl.UserTransformer;
+import com.fr.transformers.impl.UserTransformerImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,7 +48,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
     /**
      * User transformer.
      */
-    private final UserTransformer userTransformer;
+    private final UserTransformerImpl userTransformer;
 
     /**
      * Team transformer.
@@ -64,7 +64,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      * Init dependencies.
      */
     @Autowired
-    public TeamControllerServiceImpl(UserTransformer userTransformer, TeamTransformerImpl teamTransformer, TeamMemberTransformer teamMemberTransformer) {
+    public TeamControllerServiceImpl(UserTransformerImpl userTransformer, TeamTransformerImpl teamTransformer, TeamMemberTransformer teamMemberTransformer) {
         this.userTransformer = userTransformer;
         this.teamTransformer = teamTransformer;
         this.teamMemberTransformer = teamMemberTransformer;

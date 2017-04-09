@@ -1,9 +1,9 @@
 package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.internal.NotNull;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Date;
@@ -24,8 +24,9 @@ public class SignUpRequestDTO extends AbstractCommonDTO{
     private Date dateBorn;
 
     @NotEmpty
-    //TODO: check gender type
-    private String gender;
+    //TODO: check genderType type (MALE, FEMALE) and reject others
+    @JsonProperty("gender")
+    private String genderType;
 
     @NotEmpty
     @Email
@@ -63,12 +64,12 @@ public class SignUpRequestDTO extends AbstractCommonDTO{
         this.dateBorn = dateBorn;
     }
 
-    public String getGender() {
-        return gender;
+    public String getGenderType() {
+        return genderType;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setGenderType(String genderType) {
+        this.genderType = genderType;
     }
 
     public String getEmail() {
