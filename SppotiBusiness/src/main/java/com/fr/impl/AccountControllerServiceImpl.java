@@ -335,6 +335,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void generateNewConfirmationEmail(UserDTO userDTO) {
 
         Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));

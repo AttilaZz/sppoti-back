@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,7 +58,7 @@ class AccountValidateController {
     @PutMapping("/validate/regenerate/code")
     ResponseEntity<Void> generateNewConfirmationLink(@RequestBody UserDTO userDTO) {
 
-        if(!StringUtils.isEmpty(userDTO.getEmail())){
+        if(StringUtils.isEmpty(userDTO.getEmail())){
             throw new BusinessGlobalException("Email is required !");
         }
 
