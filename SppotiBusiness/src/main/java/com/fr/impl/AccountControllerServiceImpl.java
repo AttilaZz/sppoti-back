@@ -353,6 +353,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
             userRepository.saveAndFlush(u);
             //send email
             SendEmailToActivateAccount(u);
+            LOGGER.info("New activation link has been sent to user: " + userDTO.getEmail());
         });
 
         optional.orElseThrow(() -> new EntityNotFoundException("Email not associated to an account"));
