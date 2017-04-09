@@ -74,4 +74,11 @@ public interface AccountControllerService extends AbstractControllerService {
      * @param code    account recover code.
      */
     void recoverAccount(UserDTO userDTO, String code);
+
+    /**
+     *Generate new account confirmation email.
+     *
+     * @param userDTO user data.
+     */
+    void generateNewConfirmationEmail(UserDTO userDTO);
 }

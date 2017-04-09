@@ -110,24 +110,26 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         /*
          * Send email to confirm account
          */
-        UserDTO userDTO = new UserDTO();
-        userDTO.setEmail(user.getEmail());
-        userDTO.setUsername(user.getUsername());
-        userDTO.setFirstName(user.getFirstName());
-        userDTO.setLastName(user.getLastName());
+        SendEmailToActivateAccount(newUser);
+
+    }
+
+    /**
+     * Send Email to activate new account.
+     */
+    private void SendEmailToActivateAccount(UserEntity user) {
+        UserDTO userDTO = userTransformer.modelToDto(user);
         Thread thread = new Thread(() -> {
-            this.sendConfirmationEmail(userDTO, newUser.getConfirmationCode());
+            this.sendConfirmationEmail(userDTO, user.getConfirmationCode());
             LOGGER.info("Confirmation email has been sent successfully !");
         });
         thread.start();
-
     }
 
     private void checkifAccountExist(UserEntity u) {
         if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate()) || u.isConfirmed()) {
             throw new ConflictUsernameException("Username already exist");
-        }
-        else if (!u.isConfirmed()){
+        } else if (!u.isConfirmed()) {
             throw new AccountConfirmationLinkExpiredException("Account exist, but not confirmed yet ! Ask for another confirmation code.");
         }
     }
@@ -327,5 +329,31 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 
         optional.orElseThrow(() -> new EntityNotFoundException("Account not found !"));
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void generateNewConfirmationEmail(UserDTO userDTO) {
+
+        Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
+
+        optional.ifPresent(u -> {
+            if(u.isConfirmed()){
+                throw new BusinessGlobalException("Account Already activated");
+            }
+            //generate new code
+            String confirmationCode = SppotiUtils.generateConfirmationKey();
+            u.setConfirmationCode(confirmationCode);
+            //generate new expiry date
+            u.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(daysBeforeExpiration));
+            //update
+            userRepository.saveAndFlush(u);
+            //send email
+            SendEmailToActivateAccount(u);
+        });
+
+        optional.orElseThrow(() -> new EntityNotFoundException("Email not associated to an account"));
     }
 }

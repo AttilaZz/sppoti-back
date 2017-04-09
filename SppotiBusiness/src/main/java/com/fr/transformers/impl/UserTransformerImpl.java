@@ -48,10 +48,6 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
         UserDTO userDTO = new UserDTO();
         SppotiBeanUtils.copyProperties(userDTO, entity);
         userDTO.setId(entity.getUuid());
-//        userDTO.setFirstName(entity.getFirstName());
-//        userDTO.setLastName(entity.getLastName());
-//        userDTO.setUsername(entity.getUsername());
-//        userDTO.setEmail(entity.getEmail());
 
         UserDTO userResources = getUserCoverAndAvatar(entity);
 
@@ -115,6 +111,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
         UserEntity entity = new UserEntity();
         SppotiBeanUtils.copyProperties(entity, dto);
         entity.setGender(GenderEnum.valueOf(dto.getGenderType()));
+
         String confirmationCode = SppotiUtils.generateConfirmationKey();
         entity.setConfirmationCode(confirmationCode);
 
