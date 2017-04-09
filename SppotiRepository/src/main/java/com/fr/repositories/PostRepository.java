@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PostFilter;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -36,4 +37,6 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
     @PostFilter("!filterObject.isDeleted() ")
     @Query("SELECT p FROM PostEntity p WHERE (p.user.id = :userId OR p.targetUserProfileUuid = :userUuid) AND p.visibility IN (:visibility)")
     List<PostEntity> getAllPosts(@Param("userUuid") int userIntId, @Param("userId") Long userLongId, @Param("visibility") List visibility, Pageable pageable);
+
+    List<PostEntity> getByUserUuid(int uuid, Pageable pageable);
 }

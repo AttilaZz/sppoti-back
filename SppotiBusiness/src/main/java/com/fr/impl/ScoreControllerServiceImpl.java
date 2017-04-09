@@ -46,9 +46,9 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
         Optional<ScoreEntity> scoreEntity = Optional.ofNullable(scoreRepository.findBySppotiEntityUuid(scoreDTO.getSppotiId()));
 
         scoreEntity.ifPresent(s -> {
-            if(!s.getSppotiEntity().getUserSppoti().getId().equals(connectedUserId)){
-                throw new NotAdminException("You're not the sppoti admin");
-            }
+//            if(!s.getSppotiEntity().getUserSppoti().getId().equals(connectedUserId)){
+//                throw new NotAdminException("You're not the sppoti admin");
+//            }
 
             s.setScoreStatus(GlobalAppStatusEnum.valueOf(scoreDTO.getStatus()));
             scoreRepository.save(s);

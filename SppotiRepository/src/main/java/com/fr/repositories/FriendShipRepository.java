@@ -31,4 +31,6 @@ public interface FriendShipRepository extends CrudRepository<FriendShipEntity, L
 
     @Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.uuid = :user1 AND f.user.uuid =:user2) OR (f.friend.uuid = :user2 AND f.user.uuid =:user1) AND f.deleted = false")
     FriendShipEntity findFriendShip(@Param("user1") int user1, @Param("user2") int user2);
+
+    List<FriendShipEntity> findByUserUuidOrFriendUuidAndDeletedFalse(int asUserId, int asFriendId, Pageable pageable);
 }

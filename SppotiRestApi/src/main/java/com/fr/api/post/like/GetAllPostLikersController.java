@@ -1,7 +1,7 @@
 package com.fr.api.post.like;
 
 import com.fr.commons.dto.HeaderDataDTO;
-import com.fr.commons.dto.post.PostResponseDTO;
+import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.PostEntity;
 import com.fr.service.LikeControllerService;
 import com.fr.service.PostControllerService;
@@ -45,7 +45,7 @@ class GetAllPostLikersController {
      * @return list of people who liked the post.
      */
     @GetMapping(value = "/post/{id}/{page}")
-    ResponseEntity<PostResponseDTO> getPostLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
+    ResponseEntity<PostDTO> getPostLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
 
         PostEntity currentPost = postDataService.findPost(id);
 
@@ -62,7 +62,7 @@ class GetAllPostLikersController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        PostResponseDTO pr = new PostResponseDTO();
+        PostDTO pr = new PostDTO();
         pr.setLikers(likersList);
         pr.setLikeCount(currentPost.getLikes().size());
 

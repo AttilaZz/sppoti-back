@@ -2,7 +2,7 @@ package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.commons.dto.post.PostResponseDTO;
+import com.fr.commons.dto.post.PostDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -25,7 +25,7 @@ public class ProfilePageDTO extends AbstractCommonDTO{
 
     private String profileName;
 
-    private List<PostResponseDTO> userPosts;
+    private List<PostDTO> userPosts;
     private Set<SportDTO> userSports;
 //    private List<MessageEntity> userMessages;
     private Set<String> userAddresses;
@@ -122,11 +122,11 @@ public class ProfilePageDTO extends AbstractCommonDTO{
         this.profileName = profileName;
     }
 
-    public List<PostResponseDTO> getUserPosts() {
+    public List<PostDTO> getUserPosts() {
         return userPosts;
     }
 
-    public void setUserPosts(List<PostResponseDTO> userPosts) {
+    public void setUserPosts(List<PostDTO> userPosts) {
         this.userPosts = userPosts;
     }
 

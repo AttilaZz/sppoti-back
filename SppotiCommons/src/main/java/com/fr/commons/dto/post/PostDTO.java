@@ -16,7 +16,7 @@ import java.util.Set;
  * Created by: Wail DJENANE on Aug 7, 2016
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class PostResponseDTO extends AbstractCommonDTO {
+public class PostDTO extends AbstractCommonDTO {
 
     private Long sportId;
 
@@ -77,7 +77,7 @@ public class PostResponseDTO extends AbstractCommonDTO {
         this.username = username;
     }
 
-    public PostResponseDTO() {
+    public PostDTO() {
 
     }
 

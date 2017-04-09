@@ -1,7 +1,7 @@
 package com.fr.api.comment.like;
 
 import com.fr.commons.dto.HeaderDataDTO;
-import com.fr.commons.dto.post.PostResponseDTO;
+import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.service.CommentControllerService;
 import com.fr.service.LikeControllerService;
@@ -55,7 +55,7 @@ class GetAllCommentLikesController {
      * @return list of likers for a comment
      */
     @GetMapping(value = "/comment/{id}/{page}")
-    ResponseEntity<PostResponseDTO> getCommentLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
+    ResponseEntity<PostDTO> getCommentLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
 
         CommentEntity currentCommentEntity = commentControllerService.findComment(id);
 
@@ -72,7 +72,7 @@ class GetAllCommentLikesController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        PostResponseDTO pr = new PostResponseDTO();
+        PostDTO pr = new PostDTO();
         pr.setLikers(likersList);
         pr.setLikeCount(currentCommentEntity.getLikes().size());
 

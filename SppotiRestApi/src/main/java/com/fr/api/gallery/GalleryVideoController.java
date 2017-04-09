@@ -1,6 +1,6 @@
 package com.fr.api.gallery;
 
-import com.fr.commons.dto.post.PostResponseDTO;
+import com.fr.commons.dto.post.PostDTO;
 import com.fr.service.PostControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +34,9 @@ class GalleryVideoController {
      * @return all videos posted by user.
      */
     @GetMapping(value = "/{page}")
-    ResponseEntity<List<PostResponseDTO>> videoGallery(@PathVariable int page, @PathVariable int userId) {
+    ResponseEntity<List<PostDTO>> videoGallery(@PathVariable int page, @PathVariable int userId) {
 
-        List<PostResponseDTO> videoGallery = postControllerService.getVideoGallery(userId, page);
+        List<PostDTO> videoGallery = postControllerService.getVideoGallery(userId, page);
 
         LOGGER.info("Video gallery has been returned: " + videoGallery);
         return new ResponseEntity<>(videoGallery, HttpStatus.OK);

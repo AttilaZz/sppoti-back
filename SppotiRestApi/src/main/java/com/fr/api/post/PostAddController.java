@@ -2,7 +2,7 @@ package com.fr.api.post;
 
 import com.fr.aop.TraceAuthentification;
 import com.fr.commons.dto.post.PostRequestDTO;
-import com.fr.commons.dto.post.PostResponseDTO;
+import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.*;
 import com.fr.commons.exception.PostContentMissingException;
 import com.fr.service.PostControllerService;
@@ -47,7 +47,7 @@ import java.util.*;
      */
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-     ResponseEntity<PostResponseDTO> addPost(@RequestBody PostRequestDTO newPostReq, HttpServletRequest request) {
+     ResponseEntity<PostDTO> addPost(@RequestBody PostRequestDTO newPostReq, HttpServletRequest request) {
 
         // get current logged user
         Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
@@ -64,7 +64,7 @@ import java.util.*;
         PostEntity newPostToSave = new PostEntity(); // Object to save in database
         newPostToSave.setUser(user);
 
-        PostResponseDTO postRep = new PostResponseDTO();// object to send on success
+        PostDTO postRep = new PostDTO();// object to send on success
 
         // SportEntity is required
         if (newPostReq.getSportId() != null) {

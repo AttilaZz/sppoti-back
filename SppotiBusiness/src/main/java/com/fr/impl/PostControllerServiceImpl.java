@@ -2,7 +2,8 @@ package com.fr.impl;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
-import com.fr.commons.dto.post.PostResponseDTO;
+import com.fr.commons.dto.post.PostDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.entities.*;
 import com.fr.service.PostControllerService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
@@ -168,7 +170,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<PostResponseDTO> getPhotoGallery(int userId, int page) {
+    public List<PostDTO> getPhotoGallery(int userId, int page) {
 
         Pageable pageable = new PageRequest(page, postSize);
 
@@ -186,7 +188,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<PostResponseDTO> getVideoGallery(int userId, int page) {
+    public List<PostDTO> getVideoGallery(int userId, int page) {
         Pageable pageable = new PageRequest(page, postSize);
 
         UserEntity userEntity = getUserByUuId(userId);
@@ -203,7 +205,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public PostResponseDTO fillPostToSend(int postId, Long userId) {
+    public PostDTO fillPostToSend(int postId, Long userId) {
 
 
         List<PostEntity> posts = postRepository.getByUuid(postId);
@@ -225,14 +227,14 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
      * @param userPost     post creator.
      * @return list of all posts.
      */
-    public List<PostResponseDTO> postEntityToDto(final List<PostEntity> postEntities, final UserEntity userPost) {
+    public List<PostDTO> postEntityToDto(final List<PostEntity> postEntities, final UserEntity userPost) {
 
-        List<PostResponseDTO> postResponseDTOs = new ArrayList<PostResponseDTO>();
+        List<PostDTO> postDTOS = new ArrayList<PostDTO>();
 
         postEntities.forEach(
 
                 p -> {
-                    PostResponseDTO pres = new PostResponseDTO();
+                    PostDTO pres = new PostDTO();
 
                     UserEntity owner = p.getUser();
 
@@ -353,13 +355,13 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
                     pres.setVisibility(p.getVisibility());
 
                     //return all formated posts
-                    postResponseDTOs.add(pres);
+                    postDTOS.add(pres);
 
                 }
 
         );
 
-        return postResponseDTOs;
+        return postDTOS;
     }
 
 
@@ -430,5 +432,77 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
     @Override
     public boolean isTargetUserFriendOfMe(int connectedUserUuid, int friendId) {
         return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friendId, connectedUserUuid) != null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<PostDTO> getAllUserPosts(Long connectedUserId, int connectedUserUuid, int userID, int page) {
+        List<PostEntity> posts;
+
+        UserEntity requestUser = this.getUserByUuId(userID);
+
+        if (requestUser == null) {
+            throw new EntityNotFoundException("User (" + userID + ") not found");
+        }
+
+        if (connectedUserId.equals(requestUser.getId())) {
+            //get connected user posts - visibility: 0,1,2
+            List visibility = Arrays.asList(0, 1, 2);
+            posts = this.findAllPosts(connectedUserId, userID, visibility, page);
+        } else if (this.isTargetUserFriendOfMe(connectedUserUuid, userID)) {
+            //get friend posts - visibility: 0,1
+            List visibility = Arrays.asList(0, 1);
+            posts = this.findAllPosts(requestUser.getId(), userID, visibility, page);
+        } else {
+            //get unknown user posts - visibility: 0
+            List visibility = Collections.singletonList(0);
+            posts = this.findAllPosts(requestUser.getId(), userID, visibility, page);
+        }
+
+        List<PostDTO> postDTOS = new ArrayList<>();
+        posts.forEach(t -> postDTOS.add(this.fillPostToSend(t.getUuid(), connectedUserId)));
+
+        return postDTOS;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<PostDTO> getAllFriendPosts(int userId, int page, Long accountUserId) {
+
+        Pageable pageable = new PageRequest(page, postSize);
+
+        Optional<UserEntity> optional = userRepository.getByUuidAndDeletedFalse(userId);
+
+        if (optional.isPresent()) {
+            List<PostEntity> postEntities = new ArrayList<>();
+
+            //get recent posts from each friend
+            friendShipRepository.findByUserUuidOrFriendUuidAndDeletedFalse(userId, userId, pageable)
+                    .stream()
+                    .filter(f -> f.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
+                    .forEach(f -> {
+                                if (f.getFriend().getUuid() != userId) {
+                                    postEntities.addAll(postRepository.getByUserUuid(f.getFriend().getUuid(), pageable));
+                                }else if(f.getUser().getUuid() != userId){
+                                    postEntities.addAll(postRepository.getByUserUuid(f.getUser().getUuid(), pageable));
+
+                                }
+                            }
+                    );
+
+            //transform posts from entities to dto, with sorting by creation date.
+            return postEntities.stream()
+                    .map(p -> this.fillPostToSend(p.getUuid(), accountUserId))
+                    .sorted((p1, p2) -> p2.getDatetimeCreated().compareTo(p1.getDatetimeCreated()))
+                    .collect(Collectors.toList());
+
+        }
+
+        throw new EntityNotFoundException("User (" + userId + ") not found");
+
     }
 }

@@ -1,6 +1,6 @@
 package com.fr.api.gallery;
 
-import com.fr.commons.dto.post.PostResponseDTO;
+import com.fr.commons.dto.post.PostDTO;
 import com.fr.service.PostControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +35,9 @@ class GalleryPhotoController {
      * @return List of all photos posted by a user.
      */
     @GetMapping(value = "/{page}")
-    ResponseEntity<List<PostResponseDTO>> photoGallery(@PathVariable int page, @PathVariable int userId) {
+    ResponseEntity<List<PostDTO>> photoGallery(@PathVariable int page, @PathVariable int userId) {
 
-        List<PostResponseDTO> photoGallery = postControllerService.getPhotoGallery(userId, page);
+        List<PostDTO> photoGallery = postControllerService.getPhotoGallery(userId, page);
 
         LOGGER.info("Photos gallery has been returned: " + photoGallery);
         return new ResponseEntity<>(photoGallery, HttpStatus.OK);
