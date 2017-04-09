@@ -49,11 +49,12 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
         SppotiBeanUtils.copyProperties(userDTO, entity);
         userDTO.setId(entity.getUuid());
 
-        UserDTO userResources = getUserCoverAndAvatar(entity);
-
-        userDTO.setAvatar(userResources.getAvatar());
-        userDTO.setCover(userResources.getCover());
-        userDTO.setCoverType(userResources.getCoverType());
+        if (entity.getResources() != null) {
+            UserDTO userResources = getUserCoverAndAvatar(entity);
+            userDTO.setAvatar(userResources.getAvatar());
+            userDTO.setCover(userResources.getCover());
+            userDTO.setCoverType(userResources.getCoverType());
+        }
 
         return userDTO;
     }
@@ -67,14 +68,14 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
         UserDTO user = new UserDTO();
         Set<ResourcesEntity> resources = targetUser.getResources();
 
-        List<ResourcesEntity> resources_Entity_temp = new ArrayList<ResourcesEntity>();
-        resources_Entity_temp.addAll(resources);
+        List<ResourcesEntity> resourcesEntityTemp = new ArrayList<>();
+        resourcesEntityTemp.addAll(resources);
 
-        if (!resources_Entity_temp.isEmpty()) {
-            if (resources_Entity_temp.size() == 2) {
+        if (!resourcesEntityTemp.isEmpty()) {
+            if (resourcesEntityTemp.size() == 2) {
                 //cover and avatar found
-                ResourcesEntity resource1 = resources_Entity_temp.get(0);
-                ResourcesEntity resource2 = resources_Entity_temp.get(1);
+                ResourcesEntity resource1 = resourcesEntityTemp.get(0);
+                ResourcesEntity resource2 = resourcesEntityTemp.get(1);
 
                 if (resource1.getType() == 1 && resource2.getType() == 2) {
                     user.setAvatar(resource1.getUrl());
@@ -90,7 +91,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 
             } else {
                 // size is = 1 -> cover or avatar
-                ResourcesEntity resource = resources_Entity_temp.get(0);
+                ResourcesEntity resource = resourcesEntityTemp.get(0);
                 if (resource.getType() == 1) {//acatar
                     user.setAvatar(resource.getUrl());
                 } else {
