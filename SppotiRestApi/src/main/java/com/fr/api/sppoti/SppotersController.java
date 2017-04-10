@@ -1,5 +1,7 @@
 package com.fr.api.sppoti;
 
+import com.fr.commons.dto.UserDTO;
+import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.SppotiControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,4 +50,20 @@ class SppotersController {
 
     }
 
+    /**
+     * Add member for a given team - only admin can add a member to his team.
+     *
+     * @return 201 status if memeber has been added.
+     */
+    @PostMapping("/add")
+    ResponseEntity<UserDTO> addMember(@PathVariable int sppotiId, @RequestBody UserDTO user) {
+
+        if (user.getId() == null) {
+            throw new BusinessGlobalException("Sppoter id not found !!");
+        }
+
+        UserDTO savedTeamMember = sppotiControllerService.addSppoter(sppotiId, user);
+
+        return new ResponseEntity<>(savedTeamMember, HttpStatus.CREATED);
+    }
 }

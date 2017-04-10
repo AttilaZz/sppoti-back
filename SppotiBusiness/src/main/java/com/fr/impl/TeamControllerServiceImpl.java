@@ -287,10 +287,10 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             teamMembers.setyPosition(userParam.getyPosition());
         }
 
-        //save ne member.
+        //save new member.
         teamMembersRepository.save(teamMembers);
 
-        //Send email to the new member.
+        //Send email to the new team member.
         sendJoinTeamEmail(team, teamMemberAsUser, teamAdmin);
 
         //return new member.

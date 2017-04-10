@@ -13,6 +13,7 @@ import com.fr.entities.*;
 import com.fr.service.SppotiControllerService;
 import com.fr.transformers.ScoreTransformer;
 import com.fr.transformers.SppotiTransformer;
+import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.SportTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
 import org.apache.log4j.Logger;
@@ -55,11 +56,17 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
      */
     private final TeamMemberTransformer teamMemberTransformer;
 
+    /**
+     * User transformer
+     */
+    private final UserTransformer userTransformer;
+
     @Autowired
-    public SppotiControllerServiceImpl(ScoreTransformer scoreTransformer, SppotiTransformer sppotiTransformer, TeamMemberTransformer teamMemberTransformer) {
+    public SppotiControllerServiceImpl(ScoreTransformer scoreTransformer, SppotiTransformer sppotiTransformer, TeamMemberTransformer teamMemberTransformer, UserTransformer userTransformer) {
         this.scoreTransformer = scoreTransformer;
         this.sppotiTransformer = sppotiTransformer;
         this.teamMemberTransformer = teamMemberTransformer;
+        this.userTransformer = userTransformer;
     }
 
     /**
@@ -610,4 +617,66 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                 ).collect(Collectors.toSet());
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public UserDTO addSppoter(int sppotiId, UserDTO user) {
+
+        Optional<SppotiEntity> sppotiEntity = Optional.ofNullable(sppotiRepository.findByUuid(sppotiId));
+
+        if (sppotiEntity.isPresent()) {
+
+            SppotiEntity userSppoti = sppotiEntity.get();
+            TeamEntity userTeam = userSppoti.getTeamHostEntity();
+            UserEntity userSppoter = getUserByUuId(user.getId());
+
+            if (userSppoter == null) {
+                throw new EntityNotFoundException("UserDTO with id (" + user.getId() + ") Not found");
+            }
+
+            if (!userSppoti.getUserSppoti().getId().equals(getConnectedUser().getId())) {
+                throw new NotAdminException("You must be the sppoti admin to access this service");
+            }
+
+            TeamMemberEntity teamMembers = new TeamMemberEntity();
+            teamMembers.setTeam(userTeam);
+            teamMembers.setUsers(userSppoter);
+
+             /* Convert team members to sppoters. */
+            TeamMemberEntity teamMember = new TeamMemberEntity();
+            SppotiMemberEntity sppoter = new SppotiMemberEntity();
+
+            if (StringUtils.isEmpty(user.getxPosition())) {
+                teamMembers.setxPosition(user.getxPosition());
+                sppoter.setxPosition(user.getxPosition());
+            }
+
+            if (StringUtils.isEmpty(user.getyPosition())) {
+                teamMembers.setyPosition(user.getyPosition());
+                sppoter.setyPosition(user.getyPosition());
+            }
+
+            Set<SppotiMemberEntity> sppotiMembers = new HashSet<>();
+            sppoter.setTeamMember(teamMember);
+            sppoter.setSppoti(userSppoti);
+            sppotiMembers.add(sppoter);
+
+            teamMember.setSppotiMembers(sppotiMembers);
+            userSppoti.setSppotiMembers(sppotiMembers);
+
+            //save new member.
+            teamMembersRepository.save(teamMembers);
+
+            //Send email to the new team member.
+            //sendJoinTeamEmail(team, sppoter, teamAdmin);
+
+            //return new member.
+            return teamMemberTransformer.modelToDto(teamMembers, userSppoti);
+        }
+
+        throw new EntityNotFoundException("Sppoti (" + sppotiId + ") not found");
+
+    }
 }
