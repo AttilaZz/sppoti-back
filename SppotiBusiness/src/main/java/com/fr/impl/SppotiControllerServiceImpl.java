@@ -1,6 +1,7 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.SppotiRatingDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
@@ -11,8 +12,9 @@ import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.*;
 import com.fr.service.SppotiControllerService;
 import com.fr.transformers.ScoreTransformer;
+import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.impl.SportTransformer;
-import com.fr.transformers.impl.SppotiTransformerImpl;
+import com.fr.transformers.impl.TeamMemberTransformer;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,16 +40,26 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     @Value("${key.sppotiesPerPage}")
     private int sppotiSize;
 
-    /** Score transformer. */
+    /**
+     * Score transformer.
+     */
     private final ScoreTransformer scoreTransformer;
 
-    /** Sppoti transformer. */
-    private final SppotiTransformerImpl sppotiTransformer;
+    /**
+     * Sppoti transformer.
+     */
+    private final SppotiTransformer sppotiTransformer;
+
+    /**
+     * Team member transformer.
+     */
+    private final TeamMemberTransformer teamMemberTransformer;
 
     @Autowired
-    public SppotiControllerServiceImpl(ScoreTransformer scoreTransformer, SppotiTransformerImpl sppotiTransformer) {
+    public SppotiControllerServiceImpl(ScoreTransformer scoreTransformer, SppotiTransformer sppotiTransformer, TeamMemberTransformer teamMemberTransformer) {
         this.scoreTransformer = scoreTransformer;
         this.sppotiTransformer = sppotiTransformer;
+        this.teamMemberTransformer = teamMemberTransformer;
     }
 
     /**
@@ -68,7 +80,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 //        sppoti.setLongitude(newSppoti.getLongitude());
 
         TeamDTO teamDTO = newSppoti.getTeamHost();
-        if ( teamDTO != null) {
+        if (teamDTO != null) {
 
             if (teamDTO.getName() != null) {
                 hostTeam.setName(teamDTO.getName());
@@ -496,42 +508,46 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
      */
     @Override
     @Transactional
-    public void rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId) {
+    public List<UserDTO> rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId) {
 
         Optional<SppotiEntity> sppotiEntity = Optional.ofNullable(sppotiRepository.findByUuid(sppotiId));
 
-        sppotiEntity.ifPresent(
-                se -> sppotiRatingDTO.forEach(sppoter ->
-                {
-                    Optional<SppotiMemberEntity> ratedSppoter = Optional.of(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(sppoter.getSppoterRatedId(), se.getUuid()));
-                    ratedSppoter.ifPresent(
-                            rs -> {
-                                if (rs.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
-                                    throw new BusinessGlobalException("Sppoter hasn't accepted sppoti yet");
-                                }
+        if (sppotiEntity.isPresent()) {
+            SppotiEntity se = sppotiEntity.get();
 
-                                UserEntity connectUser = getConnectedUser();
+            return sppotiRatingDTO.stream()
+                    .map(sppoter ->
+                    {
+                        Optional<SppotiMemberEntity> ratedSppoter = Optional.ofNullable(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(sppoter.getSppoterRatedId(), se.getUuid()));
+                        ratedSppoter.orElseThrow(() -> new EntityNotFoundException("Sppoter (" + sppoter.getId() + ") not found"));
 
-                                SppotiRatingEntity sppotiRatingEntity = new SppotiRatingEntity();
-                                sppotiRatingEntity.setSppotiEntity(se);
-                                sppotiRatingEntity.setRatedSppoter(rs.getTeamMember().getUsers());
-                                sppotiRatingEntity.setRatingDate(new Date());
-                                sppotiRatingEntity.setRaterSppoter(connectUser);
-                                sppotiRatingEntity.setStarsCount(sppoter.getStars());
+                        SppotiMemberEntity rs = ratedSppoter.get();
+                        if (rs.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
+                            throw new BusinessGlobalException("Sppoter (" + sppoter.getId() + ") hasn't accepted sppoti yet");
+                        }
 
-                                ratingRepository.save(sppotiRatingEntity);
+                        UserEntity connectUser = getConnectedUser();
 
-                                SppotiMemberEntity sppotiMemberEntity = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(connectUser.getUuid(), sppotiId);
-                                sppotiMemberEntity.setHasRateOtherSppoter(Boolean.TRUE);
-                                sppotiMembersRepository.save(sppotiMemberEntity);
-                            }
-                    );
-                    ratedSppoter.orElseThrow(() -> new EntityNotFoundException("Sppoter not found"));
-                })
-        );
+                        SppotiRatingEntity sppotiRatingEntity = new SppotiRatingEntity();
+                        sppotiRatingEntity.setSppotiEntity(se);
+                        sppotiRatingEntity.setRatedSppoter(rs.getTeamMember().getUsers());
+                        sppotiRatingEntity.setRatingDate(new Date());
+                        sppotiRatingEntity.setRaterSppoter(connectUser);
+                        sppotiRatingEntity.setStarsCount(sppoter.getStars());
 
-        sppotiEntity.orElseThrow(() -> new EntityNotFoundException("Sppoti not found"));
+                        ratingRepository.save(sppotiRatingEntity);
 
+                        //TODO: test this bloc
+                        SppotiMemberEntity sppotiMemberEntity = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(connectUser.getUuid(), sppotiId);
+                        sppotiMemberEntity.setHasRateOtherSppoter(Boolean.TRUE);
+                        sppotiMembersRepository.save(sppotiMemberEntity);
+
+                        return teamMemberTransformer.modelToDto(sppotiMemberEntity.getTeamMember(), se);
+
+                    }).collect(Collectors.toList());
+        }
+
+        throw new EntityNotFoundException("Sppoti not found");
 
     }
 

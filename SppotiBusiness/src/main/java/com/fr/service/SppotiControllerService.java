@@ -1,6 +1,7 @@
 package com.fr.service;
 
 import com.fr.commons.dto.SppotiRatingDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import org.springframework.stereotype.Service;
 
@@ -93,11 +94,10 @@ public interface SppotiControllerService extends AbstractControllerService {
 
     /**
      * rating many sppoters at a time.
-     *
-     * @param sppotiRatingDTO list of sppoters to rate.
+     *  @param sppotiRatingDTO list of sppoters to rate.
      * @param sppotiId sppoti id.
      */
-    void rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId);
+    List<UserDTO> rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId);
 
     /**
      *

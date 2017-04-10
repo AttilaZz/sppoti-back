@@ -1,6 +1,7 @@
 package com.fr.api.rating;
 
 import com.fr.commons.dto.SppotiRatingDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.SppotiControllerService;
 import org.apache.log4j.Logger;
@@ -19,20 +20,24 @@ import java.util.List;
 @RequestMapping("/rating")
 class RatingSppoter {
 
+    /**
+     * Sppoti controller service.
+     */
     private SppotiControllerService sppotiControllerService;
 
+    /**
+     * Init services.
+     */
     @Autowired
     void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
         this.sppotiControllerService = sppotiControllerService;
     }
 
-    private Logger LOGGER = Logger.getLogger(RatingSppoter.class);
-
     /**
      * Evaluate other sppoters in same sppoti.
      */
     @PostMapping("/sppoter/{sppotiId}")
-    ResponseEntity<Void> rateSppoter(@PathVariable int sppotiId, @RequestBody List<SppotiRatingDTO> sppotiRatingDTO) {
+    ResponseEntity<List<UserDTO>> rateSppoter(@PathVariable int sppotiId, @RequestBody List<SppotiRatingDTO> sppotiRatingDTO) {
 
         sppotiRatingDTO.forEach(sp -> {
             if (sp.getStars() == null || (sp.getStars() > 10 || sp.getStars() < 0)) {
@@ -44,14 +49,7 @@ class RatingSppoter {
             }
         });
 
-        try {
-            sppotiControllerService.rateSppoters(sppotiRatingDTO, sppotiId);
-        } catch (EntityNotFoundException e) {
-            LOGGER.error(e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(sppotiControllerService.rateSppoters(sppotiRatingDTO, sppotiId), HttpStatus.CREATED);
     }
 
 }
