@@ -641,13 +641,23 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             }
 
             TeamMemberEntity teamMembers = new TeamMemberEntity();
+            SppotiMemberEntity sppoter = new SppotiMemberEntity();
+
+            //team member.
             teamMembers.setTeam(userTeam);
             teamMembers.setUsers(userSppoter);
 
-             /* Convert team members to sppoters. */
-            TeamMemberEntity teamMember = new TeamMemberEntity();
-            SppotiMemberEntity sppoter = new SppotiMemberEntity();
+            //sppoter.
+            sppoter.setTeamMember(teamMembers);
+            sppoter.setSppoti(userSppoti);
 
+            Set<SppotiMemberEntity> sppotiMembers = new HashSet<>();
+            sppotiMembers.add(sppoter);
+
+            //Link sppoter with team member.
+            teamMembers.setSppotiMembers(sppotiMembers);
+
+            //add coordinate if set.
             if (StringUtils.isEmpty(user.getxPosition())) {
                 teamMembers.setxPosition(user.getxPosition());
                 sppoter.setxPosition(user.getxPosition());
@@ -658,22 +668,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                 sppoter.setyPosition(user.getyPosition());
             }
 
-            Set<SppotiMemberEntity> sppotiMembers = new HashSet<>();
-            sppoter.setTeamMember(teamMember);
-            sppoter.setSppoti(userSppoti);
-            sppotiMembers.add(sppoter);
-
-            teamMember.setSppotiMembers(sppotiMembers);
-            userSppoti.setSppotiMembers(sppotiMembers);
-
-            //save new member.
-            teamMembersRepository.save(teamMembers);
+            //save new member and sppoter.
+            TeamMemberEntity savedMember = teamMembersRepository.save(teamMembers);
 
             //Send email to the new team member.
             //sendJoinTeamEmail(team, sppoter, teamAdmin);
 
             //return new member.
-            return teamMemberTransformer.modelToDto(teamMembers, userSppoti);
+            return teamMemberTransformer.modelToDto(savedMember, userSppoti);
         }
 
         throw new EntityNotFoundException("Sppoti (" + sppotiId + ") not found");
