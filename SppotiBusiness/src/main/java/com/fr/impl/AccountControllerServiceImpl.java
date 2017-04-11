@@ -1,6 +1,6 @@
 package com.fr.impl;
 
-import com.fr.commons.dto.SignUpRequestDTO;
+import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
@@ -60,7 +60,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
      */
     @Transactional
     @Override
-    public void saveNewUser(SignUpRequestDTO user) {
+    public void saveNewUser(SignUpDTO user) {
 
         /*
             if username or email exist, account valid:
@@ -284,10 +284,12 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 
     /**
      * {@inheritDoc}
+     *
+     * @param userDTO
      */
     @Override
     @Transactional
-    public void sendRecoverAccountEmail(UserDTO userDTO) {
+    public void sendRecoverAccountEmail(SignUpDTO userDTO) {
 
         Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
 
@@ -299,6 +301,8 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
             u.setRecoverCodeCreationDate(tokenExpiryDate);
             u.setRecoverCode(code);
             userRepository.save(u);
+            LOGGER.info("Recover password email sent tocommit: " + u.getEmail());
+
 
             final Thread thread = new Thread(() -> this.accountMailer.sendRecoverPasswordEmail(userTransformer.modelToDto(u), code, tokenExpiryDate));
             thread.start();
@@ -312,19 +316,27 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
      */
     @Override
     @Transactional
-    public void recoverAccount(UserDTO userDTO, String code) {
+    public void recoverAccount(SignUpDTO userDTO, String code) {
 
         Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByRecoverCodeAndDeletedFalse(code));
 
         optional.ifPresent(u -> {
 
+            //Check if token is valid
             if (SppotiUtils.isDateExpired(u.getRecoverCodeCreationDate())) {
-                LOGGER.info("Token expired for user: " + u.getEmail());
+                LOGGER.error("Token expired for user: " + u.getEmail());
                 throw new BusinessGlobalException("Your token has been expired");
+            }
+
+            //Check if old password is correct
+            if (passwordEncoder.matches(userDTO.getOldPassword(), u.getPassword())) {
+                LOGGER.error("Old password is not correct !!");
+                throw new BusinessGlobalException("Old password not correct !!");
             }
 
             u.setPassword(userDTO.getPassword());
             userRepository.save(u);
+            LOGGER.info("Account with code (" + code + ") has been confirmed");
         });
 
         optional.orElseThrow(() -> new EntityNotFoundException("Account not found !"));
@@ -341,7 +353,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
 
         optional.ifPresent(u -> {
-            if(u.isConfirmed()){
+            if (u.isConfirmed()) {
                 throw new BusinessGlobalException("Account Already activated");
             }
             //generate new code

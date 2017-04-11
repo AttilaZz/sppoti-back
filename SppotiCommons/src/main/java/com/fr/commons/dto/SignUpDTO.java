@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by: Wail DJENANE on Jun 15, 2016
  */
-public class SignUpRequestDTO extends AbstractCommonDTO{
+public class SignUpDTO extends AbstractCommonDTO{
 
     @NotEmpty
     private String lastName;
@@ -39,6 +39,11 @@ public class SignUpRequestDTO extends AbstractCommonDTO{
     private String username;
 
     private Long[] sportId;
+
+    @JsonProperty("new_password")
+    private String newPassword;
+    @JsonProperty("old_password")
+    private String oldPassword;
 
     public String getLastName() {
         return lastName;
@@ -104,4 +109,19 @@ public class SignUpRequestDTO extends AbstractCommonDTO{
         this.sportId = sportId;
     }
 
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
 }

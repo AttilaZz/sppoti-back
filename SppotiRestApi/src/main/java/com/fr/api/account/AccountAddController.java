@@ -1,9 +1,8 @@
 package com.fr.api.account;
 
-import com.fr.commons.dto.SignUpRequestDTO;
+import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
 import com.fr.commons.exception.ConflictEmailException;
-import com.fr.commons.exception.ConflictPhoneException;
 import com.fr.commons.exception.ConflictUsernameException;
 import com.fr.service.AccountControllerService;
 import org.apache.log4j.Logger;
@@ -37,7 +36,7 @@ class AccountAddController {
      */
     @PostMapping(value = "/create")
     @ResponseBody
-    ResponseEntity createUser(@RequestBody @Valid SignUpRequestDTO user) {
+    ResponseEntity createUser(@RequestBody @Valid SignUpDTO user) {
 
         try {
             accountControllerService.saveNewUser(user);

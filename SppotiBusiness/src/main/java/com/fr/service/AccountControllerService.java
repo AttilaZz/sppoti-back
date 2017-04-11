@@ -1,6 +1,6 @@
 package com.fr.service;
 
-import com.fr.commons.dto.SignUpRequestDTO;
+import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ public interface AccountControllerService extends AbstractControllerService {
      *
      * @param user {@link UserDTO} to save.
      */
-    void saveNewUser(SignUpRequestDTO user);
+    void saveNewUser(SignUpDTO user);
 
     /**
      * Activate sppoti account.
@@ -65,15 +65,14 @@ public interface AccountControllerService extends AbstractControllerService {
      *
      * @param user user data.
      */
-    void sendRecoverAccountEmail(UserDTO user);
+    void sendRecoverAccountEmail(SignUpDTO user);
 
     /**
      * Update password if confirmation code found.
-     *
-     * @param userDTO user data.
+     *  @param userDTO user data.
      * @param code    account recover code.
      */
-    void recoverAccount(UserDTO userDTO, String code);
+    void recoverAccount(SignUpDTO userDTO, String code);
 
     /**
      *Generate new account confirmation email.

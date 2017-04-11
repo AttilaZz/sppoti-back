@@ -1,6 +1,6 @@
 package com.fr.transformers.impl;
 
-import com.fr.commons.dto.SignUpRequestDTO;
+import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GenderEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
@@ -108,7 +108,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
      * {@inheritDoc}
      */
     @Override
-    public UserEntity signUpDtoToEntity(SignUpRequestDTO dto) {
+    public UserEntity signUpDtoToEntity(SignUpDTO dto) {
         UserEntity entity = new UserEntity();
         SppotiBeanUtils.copyProperties(entity, dto);
         entity.setGender(GenderEnum.valueOf(dto.getGenderType()));

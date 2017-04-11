@@ -1,6 +1,6 @@
 package com.fr.transformers;
 
-import com.fr.commons.dto.SignUpRequestDTO;
+import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Service;
@@ -18,5 +18,5 @@ public interface UserTransformer extends CommonTransformer<UserDTO, UserEntity> 
      * @param dto sign up DTO.
      * @return user Entity.
      */
-    UserEntity signUpDtoToEntity(SignUpRequestDTO dto);
+    UserEntity signUpDtoToEntity(SignUpDTO dto);
 }
