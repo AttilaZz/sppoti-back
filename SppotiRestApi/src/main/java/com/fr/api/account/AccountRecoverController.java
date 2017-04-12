@@ -36,14 +36,15 @@ public class AccountRecoverController {
      * @return 202 status if account recovered correctly.
      */
     @PutMapping("/validate/password/{code}")
-    ResponseEntity<Void> confirmUserEmail(@RequestBody SignUpDTO userDTO, @PathVariable("code") String code) {
+    ResponseEntity<Void> confirmUserEmail(@RequestBody UserDTO userDTO, @PathVariable("code") String code) {
 
-        if (StringUtils.isEmpty(code) || StringUtils.isEmpty(userDTO.getOldPassword()) || StringUtils.isEmpty(userDTO.getNewPassword())) {
-            throw new BusinessGlobalException("One parameter is missing !! (code, old pass, new pass)");
+        if (StringUtils.isEmpty(code) || StringUtils.isEmpty(userDTO.getPassword())) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         // if given code exist in database confirm registration
         accountControllerService.recoverAccount(userDTO, code);
+        LOGGER.info("Account with code (" + code + ") has been confirmed");
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
     }

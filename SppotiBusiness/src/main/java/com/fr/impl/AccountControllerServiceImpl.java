@@ -316,27 +316,19 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
      */
     @Override
     @Transactional
-    public void recoverAccount(SignUpDTO userDTO, String code) {
+    public void recoverAccount(UserDTO userDTO, String code) {
 
         Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByRecoverCodeAndDeletedFalse(code));
 
         optional.ifPresent(u -> {
 
-            //Check if token is valid
             if (SppotiUtils.isDateExpired(u.getRecoverCodeCreationDate())) {
-                LOGGER.error("Token expired for user: " + u.getEmail());
+                LOGGER.info("Token expired for user: " + u.getEmail());
                 throw new BusinessGlobalException("Your token has been expired");
-            }
-
-            //Check if old password is correct
-            if (passwordEncoder.matches(userDTO.getOldPassword(), u.getPassword())) {
-                LOGGER.error("Old password is not correct !!");
-                throw new BusinessGlobalException("Old password not correct !!");
             }
 
             u.setPassword(userDTO.getPassword());
             userRepository.save(u);
-            LOGGER.info("Account with code (" + code + ") has been confirmed");
         });
 
         optional.orElseThrow(() -> new EntityNotFoundException("Account not found !"));

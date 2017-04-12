@@ -69,10 +69,10 @@ public interface AccountControllerService extends AbstractControllerService {
 
     /**
      * Update password if confirmation code found.
-     *  @param userDTO user data.
+     * @param userDTO user data.
      * @param code    account recover code.
      */
-    void recoverAccount(SignUpDTO userDTO, String code);
+    void recoverAccount(UserDTO userDTO, String code);
 
     /**
      *Generate new account confirmation email.
