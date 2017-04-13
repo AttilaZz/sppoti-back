@@ -550,10 +550,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     @Override
     public List<SppotiDTO> getAllJoinedSppoties(int userId, int page) {
         Pageable pageable = new PageRequest(page, sppotiSize);
-        //TODO: Filter sppoties created by Connected user
+
         List<SppoterEntity> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable);
 
         return sppotiMembers.stream()
+                .filter(s -> s.getSppoti().getUserSppoti().getUuid() != userId)
                 .map(s -> getSppotiResponse(s.getSppoti()))
                 .sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
                 .collect(Collectors.toList());
