@@ -4,6 +4,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.codec.Base64;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.UUID;
@@ -84,14 +85,15 @@ public class SppotiUtils {
     }
 
     /**
+     * Geerate an expiry date for tokens.
      *
      * @param expiryDateNumber number of days before expiration.
      * @return expiry date.
      */
-    public static Date generateExpiryDate(int expiryDateNumber){
+    public static Date generateExpiryDate(int expiryDateNumber) {
 
-        LocalDate expiryLocalDate = (new Date()).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        return Date.from((expiryLocalDate.plusDays(expiryDateNumber)).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        LocalDateTime ldt = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault())
+                .plusDays(expiryDateNumber);
+        return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
     }
 }
