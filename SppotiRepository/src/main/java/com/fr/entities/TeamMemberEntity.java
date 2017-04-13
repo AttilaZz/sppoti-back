@@ -44,7 +44,7 @@ public class TeamMemberEntity
     private UserEntity users;
 
     @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SppotiMemberEntity> sppotiMembers;
+    private Set<SppoterEntity> sppotiMembers;
 
     public GlobalAppStatusEnum getStatus() {
         return status;
@@ -102,7 +102,7 @@ public class TeamMemberEntity
         this.yPosition = yPosition;
     }
 
-    public Set<SppotiMemberEntity> getSppotiMembers() {
+    public Set<SppoterEntity> getSppotiMembers() {
         return sppotiMembers;
     }
 
@@ -114,7 +114,7 @@ public class TeamMemberEntity
         this.admin = admin;
     }
 
-    public void setSppotiMembers(Set<SppotiMemberEntity> sppotiMembers) {
+    public void setSppotiMembers(Set<SppoterEntity> sppotiMembers) {
         this.sppotiMembers = sppotiMembers;
     }
 

@@ -28,17 +28,23 @@ public interface SppotiControllerService extends AbstractControllerService {
     SppotiDTO getSppotiByUuid(Integer uuid);
 
     /**
+     * Get all cppoties created by a user, even thoses refused by adverse team.
+     *
      * @param id user id.
      * @return all sppoties created by a user.
      */
     List<SppotiDTO> getAllUserSppoties(Integer id, int page);
 
     /**
+     * Logical delete of a sppoti.
+     *
      * @param id sppoti id.
      */
     void deleteSppoti(int id);
 
     /**
+     * Update sppoti informations.
+     *
      * @param sppotiRequest sppoti data to update.
      * @param id            sppoti id.
      * @return sppoti DTO with updated data.
@@ -73,6 +79,8 @@ public interface SppotiControllerService extends AbstractControllerService {
     SppotiDTO updateTeamAdverseChallengeStatus(int sppotiId, int adverseTeamResponseStatus);
 
     /**
+     * Get all sppoties that user asked to join, even those he rejects.
+     *
      * @param id   user id.
      * @param page page  umber.
      * @return all sppoties that user has joined.
@@ -80,6 +88,8 @@ public interface SppotiControllerService extends AbstractControllerService {
     List<SppotiDTO> getAllJoinedSppoties(int id, int page);
 
     /**
+     * Check if user is the sppoti admin.
+     *
      * @param userId   id of the connected user.
      * @param sppotiId id of the sppoti.
      */

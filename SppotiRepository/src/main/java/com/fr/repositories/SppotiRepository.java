@@ -19,10 +19,9 @@ public interface SppotiRepository extends JpaRepository<SppotiEntity, Long> {
     /**
      *
      * @param id sppoti creator id.
-     * @param adverseTeamStatus adverse team status to exclude from search.
      * @param pageable page number.
      * @return return all found sppoties.
      */
     @PostFilter("!filterObject.isDeleted()")
-    List<SppotiEntity> findByUserSppotiUuidAndTeamAdverseStatusEnumNot(Integer id, GlobalAppStatusEnum adverseTeamStatus, Pageable pageable);
+    List<SppotiEntity> findByUserSppotiUuid(Integer id, Pageable pageable);
 }

@@ -2,7 +2,7 @@ package com.fr.transformers.impl;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.SppotiEntity;
-import com.fr.entities.SppotiMemberEntity;
+import com.fr.entities.SppoterEntity;
 import com.fr.entities.SppotiRatingEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.repositories.RatingRepository;
@@ -73,7 +73,7 @@ public class TeamMemberTransformer {
         if (sppoti != null) {
             //get status for the selected sppoti
             if (!StringUtils.isEmpty(memberEntity.getSppotiMembers())) {
-                for (SppotiMemberEntity sppoter : memberEntity.getSppotiMembers()) {
+                for (SppoterEntity sppoter : memberEntity.getSppotiMembers()) {
                     if (sppoter.getTeamMember().getId().equals(memberEntity.getId()) && sppoter.getSppoti().getId().equals(sppoti.getId())) {
                         userDTO.setSppotiStatus(sppoter.getStatus().getValue());
                     }
@@ -89,7 +89,7 @@ public class TeamMemberTransformer {
 
             userDTO.setRating(getRatingStars(memberEntity.getUsers().getUuid(), sppotiId));
 
-            Optional<SppotiMemberEntity> optional = Optional.ofNullable(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(memberEntity.getUsers().getUuid(), sppotiId));
+            Optional<SppoterEntity> optional = Optional.ofNullable(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(memberEntity.getUsers().getUuid(), sppotiId));
             optional.ifPresent(sm -> userDTO.setHasRateOtherSppoters(sm.getHasRateOtherSppoter()));
 
          }

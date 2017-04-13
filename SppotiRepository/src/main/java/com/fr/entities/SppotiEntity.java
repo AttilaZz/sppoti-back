@@ -1,8 +1,6 @@
 package com.fr.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import javax.persistence.*;
@@ -74,7 +72,7 @@ public class SppotiEntity
     private GlobalAppStatusEnum teamAdverseStatusEnum = GlobalAppStatusEnum.NO_CHALLENGE_YET;
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SppotiMemberEntity> sppotiMembers;
+    private Set<SppoterEntity> sppotiMembers;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "score_id")
@@ -184,11 +182,11 @@ public class SppotiEntity
         this.deleted = deleted;
     }
 
-    public Set<SppotiMemberEntity> getSppotiMembers() {
+    public Set<SppoterEntity> getSppotiMembers() {
         return sppotiMembers;
     }
 
-    public void setSppotiMembers(Set<SppotiMemberEntity> sppotiMembers) {
+    public void setSppotiMembers(Set<SppoterEntity> sppotiMembers) {
         this.sppotiMembers = sppotiMembers;
     }
 

@@ -45,9 +45,11 @@ class SppotiGetController {
     }
 
     /**
+     * Get All sppoties created by the given user id.
+     *
      * @param id   user id.
      * @param page page number.
-     * @return All sppoties created by the given user id.
+     * @return List of {@link SppotiDTO}
      */
     @GetMapping("/all/{userId}/{page}")
     ResponseEntity<List<SppotiDTO>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
@@ -67,9 +69,11 @@ class SppotiGetController {
     }
 
     /**
+     * Get All sppoties that user joined.
+     *
      * @param id   user id.
      * @param page page number.
-     * @return All sppoties that user joined.
+     * @return List of {@link SppotiDTO}
      */
     @GetMapping("/all/joined/{userId}/{page}")
     ResponseEntity<List<SppotiDTO>> getAllJoinedUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
@@ -82,9 +86,11 @@ class SppotiGetController {
     }
 
     /**
+     * All confirmed sppoties that user joined.
+     *
      * @param userId user id.
      * @param page   page number.
-     * @return All confirmed sppoties that user joined.
+     * @return List of {@link SppotiDTO}
      */
     @GetMapping("/all/confirmed/{userId}/{page}")
     ResponseEntity<List<SppotiDTO>> getAllConfirmedSppoties(@PathVariable int userId, @PathVariable int page) {
@@ -97,9 +103,11 @@ class SppotiGetController {
     }
 
     /**
+     * Get All refused sppoties that user asked to join.
+     *
      * @param userId user id.
      * @param page   page number.
-     * @return All confirmed sppoties that user joined.
+     * @return List of {@link SppotiDTO}
      */
     @GetMapping("/all/refused/{userId}/{page}")
     ResponseEntity<List<SppotiDTO>> getAllRefusedSppoties(@PathVariable int userId, @PathVariable int page) {

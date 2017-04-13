@@ -9,8 +9,8 @@ import java.util.Date;
  * Created by djenanewail on 2/4/17.
  */
 @Entity
-@Table(name = "SPPOTI_MEMBER")
-public class SppotiMemberEntity
+@Table(name = "SPPOTER")
+public class SppoterEntity
         extends AbstractCommonEntity {
 
     @Enumerated(EnumType.STRING)

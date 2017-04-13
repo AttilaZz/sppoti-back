@@ -386,7 +386,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
             Optional<UserEntity> userEntity = Optional.ofNullable(getUserByUuId(userDTO.getId()));
 
             TeamMemberEntity teamMember = new TeamMemberEntity();
-            SppotiMemberEntity sppoter = new SppotiMemberEntity();
+            SppoterEntity sppoter = new SppoterEntity();
 
             userEntity.ifPresent(user -> {
                 if (user.getId().equals(connectedUserId)) {
@@ -427,7 +427,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
                     }
 
                     /* Convert team members to sppoters. */
-                    Set<SppotiMemberEntity> sppotiMembers = new HashSet<>();
+                    Set<SppoterEntity> sppotiMembers = new HashSet<>();
                     sppoter.setTeamMember(teamMember);
                     sppoter.setSppoti(sppoti);
                     sppotiMembers.add(sppoter);

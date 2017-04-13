@@ -205,14 +205,29 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
             connectedUser.setTelephone(userDTO.getPhone());
         }
         //password
-        if (!StringUtils.isEmpty(userDTO.getPassword())) {
+        if (!StringUtils.isEmpty(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) && !StringUtils.isEmpty(userDTO.getOldPassword())) {
+
+            //Check that old password is correct
+            if(!connectedUser.getPassword().equals(userDTO.getOldPassword())){
+                throw new BusinessGlobalException("Old password not correct");
+            }
+
             String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
             connectedUser.setPassword(encodedPassword);
         }
-        //email
-        if (!StringUtils.isEmpty(userDTO.getEmail())) {
-            connectedUser.setEmail(userDTO.getEmail());
+        /*
+            email --
+            User must confirm new email address to login next time.
+         */
+        if (!StringUtils.isEmpty(userDTO.getEmail()) && !StringUtils.isEmpty(userDTO.getPassword())) {
 
+            //Check that password is correct
+            if(!connectedUser.getPassword().equals(userDTO.getPassword())){
+                throw new BusinessGlobalException("Password not correct");
+            }
+
+            connectedUser.setEmail(userDTO.getEmail());
+            connectedUser.setConfirmed(false);
             String confirmationCode = SppotiUtils.generateConfirmationKey();
             connectedUser.setConfirmationCode(confirmationCode);
 

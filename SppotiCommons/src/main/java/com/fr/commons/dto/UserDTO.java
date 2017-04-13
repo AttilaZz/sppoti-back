@@ -28,6 +28,7 @@ public class UserDTO extends AbstractCommonDTO {
     private List<SportDTO> sportDTOs;
 
     private String password;
+    private String oldPassword;
     private String phone;
     private String email;
 
@@ -274,5 +275,13 @@ public class UserDTO extends AbstractCommonDTO {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 }
