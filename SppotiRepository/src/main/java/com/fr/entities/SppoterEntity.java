@@ -100,15 +100,39 @@ public class SppoterEntity
         this.hasRateOtherSppoter = hasRateOtherSppoter;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SppoterEntity that = (SppoterEntity) o;
+
+        if (status != that.status) return false;
+        if (invitationDate != null ? !invitationDate.equals(that.invitationDate) : that.invitationDate != null)
+            return false;
+        if (acceptationDate != null ? !acceptationDate.equals(that.acceptationDate) : that.acceptationDate != null)
+            return false;
+        if (xPosition != null ? !xPosition.equals(that.xPosition) : that.xPosition != null) return false;
+        if (yPosition != null ? !yPosition.equals(that.yPosition) : that.yPosition != null) return false;
+        return hasRateOtherSppoter != null ? hasRateOtherSppoter.equals(that.hasRateOtherSppoter) : that.hasRateOtherSppoter == null;
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (invitationDate != null ? invitationDate.hashCode() : 0);
-        result = 31 * result + (acceptationDate != null ? acceptationDate.hashCode() : 0);
-        result = 31 * result + (xPosition != null ? xPosition.hashCode() : 0);
-        result = 31 * result + (yPosition != null ? yPosition.hashCode() : 0);
-        result = 31 * result + (hasRateOtherSppoter != null ? hasRateOtherSppoter.hashCode() : 0);
+        result = 31 * result + (getStatus() != null ? getStatus().hashCode() : 0);
+        result = 31 * result + (getInvitationDate() != null ? getInvitationDate().hashCode() : 0);
+        result = 31 * result + (getAcceptationDate() != null ? getAcceptationDate().hashCode() : 0);
+        result = 31 * result + (getxPosition() != null ? getxPosition().hashCode() : 0);
+        result = 31 * result + (getyPosition() != null ? getyPosition().hashCode() : 0);
+        result = 31 * result + (getHasRateOtherSppoter() != null ? getHasRateOtherSppoter().hashCode() : 0);
         return result;
     }
 }

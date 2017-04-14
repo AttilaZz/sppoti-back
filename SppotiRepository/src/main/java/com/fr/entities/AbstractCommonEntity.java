@@ -46,47 +46,30 @@ public class AbstractCommonEntity {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = (prime * result) + ((this.id == null) ? 0 : this.id.hashCode());
-        result = (prime * result) + ((this.version == null) ? 0 : this.version.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractCommonEntity that = (AbstractCommonEntity) o;
+
+        if (uuid != that.uuid) return false;
+        if (!id.equals(that.id)) return false;
+        return version.equals(that.version);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof AbstractCommonEntity)) {
-            return false;
-        }
-        final AbstractCommonEntity other = (AbstractCommonEntity) obj;
-        if (this.id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!this.id.equals(other.id)) {
-            return false;
-        }
-        if (this.version == null) {
-            if (other.version != null) {
-                return false;
-            }
-        } else if (!this.version.equals(other.version)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        int result = 31;
+        result = 31 * result + (getId() != null ? getId().hashCode() : 0);
+        result = 31 * result + (getVersion() != null ? getVersion().hashCode() : 0);
+        result = 31 * result + uuid;
+        return result;
     }
 
     public Long getId() {

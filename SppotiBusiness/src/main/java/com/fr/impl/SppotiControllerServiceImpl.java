@@ -78,13 +78,10 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         TeamEntity hostTeam = new TeamEntity();
         SppotiEntity sppoti = sppotiTransformer.dtoToModel(newSppoti);
-
-//        sppoti.setLocation(newSppoti.getAddress());
-//        sppoti.setDateTimeStart(newSppoti.getDatetimeStart());
-//        sppoti.setTitre(newSppoti.getTitre());
-//        sppoti.setMaxTeamCount(newSppoti.getMaxTeamCount());
-//        sppoti.setAltitude(newSppoti.getAltitude());
-//        sppoti.setLongitude(newSppoti.getLongitude());
+        sppoti.setUserSppoti(getConnectedUser());
+        Set<SppotiEntity> sppotiEntities = new HashSet<>();
+        sppotiEntities.add(sppoti);
+        hostTeam.setSppotiEntity(sppotiEntities);
 
         TeamDTO teamDTO = newSppoti.getTeamHost();
         if (teamDTO != null) {
@@ -121,6 +118,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                                 SppoterEntity sppotiMember = new SppoterEntity();
                                 sppotiMember.setTeamMember(sm);
                                 sppotiMember.setSppoti(sppoti);
+                                if (getConnectedUser().getId().equals(sm.getUsers().getId())) {
+                                    sppotiMember.setStatus(GlobalAppStatusEnum.CONFIRMED);
+                                }
                                 return sppotiMember;
                             }
 
@@ -131,13 +131,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             throw new EntityNotFoundException("Host team not found in the request");
         }
 
-        sppoti.setUserSppoti(getConnectedUser());
         sppoti.setTeamHostEntity(hostTeam);
-
-        Set<SppotiEntity> sppotiEntities = new HashSet<>();
-        sppotiEntities.add(sppoti);
-        hostTeam.setSppotiEntity(sppotiEntities);
-
 
         SppotiEntity savedSppoti = sppotiRepository.save(sppoti);
 
@@ -416,7 +410,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
      * {@inheritDoc}
      */
     @Override
-    public List<SppotiDTO>  getAllUserSppoties(Integer id, int page) {
+    public List<SppotiDTO> getAllUserSppoties(Integer id, int page) {
 
         Pageable pageable = new PageRequest(page, sppotiSize);
 
@@ -506,21 +500,24 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
                         UserEntity connectUser = getConnectedUser();
 
-                        //TODO: create transformer for rating
+                        //FIXME: create transformer for rating
                         SppotiRatingEntity sppotiRatingEntity = new SppotiRatingEntity();
                         sppotiRatingEntity.setSppotiEntity(se);
                         sppotiRatingEntity.setRatedSppoter(rs.getTeamMember().getUsers());
                         sppotiRatingEntity.setRatingDate(new Date());
                         sppotiRatingEntity.setRaterSppoter(connectUser);
                         sppotiRatingEntity.setStarsCount(sppoter.getStars());
-                        SppotiRatingEntity savedRating =  ratingRepository.save(sppotiRatingEntity);
+                        ratingRepository.save(sppotiRatingEntity);
 
-                        //TODO: test this bloc
-                        SppoterEntity sppoterEntity = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(connectUser.getUuid(), sppotiId);
-                        sppoterEntity.setHasRateOtherSppoter(Boolean.TRUE);
-                        sppotiMembersRepository.save(sppoterEntity);
+                        //Flag rated sppoter to true.
+                        //This means that sppoti admin has rate this sppoter
+                        SppoterEntity sppoterRaterEntity = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(connectUser.getUuid(), sppotiId);
+                        sppoterRaterEntity.setHasRateOtherSppoter(Boolean.TRUE);
+                        sppotiMembersRepository.save(sppoterRaterEntity);
 
-                        return teamMemberTransformer.modelToDto(sppoterEntity.getTeamMember(), se);
+                        //Get RATED SPPOTER.
+                        SppoterEntity sppoterRatedEntity = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(sppoter.getSppoterRatedId(), sppotiId);
+                        return teamMemberTransformer.modelToDto(sppoterRatedEntity.getTeamMember(), se);
 
                     }).collect(Collectors.toList());
         }
@@ -572,7 +569,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         return sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable)
                 .stream()
-                .filter(m -> m.getStatus().equals( GlobalAppStatusEnum.CONFIRMED))
+                .filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
                 .map(s -> getSppotiResponse(s.getSppoti()))
                 .sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
                 .collect(Collectors.toList());
