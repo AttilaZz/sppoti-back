@@ -489,7 +489,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     public List<UserDTO> rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId) {
 
         Optional<SppotiEntity> sppotiEntity = Optional.ofNullable(sppotiRepository.findByUuid(sppotiId));
-
         if (sppotiEntity.isPresent()) {
             SppotiEntity se = sppotiEntity.get();
 
@@ -497,23 +496,24 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                     .map(sppoter ->
                     {
                         Optional<SppoterEntity> ratedSppoter = Optional.ofNullable(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(sppoter.getSppoterRatedId(), se.getUuid()));
-                        ratedSppoter.orElseThrow(() -> new EntityNotFoundException("Sppoter (" + sppoter.getId() + ") not found"));
+                        ratedSppoter.orElseThrow(() -> new EntityNotFoundException("Sppoter (" + sppoter.getSppoterRatedId() + ") not found"));
 
                         SppoterEntity rs = ratedSppoter.get();
+                        //Deny rating of a sppoter who hasn't accepted sppoti yet !
                         if (rs.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
                             throw new BusinessGlobalException("Sppoter (" + sppoter.getId() + ") hasn't accepted sppoti yet");
                         }
 
                         UserEntity connectUser = getConnectedUser();
 
+                        //TODO: create transformer for rating
                         SppotiRatingEntity sppotiRatingEntity = new SppotiRatingEntity();
                         sppotiRatingEntity.setSppotiEntity(se);
                         sppotiRatingEntity.setRatedSppoter(rs.getTeamMember().getUsers());
                         sppotiRatingEntity.setRatingDate(new Date());
                         sppotiRatingEntity.setRaterSppoter(connectUser);
                         sppotiRatingEntity.setStarsCount(sppoter.getStars());
-
-                        ratingRepository.save(sppotiRatingEntity);
+                        SppotiRatingEntity savedRating =  ratingRepository.save(sppotiRatingEntity);
 
                         //TODO: test this bloc
                         SppoterEntity sppoterEntity = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(connectUser.getUuid(), sppotiId);
@@ -526,7 +526,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         }
 
         throw new EntityNotFoundException("Sppoti not found");
-
     }
 
     /**
