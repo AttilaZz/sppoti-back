@@ -208,7 +208,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         if (!StringUtils.isEmpty(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) && !StringUtils.isEmpty(userDTO.getOldPassword())) {
 
             //Check that old password is correct
-            if(!connectedUser.getPassword().equals(userDTO.getOldPassword())){
+            if (!passwordEncoder.matches(userDTO.getOldPassword(), connectedUser.getPassword())) {
                 throw new BusinessGlobalException("Old password not correct");
             }
 
@@ -222,7 +222,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         if (!StringUtils.isEmpty(userDTO.getEmail()) && !StringUtils.isEmpty(userDTO.getPassword())) {
 
             //Check that password is correct
-            if(!connectedUser.getPassword().equals(userDTO.getPassword())){
+            if (!passwordEncoder.matches(userDTO.getPassword(), connectedUser.getPassword())) {
                 throw new BusinessGlobalException("Password not correct");
             }
 
