@@ -2,6 +2,7 @@ package com.fr.transformers.impl;
 
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.entities.SportEntity;
 import com.fr.entities.SppotiEntity;
@@ -12,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -104,19 +103,15 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
             sppotiDTO.setTeamHost(teamTransformer.modelToDto(model.getTeamHostEntity()));
         }
 
-//        if (model.getTeamAdverse() != null) {
-//            List<TeamDTO> adverseTeams = new ArrayList<>();
-//            model.getTeamAdverse().forEach((key, val) -> {
-//                List<TeamDTO> teamDTOList = val.stream()
-//                        .map(t -> {
-//                            TeamDTO dto = teamTransformer.modelToDto(t);
-//                            dto.setTeamAdverseStatus(key.name());
-//                            return dto;
-//                        }).collect(Collectors.toList());
-//                adverseTeams.addAll(teamDTOList);
-//            });
-//            sppotiDTO.setTeamAdverse(adverseTeams);
-//        }
+        if (model.getAdverseTeams() != null) {
+            sppotiDTO.setTeamAdverse(model.getAdverseTeams().stream()
+                    .filter(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
+                    .map(t -> {
+                        TeamDTO dto = teamTransformer.modelToDto(t.getTeam());
+                        dto.setTeamAdverseStatus(t.getStatus().name());
+                        return dto;
+                    }).collect(Collectors.toList()));
+        }
 
         return sppotiDTO;
     }

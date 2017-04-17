@@ -440,9 +440,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         }
 
         //Check if sppoti has already a CONFIRMED adverse team in the adverse team list.
-//        if (sppotiEntity.getTeamAdverse() != null && sppotiEntity.getTeamAdverse().containsKey(GlobalAppStatusEnum.CONFIRMED)) {
-//            throw new BusinessGlobalException("This sppoti has already an adverse team");
-//        }
+        if (sppotiEntity.getAdverseTeams() != null && sppotiEntity.getAdverseTeams().stream().anyMatch(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
+            throw new BusinessGlobalException("This sppoti has already an adverse team");
+        }
 
         //check if adverse team members are not in conflict with team host members
         sppotiEntity.getTeamHostEntity().getTeamMembers().forEach(
@@ -457,7 +457,10 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(challengeTeam, sppotiEntity, true);
         sppotiEntity.setSppotiMembers(sppotiMembers);
 
-//        sppotiEntity.getTeamAdverse().compute(GlobalAppStatusEnum.PENDING, (k, v) -> v).add(challengeTeam);
+        SppotiAdverseEntity adverse = new SppotiAdverseEntity();
+        adverse.setSppoti(sppotiEntity);
+        adverse.setTeam(challengeTeam);
+        sppotiEntity.getAdverseTeams().add(adverse);
 
         //update sppoti.
         SppotiEntity savedSppoti = sppotiRepository.save(sppotiEntity);

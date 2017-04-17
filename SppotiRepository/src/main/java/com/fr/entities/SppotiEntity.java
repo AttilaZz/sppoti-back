@@ -62,7 +62,7 @@ public class SppotiEntity
     private TeamEntity teamHostEntity;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "sppoti", cascade = CascadeType.ALL)
-    private Set<SppotiAdverseEntity> adverseEntity;
+    private Set<SppotiAdverseEntity> adverseTeams;
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppoterEntity> sppotiMembers;
@@ -207,12 +207,12 @@ public class SppotiEntity
         this.longitude = longitude;
     }
 
-    public Set<SppotiAdverseEntity> getAdverseEntity() {
-        return adverseEntity;
+    public Set<SppotiAdverseEntity> getAdverseTeams() {
+        return adverseTeams;
     }
 
-    public void setAdverseEntity(Set<SppotiAdverseEntity> adverseEntity) {
-        this.adverseEntity = adverseEntity;
+    public void setAdverseTeams(Set<SppotiAdverseEntity> adverseTeams) {
+        this.adverseTeams = adverseTeams;
     }
 
     /**

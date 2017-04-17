@@ -13,7 +13,7 @@ public class SppotiAdverseEntity extends AbstractCommonEntity{
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private GlobalAppStatusEnum status;
+    private GlobalAppStatusEnum status = GlobalAppStatusEnum.PENDING;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sppoti_id", nullable = false)
