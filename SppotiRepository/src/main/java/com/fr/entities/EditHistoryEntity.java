@@ -81,6 +81,9 @@ public class EditHistoryEntity
         this.sport = sport;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -94,6 +97,9 @@ public class EditHistoryEntity
 
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();

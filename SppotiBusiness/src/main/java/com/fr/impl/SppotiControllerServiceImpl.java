@@ -7,7 +7,6 @@ import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.commons.exception.NoRightToAcceptOrRefuseChallenge;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.*;
 import com.fr.service.SppotiControllerService;
@@ -193,13 +192,13 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         }
 
         TeamDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHostEntity(), sppoti);
-        if (sppoti.getTeamAdverseEntity() != null) {
-            TeamDTO teamAdverseResponse = fillTeamResponse(sppoti.getTeamAdverseEntity(), sppoti);
-            sppotiDTO.setTeamAdverse(teamAdverseResponse);
-            sppotiDTO.setTeamAdverseStatus(sppoti.getTeamAdverseStatusEnum().getValue());
-        } else {
-            sppotiDTO.setTeamAdverseStatus(GlobalAppStatusEnum.NO_CHALLENGE_YET.getValue());
-        }
+//        if (sppoti.getTeamAdverseEntity() != null) {
+//            TeamDTO teamAdverseResponse = fillTeamResponse(sppoti.getTeamAdverseEntity(), sppoti);
+//            sppotiDTO.setTeamAdverse(teamAdverseResponse);
+//            sppotiDTO.setTeamAdverseStatus(sppoti.getTeamAdverseStatusEnum().getValue());
+//        } else {
+//            sppotiDTO.setTeamAdverseStatus(GlobalAppStatusEnum.NO_CHALLENGE_YET.getValue());
+//        }
 
         sppotiDTO.setTeamHost(teamHostResponse);
         sppotiDTO.setId(sppoti.getUuid());
@@ -295,10 +294,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             //Convert team members to sppoters.
             Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(adverseTeam.get(0), sppoti, false);
             sppoti.setSppotiMembers(sppotiMembers);
-            sppoti.setTeamAdverseEntity(adverseTeam.get(0));
         }
 
-        sppoti.setTeamAdverseStatusEnum(GlobalAppStatusEnum.PENDING);
         SppotiEntity updatedSppoti = sppotiRepository.save(sppoti);
 
         return getSppotiResponse(updatedSppoti);
@@ -384,21 +381,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         SppotiEntity sppotiEntity = sppotiRepository.findByUuid(sppotiId);
 
-        Optional adverseTeamAdmin = sppotiEntity.getTeamAdverseEntity().getTeamMembers().stream()
-                .filter(TeamMemberEntity::getAdmin)
-                .filter(t -> t.getId().equals(getConnectedUser().getId()))
-                .findFirst();
+//        Optional adverseTeamAdmin = sppotiEntity.getTeamAdverseEntity().getTeamMembers().stream()
+//                .filter(TeamMemberEntity::getAdmin)
+//                .filter(t -> t.getId().equals(getConnectedUser().getId()))
+//                .findFirst();
 
-        if (!adverseTeamAdmin.isPresent()) {
-            throw new NoRightToAcceptOrRefuseChallenge("User (" + getConnectedUser().toString() + " is not admin of team (" + sppotiEntity.getTeamAdverseEntity() + ")");
-        }
-
-        //set new status.
-        for (GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
-            if (status.getValue() == adverseTeamResponseStatus) {
-                sppotiEntity.setTeamAdverseStatusEnum(status);
-            }
-        }
+//        if (!adverseTeamAdmin.isPresent()) {
+//            throw new NoRightToAcceptOrRefuseChallenge("User (" + getConnectedUser().toString() + " is not admin of team (" + sppotiEntity.getTeamAdverseEntity() + ")");
+//        }
 
         SppotiEntity savedSppoti = sppotiRepository.save(sppotiEntity);
 
@@ -449,10 +439,10 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             throw new EntityNotFoundException("Sppoti not found (" + sppotiId + ")");
         }
 
-        //Check if sppoti has already an adverse team.
-        if (sppotiEntity.getTeamAdverseEntity() != null) {
-            throw new BusinessGlobalException("This sppoti is challenged by an other team");
-        }
+        //Check if sppoti has already a CONFIRMED adverse team in the adverse team list.
+//        if (sppotiEntity.getTeamAdverse() != null && sppotiEntity.getTeamAdverse().containsKey(GlobalAppStatusEnum.CONFIRMED)) {
+//            throw new BusinessGlobalException("This sppoti has already an adverse team");
+//        }
 
         //check if adverse team members are not in conflict with team host members
         sppotiEntity.getTeamHostEntity().getTeamMembers().forEach(
@@ -466,8 +456,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         //Convert team members to sppoters.
         Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(challengeTeam, sppotiEntity, true);
         sppotiEntity.setSppotiMembers(sppotiMembers);
-        sppotiEntity.setTeamAdverseEntity(challengeTeam);
-        sppotiEntity.setTeamAdverseStatusEnum(GlobalAppStatusEnum.PENDING);
+
+//        sppotiEntity.getTeamAdverse().compute(GlobalAppStatusEnum.PENDING, (k, v) -> v).add(challengeTeam);
 
         //update sppoti.
         SppotiEntity savedSppoti = sppotiRepository.save(sppotiEntity);

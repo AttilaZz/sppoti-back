@@ -318,6 +318,9 @@ public class UserEntity
         this.accountMaxActivationDate = accountMaxActivationDate;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -347,6 +350,9 @@ public class UserEntity
 
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();

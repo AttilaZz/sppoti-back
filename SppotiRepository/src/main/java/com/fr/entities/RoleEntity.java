@@ -47,6 +47,9 @@ public class RoleEntity
         this.users = users;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,6 +62,9 @@ public class RoleEntity
         return users != null ? users.equals(that.users) : that.users == null;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();

@@ -68,5 +68,27 @@ public class LikeContentEntity
         this.datetimeCreated = datetimeCreated;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
 
+        LikeContentEntity that = (LikeContentEntity) o;
+
+        return datetimeCreated != null ? datetimeCreated.equals(that.datetimeCreated) : that.datetimeCreated == null;
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (datetimeCreated != null ? datetimeCreated.hashCode() : 0);
+        return result;
+    }
 }

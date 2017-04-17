@@ -1,7 +1,6 @@
 package com.fr.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -62,14 +61,8 @@ public class SppotiEntity
     @JsonIgnore
     private TeamEntity teamHostEntity;
 
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_adverse_id")
-    @JsonIgnore
-    private TeamEntity teamAdverseEntity;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, name = "team_adverse_status")
-    private GlobalAppStatusEnum teamAdverseStatusEnum = GlobalAppStatusEnum.NO_CHALLENGE_YET;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sppoti", cascade = CascadeType.ALL)
+    private Set<SppotiAdverseEntity> adverseEntity;
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<SppoterEntity> sppotiMembers;
@@ -166,14 +159,6 @@ public class SppotiEntity
         this.teamHostEntity = teamHostEntity;
     }
 
-    public TeamEntity getTeamAdverseEntity() {
-        return teamAdverseEntity;
-    }
-
-    public void setTeamAdverseEntity(TeamEntity teamAdverseEntity) {
-        this.teamAdverseEntity = teamAdverseEntity;
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
@@ -188,14 +173,6 @@ public class SppotiEntity
 
     public void setSppotiMembers(Set<SppoterEntity> sppotiMembers) {
         this.sppotiMembers = sppotiMembers;
-    }
-
-    public GlobalAppStatusEnum getTeamAdverseStatusEnum() {
-        return teamAdverseStatusEnum;
-    }
-
-    public void setTeamAdverseStatusEnum(GlobalAppStatusEnum teamAdverseStatusEnum) {
-        this.teamAdverseStatusEnum = teamAdverseStatusEnum;
     }
 
     public String getCover() {
@@ -230,10 +207,21 @@ public class SppotiEntity
         this.longitude = longitude;
     }
 
+    public Set<SppotiAdverseEntity> getAdverseEntity() {
+        return adverseEntity;
+    }
+
+    public void setAdverseEntity(Set<SppotiAdverseEntity> adverseEntity) {
+        this.adverseEntity = adverseEntity;
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SppotiEntity)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
         SppotiEntity that = (SppotiEntity) o;
@@ -246,15 +234,18 @@ public class SppotiEntity
         if (dateTimeStart != null ? !dateTimeStart.equals(that.dateTimeStart) : that.dateTimeStart != null)
             return false;
         if (location != null ? !location.equals(that.location) : that.location != null) return false;
-        if (altitude != null ? !altitude.equals(that.altitude) : that.altitude != null) return false;
-        if (longitude != null ? !longitude.equals(that.longitude) : that.longitude != null) return false;
-        if (tags != null ? !tags.equals(that.tags) : that.tags != null) return false;
-        if (sppotiDuration != null ? !sppotiDuration.equals(that.sppotiDuration) : that.sppotiDuration != null) return false;
         if (maxTeamCount != null ? !maxTeamCount.equals(that.maxTeamCount) : that.maxTeamCount != null) return false;
-        return teamAdverseStatusEnum != null ? teamAdverseStatusEnum.equals(that.teamAdverseStatusEnum) : that.teamAdverseStatusEnum == null;
-
+        if (sppotiDuration != null ? !sppotiDuration.equals(that.sppotiDuration) : that.sppotiDuration != null)
+            return false;
+        if (cover != null ? !cover.equals(that.cover) : that.cover != null) return false;
+        if (tags != null ? !tags.equals(that.tags) : that.tags != null) return false;
+        if (altitude != null ? !altitude.equals(that.altitude) : that.altitude != null) return false;
+        return longitude != null ? longitude.equals(that.longitude) : that.longitude == null;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();
@@ -267,7 +258,6 @@ public class SppotiEntity
         result = 31 * result + (maxTeamCount != null ? maxTeamCount.hashCode() : 0);
         result = 31 * result + (tags != null ? tags.hashCode() : 0);
         result = 31 * result + (deleted ? 1 : 0);
-        result = 31 * result + (teamAdverseStatusEnum != null ? teamAdverseStatusEnum.hashCode() : 0);
         result = 31 * result + (sppotiDuration != null ? sppotiDuration.hashCode() : 0);
         result = 31 * result + (altitude != null ? altitude.hashCode() : 0);
         result = 31 * result + (longitude != null ? longitude.hashCode() : 0);

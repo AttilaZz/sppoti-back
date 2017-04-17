@@ -98,6 +98,9 @@ public class NotificationEntity
         this.sppoti = sppoti;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -112,6 +115,9 @@ public class NotificationEntity
 
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();

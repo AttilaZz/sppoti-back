@@ -61,4 +61,32 @@ public class ScoreEntity
     public void setScoreStatus(GlobalAppStatusEnum scoreStatus) {
         this.scoreStatus = scoreStatus;
     }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ScoreEntity that = (ScoreEntity) o;
+
+        if (host != null ? !host.equals(that.host) : that.host != null) return false;
+        if (visitor != null ? !visitor.equals(that.visitor) : that.visitor != null) return false;
+        return scoreStatus == that.scoreStatus;
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (host != null ? host.hashCode() : 0);
+        result = 31 * result + (visitor != null ? visitor.hashCode() : 0);
+        result = 31 * result + (scoreStatus != null ? scoreStatus.hashCode() : 0);
+        return result;
+    }
 }

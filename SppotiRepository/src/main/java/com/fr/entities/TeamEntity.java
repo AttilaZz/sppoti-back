@@ -127,6 +127,9 @@ public class TeamEntity
         this.color = color;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -144,6 +147,9 @@ public class TeamEntity
 
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();

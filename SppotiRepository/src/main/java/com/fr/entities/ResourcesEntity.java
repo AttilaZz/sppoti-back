@@ -101,6 +101,9 @@ public class ResourcesEntity
         this.user = user;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -119,6 +122,9 @@ public class ResourcesEntity
 
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();

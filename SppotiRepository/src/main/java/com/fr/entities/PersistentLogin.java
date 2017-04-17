@@ -19,7 +19,7 @@ public class PersistentLogin
         implements Serializable {
 
     /**
-     *
+     * Id de sérialisation.
      */
     private static final long serialVersionUID = 1L;
 
@@ -67,4 +67,33 @@ public class PersistentLogin
         this.last_used = last_used;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PersistentLogin that = (PersistentLogin) o;
+
+        if (series != null ? !series.equals(that.series) : that.series != null) return false;
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        if (token != null ? !token.equals(that.token) : that.token != null) return false;
+        return last_used != null ? last_used.equals(that.last_used) : that.last_used == null;
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public int hashCode() {
+        int result = 31;
+        result = 31 * result + (series != null ? series.hashCode() : 0);
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (token != null ? token.hashCode() : 0);
+        result = 31 * result + (last_used != null ? last_used.hashCode() : 0);
+        return result;
+    }
 }

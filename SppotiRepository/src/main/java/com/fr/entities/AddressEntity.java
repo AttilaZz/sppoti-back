@@ -68,6 +68,9 @@ public class AddressEntity
         this.users = users;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int compareTo(AddressEntity o) {
         if (this != null) {
@@ -84,6 +87,9 @@ public class AddressEntity
         return 0;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -97,6 +103,9 @@ public class AddressEntity
 
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();

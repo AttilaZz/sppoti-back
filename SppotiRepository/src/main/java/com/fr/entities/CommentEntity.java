@@ -120,6 +120,9 @@ public class CommentEntity
         this.deleted = deleted;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @SuppressWarnings("unused")
     @Override
     public int compareTo(CommentEntity o) {

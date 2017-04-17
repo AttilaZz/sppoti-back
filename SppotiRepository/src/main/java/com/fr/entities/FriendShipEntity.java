@@ -71,6 +71,9 @@ public class FriendShipEntity
         this.deleted = deleted;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,6 +88,9 @@ public class FriendShipEntity
 
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();

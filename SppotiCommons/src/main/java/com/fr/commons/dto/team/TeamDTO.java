@@ -39,6 +39,8 @@ public class TeamDTO extends AbstractCommonDTO {
     @NotNull
     private Long sportId;
 
+    private String teamAdverseStatus;
+
     public String getName() {
         return name;
     }
@@ -133,5 +135,13 @@ public class TeamDTO extends AbstractCommonDTO {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public String getTeamAdverseStatus() {
+        return teamAdverseStatus;
+    }
+
+    public void setTeamAdverseStatus(String teamAdverseStatus) {
+        this.teamAdverseStatus = teamAdverseStatus;
     }
 }

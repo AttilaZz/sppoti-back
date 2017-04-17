@@ -68,4 +68,30 @@ public class SppotiRatingEntity extends AbstractCommonEntity{
     public void setStarsCount(Integer starsCount) {
         this.starsCount = starsCount;
     }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SppotiRatingEntity that = (SppotiRatingEntity) o;
+
+        if (ratingDate != null ? !ratingDate.equals(that.ratingDate) : that.ratingDate != null) return false;
+        return starsCount != null ? starsCount.equals(that.starsCount) : that.starsCount == null;
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (ratingDate != null ? ratingDate.hashCode() : 0);
+        result = 31 * result + (starsCount != null ? starsCount.hashCode() : 0);
+        return result;
+    }
 }

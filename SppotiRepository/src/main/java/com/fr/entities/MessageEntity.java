@@ -83,4 +83,33 @@ public class MessageEntity
         this.userMessage = userMessage;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        MessageEntity that = (MessageEntity) o;
+
+        if (datetime != null ? !datetime.equals(that.datetime) : that.datetime != null) return false;
+        if (object != null ? !object.equals(that.object) : that.object != null) return false;
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        return receiver_id != null ? receiver_id.equals(that.receiver_id) : that.receiver_id == null;
+    }
+
+    /**
+     * {@inheritDoc}.
+     */
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (datetime != null ? datetime.hashCode() : 0);
+        result = 31 * result + (object != null ? object.hashCode() : 0);
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (receiver_id != null ? receiver_id.hashCode() : 0);
+        return result;
+    }
 }

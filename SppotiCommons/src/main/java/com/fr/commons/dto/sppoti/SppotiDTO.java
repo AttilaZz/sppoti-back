@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -25,7 +26,6 @@ public class SppotiDTO extends AbstractCommonDTO {
     @JsonProperty("sport")
     private SportDTO relatedSport;
     private TeamDTO teamHost;
-    private Integer teamAdverseStatus;
     private Integer sppotiCounter;
     private Boolean mySppoti;
     private Integer adminUserId;
@@ -33,7 +33,8 @@ public class SppotiDTO extends AbstractCommonDTO {
     private Integer connectedUserId;
     private Long sppotiDuration;
     private ScoreDTO score;
-    private TeamDTO teamAdverse;
+
+    private List<TeamDTO> teamAdverse;
 
     @NotEmpty
     private String titre;
@@ -99,20 +100,12 @@ public class SppotiDTO extends AbstractCommonDTO {
         this.teamHost = teamHost;
     }
 
-    public TeamDTO getTeamAdverse() {
+    public List<TeamDTO> getTeamAdverse() {
         return teamAdverse;
     }
 
-    public void setTeamAdverse(TeamDTO teamAdverse) {
+    public void setTeamAdverse(List<TeamDTO> teamAdverse) {
         this.teamAdverse = teamAdverse;
-    }
-
-    public Integer getTeamAdverseStatus() {
-        return teamAdverseStatus;
-    }
-
-    public void setTeamAdverseStatus(Integer teamAdverseStatus) {
-        this.teamAdverseStatus = teamAdverseStatus;
     }
 
     public Integer getSppotiCounter() {

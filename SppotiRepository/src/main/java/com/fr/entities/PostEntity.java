@@ -187,6 +187,9 @@ public class PostEntity
         this.targetUserProfileUuid = targetUserProfileUuid;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @SuppressWarnings("unused")
     @Override
     public int compareTo(PostEntity o) {
@@ -205,6 +208,9 @@ public class PostEntity
         return 0;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -224,6 +230,9 @@ public class PostEntity
 
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();

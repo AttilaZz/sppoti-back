@@ -126,6 +126,9 @@ public class TeamMemberEntity
         this.teamCaptain = teamCaptain;
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -145,6 +148,9 @@ public class TeamMemberEntity
 
     }
 
+    /**
+     * {@inheritDoc}.
+     */
     @Override
     public int hashCode() {
         int result = super.hashCode();
