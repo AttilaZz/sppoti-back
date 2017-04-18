@@ -3,7 +3,6 @@ package com.fr.api.sppoti;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.commons.exception.NoRightToAcceptOrRefuseChallenge;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.SppotiControllerService;
@@ -133,7 +132,7 @@ class SppotiUpdateController {
             throw new BusinessGlobalException("Team id not found in the request.");
         }
 
-        sppotiControllerService.answerToChallenger(sppotiId, teamDTO);
+        sppotiControllerService.chooseOneAdverseTeamFromAllRequests(sppotiId, teamDTO);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

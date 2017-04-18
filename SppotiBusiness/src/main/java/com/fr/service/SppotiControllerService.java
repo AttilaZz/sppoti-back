@@ -137,5 +137,5 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param sppotiId sppoti id.
      * @param teamDTO  team DTO containing the id of the accepted team.
      */
-    void answerToChallenger(int sppotiId, TeamDTO teamDTO);
+    void chooseOneAdverseTeamFromAllRequests(int sppotiId, TeamDTO teamDTO);
 }

@@ -448,7 +448,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
      * {@inheritDoc}
      */
     @Override
-    public void answerToChallenger(int sppotiId, TeamDTO teamDTO) {
+    public void chooseOneAdverseTeamFromAllRequests(int sppotiId, TeamDTO teamDTO) {
 
         //Check if sppoti exist and has no confirmed adverse team yet.
         Optional<SppotiEntity> sppotiEntityOptional = Optional.ofNullable(sppotiRepository.findByUuid(sppotiId));
