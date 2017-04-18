@@ -375,30 +375,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     /**
      * {@inheritDoc}
      */
-    @Transactional
-    @Override
-    public SppotiDTO updateTeamAdverseChallengeStatus(int sppotiId, int adverseTeamResponseStatus) {
-
-        SppotiEntity sppotiEntity = sppotiRepository.findByUuid(sppotiId);
-
-//        Optional adverseTeamAdmin = sppotiEntity.getTeamAdverseEntity().getTeamMembers().stream()
-//                .filter(TeamMemberEntity::getAdmin)
-//                .filter(t -> t.getId().equals(getConnectedUser().getId()))
-//                .findFirst();
-
-//        if (!adverseTeamAdmin.isPresent()) {
-//            throw new NoRightToAcceptOrRefuseChallenge("User (" + getConnectedUser().toString() + " is not admin of team (" + sppotiEntity.getTeamAdverseEntity() + ")");
-//        }
-
-        SppotiEntity savedSppoti = sppotiRepository.save(sppotiEntity);
-
-        return getSppotiResponse(savedSppoti);
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public List<SppotiDTO> getAllUserSppoties(Integer id, int page) {
 
@@ -475,11 +451,43 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     public void answerToChallenger(int sppotiId, TeamDTO teamDTO) {
 
         //Check if sppoti exist and has no confirmed adverse team yet.
-        //check if team exist, and it's already pending id sppoti adverse teams.
-        //check if connected user has rights to answer the challenge.
-        //update adverse team.
-        //notify sppoti admin.
+        Optional<SppotiEntity> sppotiEntityOptional = Optional.ofNullable(sppotiRepository.findByUuid(sppotiId));
+        sppotiEntityOptional.orElseThrow(() -> new EntityNotFoundException("Sppoti (" + sppotiId + ") not found !"));
 
+        sppotiEntityOptional.ifPresent(sp -> {
+            //check if sppoti has already an adverse team.
+            if (sp.getAdverseTeams().stream().anyMatch(ad -> ad.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
+                throw new BusinessGlobalException("This sppoti has already an adverse team");
+            }
+
+            //check if team exist, and it's already pending id sppoti adverse teams.
+            List<TeamEntity> teamEntities = teamRepository.findByUuid(teamDTO.getId());
+            if (teamEntities.isEmpty()) {
+                throw new EntityNotFoundException("Team (" + teamDTO.getId() + ") not found");
+            }
+            teamEntities.stream().findFirst().ifPresent(tad -> {
+                //check if connected user has rights to answer the challenge.
+                if (!this.getConnectedUser().getId().equals(sp.getUserSppoti().getId())) {
+                    throw new NotAdminException("Only sppoti admin can answer to this challenge!");
+                }
+
+                //update adverse team.
+                sp.getAdverseTeams().stream().filter(a -> a.getTeam().getId().equals(tad.getId())).findFirst()
+                        .ifPresent(teamAdverse -> {
+                            //update team adverse status.
+                            teamAdverse.setStatus(GlobalAppStatusEnum.CONFIRMED);
+                            sppotiRepository.save(sp);
+
+                            //get team adverse admin.
+                            UserEntity teamAdverseAdmin = tad.getTeamMembers().stream().filter(t -> t.getAdmin().equals(true)
+                                    && t.getTeam().getUuid() == teamDTO.getId()).findFirst().get().getUsers();
+
+                            //notify team adverse admin.
+                            addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sp.getUserSppoti(), teamAdverseAdmin,
+                                    null, sp);
+                        });
+            });
+        });
     }
 
     /**

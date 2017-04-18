@@ -73,13 +73,6 @@ public interface SppotiControllerService extends AbstractControllerService {
     void refuseSppoti(int sppotiId, int userId);
 
     /**
-     * @param sppotiId                  sppoti id to update.
-     * @param adverseTeamResponseStatus adverse team response to challenge.
-     * @return sppotiDTO with updated data.
-     */
-    SppotiDTO updateTeamAdverseChallengeStatus(int sppotiId, int adverseTeamResponseStatus);
-
-    /**
      * Get all sppoties that user asked to join, even those he rejects.
      *
      * @param id   user id.

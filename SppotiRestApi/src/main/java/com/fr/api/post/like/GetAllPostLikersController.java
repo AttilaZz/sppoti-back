@@ -24,20 +24,27 @@ import java.util.List;
 @RequestMapping("/like")
 class GetAllPostLikersController {
 
+    /**
+     * Posts Controller service.
+     */
     private PostControllerService postDataService;
+    /**
+     * Likes Controller service.
+     */
     private LikeControllerService likeControllerService;
+    /**
+     * Class logger.
+     */
+    private Logger LOGGER = Logger.getLogger(GetAllPostLikersController.class);
 
+    /**
+     * Init services.
+     */
     @Autowired
-    void setLikeControllerService(LikeControllerService likeControllerService) {
+    public GetAllPostLikersController(PostControllerService postDataService, LikeControllerService likeControllerService) {
+        this.postDataService = postDataService;
         this.likeControllerService = likeControllerService;
     }
-
-    @Autowired
-    void setPostDataService(PostControllerService postDataService) {
-        this.postDataService = postDataService;
-    }
-
-    private Logger LOGGER = Logger.getLogger(GetAllPostLikersController.class);
 
     /**
      * @param id   post id.
