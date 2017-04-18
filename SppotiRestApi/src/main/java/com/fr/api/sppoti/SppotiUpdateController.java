@@ -128,7 +128,7 @@ class SppotiUpdateController {
     @PutMapping("/challenge/answer/{sppotiId}")
     ResponseEntity<Void> sendChallenge(@PathVariable int sppotiId, @RequestBody TeamDTO teamDTO) {
 
-        if (StringUtils.isEmpty(teamDTO.getId())) {
+        if (StringUtils.isEmpty(teamDTO.getId()) || StringUtils.isEmpty(teamDTO.getTeamAdverseStatus())) {
             throw new BusinessGlobalException("Team id not found in the request.");
         }
 

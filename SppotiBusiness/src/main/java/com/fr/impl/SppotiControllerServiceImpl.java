@@ -475,7 +475,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                 sp.getAdverseTeams().stream().filter(a -> a.getTeam().getId().equals(tad.getId())).findFirst()
                         .ifPresent(teamAdverse -> {
                             //update team adverse status.
-                            teamAdverse.setStatus(GlobalAppStatusEnum.CONFIRMED);
+                            teamAdverse.setStatus(GlobalAppStatusEnum.valueOf(teamDTO.getTeamAdverseStatus()));
                             sppotiRepository.save(sp);
 
                             //get team adverse admin.
