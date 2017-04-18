@@ -1,10 +1,12 @@
 package com.fr.api.sppoti;
 
 import com.fr.commons.dto.sppoti.SppotiDTO;
+import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NoRightToAcceptOrRefuseChallenge;
 import com.fr.commons.exception.NotAdminException;
-import com.fr.service.SppotiControllerService;
 import com.fr.security.AccountUserDetails;
+import com.fr.service.SppotiControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -111,7 +113,7 @@ class SppotiUpdateController {
      */
     @PutMapping("/challenge/{sppotiId}/{response}")
     ResponseEntity<SppotiDTO> updateTeamAdverseChallengeStatus(@PathVariable("response")
-                                                                               int adverseTeamResponseStatus,
+                                                                       int adverseTeamResponseStatus,
                                                                @PathVariable int sppotiId) {
 
         if (adverseTeamResponseStatus != 4 && adverseTeamResponseStatus != 5) {
@@ -147,6 +149,25 @@ class SppotiUpdateController {
             LOGGER.error(e.getMessage(), e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    /**
+     * Accept/Refuse a challenge.
+     *
+     * @param sppotiId sppoti id.
+     * @param teamDTO  team DTO containing the id of the accepted team.
+     * @return 202 if update done correctly, 400 if not
+     */
+    @PutMapping("/challenge/answer/{sppotiId}")
+    ResponseEntity<Void> sendChallenge(@PathVariable int sppotiId, @RequestBody TeamDTO teamDTO) {
+
+        if (StringUtils.isEmpty(teamDTO.getId())) {
+            throw new BusinessGlobalException("Team id not found in the request.");
+        }
+
+        sppotiControllerService.answerToChallenger(sppotiId, teamDTO);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

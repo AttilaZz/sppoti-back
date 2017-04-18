@@ -3,6 +3,7 @@ package com.fr.service;
 import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -137,4 +138,11 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @return sppoter data.
      */
     UserDTO addSppoter(int sppotiId, UserDTO user);
+
+    /**
+     * Accept / Refuse a sppoti challenge.
+     * @param sppotiId sppoti id.
+     * @param teamDTO  team DTO containing the id of the accepted team.
+     */
+    void answerToChallenger(int sppotiId, TeamDTO teamDTO);
 }

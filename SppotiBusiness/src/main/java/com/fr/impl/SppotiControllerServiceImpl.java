@@ -313,7 +313,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         optional.ifPresent(
                 sm -> {
-                    //update status as sppoti member.
+                    //update sppoter status.
                     sm.setStatus(GlobalAppStatusEnum.CONFIRMED);
                     SppoterEntity updatedSppoter = sppotiMembersRepository.save(sm);
 
@@ -324,7 +324,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                         addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sm.getTeamMember().getUsers(), sm.getSppoti().getUserSppoti(), null, null);
                     }
 
-                    //update status as team member.
+                    //update team member status.
                     TeamMemberEntity teamMembers = sm.getTeamMember();
                     if (!teamMembers.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
                         teamMembers.setStatus(GlobalAppStatusEnum.CONFIRMED);
@@ -453,7 +453,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                 })
         );
 
-        //Convert team members to sppoters.
+        //Convert team members to sppoters.comment
         Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(challengeTeam, sppotiEntity, true);
         sppotiEntity.setSppotiMembers(sppotiMembers);
 
@@ -466,6 +466,20 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         SppotiEntity savedSppoti = sppotiRepository.save(sppotiEntity);
 
         return getSppotiResponse(savedSppoti);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void answerToChallenger(int sppotiId, TeamDTO teamDTO) {
+
+        //Check if sppoti exist and has no confirmed adverse team yet.
+        //check if team exist, and it's already pending id sppoti adverse teams.
+        //check if connected user has rights to answer the challenge.
+        //update adverse team.
+        //notify sppoti admin.
+
     }
 
     /**
