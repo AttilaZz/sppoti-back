@@ -3,6 +3,7 @@ package com.fr.transformers.impl;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GenderEnum;
+import com.fr.commons.enumeration.LanguageEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.ResourcesEntity;
@@ -48,6 +49,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
         UserDTO userDTO = new UserDTO();
         SppotiBeanUtils.copyProperties(userDTO, entity);
         userDTO.setId(entity.getUuid());
+        userDTO.setLanguage(entity.getLanguageEnum().name());
 
         if (entity.getResources() != null) {
             UserDTO userResources = getUserCoverAndAvatar(entity);

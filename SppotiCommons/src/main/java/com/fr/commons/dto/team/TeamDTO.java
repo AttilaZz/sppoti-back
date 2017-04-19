@@ -2,8 +2,8 @@ package com.fr.commons.dto.team;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.commons.SportDTO;
 import com.fr.commons.dto.AbstractCommonDTO;
+import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
 import org.hibernate.validator.constraints.NotEmpty;
 

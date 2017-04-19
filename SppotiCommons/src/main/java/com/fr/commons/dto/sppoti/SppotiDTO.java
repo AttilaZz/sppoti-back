@@ -2,7 +2,7 @@ package com.fr.commons.dto.sppoti;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fr.commons.SportDTO;
+import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.team.TeamDTO;

@@ -61,6 +61,8 @@ public class UserDTO extends AbstractCommonDTO {
     private Double rating;
     private Boolean hasRateOtherSppoters;
 
+    private String language;
+
     public String getFirstName() {
         return firstName;
     }
@@ -283,5 +285,13 @@ public class UserDTO extends AbstractCommonDTO {
 
     public void setOldPassword(String oldPassword) {
         this.oldPassword = oldPassword;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

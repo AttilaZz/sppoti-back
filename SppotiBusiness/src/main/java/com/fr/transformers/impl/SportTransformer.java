@@ -1,6 +1,6 @@
 package com.fr.transformers.impl;
 
-import com.fr.commons.SportDTO;
+import com.fr.commons.dto.SportDTO;
 import com.fr.entities.SportEntity;
 
 /**

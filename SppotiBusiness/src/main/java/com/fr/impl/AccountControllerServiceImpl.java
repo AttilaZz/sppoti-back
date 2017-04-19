@@ -2,6 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.LanguageEnum;
 import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
 import com.fr.commons.exception.BusinessGlobalException;
@@ -205,7 +206,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
             connectedUser.setTelephone(userDTO.getPhone());
         }
         //password
-        if (!StringUtils.isEmpty(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) && !StringUtils.isEmpty(userDTO.getOldPassword())) {
+        else if (!StringUtils.isEmpty(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) && !StringUtils.isEmpty(userDTO.getOldPassword())) {
 
             //Check that old password is correct
             if (!passwordEncoder.matches(userDTO.getOldPassword(), connectedUser.getPassword())) {
@@ -219,7 +220,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
             email --
             User must confirm new email address to login next time.
          */
-        if (!StringUtils.isEmpty(userDTO.getEmail()) && !StringUtils.isEmpty(userDTO.getPassword())) {
+        else if (!StringUtils.isEmpty(userDTO.getEmail()) && !StringUtils.isEmpty(userDTO.getPassword())) {
 
             //Check that password is correct
             if (!passwordEncoder.matches(userDTO.getPassword(), connectedUser.getPassword())) {
@@ -232,6 +233,9 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
             connectedUser.setConfirmationCode(confirmationCode);
 
             sendConfirmationEmail(userDTO, confirmationCode);
+        }
+        else if(!StringUtils.isEmpty(userDTO.getLanguage())){
+            connectedUser.setLanguageEnum(LanguageEnum.valueOf(userDTO.getLanguage()));
         }
 
         userRepository.save(connectedUser);

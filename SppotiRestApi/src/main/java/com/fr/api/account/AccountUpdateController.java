@@ -70,6 +70,10 @@ class AccountUpdateController {
             if (!StringUtils.isEmpty(user.getEmail())) {
                 update = true;
             }
+            //language
+            if (!StringUtils.isEmpty(user.getLanguage())) {
+                update = true;
+            }
             //TODO: Update sports
 
             if (update) {

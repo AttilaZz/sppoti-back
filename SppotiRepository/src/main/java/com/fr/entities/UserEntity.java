@@ -109,8 +109,8 @@ public class UserEntity
     private SortedSet<AddressEntity> addresses;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private LanguageEnum language = LanguageEnum.fr;
+    @Column(nullable = false, name = "language")
+    private LanguageEnum languageEnum = LanguageEnum.fr;
 
     public boolean isDeleted() {
         return deleted;
@@ -323,12 +323,12 @@ public class UserEntity
         this.accountMaxActivationDate = accountMaxActivationDate;
     }
 
-    public LanguageEnum getLanguage() {
-        return language;
+    public LanguageEnum getLanguageEnum() {
+        return languageEnum;
     }
 
-    public void setLanguage(LanguageEnum language) {
-        this.language = language;
+    public void setLanguageEnum(LanguageEnum languageEnum) {
+        this.languageEnum = languageEnum;
     }
 
     /**
@@ -359,7 +359,7 @@ public class UserEntity
         if (job != null ? !job.equals(that.job) : that.job != null) return false;
         if (recoverCode != null ? !recoverCode.equals(that.recoverCode) : that.recoverCode != null) return false;
         if (recoverCodeCreationDate != null ? !recoverCodeCreationDate.equals(that.recoverCodeCreationDate) : that.recoverCodeCreationDate != null) return false;
-        if (language != null ? !language.equals(that.language) : that.language != null) return false;
+        if (languageEnum != null ? !languageEnum.equals(that.languageEnum) : that.languageEnum != null) return false;
         return description != null ? description.equals(that.description) : that.description == null;
 
     }
@@ -387,7 +387,7 @@ public class UserEntity
         result = 31 * result + (recoverCodeCreationDate != null ? recoverCodeCreationDate.hashCode() : 0);
         result = 31 * result + (accountCreationDate != null ? accountCreationDate.hashCode() : 0);
         result = 31 * result + (accountMaxActivationDate != null ? accountMaxActivationDate.hashCode() : 0);
-        result = 31 * result + (language != null ? language.hashCode() : 0);
+        result = 31 * result + (languageEnum != null ? languageEnum.hashCode() : 0);
         return result;
     }
 }

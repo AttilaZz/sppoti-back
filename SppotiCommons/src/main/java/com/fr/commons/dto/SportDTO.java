@@ -1,20 +1,12 @@
 package com.fr.commons.dto;
 
 /**
- * Created by djenanewail on 12/22/16.
+ * Created by djenanewail on 3/26/17.
  */
 public class SportDTO {
 
-    private Long id;
     private String name;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private Long id;
 
     public String getName() {
         return name;
@@ -22,5 +14,13 @@ public class SportDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
