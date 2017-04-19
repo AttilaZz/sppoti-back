@@ -26,9 +26,14 @@ import javax.validation.Valid;
 @RequestMapping("/team")
 class TeamAddController {
 
+    /**
+     * Team controller service.
+     */
     private TeamControllerService teamControllerService;
-    private Logger LOGGER = Logger.getLogger(TeamAddController.class);
 
+    /**
+     * Init services.
+     */
     @Autowired
     void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
@@ -46,16 +51,7 @@ class TeamAddController {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
-        TeamDTO teamDTO;
-        try {
-            teamDTO = teamControllerService.saveTeam(team, accountUserDetails.getId());
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Spport not found in the request: ", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (DataIntegrityViolationException e) {
-            LOGGER.error("team name already exist: ", e);
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        TeamDTO teamDTO = teamControllerService.saveTeam(team, accountUserDetails.getId());
 
         return new ResponseEntity<>(teamDTO, HttpStatus.CREATED);
     }

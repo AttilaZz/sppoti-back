@@ -4,11 +4,13 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NoRightToAcceptOrRefuseChallenge;
 import com.fr.commons.exception.NotAdminException;
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 
 /**
@@ -61,6 +63,27 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Catch All {@link javax.persistence.EntityExistsException} exceptions.
+     * && {@link org.springframework.dao.DataIntegrityViolationException}
+     *
+     * @param e instace of {@link EntityNotFoundException}
+     * @return 404 http status if exception was catched.
+     */
+    @ExceptionHandler(value = {EntityExistsException.class, DataIntegrityViolationException.class})
+    public ResponseEntity conflictException(EntityExistsException e, DataIntegrityViolationException e1) {
+        String message = null;
+        if(e != null){
+            LOGGER.error(e.getMessage(), e);
+            message = e.getMessage();
+        }else if(e1 != null){
+            LOGGER.error(e1.getMessage(), e1);
+            message = e1.getMessage();
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+    }
+
+    /**
      * Catch All {@link NoRightToAcceptOrRefuseChallenge} exceptions.
      *
      * @param e instace of {@link NoRightToAcceptOrRefuseChallenge}
@@ -70,6 +93,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity globalException(NoRightToAcceptOrRefuseChallenge e) {
         LOGGER.error(e.getMessage(), e);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+    }
+
+    /**
+     * Catch any unhandled {@link RuntimeException}
+     *
+     * @param e a {@link RuntimeException}
+     * @return 500 http status
+     */
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity otherRuntimeExceptions(RuntimeException e) {
+        LOGGER.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
 }

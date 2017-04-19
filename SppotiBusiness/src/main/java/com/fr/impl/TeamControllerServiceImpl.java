@@ -4,6 +4,7 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.MemberNotInAdminTeamException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.SportEntity;
@@ -264,17 +265,26 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 
         List<TeamEntity> teamList = teamRepository.findByUuid(teamId);
 
+        //Check if team id exist
         if (StringUtils.isEmpty(teamList)) {
             throw new EntityNotFoundException("TeamEntity with id (" + teamId + ") Not found");
         }
+        TeamEntity team = teamList.get(0);
 
+        //Check if connected user is team admin
         TeamMemberEntity teamAdmin = teamMembersRepository.findByTeamUuidAndAdminTrue(teamId);
         if (!teamAdmin.getUsers().getId().equals(getConnectedUser().getId())) {
             //NOT TEAM ADMIN.
             throw new NotAdminException("You must be the team admin to access this service");
         }
 
-        TeamEntity team = teamList.get(0);
+        //Check if the user is not already a member
+        if(team.getTeamMembers().stream()
+                .anyMatch(tm -> tm.getUsers().getUuid() == userParam.getId())){
+            throw new BusinessGlobalException("User is already a member in this team.");
+        }
+
+        //Add new member to the team
         TeamMemberEntity teamMembers = new TeamMemberEntity();
         teamMembers.setTeam(team);
         teamMembers.setUsers(teamMemberAsUser);
@@ -289,6 +299,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 
         //save new member.
         teamMembersRepository.save(teamMembers);
+
+        //Notify added member
+        addNotification(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_TEAM, teamAdmin.getUsers(), teamMemberAsUser, team, null);
 
         //Send email to the new team member.
         sendJoinTeamEmail(team, teamMemberAsUser, teamAdmin);
