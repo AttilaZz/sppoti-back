@@ -105,7 +105,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 
         if (model.getAdverseTeams() != null) {
             sppotiDTO.setTeamAdverse(model.getAdverseTeams().stream()
-                    .filter(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
+//                    .filter(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
                     .map(t -> {
                         TeamDTO dto = teamTransformer.modelToDto(t.getTeam());
                         dto.setTeamAdverseStatus(t.getStatus().name());
