@@ -74,6 +74,7 @@ class AccountUpdateController {
             if (!StringUtils.isEmpty(user.getLanguage())) {
                 update = true;
             }
+
             //TODO: Update sports
 
             if (update) {
