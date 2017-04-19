@@ -10,7 +10,7 @@ import java.util.List;
  * Created by wdjenane on 14/02/2017.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class NotificationResponseDTO extends AbstractCommonDTO {
+public class NotificationListDTO extends AbstractCommonDTO {
 
     private List<NotificationDTO> notifications;
     private Integer notifCounter;

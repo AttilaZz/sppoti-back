@@ -25,8 +25,8 @@ public class NotificationDTO extends AbstractCommonDTO {
     private Integer sppotiId;
     private Integer postId;
 
-    private TeamDTO teamDTO;
-    private SppotiDTO sppotiDTO;
+    private TeamDTO team;
+    private SppotiDTO sppoti;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private Date datetime;
@@ -95,20 +95,20 @@ public class NotificationDTO extends AbstractCommonDTO {
         this.postId = postId;
     }
 
-    public TeamDTO getTeamDTO() {
-        return teamDTO;
+    public TeamDTO getTeam() {
+        return team;
     }
 
-    public void setTeamDTO(TeamDTO teamDTO) {
-        this.teamDTO = teamDTO;
+    public void setTeam(TeamDTO team) {
+        this.team = team;
     }
 
-    public SppotiDTO getSppotiDTO() {
-        return sppotiDTO;
+    public SppotiDTO getSppoti() {
+        return sppoti;
     }
 
-    public void setSppotiDTO(SppotiDTO sppotiDTO) {
-        this.sppotiDTO = sppotiDTO;
+    public void setSppoti(SppotiDTO sppoti) {
+        this.sppoti = sppoti;
     }
 }
 

@@ -1,6 +1,6 @@
 package com.fr.api.notifications;
 
-import com.fr.commons.dto.notification.NotificationResponseDTO;
+import com.fr.commons.dto.notification.NotificationListDTO;
 import com.fr.service.NotificationControllerService;
 import com.fr.security.AccountUserDetails;
 import org.apache.log4j.Logger;
@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import javax.persistence.EntityNotFoundException;
 
 /**
  * Created by djenanewail on 2/9/17.
@@ -34,17 +32,12 @@ class NotificationController {
      * @return all unread user notifications.
      */
     @GetMapping("/{page}")
-    ResponseEntity<NotificationResponseDTO> getAllUserNotifications(@PathVariable int userId, @PathVariable int page) {
+    ResponseEntity<NotificationListDTO> getAllUserNotifications(@PathVariable int userId, @PathVariable int page) {
 
-        NotificationResponseDTO notificationResponseDTO = notificationControllerService.getAllReceivedNotifications(userId, page);
-
-        if (notificationResponseDTO.getNotifCounter() == 0) {
-            LOGGER.info("Empty notifications list for the user id: " + userId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
+        NotificationListDTO notificationListDTO = notificationControllerService.getAllReceivedNotifications(userId, page);
 
         LOGGER.info("All notifications has been returned to user id" + userId);
-        return new ResponseEntity<>(notificationResponseDTO, HttpStatus.OK);
+        return new ResponseEntity<>(notificationListDTO, HttpStatus.OK);
     }
 
     /**
@@ -56,12 +49,7 @@ class NotificationController {
 
         Long connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 
-        try {
-            notificationControllerService.openNotification(notifId, connectedUserId);
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Can not update notif open status! (" + notifId + ")", e);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        notificationControllerService.openNotification(notifId, connectedUserId);
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

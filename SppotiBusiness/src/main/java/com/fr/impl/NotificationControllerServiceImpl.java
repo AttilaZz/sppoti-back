@@ -1,7 +1,7 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.notification.NotificationDTO;
-import com.fr.commons.dto.notification.NotificationResponseDTO;
+import com.fr.commons.dto.notification.NotificationListDTO;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.NotificationEntity;
 import com.fr.service.NotificationControllerService;
@@ -34,19 +34,19 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
      * {@inheritDoc}
      */
     @Override
-    public NotificationResponseDTO getAllReceivedNotifications(int userId, int page) {
+    public NotificationListDTO getAllReceivedNotifications(int userId, int page) {
 
         Pageable pageable = new PageRequest(page, notificationSize);
 
         List<NotificationEntity> notifications = notificationRepository.findByToUuid(userId, pageable);
 
-        NotificationResponseDTO notificationResponseDTO = new NotificationResponseDTO();
-        notificationResponseDTO.setNotifications(notifications.stream()
+        NotificationListDTO notificationListDTO = new NotificationListDTO();
+        notificationListDTO.setNotifications(notifications.stream()
                 .map(notificationTransformer::notificationEntityToDto)
                 .collect(Collectors.toList()));
-        notificationResponseDTO.setNotifCounter(notificationRepository.countByToUuid(userId));
+        notificationListDTO.setNotifCounter(notificationRepository.countByToUuid(userId));
 
-        return notificationResponseDTO;
+        return notificationListDTO;
     }
 
     /**

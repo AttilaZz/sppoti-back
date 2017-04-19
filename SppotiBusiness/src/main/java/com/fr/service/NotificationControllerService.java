@@ -1,7 +1,7 @@
 package com.fr.service;
 
 import com.fr.commons.dto.notification.NotificationDTO;
-import com.fr.commons.dto.notification.NotificationResponseDTO;
+import com.fr.commons.dto.notification.NotificationListDTO;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface NotificationControllerService {
      * @param page page number.
      * @return All received notifications for a given user id
      */
-    NotificationResponseDTO getAllReceivedNotifications(int userId, int page);
+    NotificationListDTO getAllReceivedNotifications(int userId, int page);
 
     /**
      *
