@@ -317,9 +317,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                     sm.setStatus(GlobalAppStatusEnum.CONFIRMED);
                     SppoterEntity updatedSppoter = sppotiMembersRepository.save(sm);
 
-                    /**
-                     * Send notification to sppoti admin.
-                     */
+                    //Send notification to sppoti admin.
                     if (updatedSppoter != null) {
                         addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sm.getTeamMember().getUsers(), sm.getSppoti().getUserSppoti(), null, null);
                     }
@@ -332,9 +330,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
                     TeamMemberEntity updatedTeamMember = teamMembersRepository.save(teamMembers);
 
-                    /**
-                     * Send notification to team admin.
-                     */
+                    //Send notification to team admin.
                     if (updatedTeamMember != null && !teamMembers.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
 
                         UserEntity teamAdmin = teamMembersRepository.findByTeamUuidAndAdminTrue(teamMembers.getTeam().getUuid()).getUsers();
@@ -363,9 +359,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         sppotiMembers.setStatus(GlobalAppStatusEnum.REFUSED);
         SppoterEntity updatedSppoter = sppotiMembersRepository.save(sppotiMembers);
 
-        /**
-         * Send notification to sppoti admin.
-         */
+        //Send notification to sppoti admin.
         if (updatedSppoter != null) {
             addNotification(NotificationTypeEnum.X_REFUSED_YOUR_SPPOTI_INVITATION, sppotiMembers.getTeamMember().getUsers(), sppotiMembers.getSppoti().getUserSppoti(), null, null);
         }
@@ -447,6 +441,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void chooseOneAdverseTeamFromAllRequests(int sppotiId, TeamDTO teamDTO) {
 
@@ -479,12 +474,13 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                             sppotiRepository.save(sp);
 
                             //get team adverse admin.
-                            UserEntity teamAdverseAdmin = tad.getTeamMembers().stream().filter(t -> t.getAdmin().equals(true)
-                                    && t.getTeam().getUuid() == teamDTO.getId()).findFirst().get().getUsers();
+                            UserEntity teamAdverseAdmin = tad.getTeamMembers().stream()
+                                    .filter(t -> t.getAdmin().equals(true) && t.getTeam().getUuid() == teamDTO.getId())
+                                    .findFirst().get().getUsers();
 
                             //notify team adverse admin.
-                            addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sp.getUserSppoti(), teamAdverseAdmin,
-                                    null, sp);
+                            addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sp.getUserSppoti(),
+                                    teamAdverseAdmin, null, sp);
                         });
             });
         });
