@@ -303,6 +303,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
         user.setEmail(targetUser.getEmail());
         user.setPhone(targetUser.getTelephone());
         user.setId(targetUser.getUuid());
+        user.setLanguage(targetUser.getLanguageEnum().name());
         user.setBirthDate(targetUser.getDateBorn());
         user.setFriendStatus(GlobalAppStatusEnum.PUBLIC_RELATION.getValue());
         user.setGender(targetUser.getGender().name());

@@ -292,8 +292,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             );
 
             //Convert team members to sppoters.
-            Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(adverseTeam.get(0), sppoti, false);
-            sppoti.setSppotiMembers(sppotiMembers);
+            //TODO: Add team in sppoti adverse teams list
+            //Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(adverseTeam.get(0), sppoti, false);
+            //sppoti.setSppotiMembers(sppotiMembers);
         }
 
         SppotiEntity updatedSppoti = sppotiRepository.save(sppoti);
@@ -423,7 +424,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                 })
         );
 
-        //Convert team members to sppoters.comment
+        //FIXME: DO NOT CONVERT TEAM MEMBERS UNLESS TEAM IS CONFIRMED
+        //Convert team members to sppoters
         Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(challengeTeam, sppotiEntity, true);
         sppotiEntity.setSppotiMembers(sppotiMembers);
 
@@ -482,6 +484,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                             addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sp.getUserSppoti(),
                                     teamAdverseAdmin, null, sp);
                         });
+
+                //Convert team members to sppoters
+                //TODO: ...
             });
         });
     }
