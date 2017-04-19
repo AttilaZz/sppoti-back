@@ -48,9 +48,9 @@ public class SppotiDTO extends AbstractCommonDTO {
     private Date dateTimeStart;
 
     @JsonProperty("teamHostId")
-    private int myTeamId;
+    private Integer myTeamId;
     @JsonProperty("teamAdverseId")
-    private int vsTeam;
+    private Integer vsTeam;
     @NotEmpty
     private String location;
     @NotNull
@@ -196,19 +196,19 @@ public class SppotiDTO extends AbstractCommonDTO {
         this.dateTimeStart = dateTimeStart;
     }
 
-    public int getMyTeamId() {
+    public Integer getMyTeamId() {
         return myTeamId;
     }
 
-    public void setMyTeamId(int myTeamId) {
+    public void setMyTeamId(Integer myTeamId) {
         this.myTeamId = myTeamId;
     }
 
-    public int getVsTeam() {
+    public Integer getVsTeam() {
         return vsTeam;
     }
 
-    public void setVsTeam(int vsTeam) {
+    public void setVsTeam(Integer vsTeam) {
         this.vsTeam = vsTeam;
     }
 
