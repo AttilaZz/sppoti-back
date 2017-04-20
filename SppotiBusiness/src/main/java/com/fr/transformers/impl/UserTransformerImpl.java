@@ -3,6 +3,7 @@ package com.fr.transformers.impl;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GenderEnum;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.LanguageEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.commons.utils.SppotiUtils;
@@ -22,7 +23,6 @@ import java.util.Set;
  * Created by djenanewail on 3/18/17.
  */
 @Component
-@Transactional
 public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEntity>
         implements UserTransformer {
 
@@ -46,25 +46,35 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
      */
     @Override
     public UserDTO modelToDto(UserEntity entity) {
-        UserDTO userDTO = new UserDTO();
-        SppotiBeanUtils.copyProperties(userDTO, entity);
-        userDTO.setId(entity.getUuid());
-        userDTO.setLanguage(entity.getLanguageEnum().name());
+        UserDTO dto = new UserDTO();
+        SppotiBeanUtils.copyProperties(dto, entity);
+        dto.setId(entity.getUuid());
+        dto.setLanguage(entity.getLanguageEnum().name());
+
+        dto.setLastName(entity.getLastName());
+        dto.setFirstName(entity.getFirstName());
+        dto.setUsername(entity.getUsername());
+        dto.setEmail(entity.getEmail());
+        dto.setPhone(entity.getTelephone());
+        dto.setId(entity.getUuid());
+        dto.setLanguage(entity.getLanguageEnum().name());
+        dto.setBirthDate(entity.getDateBorn());
+        dto.setGender(entity.getGender().name());
 
         if (entity.getResources() != null) {
             UserDTO userResources = getUserCoverAndAvatar(entity);
-            userDTO.setAvatar(userResources.getAvatar());
-            userDTO.setCover(userResources.getCover());
-            userDTO.setCoverType(userResources.getCoverType());
+            dto.setAvatar(userResources.getAvatar());
+            dto.setCover(userResources.getCover());
+            dto.setCoverType(userResources.getCoverType());
         }
 
-        return userDTO;
+        return dto;
     }
 
     /**
-     * @param targetUser user entity to map.
-     * @return userDto with only avatar and cover.
+     * {@inheritDoc}
      */
+    @Override
     public UserDTO getUserCoverAndAvatar(UserEntity targetUser) {
 
         UserDTO user = new UserDTO();

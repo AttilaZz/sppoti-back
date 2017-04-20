@@ -167,7 +167,7 @@ class FriendGetController {
                 user = friendShip.getFriend();
             }
 
-            friendList.add(accountControllerService.fillUserResponse(user, null));
+            friendList.add(accountControllerService.fillAccountResponse(user));
 
         }
 

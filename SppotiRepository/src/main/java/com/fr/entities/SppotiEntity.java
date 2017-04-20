@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -62,10 +63,10 @@ public class SppotiEntity
     private TeamEntity teamHostEntity;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "sppoti", cascade = CascadeType.ALL)
-    private Set<SppotiAdverseEntity> adverseTeams;
+    private Set<SppotiAdverseEntity> adverseTeams = new HashSet<>();
 
     @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SppoterEntity> sppotiMembers;
+    private Set<SppoterEntity> sppotiMembers = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "score_id")

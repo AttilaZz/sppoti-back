@@ -1,13 +1,18 @@
 
 package com.fr.impl;
 
+import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.FriendControllerService;
+import com.fr.transformers.TeamTransformer;
+import com.fr.transformers.UserTransformer;
+import com.fr.transformers.impl.SportTransformer;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +29,29 @@ import java.util.stream.Collectors;
 @Component
 class FriendControllerServiceImpl extends AbstractControllerServiceImpl implements FriendControllerService {
 
+    /**
+     * Class logger.
+     */
     private Logger LOGGER = Logger.getLogger(FriendControllerServiceImpl.class);
 
+    /**
+     * {@link UserEntity} transformer.
+     */
+    private final UserTransformer userTransformer;
+
+    /**
+     * Friend list size.
+     */
     @Value("${key.friendShipPerPage}")
     private int friendListSize;
+
+    /**
+     * Init services;
+     */
+    @Autowired
+    public FriendControllerServiceImpl(UserTransformer userTransformer) {
+        this.userTransformer = userTransformer;
+    }
 
     /**
      * {@inheritDoc}
@@ -139,7 +163,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
         List<FriendShipEntity> friendShips = this.getByUserAndStatus(userId, GlobalAppStatusEnum.CONFIRMED, pageable);
 
         return friendShips.stream()
-                .map(f -> this.fillUserResponse(f.getFriend(), null))
+                .map(f -> this.userTransformer.modelToDto(f.getFriend()))
                 .collect(Collectors.toList());
 
     }

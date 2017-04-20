@@ -34,7 +34,7 @@ class AccountUpdateController {
 
         boolean update = false;
 
-        if (!StringUtils.isEmpty(user.getAvatar()) || (!StringUtils.isEmpty(user.getCover()) && user.getCoverType() != null)) {
+        if (!StringUtils.hasText(user.getAvatar()) || (!StringUtils.hasText(user.getCover()) && user.getCoverType() != null)) {
 
             //resources
             accountControllerService.updateAvatarAndCover(user);
@@ -43,31 +43,31 @@ class AccountUpdateController {
             return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
         } else {
             //first name
-            if (!StringUtils.isEmpty(user.getFirstName())) {
+            if (!StringUtils.hasText(user.getFirstName())) {
                 update = true;
             }
             //last name
-            if (!StringUtils.isEmpty(user.getLastName())) {
+            if (!StringUtils.hasText(user.getLastName())) {
                 update = true;
             }
             //address
-            if (!StringUtils.isEmpty(user.getAddress())) {
+            if (!StringUtils.hasText(user.getAddress())) {
                 update = true;
             }
             //username
-            if (!StringUtils.isEmpty(user.getUsername())) {
+            if (!StringUtils.hasText(user.getUsername())) {
                 update = true;
             }
             //phone
-            if (!StringUtils.isEmpty(user.getPhone())) {
+            if (!StringUtils.hasText(user.getPhone())) {
                 update = true;
             }
             //password
-            if (!StringUtils.isEmpty(user.getPassword())) {
+            if (!StringUtils.hasText(user.getPassword())) {
                 update = true;
             }
             //email
-            if (!StringUtils.isEmpty(user.getEmail())) {
+            if (!StringUtils.hasText(user.getEmail())) {
                 update = true;
             }
             //language

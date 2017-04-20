@@ -1,8 +1,8 @@
 package com.fr.api.search;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.FriendShipEntity;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.entities.FriendShipEntity;
 import com.fr.repositories.FriendShipRepository;
 import com.fr.service.AccountControllerService;
 import org.apache.log4j.Logger;
@@ -28,7 +28,6 @@ import java.util.List;
 @RequestMapping("/find/friends")
 class FindFriendController {
 
-
     @Value("${key.friendShipPerPage}")
     private int friend_size;
 
@@ -46,7 +45,7 @@ class FindFriendController {
 
     /**
      * @param userPrefix user prefix to search.
-     * @param page page number.
+     * @param page       page number.
      * @return All confirmed friends of connected user
      */
     @GetMapping(value = "/{motif}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -76,12 +75,11 @@ class FindFriendController {
 
             }
 
-
         List<UserDTO> users = new ArrayList<>();
 
         for (FriendShipEntity friendShip : foundFriends) {
 
-            users.add(accountControllerService.fillUserResponse(friendShip.getFriend(), null));
+            users.add(accountControllerService.fillAccountResponse(friendShip.getFriend()));
         }
 
         LOGGER.info("SEARCH-CONFIRMED-FRIEND: friends has been returned !");

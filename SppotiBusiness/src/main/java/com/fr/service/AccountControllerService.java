@@ -48,10 +48,9 @@ public interface AccountControllerService extends AbstractControllerService {
 
     /**
      * @param targetUser     target user account.
-     * @param connected_user connected user id.
      * @return UserDTO
      */
-    UserDTO fillUserResponse(UserEntity targetUser, UserEntity connected_user);
+    UserDTO fillAccountResponse(UserEntity targetUser);
 
     /**
      * Update user cover  and avatar.
@@ -80,4 +79,11 @@ public interface AccountControllerService extends AbstractControllerService {
      * @param userDTO user data.
      */
     void generateNewConfirmationEmail(UserDTO userDTO);
+
+    /**
+     * @param username    target user username.
+     * @param connectedUserId connected user id.
+     * @return user DTO.
+     */
+    UserDTO handleFriendShip(String username, Long connectedUserId);
 }

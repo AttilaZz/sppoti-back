@@ -1,35 +1,35 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.SignUpDTO;
+import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.LanguageEnum;
 import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.ConflictUsernameException;
 import com.fr.commons.utils.SppotiUtils;
-import com.fr.entities.AddressEntity;
-import com.fr.entities.ResourcesEntity;
-import com.fr.entities.RoleEntity;
-import com.fr.entities.UserEntity;
+import com.fr.entities.*;
 import com.fr.enums.CoverType;
 import com.fr.mail.AccountMailer;
 import com.fr.service.AccountControllerService;
 import com.fr.transformers.UserTransformer;
+import com.fr.transformers.impl.SportTransformer;
 import com.fr.transformers.impl.UserTransformerImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by: Wail DJENANE On June 01, 2016
@@ -38,22 +38,43 @@ import java.util.Set;
 @Component
 class AccountControllerServiceImpl extends AbstractControllerServiceImpl implements AccountControllerService {
 
+    /**
+     * Class logger.
+     */
     private Logger LOGGER = Logger.getLogger(AccountControllerServiceImpl.class);
 
+    /**
+     * Spring security Password encoder.
+     */
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * {@link AccountMailer} to send emails.
+     */
     private final AccountMailer accountMailer;
 
+    /**
+     * {@link UserEntity} transformer;
+     */
     private final UserTransformer userTransformer;
+
+    /**
+     * {@link com.fr.entities.SportEntity} transformer.
+     */
+    private final SportTransformer sportTransformer;
 
     @Value("${spring.app.account.recover.expiry.date}")
     private int daysBeforeExpiration;
 
+    /**
+     * Init dependencies.
+     */
     @Autowired
-    public AccountControllerServiceImpl(AccountMailer accountMailer, PasswordEncoder passwordEncoder, UserTransformerImpl userTransformer) {
+    public AccountControllerServiceImpl(AccountMailer accountMailer, PasswordEncoder passwordEncoder, UserTransformerImpl userTransformer, SportTransformer sportTransformer) {
         this.accountMailer = accountMailer;
         this.passwordEncoder = passwordEncoder;
         this.userTransformer = userTransformer;
+        this.sportTransformer = sportTransformer;
     }
 
     /**
@@ -266,14 +287,6 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
      * {@inheritDoc}
      */
     @Override
-    public UserDTO fillUserResponse(UserEntity targetUser, UserEntity connectedUser) {
-        return super.fillUserResponse(targetUser, connectedUser);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Transactional
     public void updateAvatarAndCover(UserDTO user) {
 
@@ -380,5 +393,82 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         });
 
         optional.orElseThrow(() -> new EntityNotFoundException("Email not associated to an account"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserDTO fillAccountResponse(UserEntity entity) {
+        entity.setPassword(null);
+        return userTransformer.modelToDto(entity);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserDTO handleFriendShip(String username, Long connectedUserId) {
+
+        UserEntity targetUser = this.getUserByUsername(username);
+        if (targetUser == null) {
+            throw new EntityNotFoundException("Target user id not found");
+        }
+        UserEntity connectedUser = this.getUserById(connectedUserId);
+
+        targetUser.setPassword(null);//do not return password
+        UserDTO user = userTransformer.modelToDto(targetUser);
+        user.setFriendStatus(GlobalAppStatusEnum.PUBLIC_RELATION.getValue());
+
+        if (connectedUser != null) {
+            if (!connectedUser.getId().equals(targetUser.getId())) {
+                /* manage requests sent to me. */
+                FriendShipEntity friendShip;
+
+                friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(connectedUser.getUuid(), targetUser.getUuid());
+
+                if (friendShip == null) {
+                    friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid());
+                }
+
+                if (friendShip == null) {
+                    user.setFriendStatus(GlobalAppStatusEnum.PUBLIC_RELATION.getValue());
+                } else {
+
+                    //We are friend.
+                    if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+                        user.setFriendStatus(GlobalAppStatusEnum.CONFIRMED.getValue());
+
+                        //Friend request waiting to be accepted by me.
+                    } else if (friendShip.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
+                        user.setFriendStatus(GlobalAppStatusEnum.PENDING.getValue());
+
+                        //Friend request refused by me.
+                    } else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
+                        user.setFriendStatus(GlobalAppStatusEnum.REFUSED.getValue());
+
+                    }
+                }
+                /*  Manage request sent by me. */
+                if (!friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid(), GlobalAppStatusEnum.PENDING).isEmpty()) {
+                    user.setFriendStatus(GlobalAppStatusEnum.PENDING_SENT.getValue());
+                }
+            }
+            user.setMyProfile(connectedUser.getId().equals(targetUser.getId()));
+        } else {
+            user.setMyProfile(true);
+        }
+
+        //Map all user sports
+        List<SportDTO> sportDTOs = targetUser.getRelatedSports().stream()
+                .map(sportTransformer::modelToDto)
+                .collect(Collectors.toList());
+        user.setSportDTOs(sportDTOs);
+
+        if (!targetUser.getAddresses().isEmpty()) {
+            user.setAddress(targetUser.getAddresses().first().getAddress());
+        }
+
+        return user;
     }
 }

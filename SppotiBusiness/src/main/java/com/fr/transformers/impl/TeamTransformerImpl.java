@@ -1,6 +1,7 @@
 package com.fr.transformers.impl;
 
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.entities.SportEntity;
 import com.fr.entities.TeamEntity;
 import com.fr.repositories.TeamMembersRepository;
 import com.fr.transformers.TeamTransformer;
@@ -13,18 +14,22 @@ import java.util.stream.Collectors;
 /**
  * Created by djenanewail on 3/5/17.
  */
-@Transactional(readOnly = true)
 @Component
 public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEntity>
         implements TeamTransformer {
 
     /**
-     * Team member transformer.
+     * {@link SportEntity} transformer.
+     */
+    private final SportTransformer sportTransformer;
+
+    /**
+     * {@link com.fr.entities.TeamMemberEntity} transformer.
      */
     private final TeamMemberTransformer teamMemberTransformer;
 
     /**
-     * Team member repository.
+     * {@link com.fr.entities.TeamMemberEntity} repository.
      */
     private final TeamMembersRepository teamMembersRepository;
 
@@ -32,7 +37,8 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
      * Init dependencies.
      */
     @Autowired
-    public TeamTransformerImpl(TeamMemberTransformer teamMemberTransformer, TeamMembersRepository teamMembersRepository) {
+    public TeamTransformerImpl(SportTransformer sportTransformer, TeamMemberTransformer teamMemberTransformer, TeamMembersRepository teamMembersRepository) {
+        this.sportTransformer = sportTransformer;
         this.teamMemberTransformer = teamMemberTransformer;
         this.teamMembersRepository = teamMembersRepository;
     }
@@ -49,7 +55,7 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
         teamDTO.setName(model.getName());
         teamDTO.setCoverPath(model.getCoverPath());
         teamDTO.setLogoPath(model.getLogoPath());
-        teamDTO.setSport(SportTransformer.modelToDto(model.getSport()));
+        teamDTO.setSport(sportTransformer.modelToDto(model.getSport()));
         teamDTO.setCreationDate(model.getCreationDate());
         teamDTO.setColor(model.getColor());
 

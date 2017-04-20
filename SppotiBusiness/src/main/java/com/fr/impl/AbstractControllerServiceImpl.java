@@ -13,6 +13,9 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.repositories.*;
 import com.fr.service.AbstractControllerService;
+import com.fr.transformers.TeamTransformer;
+import com.fr.transformers.UserTransformer;
+import com.fr.transformers.impl.SportTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
 import com.fr.transformers.impl.TeamTransformerImpl;
 import com.fr.transformers.impl.UserTransformerImpl;
@@ -28,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Component("abstractService")
@@ -76,10 +80,10 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
     private TeamMemberTransformer teamMemberTransformer;
 
     @Autowired
-    private UserTransformerImpl userTransformer;
+    private UserTransformer userTransformer;
 
     @Autowired
-    private TeamTransformerImpl teamTransformer;
+    private TeamTransformer teamTransformer;
 
     private Logger LOGGER = Logger.getLogger(AbstractControllerServiceImpl.class);
 
@@ -287,87 +291,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
             }
         }
         return false;
-    }
-
-    /**
-     * @param targetUser    user entity.
-     * @param connectedUser connect user id.
-     * @return user DTO.
-     */
-    protected UserDTO fillUserResponse(UserEntity targetUser, UserEntity connectedUser) {
-
-        UserDTO user = new UserDTO();
-        user.setLastName(targetUser.getLastName());
-        user.setFirstName(targetUser.getFirstName());
-        user.setUsername(targetUser.getUsername());
-        user.setEmail(targetUser.getEmail());
-        user.setPhone(targetUser.getTelephone());
-        user.setId(targetUser.getUuid());
-        user.setLanguage(targetUser.getLanguageEnum().name());
-        user.setBirthDate(targetUser.getDateBorn());
-        user.setFriendStatus(GlobalAppStatusEnum.PUBLIC_RELATION.getValue());
-        user.setGender(targetUser.getGender().name());
-
-        if (connectedUser != null) {
-            if (!connectedUser.getId().equals(targetUser.getId())) {
-                /* manage requests sent to me. */
-                FriendShipEntity friendShip;
-
-                friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(connectedUser.getUuid(), targetUser.getUuid());
-
-                if (friendShip == null) {
-                    friendShip = friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid());
-                }
-
-                if (friendShip == null) {
-                    user.setFriendStatus(GlobalAppStatusEnum.PUBLIC_RELATION.getValue());
-                } else {
-
-                    //We are friend.
-                    if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
-                        user.setFriendStatus(GlobalAppStatusEnum.CONFIRMED.getValue());
-
-                        //Friend request waiting to be accepted by me.
-                    } else if (friendShip.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
-                        user.setFriendStatus(GlobalAppStatusEnum.PENDING.getValue());
-
-                        //Friend request refused by me.
-                    } else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
-                        user.setFriendStatus(GlobalAppStatusEnum.REFUSED.getValue());
-
-                    }
-                }
-                /*  Manage request sent by me. */
-                if (!friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid(), GlobalAppStatusEnum.PENDING).isEmpty()) {
-                    user.setFriendStatus(GlobalAppStatusEnum.PENDING_SENT.getValue());
-                }
-            }
-            user.setMyProfile(connectedUser.getId().equals(targetUser.getId()));
-        } else {
-            user.setMyProfile(true);
-        }
-
-        /* Manage resources. */
-        UserDTO userCoverAndAvatar = userTransformer.getUserCoverAndAvatar(targetUser);
-        user.setCover(userCoverAndAvatar.getCover());
-        user.setAvatar(userCoverAndAvatar.getAvatar());
-        user.setCoverType(userCoverAndAvatar.getCoverType());
-        /* End resource manager. */
-        List<SportDTO> sportDTOs = new ArrayList<SportDTO>();
-
-        for (SportEntity sportEntity : targetUser.getRelatedSports()) {
-            SportDTO sportDTO = new SportDTO();
-            sportDTO.setId(sportEntity.getId());
-            sportDTO.setName(sportEntity.getName());
-            sportDTOs.add(sportDTO);
-        }
-        user.setSportDTOs(sportDTOs);
-
-        if (!targetUser.getAddresses().isEmpty()) {
-            user.setAddress(targetUser.getAddresses().first().getAddress());
-        }
-
-        return user;
     }
 
     /**

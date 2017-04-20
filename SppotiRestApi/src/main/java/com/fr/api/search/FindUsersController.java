@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by djenanewail on 12/17/16.
@@ -76,13 +76,8 @@ class FindUsersController {
 
         }
 
-
-        List<UserDTO> users = new ArrayList<>();
-
-        for (UserEntity users1 : foundUsers) {
-
-            users.add(accountControllerService.fillUserResponse(users1, null));
-        }
+        List<UserDTO> users = foundUsers.stream().map(accountControllerService::fillAccountResponse)
+                .collect(Collectors.toList());
 
         LOGGER.info("PROFILE SEARCH-USER: UserEntity has been returned !");
         return new ResponseEntity<>(users, HttpStatus.OK);
