@@ -1,6 +1,7 @@
 package com.fr.service;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import org.springframework.stereotype.Service;
 
@@ -140,4 +141,21 @@ public interface TeamControllerService extends AbstractControllerService {
      * @return all deleted teams.
      */
     List<TeamDTO> getAllDeletedTeamsByUserId(int userId, int page);
+
+
+    /**
+     * Answer to sppoti admin challenge.
+     * @param dto sppoti data.
+     * @param teamId team id.
+     */
+    TeamDTO requestToSppotiAdminChallenge(SppotiDTO dto, int teamId);
+
+    /**
+     * Get all pending challe,nge sppoti requests, sent from sppoti admin.
+     *
+     * @param teamId challenged team id.
+     * @param page page number.
+     * @return all pending sppoti challenge requests.
+     */
+    List<SppotiDTO> getAllPendingChallenges(int teamId, int page);
 }

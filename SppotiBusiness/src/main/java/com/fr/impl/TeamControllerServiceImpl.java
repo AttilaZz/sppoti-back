@@ -1,17 +1,16 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.MemberNotInAdminTeamException;
 import com.fr.commons.exception.NotAdminException;
-import com.fr.entities.SportEntity;
-import com.fr.entities.TeamEntity;
-import com.fr.entities.TeamMemberEntity;
-import com.fr.entities.UserEntity;
+import com.fr.entities.*;
 import com.fr.service.TeamControllerService;
+import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
 import com.fr.transformers.impl.TeamTransformerImpl;
 import com.fr.transformers.impl.UserTransformerImpl;
@@ -26,6 +25,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -62,13 +62,19 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
     private final TeamMemberTransformer teamMemberTransformer;
 
     /**
+     * Sppoti transformer.
+     */
+    private final SppotiTransformer sppotiTransformer;
+
+    /**
      * Init dependencies.
      */
     @Autowired
-    public TeamControllerServiceImpl(UserTransformerImpl userTransformer, TeamTransformerImpl teamTransformer, TeamMemberTransformer teamMemberTransformer) {
+    public TeamControllerServiceImpl(UserTransformerImpl userTransformer, TeamTransformerImpl teamTransformer, TeamMemberTransformer teamMemberTransformer, SppotiTransformer sppotiTransformer) {
         this.userTransformer = userTransformer;
         this.teamTransformer = teamTransformer;
         this.teamMemberTransformer = teamMemberTransformer;
+        this.sppotiTransformer = sppotiTransformer;
     }
 
     /**
@@ -279,8 +285,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
         }
 
         //Check if the user is not already a member
-        if(team.getTeamMembers().stream()
-                .anyMatch(tm -> tm.getUsers().getUuid() == userParam.getId())){
+        if (team.getTeamMembers().stream()
+                .anyMatch(tm -> tm.getUsers().getUuid() == userParam.getId())) {
             throw new BusinessGlobalException("User is already a member in this team.");
         }
 
@@ -383,9 +389,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
     @Override
     public void updateTeamCaptain(int teamId, int memberId, int connectedUserId) {
 
-        if (teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, teamId) == null) {
-            throw new NotAdminException("You must be the team admin to access this service");
-        }
+        checkTeamAdminAccess(teamId, connectedUserId);
 
         List<TeamMemberEntity> teamMemberEntity = teamMembersRepository.findByTeamUuid(teamId);
 
@@ -398,6 +402,18 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
         });
         teamMembersRepository.save(teamMemberEntity);
 
+    }
+
+    /**
+     * Allow access only for team admin.
+     *
+     * @param teamId          team id.
+     * @param connectedUserId user id.
+     */
+    private void checkTeamAdminAccess(int teamId, int connectedUserId) {
+        if (teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(connectedUserId, teamId) == null) {
+            throw new NotAdminException("You must be the team admin to access this service");
+        }
     }
 
     /**
@@ -431,6 +447,86 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
         return myTeams.stream()
                 .map(t -> fillTeamResponse(t.getTeam(), null))
                 .sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate()))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public TeamDTO requestToSppotiAdminChallenge(SppotiDTO dto, int teamId) {
+
+        checkTeamAdminAccess(teamId, getConnectedUser().getUuid());
+
+        Optional<SppotiEntity> optional = Optional.ofNullable(sppotiRepository.findByUuid(dto.getId()));
+
+        if (optional.isPresent()) {
+            SppotiEntity sp = optional.get();
+            //Check if sppoti has already a CONFIRMED adverse team in the adverse team list.
+            if (sp.getAdverseTeams() != null && sp.getAdverseTeams().stream().anyMatch(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
+                throw new BusinessGlobalException("This sppoti has already an adverse team");
+            }
+
+            //Check if team exists.
+            TeamEntity team = getTeamEntityIfExist(teamId);
+
+            //Check if team is not already accepted as challenger.
+            Optional<SppotiAdverseEntity> sppotiAdverseEntityOptional = sp.getAdverseTeams().stream()
+                    .filter(t -> t.getTeam().getId().equals(team.getId()) && t.getFromSppotiAdmin().equals(Boolean.TRUE))
+                    .findAny();
+
+            //Team not found in sppoti adverse team list.
+            sppotiAdverseEntityOptional.orElseThrow(() -> new BusinessGlobalException("This team has no challenge to confirm."));
+
+            //Team found in awaiting list.
+            if (sppotiAdverseEntityOptional.isPresent()) {
+                SppotiAdverseEntity t = sppotiAdverseEntityOptional.get();
+                //Team already CONFIRMED.
+                if (t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+                    throw new BusinessGlobalException("This team is already selected to challenge the host team");
+                }
+                //Team already REFUSED.
+                else if (t.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
+                    throw new BusinessGlobalException("This team was already refused to challenge the host team");
+                } else {
+                    //Team exist in adverse team list in PENDING mode.
+                    t.setStatus(GlobalAppStatusEnum.valueOf(dto.getTeamAdverseStatus()));
+                    return teamTransformer.modelToDto(sppotiAdverseRepository.save(t).getTeam());
+                }
+            }
+        }
+
+        throw new EntityNotFoundException("Sppoti id (" + dto.getId() + ") not found");
+    }
+
+    private TeamEntity getTeamEntityIfExist(int teamId) {
+        //Check if team exists.
+        List<TeamEntity> teamEntityList = teamRepository.findByUuid(teamId);
+        if (teamEntityList.isEmpty()) {
+            throw new EntityNotFoundException("Team id (" + teamId + ") not found");
+        }
+        return teamEntityList.get(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<SppotiDTO> getAllPendingChallenges(int teamId, int page) {
+
+        //Check if user is team admin.
+        checkTeamAdminAccess(teamId, getConnectedUser().getUuid());
+
+        //Check if team exists.
+        getTeamEntityIfExist(teamId);
+
+        List<SppotiAdverseEntity> sppotiAdverseEntities = sppotiAdverseRepository.findByTeamUuidAndFromSppotiAdminTrue(teamId);
+
+        return sppotiAdverseEntities.stream()
+                .filter(v -> v.getStatus().equals(GlobalAppStatusEnum.PENDING))
+                .map(ad -> sppotiTransformer.modelToDto(ad.getSppoti()))
+                .sorted((u1, u2) -> u2.getDatetimeCreated().compareTo(u1.getDatetimeCreated()))
                 .collect(Collectors.toList());
     }
 

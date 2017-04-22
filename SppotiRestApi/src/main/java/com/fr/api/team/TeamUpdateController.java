@@ -1,6 +1,9 @@
 package com.fr.api.team;
 
+import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.TeamControllerService;
 import org.apache.log4j.Logger;
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  */
 
 @RestController
-@RequestMapping("/team")
+@RequestMapping("/team/{teamId}")
 class TeamUpdateController {
 
     /**
@@ -45,7 +48,7 @@ class TeamUpdateController {
      * @param teamRequestDTO data to update.
      * @return The updated team.
      */
-    @PutMapping("/{teamId}")
+    @PutMapping
     ResponseEntity<TeamDTO> updateTeam(@PathVariable int teamId, @RequestBody TeamDTO teamRequestDTO, Authentication authentication) {
 
         boolean canUpdate = false;
@@ -80,6 +83,67 @@ class TeamUpdateController {
         }
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    /**
+     * Accept team invitation.
+     *
+     * @param teamId team id.
+     * @return 202 http status if updated succeed.
+     */
+    @PutMapping("/accept")
+    ResponseEntity<Void> acceptTeam(@PathVariable int teamId, Authentication authentication) {
+
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+
+        teamControllerService.acceptTeam(teamId, accountUserDetails.getUuid());
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    /**
+     * Refuse team invitation.
+     *
+     * @param teamId team id.
+     * @return 202 http status if updated succeed.
+     */
+    @PutMapping("/refuse")
+    ResponseEntity<Void> refuseTeam(@PathVariable int teamId, Authentication authentication) {
+
+        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+
+        teamControllerService.refuseTeam(teamId, accountUserDetails.getUuid());
+
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    /**
+     * Accept / Refuse sppoti admin challenge
+     *
+     * @param dto sppoti dto, containing sppoti id and response to challenge.
+     * @return 202 http status if updated succeed.
+     */
+    @PutMapping("/challenge")
+    ResponseEntity<TeamDTO> requestChallenge(@PathVariable int teamId, @RequestBody SppotiDTO dto) {
+
+        if (dto.getId() == null || !StringUtils.hasText(dto.getTeamAdverseStatus())) {
+            throw new BusinessGlobalException("Sppoti id or team status missing");
+        }
+
+        boolean statusExist = false;
+        for (GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
+            if (status.name().equals(dto.getTeamAdverseStatus())) {
+                statusExist = true;
+            }
+        }
+        if (!statusExist) {
+            throw new BusinessGlobalException("Status must be (CONFIRMED) or (REFUSED)");
+        }
+
+        TeamDTO adverseTeam = teamControllerService.requestToSppotiAdminChallenge(dto, teamId);
+
+        return new ResponseEntity<>(adverseTeam, HttpStatus.ACCEPTED);
+
     }
 
 }

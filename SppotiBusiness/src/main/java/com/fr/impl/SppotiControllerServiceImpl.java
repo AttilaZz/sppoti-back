@@ -40,6 +40,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
      */
     private Logger LOGGER = Logger.getLogger(SppotiControllerServiceImpl.class);
 
+    /**
+     * Returned sppoti list size.
+     */
     @Value("${key.sppotiesPerPage}")
     private int sppotiSize;
 
@@ -63,6 +66,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
      */
     private final UserTransformer userTransformer;
 
+    /**
+     * Init services.
+     */
     @Autowired
     public SppotiControllerServiceImpl(SportTransformer sportTransformer, SppotiTransformer sppotiTransformer, TeamMemberTransformer teamMemberTransformer, UserTransformer userTransformer) {
         this.sportTransformer = sportTransformer;
@@ -298,6 +304,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             SppotiAdverseEntity adverse = new SppotiAdverseEntity();
             adverse.setSppoti(sppoti);
             adverse.setTeam(team);
+            adverse.setFromSppotiAdmin(Boolean.TRUE);
             sppoti.getAdverseTeams().add(adverse);
         }
 

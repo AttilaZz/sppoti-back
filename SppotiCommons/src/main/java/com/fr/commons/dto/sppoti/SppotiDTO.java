@@ -57,8 +57,11 @@ public class SppotiDTO extends AbstractCommonDTO {
     private Long altitude;
     @NotNull
     private Long longitude;
+
     private Integer maxTeamCount;
     private String tags;
+
+    private String teamAdverseStatus;
 
     public Date getDatetimeCreated() {
         return datetimeCreated;
@@ -250,5 +253,13 @@ public class SppotiDTO extends AbstractCommonDTO {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public String getTeamAdverseStatus() {
+        return teamAdverseStatus;
+    }
+
+    public void setTeamAdverseStatus(String teamAdverseStatus) {
+        this.teamAdverseStatus = teamAdverseStatus;
     }
 }

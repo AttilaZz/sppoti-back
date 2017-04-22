@@ -69,6 +69,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
     RatingRepository ratingRepository;
     @Autowired
     ScoreRepository scoreRepository;
+    @Autowired
+    SppotiAdverseRepository sppotiAdverseRepository;
 
     @Autowired
     TeamMailer teamMailer;

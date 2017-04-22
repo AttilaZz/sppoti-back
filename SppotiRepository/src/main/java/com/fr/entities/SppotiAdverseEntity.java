@@ -3,6 +3,7 @@ package com.fr.entities;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by djenanewail on 4/17/17.
@@ -22,6 +23,13 @@ public class SppotiAdverseEntity extends AbstractCommonEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id", nullable = false)
     private TeamEntity team;
+
+    @Column(name = "from_sppoti_admin")
+    private Boolean fromSppotiAdmin = false;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "creation_date")
+    private Date creationDate = new Date();
 
     public GlobalAppStatusEnum getStatus() {
         return status;
@@ -47,6 +55,22 @@ public class SppotiAdverseEntity extends AbstractCommonEntity{
         this.team = team;
     }
 
+    public Boolean getFromSppotiAdmin() {
+        return fromSppotiAdmin;
+    }
+
+    public void setFromSppotiAdmin(Boolean fromSppotiAdmin) {
+        this.fromSppotiAdmin = fromSppotiAdmin;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
     /**
      * {@inheritDoc}.
      */
@@ -56,9 +80,12 @@ public class SppotiAdverseEntity extends AbstractCommonEntity{
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        SppotiAdverseEntity that = (SppotiAdverseEntity) o;
+        SppotiAdverseEntity entity = (SppotiAdverseEntity) o;
 
-        return status == that.status;
+        if (status != entity.status) return false;
+        if (fromSppotiAdmin != null ? !fromSppotiAdmin.equals(entity.fromSppotiAdmin) : entity.fromSppotiAdmin != null)
+            return false;
+        return creationDate != null ? creationDate.equals(entity.creationDate) : entity.creationDate == null;
     }
 
     /**
@@ -68,6 +95,8 @@ public class SppotiAdverseEntity extends AbstractCommonEntity{
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (status != null ? status.hashCode() : 0);
+        result = 31 * result + (fromSppotiAdmin != null ? fromSppotiAdmin.hashCode() : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
         return result;
     }
 }

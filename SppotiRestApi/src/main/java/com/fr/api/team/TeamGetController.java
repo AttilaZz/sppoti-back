@@ -74,4 +74,15 @@ class TeamGetController {
         return new ResponseEntity<>(teamControllerService.getAllDeletedTeamsByUserId(userId, page), HttpStatus.OK);
     }
 
+    /**
+     * Get all pending challenge requests from sppoti admin.
+     *
+     * @param teamId team id.
+     * @param page page number.
+     * @return 200 http status if found.
+     */
+    @GetMapping("/all/challenge/pending/{teamId}/{page}")
+    ResponseEntity getAllChallengeRequests(@PathVariable int teamId, @PathVariable int page){
+        return new ResponseEntity<>(teamControllerService.getAllPendingChallenges(teamId, page), HttpStatus.OK);
+    }
 }
