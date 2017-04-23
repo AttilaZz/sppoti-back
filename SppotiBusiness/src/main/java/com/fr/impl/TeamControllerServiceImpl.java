@@ -528,6 +528,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
                 .map(ad -> sppotiTransformer.modelToDto(ad.getSppoti()))
                 .sorted((u1, u2) -> u2.getDatetimeCreated().compareTo(u1.getDatetimeCreated()))
                 .collect(Collectors.toList());
+
     }
 
     /**

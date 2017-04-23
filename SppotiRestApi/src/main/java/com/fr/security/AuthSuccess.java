@@ -8,8 +8,6 @@ import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -85,20 +83,6 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
 
         //Return OK status.
         response.setStatus(HttpServletResponse.SC_OK);
-    }
-
-    /**
-     * @return logged user id.
-     */
-    private Long getAuthenticationId() {
-        Long id = null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
-            id = ((MyUserDetails) principal).getId();
-        }
-
-        return id;
     }
 
 }

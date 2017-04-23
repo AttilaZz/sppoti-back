@@ -119,6 +119,10 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             }
             hostTeam = tempTeams.get(0);
 
+            if(!hostTeam.getSport().equals(sppoti.getSport())){
+                throw new BusinessGlobalException("Host team sport not as same as sppoti sport !");
+            }
+
             //Convert team members to sppoters.
             Set<SppoterEntity> sppotiMembers = hostTeam.getTeamMembers().stream()
                     .map(
@@ -291,6 +295,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                 throw new EntityNotFoundException("TeamEntity id not found: " + sppotiRequest.getVsTeam());
             }
             TeamEntity team = adverseTeam.get(0);
+
+            if(!team.getSport().equals(sppoti.getSport())){
+                throw new BusinessGlobalException("Adverse team sport not as same as sppoti sport !");
+            }
+
             //check if adverse team members are not in conflict with team host members
             sppoti.getTeamHostEntity().getTeamMembers().forEach(
                     hostMember -> team.getTeamMembers().forEach(adverseMember -> {
@@ -419,6 +428,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         SppotiEntity sppotiEntity = sppotiRepository.findByUuid(sppotiId);
         if (sppotiEntity == null) {
             throw new EntityNotFoundException("Sppoti not found (" + sppotiId + ")");
+        }
+
+        //check if team sport is as same as sppoti sport.
+        if(!challengeTeam.getSport().equals(sppotiEntity.getSport())){
+            throw new BusinessGlobalException("challenged team sport not as same as sppoti sport !");
         }
 
         //Check if sppoti has already a CONFIRMED adverse team in the adverse team list.
