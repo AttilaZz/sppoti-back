@@ -36,7 +36,7 @@ public class ContactAddController {
     public ResponseEntity sendContactEmail(@RequestBody @Valid ContactDTO contactDTO) {
 
         contactControllerService.sendGlobalContactEmail(contactDTO);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
 }

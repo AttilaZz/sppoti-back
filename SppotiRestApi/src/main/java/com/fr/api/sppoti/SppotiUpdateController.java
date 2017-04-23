@@ -78,7 +78,7 @@ class SppotiUpdateController {
             canUpdate = true;
         }
 
-        if (!StringUtils.isEmpty(sppotiRequest.getTitre())) {
+        if (!StringUtils.isEmpty(sppotiRequest.getName())) {
             canUpdate = true;
         }
 

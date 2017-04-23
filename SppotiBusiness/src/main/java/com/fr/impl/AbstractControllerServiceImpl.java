@@ -9,6 +9,7 @@ import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.exception.TeamMemberNotFoundException;
 import com.fr.entities.*;
+import com.fr.mail.SppotiMailer;
 import com.fr.mail.TeamMailer;
 import com.fr.repositories.*;
 import com.fr.service.AbstractControllerService;
@@ -67,8 +68,17 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
     @Autowired
     SppotiAdverseRepository sppotiAdverseRepository;
 
+    /**
+     * Team mailer.
+     */
     @Autowired
     TeamMailer teamMailer;
+
+    /**
+     * Sppoti mailer.
+     */
+    @Autowired
+    SppotiMailer sppotiMailer;
 
     @Autowired
     private Environment environment;

@@ -5,12 +5,14 @@ import com.fr.commons.dto.post.PostRequestDTO;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.*;
 import com.fr.commons.exception.PostContentMissingException;
+import com.fr.security.AccountUserDetails;
 import com.fr.service.PostControllerService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,12 +27,12 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/post")
- class PostAddController {
+class PostAddController {
 
     private PostControllerService postDataService;
 
     @Autowired
-     void setPostDataService(PostControllerService postDataService) {
+    void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
 
@@ -42,15 +44,14 @@ import java.util.*;
 
     /**
      * @param newPostReq post data to save.
-     * @param request    http request object.
      * @return Add post by user.
      */
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
-     ResponseEntity<PostDTO> addPost(@RequestBody PostRequestDTO newPostReq, HttpServletRequest request) {
+    ResponseEntity<PostDTO> addPost(@RequestBody PostRequestDTO newPostReq, Authentication authentication) {
 
         // get current logged user
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+        Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
         UserEntity user = postDataService.getUserById(userId);
         LOGGER.debug("POST-ADD: LOGGED UserDTO: => " + userId);
 

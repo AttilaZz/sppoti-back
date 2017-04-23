@@ -9,8 +9,8 @@ import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.*;
+import com.fr.mail.SppotiMailer;
 import com.fr.service.SppotiControllerService;
-import com.fr.transformers.ScoreTransformer;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.SportTransformer;
@@ -67,14 +67,20 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     private final UserTransformer userTransformer;
 
     /**
+     * Sppoti mailer.
+     */
+    private final SppotiMailer sppotiMailer;
+
+    /**
      * Init services.
      */
     @Autowired
-    public SppotiControllerServiceImpl(SportTransformer sportTransformer, SppotiTransformer sppotiTransformer, TeamMemberTransformer teamMemberTransformer, UserTransformer userTransformer) {
+    public SppotiControllerServiceImpl(SportTransformer sportTransformer, SppotiTransformer sppotiTransformer, TeamMemberTransformer teamMemberTransformer, UserTransformer userTransformer, SppotiMailer sppotiMailer) {
         this.sportTransformer = sportTransformer;
         this.sppotiTransformer = sppotiTransformer;
         this.teamMemberTransformer = teamMemberTransformer;
         this.userTransformer = userTransformer;
+        this.sppotiMailer = sppotiMailer;
     }
 
     /**
@@ -157,12 +163,17 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                 }
             });
         }
+        SppotiDTO sppotiDTO = sppotiTransformer.modelToDto(savedSppoti);
+        //send email to sppoters.
+        sppoti.getTeamHostEntity().getTeamMembers()
+                .forEach(m -> {
+                    //exclude sppoti admin from the email.
+                    if(!m.getUsers().getId().equals(sppoti.getUserSppoti().getId())){
+                        sppotiMailer.sendJoinSppotiEmail(sppotiDTO, userTransformer.modelToDto(m.getUsers()), userTransformer.modelToDto(sppoti.getUserSppoti()));
+                    }
+                });
 
-        //TODO: Send email to the adverse team admin.
-
-        //TODO: Send emails to sppoti members too.
-
-        return sppotiTransformer.modelToDto(savedSppoti);
+        return sppotiDTO;
 
     }
 
@@ -275,8 +286,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             sppoti.setDateTimeStart(sppotiRequest.getDateTimeStart());
         }
 
-        if (!StringUtils.hasText(sppotiRequest.getTitre())) {
-            sppoti.setTitre(sppotiRequest.getTitre());
+        if (!StringUtils.hasText(sppotiRequest.getName())) {
+            sppoti.setTitre(sppotiRequest.getName());
         }
 
         if (!StringUtils.hasText(sppotiRequest.getLocation())) {

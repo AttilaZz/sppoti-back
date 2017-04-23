@@ -54,9 +54,10 @@ public class ContactMailer extends ApplicationMailer {
         Context context = new Context();
         context.setVariable("name", contactDTO.getName());
         context.setVariable("email", contactDTO.getEmail());
+        context.setVariable("object", contactDTO.getObject());
         context.setVariable("body", contactDTO.getMessage());
 
-        String text = templateEngine.process(PATH_TO_ACCOUNT_TEMPLATE, context);
+        String text = templateEngine.process(PATH_TO_CONTACT_TEMPLATE, context);
 
 
         super.prepareAndSendEmail(emailContact, subject, text);

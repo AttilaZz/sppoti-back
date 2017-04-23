@@ -5,16 +5,18 @@ import org.hibernate.validator.constraints.NotEmpty;
 /**
  * Created by djenanewail on 4/8/17.
  */
-public class ContactDTO extends AbstractCommonDTO{
+public class ContactDTO extends AbstractCommonDTO {
 
     @NotEmpty
     private String message;
     @NotEmpty
     private String name;
-    @NotEmpty
+
     private String phone;
     @NotEmpty
     private String email;
+    @NotEmpty
+    private String object;
 
     public String getMessage() {
         return message;
@@ -47,4 +49,13 @@ public class ContactDTO extends AbstractCommonDTO{
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getObject() {
+        return object;
+    }
+
+    public void setObject(String object) {
+        this.object = object;
+    }
+
 }

@@ -21,7 +21,9 @@ import javax.mail.internet.MimeMessage;
 abstract class ApplicationMailer {
 
     protected static final String PATH_TO_ACCOUNT_TEMPLATE = "account/account";
+    protected static final String PATH_TO_CONTACT_TEMPLATE = "contact/contact";
     protected static final String PATH_TO_TEAM_TEMPLATE = "team/team";
+    protected static final String PATH_TO_SPPOTI_TEMPLATE = "sppoti/sppoti";
     protected static final String CHARSET_NAME = "UTF-8";
     protected static final String ERROR_SENDING_MAIL = "Error sending email";
 

@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width"/>
 
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-	<title>Recover password</title>
+	<title>Contact</title>
 
 	<!--<style type="text/css" style="margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;padding-bottom:0;padding-right:0;padding-left:0;font-family:'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;" >
 
@@ -279,8 +279,9 @@
 						<td>
 							<p class="logo"><img src="http://sppoti.com/images/loglog.png"/></p>
 
-							<h2 class="email-title" th:text="${name}">Nom & Prénom</h2>
-							<h3 class="email-title" th:text="${email}">Email</h3>
+							<h3 class="tn"><a th:text="${name}" style="color: #000;">Nom & Prénom, </a></h3>
+							<h4 class="email-title" th:text="${email}">Email</h4>
+							<h5 class="object" th:text="${object}">Contact object</h5>
 
                             <p class="lead account-message" th:text="${body}">
 								Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
@@ -292,7 +293,7 @@
 							<br/>
 
 							<p class="ftr">
-								<span>© sppoti, 1 Hacker Way, Menlo Park, CA 94022</span>
+								<span>© sppoti, 2017</span>
 							</p>
 						</td>
 					</tr>

@@ -21,15 +21,18 @@ import javax.persistence.EntityNotFoundException;
 @RequestMapping("/post")
 class PostDeleteController {
 
+    /**
+     * Post controller service.
+     */
     private PostControllerService postDataService;
 
+    /**
+     * Init post service.
+     */
     @Autowired
     void setPostDataService(PostControllerService postDataService) {
         this.postDataService = postDataService;
     }
-
-
-    private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
     /**
      * @param postId post postId.
@@ -38,13 +41,7 @@ class PostDeleteController {
     @DeleteMapping(value = "/{postId}")
     ResponseEntity<Void> deletePost(@PathVariable int postId) {
 
-        try {
-            postDataService.deletePost(postId);
-
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("POST_DELETE: can't retrieve post", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        postDataService.deletePost(postId);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

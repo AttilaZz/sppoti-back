@@ -37,7 +37,7 @@ public class SppotiDTO extends AbstractCommonDTO {
     private List<TeamDTO> teamAdverse;
 
     @NotEmpty
-    private String titre;
+    private String name;
     @NotNull
     private Long sportId;
     @NotEmpty
@@ -167,12 +167,12 @@ public class SppotiDTO extends AbstractCommonDTO {
         this.score = score;
     }
 
-    public String getTitre() {
-        return titre;
+    public String getName() {
+        return name;
     }
 
-    public void setTitre(String titre) {
-        this.titre = titre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getSportId() {
