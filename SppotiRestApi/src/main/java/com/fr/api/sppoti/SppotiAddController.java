@@ -43,7 +43,7 @@ class SppotiAddController {
 
         }
 
-        if (newSppoti.getMyTeamId() == 0 && newSppoti.getTeamHost() == null) {
+        if (newSppoti.getTeamHost() == null && newSppoti.getMyTeamId() == 0) {
             LOGGER.error("TeamHostModel && TeamHostId not found ");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
