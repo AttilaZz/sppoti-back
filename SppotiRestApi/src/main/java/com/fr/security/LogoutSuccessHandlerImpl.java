@@ -22,6 +22,9 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {

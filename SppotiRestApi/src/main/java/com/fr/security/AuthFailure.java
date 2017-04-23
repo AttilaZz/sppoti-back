@@ -20,8 +20,14 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class AuthFailure extends SimpleUrlAuthenticationFailureHandler {
 
+    /**
+     * Class logger.
+     */
     private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {

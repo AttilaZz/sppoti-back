@@ -45,34 +45,54 @@ import static org.hibernate.criterion.Restrictions.and;
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    /**
+     * Custom auth failure.
+     */
     @Autowired
     private AuthFailure authFailure;
 
+    /**
+     * Custom auth success.
+     */
     @Autowired
     private AuthSuccess authSuccess;
 
+    /**
+     * Security user details.
+     */
     @Autowired
     private UserDetailsService userDetailService;
 
+    /**
+     * Custom logout success handler.
+     */
     @Autowired
     private LogoutSuccessHandler logoutSuccessHandler;
 
+    /**
+     * Logout handler.
+     */
+    @Autowired
     private CustomLogoutHandler logoutHandler;
 
+    /**
+     * Remember me token repository.
+     */
     @Autowired
-    public void setLogoutHandler(CustomLogoutHandler logoutHandler) {
-        this.logoutHandler = logoutHandler;
-    }
+    private PersistentTokenRepository tokenRepository;
 
+    /**
+     * Configure authentication provider.
+     */
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailService);
         auth.authenticationProvider(authenticationProvider());
     }
 
-    @Autowired
-    private PersistentTokenRepository tokenRepository;
-
+    /**
+     * Configure CROSS origin.
+     */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -83,6 +103,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return source;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -120,12 +143,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(logoutSuccessHandler);
     }
 
+    /**
+     * Configure CSRF token.
+     * @return configured token.
+     */
     private CsrfTokenRepository csrfTokenRepository() {
         HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
         repository.setHeaderName("X-XSRF-TOKEN");
         return repository;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Bean
     public SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler() {
 
@@ -134,11 +164,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return auth;
     }
 
+    /**
+     * Init password encoder bean.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Init auth provider.
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
@@ -147,6 +183,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return authenticationProvider;
     }
 
+    /**
+     * Init remember me token service.
+     */
     @Bean
     public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices() {
         PersistentTokenBasedRememberMeServices tokenBasedService = new PersistentTokenBasedRememberMeServices(
@@ -154,6 +193,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return tokenBasedService;
     }
 
+    /**
+     * Init auth trust resolver.
+     */
     @Bean
     public AuthenticationTrustResolver getAuthenticationTrustResolver() {
         return new AuthenticationTrustResolverImpl();

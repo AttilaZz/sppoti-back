@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class CustomLogoutHandler implements LogoutHandler {
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
 

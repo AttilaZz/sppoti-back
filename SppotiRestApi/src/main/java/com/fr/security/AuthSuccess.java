@@ -1,10 +1,9 @@
 package com.fr.security;
 
-import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.SportEntity;
 import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
+import com.fr.transformers.UserTransformer;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.Date;
 
 import static com.fr.filter.HeadersAttributes.*;
 import static com.fr.filter.HeadersValues.*;
@@ -31,24 +28,39 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
 
-    private UserRepository userRepository;
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    private static final String ATT_USER_ID = "USER_ID";
-
+    /**
+     * Class logger.
+     */
     private static Logger LOGGER = Logger.getLogger(AuthSuccess.class);
 
+    /**
+     * USer repository.
+     */
+    private final UserRepository userRepository;
+
+    /**
+     * User transformer.
+     */
+    private final UserTransformer userTransformer;
+
+    /**
+     * Init repository.
+     */
+    @Autowired
+    public AuthSuccess(UserRepository userRepository, UserTransformer userTransformer) {
+        this.userRepository = userRepository;
+        this.userTransformer = userTransformer;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
         LOGGER.info("UserDTO has been logged :-)");
-
-        request.getSession().setAttribute(ATT_USER_ID, getAuthenticationId());
 
         response.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
         response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
@@ -58,37 +70,25 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
+        //Get connected user data.
         UserEntity users = userRepository.getByIdAndDeletedFalse(accountUserDetails.getId());
+        UserDTO user = userTransformer.modelToDto(users);
+        user.setPassword(null);
 
-        String username = users.getUsername();
-        int uid = users.getUuid();
+        //Save new connexion date and ip address.
+        users.getIpHistory().put(new Date(), request.getRemoteAddr());
+        userRepository.save(users);
 
-        UserDTO user = new UserDTO();
-        user.setUsername(username);
-        user.setId(uid);
-
-        Set<SportEntity> sportEntities = users.getRelatedSports();
-        List<SportDTO> sportDTOs = new ArrayList<>();
-
-        for (SportEntity sportEntity : sportEntities) {
-            SportDTO sportDTO = new SportDTO();
-            sportDTO.setId(sportEntity.getId());
-            sportDTO.setName(sportEntity.getName());
-
-            sportDTOs.add(sportDTO);
-        }
-
-        user.setSportDTOs(sportDTOs);
-
+        //Convert data to json.
         Gson gson = new Gson();
         response.getWriter().write(gson.toJson(user));
 
+        //Return OK status.
         response.setStatus(HttpServletResponse.SC_OK);
-
     }
 
     /**
-     * @return logged user id
+     * @return logged user id.
      */
     private Long getAuthenticationId() {
         Long id = null;

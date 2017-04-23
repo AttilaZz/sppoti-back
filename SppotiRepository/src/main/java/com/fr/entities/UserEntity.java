@@ -5,14 +5,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fr.commons.enumeration.GenderEnum;
 import com.fr.commons.enumeration.LanguageEnum;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.Past;
-import java.util.Date;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -111,6 +109,14 @@ public class UserEntity
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "language")
     private LanguageEnum languageEnum = LanguageEnum.fr;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @MapKeyColumn(name = "date_connexion")
+    @MapKeyTemporal(TemporalType.TIMESTAMP)
+    @Column(name = "ip_address", nullable = false)
+    @JoinTable(name = "connexion_history")
+    @JoinColumn(name = "user_id")
+    private Map<Date, String> ipHistory = new LinkedHashMap<>();
 
     public boolean isDeleted() {
         return deleted;
@@ -331,6 +337,14 @@ public class UserEntity
         this.languageEnum = languageEnum;
     }
 
+    public Map<Date, String> getIpHistory() {
+        return ipHistory;
+    }
+
+    public void setIpHistory(Map<Date, String> ipHistory) {
+        this.ipHistory = ipHistory;
+    }
+
     /**
      * {@inheritDoc}.
      */
@@ -360,6 +374,7 @@ public class UserEntity
         if (recoverCode != null ? !recoverCode.equals(that.recoverCode) : that.recoverCode != null) return false;
         if (recoverCodeCreationDate != null ? !recoverCodeCreationDate.equals(that.recoverCodeCreationDate) : that.recoverCodeCreationDate != null) return false;
         if (languageEnum != null ? !languageEnum.equals(that.languageEnum) : that.languageEnum != null) return false;
+        if (ipHistory != null ? !ipHistory.equals(that.ipHistory) : that.ipHistory != null) return false;
         return description != null ? description.equals(that.description) : that.description == null;
 
     }
@@ -388,6 +403,7 @@ public class UserEntity
         result = 31 * result + (accountCreationDate != null ? accountCreationDate.hashCode() : 0);
         result = 31 * result + (accountMaxActivationDate != null ? accountMaxActivationDate.hashCode() : 0);
         result = 31 * result + (languageEnum != null ? languageEnum.hashCode() : 0);
+        result = 31 * result + (ipHistory != null ? ipHistory.hashCode() : 0);
         return result;
     }
 }

@@ -1,6 +1,7 @@
 package com.fr.transformers.impl;
 
 import com.fr.commons.dto.SignUpDTO;
+import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GenderEnum;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
@@ -8,6 +9,7 @@ import com.fr.commons.enumeration.LanguageEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.ResourcesEntity;
+import com.fr.entities.SportEntity;
 import com.fr.entities.UserEntity;
 import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by djenanewail on 3/18/17.
@@ -32,6 +35,11 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
      */
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    /**
+     * Sport transformer.
+     */
+    private SportTransformer sportTransformer;
 
     /**
      * {@inheritDoc}
@@ -66,6 +74,12 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
             dto.setAvatar(userResources.getAvatar());
             dto.setCover(userResources.getCover());
             dto.setCoverType(userResources.getCoverType());
+        }
+
+        if(entity.getRelatedSports() != null && !entity.getRelatedSports().isEmpty()){
+            List<SportDTO> sportDTOs = entity.getRelatedSports().stream().map(sportTransformer::modelToDto)
+                    .collect(Collectors.toList());
+            dto.setSportDTOs(sportDTOs);
         }
 
         return dto;

@@ -18,6 +18,9 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class EntryPointUnAthorisedHandler implements AuthenticationEntryPoint {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void commence(HttpServletRequest arg0, HttpServletResponse arg1, AuthenticationException arg2)
             throws IOException, ServletException {
