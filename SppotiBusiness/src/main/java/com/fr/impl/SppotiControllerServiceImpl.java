@@ -307,7 +307,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             }
             TeamEntity team = adverseTeam.get(0);
 
-            if(!team.getSport().equals(sppoti.getSport())){
+            if(!team.getSport().getId().equals(sppoti.getSport().getId())){
                 throw new BusinessGlobalException("Adverse team sport not as same as sppoti sport !");
             }
 
