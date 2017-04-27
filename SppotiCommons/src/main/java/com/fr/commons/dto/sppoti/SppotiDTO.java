@@ -37,6 +37,7 @@ public class SppotiDTO extends AbstractCommonDTO {
     private List<TeamDTO> teamAdverse;
 
     @NotEmpty
+    @JsonProperty("titre")
     private String name;
     @NotNull
     private Long sportId;

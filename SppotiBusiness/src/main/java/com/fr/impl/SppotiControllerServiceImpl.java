@@ -287,7 +287,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         }
 
         if (!StringUtils.hasText(sppotiRequest.getName())) {
-            sppoti.setTitre(sppotiRequest.getName());
+            sppoti.setName(sppotiRequest.getName());
         }
 
         if (!StringUtils.hasText(sppotiRequest.getLocation())) {

@@ -16,7 +16,7 @@ public class SppotiEntity
         extends AbstractCommonEntity {
 
     @Column(nullable = false)
-    private String titre;
+    private String name;
 
     @Column(nullable = false)
     private String description;
@@ -112,12 +112,12 @@ public class SppotiEntity
         this.userSppoti = userSppoti;
     }
 
-    public String getTitre() {
-        return titre;
+    public String getName() {
+        return name;
     }
 
-    public void setTitre(String titre) {
-        this.titre = titre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -228,7 +228,7 @@ public class SppotiEntity
         SppotiEntity that = (SppotiEntity) o;
 
         if (deleted != that.deleted) return false;
-        if (titre != null ? !titre.equals(that.titre) : that.titre != null) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (datetimeCreated != null ? !datetimeCreated.equals(that.datetimeCreated) : that.datetimeCreated != null)
             return false;
@@ -250,7 +250,7 @@ public class SppotiEntity
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (titre != null ? titre.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (datetimeCreated != null ? datetimeCreated.hashCode() : 0);
         result = 31 * result + (dateTimeStart != null ? dateTimeStart.hashCode() : 0);
