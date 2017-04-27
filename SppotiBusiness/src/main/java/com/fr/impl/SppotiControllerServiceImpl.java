@@ -294,7 +294,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             sppoti.setLocation(sppotiRequest.getLocation());
         }
 
-        if (sppotiRequest.getMaxTeamCount() != 0) {
+        if (sppotiRequest.getMaxMembersCount() != null && sppotiRequest.getMaxTeamCount() != 0) {
             sppoti.setMaxTeamCount(sppotiRequest.getMaxTeamCount());
         }
 
