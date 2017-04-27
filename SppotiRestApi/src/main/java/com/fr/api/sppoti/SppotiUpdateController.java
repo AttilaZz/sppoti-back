@@ -90,7 +90,7 @@ class SppotiUpdateController {
             canUpdate = true;
         }
 
-        if (sppotiRequest.getMaxTeamCount() != 0) {
+        if (sppotiRequest.getMaxMembersCount() != null && sppotiRequest.getMaxTeamCount() != 0) {
             canUpdate = true;
         }
 
