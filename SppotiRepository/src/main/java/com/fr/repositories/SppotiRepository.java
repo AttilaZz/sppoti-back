@@ -5,6 +5,7 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,7 +14,11 @@ import java.util.List;
  */
 public interface SppotiRepository extends JpaRepository<SppotiEntity, Long> {
 
-
+    /**
+     * Find sppoti by uuid.
+     * @param uuid sppoti uuid.
+     * @return sppoti entity.
+     */
     SppotiEntity findByUuid(int uuid);
 
     /**

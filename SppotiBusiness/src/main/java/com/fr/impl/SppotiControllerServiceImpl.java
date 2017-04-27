@@ -269,16 +269,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     @Override
     public SppotiDTO updateSppoti(SppotiDTO sppotiRequest, int id) {
 
-        Optional<SppotiEntity> sppotiOptional = Optional.ofNullable(sppotiRepository.findByUuid(id));
-        sppotiOptional.orElseThrow(() -> new EntityNotFoundException("SppotiEntity not found with id: " + id));
+        SppotiEntity sppoti = sppotiRepository.findByUuid(id);
+        if(sppoti == null) throw new EntityNotFoundException("SppotiEntity not found with id: " + id);
 
-        SppotiEntity sppoti = sppotiOptional.get();
-
-        if (!StringUtils.hasText(sppotiRequest.getTags())) {
+        if (StringUtils.hasText(sppotiRequest.getTags())) {
             sppoti.setTags(sppotiRequest.getTags());
         }
 
-        if (!StringUtils.hasText(sppotiRequest.getDescription())) {
+        if (StringUtils.hasText(sppotiRequest.getDescription())) {
             sppoti.setDescription(sppotiRequest.getDescription());
         }
 
@@ -286,11 +284,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             sppoti.setDateTimeStart(sppotiRequest.getDateTimeStart());
         }
 
-        if (!StringUtils.hasText(sppotiRequest.getName())) {
+        if (StringUtils.hasText(sppotiRequest.getName())) {
             sppoti.setName(sppotiRequest.getName());
         }
 
-        if (!StringUtils.hasText(sppotiRequest.getLocation())) {
+        if (StringUtils.hasText(sppotiRequest.getLocation())) {
             sppoti.setLocation(sppotiRequest.getLocation());
         }
 
