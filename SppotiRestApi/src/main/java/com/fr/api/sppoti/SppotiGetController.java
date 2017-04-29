@@ -20,13 +20,22 @@ import java.util.List;
 @RequestMapping("/sppoti")
 class SppotiGetController {
 
+    /**
+     * Sppoti controller service.
+     */
     private SppotiControllerService sppotiControllerService;
 
+    /**
+     * Init Service.
+     */
     @Autowired
     void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
         this.sppotiControllerService = sppotiControllerService;
     }
 
+    /**
+     * Controller logger.
+     */
     private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 
 
@@ -37,10 +46,7 @@ class SppotiGetController {
     @GetMapping("/{id}")
     ResponseEntity<SppotiDTO> getSppotiById(@PathVariable Integer id) {
 
-        SppotiDTO response = sppotiControllerService.getSppotiByUuid(id);
-
-        LOGGER.info("Sppoti has been returned: " + response);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(sppotiControllerService.getSppotiByUuid(id), HttpStatus.OK);
 
     }
 

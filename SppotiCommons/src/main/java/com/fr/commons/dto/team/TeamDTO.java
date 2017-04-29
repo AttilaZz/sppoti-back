@@ -40,6 +40,7 @@ public class TeamDTO extends AbstractCommonDTO {
     private Long sportId;
 
     private String teamAdverseStatus;
+    private Boolean sentFromSppotiAdmin;
 
     public String getName() {
         return name;
@@ -143,5 +144,13 @@ public class TeamDTO extends AbstractCommonDTO {
 
     public void setTeamAdverseStatus(String teamAdverseStatus) {
         this.teamAdverseStatus = teamAdverseStatus;
+    }
+
+    public Boolean getSentFromSppotiAdmin() {
+        return sentFromSppotiAdmin;
+    }
+
+    public void setSentFromSppotiAdmin(Boolean sentFromSppotiAdmin) {
+        this.sentFromSppotiAdmin = sentFromSppotiAdmin;
     }
 }

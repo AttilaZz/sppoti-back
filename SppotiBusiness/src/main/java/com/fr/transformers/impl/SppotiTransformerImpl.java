@@ -109,6 +109,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
                     .map(t -> {
                         TeamDTO dto = teamTransformer.modelToDto(t.getTeam());
                         dto.setTeamAdverseStatus(t.getStatus().name());
+                        dto.setSentFromSppotiAdmin(t.getFromSppotiAdmin());
                         return dto;
                     }).collect(Collectors.toList()));
         }
