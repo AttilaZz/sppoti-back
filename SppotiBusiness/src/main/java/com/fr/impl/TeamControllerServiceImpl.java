@@ -362,24 +362,23 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 
         TeamEntity teamEntity = teamMemberEntity.getTeam();
 
-        if (!StringUtils.isEmpty(TeamDTO.getName())) {
+        if (StringUtils.hasText(TeamDTO.getName())) {
             teamEntity.setName(TeamDTO.getName());
         }
 
-        if (!StringUtils.isEmpty(TeamDTO.getLogoPath())) {
+        if (StringUtils.hasText(TeamDTO.getLogoPath())) {
             teamEntity.setLogoPath(TeamDTO.getLogoPath());
         }
 
-        if (StringUtils.isEmpty(TeamDTO.getCoverPath())) {
+        if (StringUtils.hasText(TeamDTO.getCoverPath())) {
             teamEntity.setCoverPath(TeamDTO.getCoverPath());
         }
 
-        if (!StringUtils.isEmpty(TeamDTO.getColor())) {
+        if (StringUtils.hasText(TeamDTO.getColor())) {
             teamEntity.setColor(TeamDTO.getColor());
         }
 
-        TeamEntity savedTeam = teamRepository.save(teamEntity);
-        return teamTransformer.modelToDto(savedTeam);
+        return teamTransformer.modelToDto(teamRepository.save(teamEntity));
     }
 
     /**

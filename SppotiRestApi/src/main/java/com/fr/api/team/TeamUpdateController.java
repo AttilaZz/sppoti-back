@@ -54,22 +54,22 @@ class TeamUpdateController {
         boolean canUpdate = false;
 
         //Update team name.
-        if (!StringUtils.isEmpty(teamRequestDTO.getName())) {
+        if (StringUtils.hasText(teamRequestDTO.getName())) {
             canUpdate = true;
         }
 
         //Update team logos.
-        if (!StringUtils.isEmpty(teamRequestDTO.getLogoPath())) {
+        if (StringUtils.hasText(teamRequestDTO.getLogoPath())) {
             canUpdate = true;
         }
 
         //Update team cover.
-        if (!StringUtils.isEmpty(teamRequestDTO.getCoverPath())) {
+        if (StringUtils.hasText(teamRequestDTO.getCoverPath())) {
             canUpdate = true;
         }
 
         //Update team color.
-        if (!StringUtils.isEmpty(teamRequestDTO.getColor())) {
+        if (StringUtils.hasText(teamRequestDTO.getColor())) {
             canUpdate = true;
         }
 
@@ -78,7 +78,6 @@ class TeamUpdateController {
         if (canUpdate) {
             teamControllerService.updateTeam(connectedUserId, teamRequestDTO);
         } else {
-            LOGGER.error("Update impossible");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
