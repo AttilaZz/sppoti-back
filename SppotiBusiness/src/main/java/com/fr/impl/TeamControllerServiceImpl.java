@@ -426,8 +426,10 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             throw new NotAdminException("Unauthorized access");
         }
 
-        return teamMembersRepository.findByUsersUuidAndStatusAndAdminFalse(userId, GlobalAppStatusEnum.CONFIRMED, pageable)
+        return teamMembersRepository.findByUsersUuidAndAdminFalse(userId, pageable)
                 .stream()
+                .filter(t -> t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name())
+                        || t.getStatus().name().equals(GlobalAppStatusEnum.PENDING.name()))
                 .map(t -> teamTransformer.modelToDto(t.getTeam()))
                 .sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate()))
                 .collect(Collectors.toList());

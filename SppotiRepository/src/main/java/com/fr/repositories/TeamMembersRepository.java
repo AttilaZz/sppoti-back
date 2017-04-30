@@ -80,11 +80,10 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
     /**
      *
      * @param userId user id.
-     * @param confirmed team status.
      * @param pageable page number.
      * @return all confirmed teams.
      */
-    List<TeamMemberEntity> findByUsersUuidAndStatusAndAdminFalse(int userId, GlobalAppStatusEnum confirmed, Pageable pageable);
+    List<TeamMemberEntity> findByUsersUuidAndAdminFalse(int userId, Pageable pageable);
 
     /**
      *

@@ -47,6 +47,11 @@ public class TeamEntity
 
     private boolean deleted = false;
 
+    /**
+     * Determine with sppoti is linked to the team when performing transformation of
+     */
+    private transient Long relatedSppotiId;
+
     public String getName() {
         return name;
     }
@@ -125,6 +130,14 @@ public class TeamEntity
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public Long getRelatedSppotiId() {
+        return relatedSppotiId;
+    }
+
+    public void setRelatedSppotiId(Long relatedSppotiId) {
+        this.relatedSppotiId = relatedSppotiId;
     }
 
     /**

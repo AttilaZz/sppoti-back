@@ -2,7 +2,6 @@ package com.fr.transformers.impl;
 
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.entities.SportEntity;
 import com.fr.entities.SppotiEntity;
@@ -40,13 +39,19 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
     private final TeamTransformerImpl teamTransformer;
 
     /**
+     * Team members repository.
+     */
+    private final TeamMemberTransformer teamMemberTransformer;
+
+    /**
      * Init dependencies.
      */
     @Autowired
-    public SppotiTransformerImpl(ScoreTransformer scoreTransformer, SportRepository sportRepository, TeamTransformerImpl teamTransformer) {
+    public SppotiTransformerImpl(ScoreTransformer scoreTransformer, SportRepository sportRepository, TeamTransformerImpl teamTransformer, TeamMemberTransformer teamMemberTransformer) {
         this.scoreTransformer = scoreTransformer;
         this.sportRepository = sportRepository;
         this.teamTransformer = teamTransformer;
+        this.teamMemberTransformer = teamMemberTransformer;
     }
 
     /**
@@ -108,6 +113,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
             sppotiDTO.setTeamAdverse(model.getAdverseTeams().stream()
 //                    .filter(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
                     .map(t -> {
+                        t.getTeam().setRelatedSppotiId(model.getId());
                         TeamDTO dto = teamTransformer.modelToDto(t.getTeam());
                         dto.setTeamAdverseStatus(t.getStatus().name());
                         dto.setSentFromSppotiAdmin(t.getFromSppotiAdmin());

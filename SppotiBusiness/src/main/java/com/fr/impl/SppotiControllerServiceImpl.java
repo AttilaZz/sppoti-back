@@ -218,13 +218,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         }
 
         TeamDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHostEntity(), sppoti);
-//        if (sppoti.getTeamAdverseEntity() != null) {
-//            TeamDTO teamAdverseResponse = fillTeamResponse(sppoti.getTeamAdverseEntity(), sppoti);
-//            sppotiDTO.setTeamAdverse(teamAdverseResponse);
-//            sppotiDTO.setTeamAdverseStatus(sppoti.getTeamAdverseStatusEnum().getValue());
-//        } else {
-//            sppotiDTO.setTeamAdverseStatus(GlobalAppStatusEnum.NO_CHALLENGE_YET.getValue());
-//        }
 
         sppotiDTO.setTeamHost(teamHostResponse);
         sppotiDTO.setId(sppoti.getUuid());
@@ -447,7 +440,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         }
 
         //Check if sppoti has already a CONFIRMED adverse team in the adverse team list.
-        if (sppotiEntity.getAdverseTeams() != null && sppotiEntity.getAdverseTeams().stream().anyMatch(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
+        if (sppotiEntity.getAdverseTeams() != null && sppotiEntity.getAdverseTeams().stream()
+                .anyMatch(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
             throw new BusinessGlobalException("This sppoti has already an adverse team");
         }
 

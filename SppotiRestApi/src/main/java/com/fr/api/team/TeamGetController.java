@@ -51,7 +51,7 @@ class TeamGetController {
     }
 
     /**
-     * Get all joined teams except created by me.
+     * Get all joined teams (CONFIRMED/PENDING) except mine.
      *
      * @param userId user id.
      * @param page   page number.

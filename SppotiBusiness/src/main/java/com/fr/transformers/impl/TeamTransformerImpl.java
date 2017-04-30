@@ -2,12 +2,13 @@ package com.fr.transformers.impl;
 
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.entities.SportEntity;
+import com.fr.entities.SppotiEntity;
 import com.fr.entities.TeamEntity;
+import com.fr.repositories.SppotiRepository;
 import com.fr.repositories.TeamMembersRepository;
 import com.fr.transformers.TeamTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
@@ -34,13 +35,19 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
     private final TeamMembersRepository teamMembersRepository;
 
     /**
+     * {@link com.fr.entities.SppotiEntity} repository.
+     */
+    private final SppotiRepository sppotiRepository;
+
+    /**
      * Init dependencies.
      */
     @Autowired
-    public TeamTransformerImpl(SportTransformer sportTransformer, TeamMemberTransformer teamMemberTransformer, TeamMembersRepository teamMembersRepository) {
+    public TeamTransformerImpl(SportTransformer sportTransformer, TeamMemberTransformer teamMemberTransformer, TeamMembersRepository teamMembersRepository, SppotiRepository sppotiRepository) {
         this.sportTransformer = sportTransformer;
         this.teamMemberTransformer = teamMemberTransformer;
         this.teamMembersRepository = teamMembersRepository;
+        this.sppotiRepository = sppotiRepository;
     }
 
     /**
@@ -59,11 +66,18 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
         teamDTO.setCreationDate(model.getCreationDate());
         teamDTO.setColor(model.getColor());
 
-        teamDTO.setTeamAdmin(teamMemberTransformer.modelToDto(teamMembersRepository.findByTeamUuidAndAdminTrue(model.getUuid()), null));
+        SppotiEntity sppotiEntity = null;
+        if (model.getRelatedSppotiId() != null) {
+            sppotiEntity = sppotiRepository.findOne(model.getRelatedSppotiId());
+        }
 
+        teamDTO.setTeamAdmin(teamMemberTransformer.modelToDto(teamMembersRepository
+                .findByTeamUuidAndAdminTrue(model.getUuid()), sppotiEntity));
+
+        SppotiEntity finalSppotiEntity = sppotiEntity;
         teamDTO.setMembers(
                 model.getTeamMembers().stream()
-                        .map(m -> teamMemberTransformer.modelToDto(m, null)).collect(Collectors.toList())
+                        .map(m -> teamMemberTransformer.modelToDto(m, finalSppotiEntity)).collect(Collectors.toList())
         );
 
         return teamDTO;
