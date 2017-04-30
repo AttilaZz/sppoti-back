@@ -54,15 +54,7 @@ class SppotiUpdateController {
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
         //throws exception if user is not the sppoti admin
-        try {
-            sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId());
-        } catch (EntityNotFoundException e) {
-            LOGGER.error("Sppoti not found", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (NotAdminException e) {
-            LOGGER.error("Acceess denied, u're not the sppoti admin");
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId());
 
         boolean canUpdate = false;
 

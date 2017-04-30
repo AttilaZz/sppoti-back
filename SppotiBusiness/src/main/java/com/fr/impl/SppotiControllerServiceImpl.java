@@ -36,11 +36,6 @@ import java.util.stream.Collectors;
 class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService {
 
     /**
-     * class logger
-     */
-    private Logger LOGGER = Logger.getLogger(SppotiControllerServiceImpl.class);
-
-    /**
      * Returned sppoti list size.
      */
     @Value("${key.sppotiesPerPage}")
@@ -196,50 +191,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     }
 
     /**
-     * Map sppoti entity to DTO.
-     *
-     * @param sppoti sppoti to retuen.
-     * @return sppoti DTO.
-     */
-    private SppotiDTO getSppotiResponse(SppotiEntity sppoti) {
-
-        if (sppoti == null) {
-            throw new EntityNotFoundException("SppotiEntity not found");
-        }
-
-        SppotiDTO sppotiDTO = sppotiTransformer.modelToDto(sppoti);
-
-        if (sppoti.getDescription() != null) {
-            sppotiDTO.setDescription(sppoti.getDescription());
-        }
-
-        if (sppoti.getTags() != null) {
-            sppotiDTO.setTags(sppoti.getTags());
-        }
-
-        TeamDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHostEntity(), sppoti);
-
-        sppotiDTO.setTeamHost(teamHostResponse);
-        sppotiDTO.setId(sppoti.getUuid());
-        sppotiDTO.setRelatedSport(sportTransformer.modelToDto(sppoti.getSport()));
-
-        List<SppoterEntity> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiSportId(sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId());
-
-        sppotiDTO.setSppotiCounter(sppotiMembers.size());
-        sppotiDTO.setMySppoti(getConnectedUser().getUuid() == sppoti.getUserSppoti().getUuid());
-
-        //if user is member of a team, get admin of the tem and other informations.
-        TeamMemberEntity teamAdmin = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(sppoti.getUserSppoti().getUuid(), sppoti.getTeamHostEntity().getUuid());
-        if (teamAdmin != null) {
-            sppotiDTO.setAdminTeamId(teamAdmin.getUuid());
-            sppotiDTO.setAdminUserId(sppoti.getUserSppoti().getUuid());
-            sppotiDTO.setConnectedUserId(getConnectedUser().getUuid());
-        }
-
-        return sppotiDTO;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Transactional
@@ -267,11 +218,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         SppotiEntity sppoti = sppotiRepository.findByUuid(id);
         if (sppoti == null) throw new EntityNotFoundException("SppotiEntity not found with id: " + id);
 
-        if (!StringUtils.hasText(sppotiRequest.getTags())) {
+        if (StringUtils.hasText(sppotiRequest.getTags())) {
             sppoti.setTags(sppotiRequest.getTags());
         }
 
-        if (!StringUtils.hasText(sppotiRequest.getDescription())) {
+        if (StringUtils.hasText(sppotiRequest.getDescription())) {
             sppoti.setDescription(sppotiRequest.getDescription());
         }
 
@@ -588,6 +539,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
      */
     @Override
     public List<SppotiDTO> getAllJoinedSppoties(int userId, int page) {
+
+        CheckConnectedUserAccessPrivileges(userId);
+
         Pageable pageable = new PageRequest(page, sppotiSize);
 
         List<SppoterEntity> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable);
@@ -638,26 +592,27 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     }
 
     /**
-     * @param challengeTeam adverse team.
-     * @param sppoti        sppoti id.
-     * @return all adverse team as sppoters.
+     * {@inheritDoc}
      */
-    private Set<SppoterEntity> convertAdverseTeamMembersToSppoters(TeamEntity challengeTeam, SppotiEntity sppoti, boolean fromAdverseTeam) {
-        return challengeTeam.getTeamMembers().stream()
-                .map(
-                        sm -> {
-                            SppoterEntity sppotiMember = new SppoterEntity();
-                            sppotiMember.setTeamMember(sm);
-                            sppotiMember.setSppoti(sppoti);
-                            if (fromAdverseTeam) {
-                                if (sm.getAdmin()) sppotiMember.setStatus(GlobalAppStatusEnum.CONFIRMED);
-                            } else {
-                                sppotiMember.setStatus(GlobalAppStatusEnum.PENDING);
-                            }
-                            return sppotiMember;
-                        }
+    @Override
+    public List<SppotiDTO> getAllUpcomingSppoties(int userId, int page) {
 
-                ).collect(Collectors.toSet());
+        CheckConnectedUserAccessPrivileges(userId);
+
+        Pageable pageable = new PageRequest(page, sppotiSize);
+
+        return sppotiRepository.findByUserSppotiUuid(userId, pageable)
+                .stream()
+                .filter(s -> s.getAdverseTeams().stream().anyMatch(t -> t.getStatus().name()
+                        .equals(GlobalAppStatusEnum.CONFIRMED.name()) ||
+                        (t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name()) &&
+                                t.getTeam().getTeamMembers().stream()
+                                        .anyMatch(am -> Integer.compare(am.getUsers().getUuid(), userId) == 0))) ||
+                        s.getTeamHostEntity().getTeamMembers().stream().anyMatch(t -> t.getUsers()
+                                .getUuid() == userId))
+                .map(sppotiTransformer::modelToDto)
+                .sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -723,5 +678,72 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 
         throw new EntityNotFoundException("Sppoti (" + sppotiId + ") not found");
 
+    }
+
+    /**
+     * Map sppoti entity to DTO.
+     *
+     * @param sppoti sppoti to retuen.
+     * @return sppoti DTO.
+     */
+    private SppotiDTO getSppotiResponse(SppotiEntity sppoti) {
+
+        if (sppoti == null) {
+            throw new EntityNotFoundException("SppotiEntity not found");
+        }
+
+        SppotiDTO sppotiDTO = sppotiTransformer.modelToDto(sppoti);
+
+        if (StringUtils.hasText(sppoti.getDescription())) {
+            sppotiDTO.setDescription(sppoti.getDescription());
+        }
+
+        if (StringUtils.hasText(sppoti.getTags())) {
+            sppotiDTO.setTags(sppoti.getTags());
+        }
+
+        TeamDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHostEntity(), sppoti);
+
+        sppotiDTO.setTeamHost(teamHostResponse);
+        sppotiDTO.setId(sppoti.getUuid());
+        sppotiDTO.setRelatedSport(sportTransformer.modelToDto(sppoti.getSport()));
+
+        List<SppoterEntity> sppotiMembers = sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiSportId(sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId());
+
+        sppotiDTO.setSppotiCounter(sppotiMembers.size());
+        sppotiDTO.setMySppoti(getConnectedUser().getUuid() == sppoti.getUserSppoti().getUuid());
+
+        //if user is member of a team, get admin of the tem and other informations.
+        TeamMemberEntity teamAdmin = teamMembersRepository.findByUsersUuidAndTeamUuidAndAdminTrue(sppoti.getUserSppoti().getUuid(), sppoti.getTeamHostEntity().getUuid());
+        if (teamAdmin != null) {
+            sppotiDTO.setAdminTeamId(teamAdmin.getUuid());
+            sppotiDTO.setAdminUserId(sppoti.getUserSppoti().getUuid());
+            sppotiDTO.setConnectedUserId(getConnectedUser().getUuid());
+        }
+
+        return sppotiDTO;
+    }
+
+    /**
+     * @param challengeTeam adverse team.
+     * @param sppoti        sppoti id.
+     * @return all adverse team as sppoters.
+     */
+    private Set<SppoterEntity> convertAdverseTeamMembersToSppoters(TeamEntity challengeTeam, SppotiEntity sppoti, boolean fromAdverseTeam) {
+        return challengeTeam.getTeamMembers().stream()
+                .map(
+                        sm -> {
+                            SppoterEntity sppotiMember = new SppoterEntity();
+                            sppotiMember.setTeamMember(sm);
+                            sppotiMember.setSppoti(sppoti);
+                            if (fromAdverseTeam) {
+                                if (sm.getAdmin()) sppotiMember.setStatus(GlobalAppStatusEnum.CONFIRMED);
+                            } else {
+                                sppotiMember.setStatus(GlobalAppStatusEnum.PENDING);
+                            }
+                            return sppotiMember;
+                        }
+
+                ).collect(Collectors.toSet());
     }
 }

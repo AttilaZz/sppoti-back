@@ -138,4 +138,13 @@ public interface SppotiControllerService extends AbstractControllerService {
      * @param teamDTO  team DTO containing the id of the accepted team.
      */
     void chooseOneAdverseTeamFromAllRequests(int sppotiId, TeamDTO teamDTO);
+
+    /**
+     * Get all upcoming sppoties with pagination.
+     *
+     * @param userId connected user id.
+     * @param page page number.
+     * @return list of upcoming sppoties.
+     */
+    List<SppotiDTO> getAllUpcomingSppoties(int userId, int page);
 }

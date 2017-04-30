@@ -110,6 +110,12 @@ class SppotiGetController {
     /**
      * Get all upcoming sppoties.
      *
+     * Any sppoti where:
+     *
+     * - I am an admin.
+     * - I am a member in the team host.
+     * - I am a confirmed member in the adverse team.
+     *
      * @param userId user id.
      * @param page   page number.
      * @return List of {@link SppotiDTO}
@@ -117,9 +123,8 @@ class SppotiGetController {
     @GetMapping("/all/upcoming/{userId}/{page}")
     ResponseEntity<List<SppotiDTO>> getAllUpcomingSppoties(@PathVariable int userId, @PathVariable int page) {
 
-        return new ResponseEntity<>(sppotiControllerService.getAllRefusedSppoties(userId, page), HttpStatus.OK);
+        return new ResponseEntity<>(sppotiControllerService.getAllUpcomingSppoties(userId, page), HttpStatus.OK);
 
     }
-
-
+    
 }

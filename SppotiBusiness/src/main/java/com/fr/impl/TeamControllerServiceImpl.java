@@ -11,10 +11,8 @@ import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.*;
 import com.fr.service.TeamControllerService;
 import com.fr.transformers.SppotiTransformer;
-import com.fr.transformers.impl.TeamMemberTransformer;
 import com.fr.transformers.impl.TeamTransformerImpl;
 import com.fr.transformers.impl.UserTransformerImpl;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +24,7 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -34,11 +33,6 @@ import java.util.stream.Collectors;
 
 @Component
 class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements TeamControllerService {
-
-    /**
-     * Class logger.
-     */
-    private Logger LOGGER = Logger.getLogger(TeamControllerServiceImpl.class);
 
     /**
      * Team list size.
@@ -57,11 +51,6 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
     private final TeamTransformerImpl teamTransformer;
 
     /**
-     * Team members transformer.
-     */
-    private final TeamMemberTransformer teamMemberTransformer;
-
-    /**
      * Sppoti transformer.
      */
     private final SppotiTransformer sppotiTransformer;
@@ -70,10 +59,10 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
      * Init dependencies.
      */
     @Autowired
-    public TeamControllerServiceImpl(UserTransformerImpl userTransformer, TeamTransformerImpl teamTransformer, TeamMemberTransformer teamMemberTransformer, SppotiTransformer sppotiTransformer) {
+    public TeamControllerServiceImpl(UserTransformerImpl userTransformer, TeamTransformerImpl teamTransformer,
+                                     SppotiTransformer sppotiTransformer) {
         this.userTransformer = userTransformer;
         this.teamTransformer = teamTransformer;
-        this.teamMemberTransformer = teamMemberTransformer;
         this.sppotiTransformer = sppotiTransformer;
     }
 
@@ -195,18 +184,21 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
     @Override
     public void refuseTeam(int teamId, int userId) {
 
-        TeamMemberEntity teamMembers = teamMembersRepository.findByUsersUuidAndTeamUuid(userId, teamId);
+        Optional<TeamMemberEntity> teamMembers = Optional.ofNullable(teamMembersRepository
+                .findByUsersUuidAndTeamUuid(userId, teamId));
 
-        if (teamMembers == null) {
-            throw new EntityNotFoundException("TeamEntity not found");
-        }
+        teamMembers.orElseThrow(() -> new EntityNotFoundException("TeamEntity not found"));
 
-        teamMembers.setStatus(GlobalAppStatusEnum.REFUSED);
+        teamMembers.ifPresent(t -> {
+            t.setStatus(GlobalAppStatusEnum.REFUSED);
 
-        if (teamMembersRepository.save(teamMembers) != null) {
-            addNotification(NotificationTypeEnum.X_REFUSED_YOUR_TEAM_INVITATION, teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(), teamMembers.getUsers(), null, null);
+            if (teamMembersRepository.save(t) != null) {
+                addNotification(NotificationTypeEnum.X_REFUSED_YOUR_TEAM_INVITATION,
+                        teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers(),
+                        t.getUsers(), null, null);
+            }
 
-        }
+        });
 
     }
 
@@ -422,14 +414,18 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
     public List<TeamDTO> getAllJoinedTeamsByUserId(int userId, int page) {
         Pageable pageable = new PageRequest(page, teamPageSize);
 
-        if (getConnectedUser().getUuid() != userId) {
-            throw new NotAdminException("Unauthorized access");
+        Predicate<TeamMemberEntity> filter;
+        if (getConnectedUser().getUuid() == userId) {
+            filter = t -> t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name())
+                    || t.getStatus().name().equals(GlobalAppStatusEnum.PENDING.name())
+                    || t.getStatus().name().equals(GlobalAppStatusEnum.REFUSED.name());
+        } else {
+            filter = t -> t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name());
         }
 
         return teamMembersRepository.findByUsersUuidAndAdminFalse(userId, pageable)
                 .stream()
-                .filter(t -> t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name())
-                        || t.getStatus().name().equals(GlobalAppStatusEnum.PENDING.name()))
+                .filter(filter)
                 .map(t -> teamTransformer.modelToDto(t.getTeam()))
                 .sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate()))
                 .collect(Collectors.toList());
