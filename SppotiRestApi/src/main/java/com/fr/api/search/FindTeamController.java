@@ -20,12 +20,20 @@ import java.util.List;
 @RequestMapping("/find/team")
 class FindTeamController {
 
-    private Logger LOGGER = Logger.getLogger(FindTeamController.class);
+    /**
+     * Team search types.
+     */
     private static final int MY_TEAM_SEARCH = 1;
     private static final int ALL_TEAM_SEARCH = 0;
 
+    /**
+     * Team controller service.
+     */
     private final TeamControllerService teamControllerService;
 
+    /**
+     * Init team service.
+     */
     @Autowired
     FindTeamController(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
@@ -39,13 +47,7 @@ class FindTeamController {
     @GetMapping("/" + MY_TEAM_SEARCH + "/{team}/{page}")
     ResponseEntity<List<TeamDTO>> findMyTeams(@PathVariable String team, @PathVariable int page) {
 
-        try {
-            return new ResponseEntity<>(teamControllerService.findAllMyTeams(team, page), HttpStatus.OK);
-        } catch (RuntimeException e) {
-            LOGGER.error("Find All my teams error: ", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+        return new ResponseEntity<>(teamControllerService.findAllMyTeams(team, page), HttpStatus.OK);
     }
 
     /**
@@ -56,12 +58,7 @@ class FindTeamController {
     @GetMapping("/" + ALL_TEAM_SEARCH + "/{team}/{page}")
     ResponseEntity<List<TeamDTO>> findAllTeams(@PathVariable String team, @PathVariable int page) {
 
-        try {
-            return new ResponseEntity<>(teamControllerService.findAllTeams(team, page), HttpStatus.OK);
-        } catch (RuntimeException e) {
-            LOGGER.error("Find All teams error: ", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(teamControllerService.findAllTeams(team, page), HttpStatus.OK);
 
     }
 
@@ -74,13 +71,7 @@ class FindTeamController {
     @GetMapping("/" + ALL_TEAM_SEARCH + "/{team}/{sportId}/{page}")
     ResponseEntity<List<TeamDTO>> findAllTeams(@PathVariable String team, @PathVariable int page, @PathVariable Long sport) {
 
-        try {
-            return new ResponseEntity<>(teamControllerService.findAllTeamsBySport(team, sport, page), HttpStatus.OK);
-        } catch (RuntimeException e) {
-            LOGGER.error("Find All teams error: ", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+        return new ResponseEntity<>(teamControllerService.findAllTeamsBySport(team, sport, page), HttpStatus.OK);
     }
 
 }
