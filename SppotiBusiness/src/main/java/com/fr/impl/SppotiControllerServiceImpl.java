@@ -696,6 +696,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             throw new EntityNotFoundException("SppotiEntity not found");
         }
 
+        sppoti.setConnectedUserId(getConnectedUser().getId());
         SppotiDTO sppotiDTO = sppotiTransformer.modelToDto(sppoti);
 
         if (StringUtils.hasText(sppoti.getDescription())) {

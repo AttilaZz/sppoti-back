@@ -71,6 +71,11 @@ public class SppotiEntity
     @JoinColumn(name = "score_id")
     private ScoreEntity scoreEntity;
 
+    /**
+     * to get trace of the connected user when using transformers.
+     */
+    private transient Long connectedUserId;
+
     public ScoreEntity getScoreEntity() {
         return scoreEntity;
     }
@@ -213,6 +218,14 @@ public class SppotiEntity
 
     public void setAdverseTeams(Set<SppotiAdverseEntity> adverseTeams) {
         this.adverseTeams = adverseTeams;
+    }
+
+    public Long getConnectedUserId() {
+        return connectedUserId;
+    }
+
+    public void setConnectedUserId(Long connectedUserId) {
+        this.connectedUserId = connectedUserId;
     }
 
     /**

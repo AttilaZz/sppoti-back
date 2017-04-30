@@ -38,11 +38,6 @@ class SppotiUpdateController {
     }
 
     /**
-     * Class logger.
-     */
-    private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
-
-    /**
      * @param sppotiId      sppotiId of sppoti.
      * @param sppotiRequest data to update.
      * @return 200 status with the updated sppoti, 400 status otherwise.

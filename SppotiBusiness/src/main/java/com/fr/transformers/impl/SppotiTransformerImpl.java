@@ -4,6 +4,7 @@ import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.entities.SportEntity;
+import com.fr.entities.SppotiAdverseEntity;
 import com.fr.entities.SppotiEntity;
 import com.fr.repositories.SportRepository;
 import com.fr.transformers.ScoreTransformer;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -70,21 +72,11 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
         entity.setSport(sportEntity);
 
         entity.setDatetimeCreated(new Date());
-        //TEam Adverse Status
-//        if (dto.getTeamAdverseStatus() != null) {
-//            entity.setTeamAdverseStatusEnum(GlobalAppStatusEnum.NO_CHALLENGE_YET);
-//            for (GlobalAppStatusEnum value : GlobalAppStatusEnum.values()) {
-//                if (value.getValue() == dto.getTeamAdverseStatus()) {
-//                    entity.setTeamAdverseStatusEnum(value);
-//                }
-//            }
-//        }
-
         if (StringUtils.hasText(dto.getTags())) {
             entity.setTags(dto.getTags());
         }
 
-        if (StringUtils.hasText(dto.getDescription() )) {
+        if (StringUtils.hasText(dto.getDescription())) {
             entity.setDescription(dto.getDescription());
         }
 
@@ -110,8 +102,18 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
         }
 
         if (model.getAdverseTeams() != null) {
+            //Connected user is sppoti admin.
+            //connected user is one of the adverse teams.
+            //connected user is member of one of the adverse teams.
+
+            Predicate<SppotiAdverseEntity> dtoPredicate =
+                    t -> model.getConnectedUserId().equals(model.getUserSppoti().getId()) ||
+                            (!model.getConnectedUserId().equals(model.getUserSppoti().getId()) &&
+                                    t.getTeam().getTeamMembers().stream().anyMatch(m ->
+                                            m.getUsers().getId().equals(model.getConnectedUserId())));
+
             sppotiDTO.setTeamAdverse(model.getAdverseTeams().stream()
-//                    .filter(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
+                    .filter(dtoPredicate)
                     .map(t -> {
                         t.getTeam().setRelatedSppotiId(model.getId());
                         TeamDTO dto = teamTransformer.modelToDto(t.getTeam());
