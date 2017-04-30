@@ -60,17 +60,7 @@ class SppotiGetController {
     @GetMapping("/all/{userId}/{page}")
     ResponseEntity<List<SppotiDTO>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
 
-        try {
-            List<SppotiDTO> response = sppotiControllerService.getAllUserSppoties(id, page);
-
-            LOGGER.info("The user (" + id + ") has created (" + response.size() + ") sppoties");
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } catch (RuntimeException e) {
-            LOGGER.error("Error getting sppoties: ", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(sppotiControllerService.getAllUserSppoties(id, page), HttpStatus.OK);
 
     }
 
@@ -84,10 +74,7 @@ class SppotiGetController {
     @GetMapping("/all/joined/{userId}/{page}")
     ResponseEntity<List<SppotiDTO>> getAllJoinedUserSppoties(@PathVariable("userId") int id, @PathVariable int page) {
 
-        List<SppotiDTO> response = sppotiControllerService.getAllJoinedSppoties(id, page);
-        LOGGER.info("The user (" + id + ") has joined (" + response.size() + ") sppoties");
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(sppotiControllerService.getAllJoinedSppoties(id, page), HttpStatus.OK);
 
     }
 
@@ -101,10 +88,7 @@ class SppotiGetController {
     @GetMapping("/all/confirmed/{userId}/{page}")
     ResponseEntity<List<SppotiDTO>> getAllConfirmedSppoties(@PathVariable int userId, @PathVariable int page) {
 
-        List<SppotiDTO> response = sppotiControllerService.getAllConfirmedSppoties(userId, page);
-        LOGGER.info("The user (" + userId + ") has joined (" + response.size() + ") sppoties");
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(sppotiControllerService.getAllConfirmedSppoties(userId, page), HttpStatus.OK);
 
     }
 
@@ -118,10 +102,24 @@ class SppotiGetController {
     @GetMapping("/all/refused/{userId}/{page}")
     ResponseEntity<List<SppotiDTO>> getAllRefusedSppoties(@PathVariable int userId, @PathVariable int page) {
 
-        List<SppotiDTO> response = sppotiControllerService.getAllRefusedSppoties(userId, page);
-        LOGGER.info("The user (" + userId + ") has joined (" + response.size() + ") sppoties");
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(sppotiControllerService.getAllRefusedSppoties(userId, page), HttpStatus.OK);
 
     }
+
+
+    /**
+     * Get all upcoming sppoties.
+     *
+     * @param userId user id.
+     * @param page   page number.
+     * @return List of {@link SppotiDTO}
+     */
+    @GetMapping("/all/upcoming/{userId}/{page}")
+    ResponseEntity<List<SppotiDTO>> getAllUpcomingSppoties(@PathVariable int userId, @PathVariable int page) {
+
+        return new ResponseEntity<>(sppotiControllerService.getAllRefusedSppoties(userId, page), HttpStatus.OK);
+
+    }
+
+
 }
