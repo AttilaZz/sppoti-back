@@ -89,7 +89,8 @@ public class TeamMemberTransformer {
 
             userDTO.setRating(getRatingStars(memberEntity.getUsers().getUuid(), sppotiId));
 
-            Optional<SppoterEntity> optional = Optional.ofNullable(sppotiMembersRepository.findByTeamMemberUsersUuidAndSppotiUuid(memberEntity.getUsers().getUuid(), sppotiId));
+            Optional<SppoterEntity> optional = Optional.ofNullable(sppotiMembersRepository
+                    .findByTeamMemberUsersUuidAndSppotiUuid(memberEntity.getUsers().getUuid(), sppotiId));
             optional.ifPresent(sm -> userDTO.setHasRateOtherSppoters(sm.getHasRateOtherSppoter()));
 
          }

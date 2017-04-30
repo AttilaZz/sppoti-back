@@ -460,10 +460,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
                             addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sp.getUserSppoti(),
                                     teamAdverseAdmin, null, sp);
 
-                            //Convert team members to sppoters
-                            Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(teamAdverse.getTeam(), sp, true);
-                            sp.setSppotiMembers(sppotiMembers);
-                            sppotiRepository.save(sp);
+                            //Convert team members to sppoters if status equals to confirmed
+                            if (GlobalAppStatusEnum.valueOf(teamDTO.getTeamAdverseStatus())
+                                    .equals(GlobalAppStatusEnum.CONFIRMED)) {
+                                Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters
+                                        (teamAdverse.getTeam(), sp, true);
+                                sp.setSppotiMembers(sppotiMembers);
+                                sppotiRepository.save(sp);
+                            }
                         });
             });
         });
