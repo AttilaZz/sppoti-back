@@ -25,17 +25,22 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/account")
 class AccountGetController {
 
-    private Logger LOGGER = Logger.getLogger(AccountGetController.class);
-    private static final String ATT_USER_ID = "USER_ID";
-
-
+    /**
+     * Account controller service.
+     */
     private AccountControllerService accountControllerService;
 
+    /**
+     * Init account service.
+     */
     @Autowired
     void setAccountControllerService(AccountControllerService accountControllerService) {
         this.accountControllerService = accountControllerService;
     }
 
+    /**
+     * Get connected user account informations.
+     */
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping
     ResponseEntity<UserDTO> connectedUserInfo(Authentication authentication) {
@@ -47,7 +52,11 @@ class AccountGetController {
 
     }
 
-
+    /**
+     * HGet any user account information by its username.
+     * @param username username of a user.
+     * @return user data.
+     */
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/other/{username}/**")
     ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") String username, Authentication authentication) {

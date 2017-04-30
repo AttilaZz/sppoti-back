@@ -100,15 +100,15 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         TeamDTO teamDTO = newSppoti.getTeamHost();
         if (teamDTO != null) {
 
-            if (teamDTO.getName() != null) {
+            if (StringUtils.hasText(teamDTO.getName())) {
                 hostTeam.setName(teamDTO.getName());
             }
 
-            if (teamDTO.getLogoPath() != null) {
+            if (StringUtils.hasText(teamDTO.getName())) {
                 hostTeam.setLogoPath(teamDTO.getLogoPath());
             }
 
-            if (teamDTO.getCoverPath() != null) {
+            if (StringUtils.hasText(teamDTO.getName())) {
                 hostTeam.setCoverPath(teamDTO.getCoverPath());
             }
 
@@ -272,11 +272,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         SppotiEntity sppoti = sppotiRepository.findByUuid(id);
         if(sppoti == null) throw new EntityNotFoundException("SppotiEntity not found with id: " + id);
 
-        if (StringUtils.hasText(sppotiRequest.getTags())) {
+        if (!StringUtils.hasText(sppotiRequest.getTags())) {
             sppoti.setTags(sppotiRequest.getTags());
         }
 
-        if (StringUtils.hasText(sppotiRequest.getDescription())) {
+        if (!StringUtils.hasText(sppotiRequest.getDescription())) {
             sppoti.setDescription(sppotiRequest.getDescription());
         }
 

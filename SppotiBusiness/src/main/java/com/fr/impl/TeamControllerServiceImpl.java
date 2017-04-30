@@ -470,7 +470,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
             //Check if team exists.
             TeamEntity team = getTeamEntityIfExist(teamId);
 
-            //Check if team is not already accepted as challenger.
+            //Check if team is not already accepted as challenger of this sppoti.
             Optional<SppotiAdverseEntity> sppotiAdverseEntityOptional = sp.getAdverseTeams().stream()
                     .filter(t -> t.getTeam().getId().equals(team.getId()) && t.getFromSppotiAdmin().equals(Boolean.TRUE))
                     .findAny();

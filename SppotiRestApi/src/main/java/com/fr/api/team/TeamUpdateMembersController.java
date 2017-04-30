@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/team/{teamId}/member")
- class TeamUpdateMembersController {
+class TeamUpdateMembersController {
 
     /**
      * Team controller service.
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
      * Init services.
      */
     @Autowired
-     void setTeamControllerService(TeamControllerService teamControllerService) {
+    void setTeamControllerService(TeamControllerService teamControllerService) {
         this.teamControllerService = teamControllerService;
     }
 
@@ -46,7 +46,7 @@ import org.springframework.web.bind.annotation.*;
      * @return The updated member information.
      */
     @PutMapping("/{memberId}")
-     ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamDTO teamDto) {
+    ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId, @RequestBody TeamDTO teamDto) {
 
         boolean canUpdate = false;
 
@@ -67,15 +67,8 @@ import org.springframework.web.bind.annotation.*;
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        try {
-            teamControllerService.updateTeamMembers(teamDto, memberId, teamId);
+        teamControllerService.updateTeamMembers(teamDto, memberId, teamId);
 
-        } catch (RuntimeException e) {
-            LOGGER.error("Problem updating team member: ", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        LOGGER.info("TeamEntity member data updated ! \n " + teamDto.toString());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
 
     }
@@ -86,7 +79,7 @@ import org.springframework.web.bind.annotation.*;
      * @return 202 status if captain updated.
      */
     @PutMapping("/captain/{memberId}")
-     ResponseEntity<TeamDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
+    ResponseEntity<TeamDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
@@ -102,7 +95,7 @@ import org.springframework.web.bind.annotation.*;
      * @return 200 status if memeber has been added
      */
     @DeleteMapping("/{memberId}")
-     ResponseEntity<Void> deleteMember(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
+    ResponseEntity<Void> deleteMember(@PathVariable int teamId, @PathVariable int memberId, Authentication authentication) {
 
         AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 
@@ -118,7 +111,7 @@ import org.springframework.web.bind.annotation.*;
      * @return 201 status if memeber has been added.
      */
     @PostMapping
-     ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody UserDTO user) {
+    ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody UserDTO user) {
 
         if (user.getId() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

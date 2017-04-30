@@ -11,6 +11,7 @@ import com.fr.transformers.ScoreTransformer;
 import com.fr.transformers.SppotiTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
@@ -74,11 +75,11 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 //            }
 //        }
 
-        if (dto.getTags() != null) {
+        if (StringUtils.hasText(dto.getTags())) {
             entity.setTags(dto.getTags());
         }
 
-        if (dto.getDescription() != null) {
+        if (StringUtils.hasText(dto.getDescription() )) {
             entity.setDescription(dto.getDescription());
         }
 
