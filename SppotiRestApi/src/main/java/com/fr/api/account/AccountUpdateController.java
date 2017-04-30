@@ -20,58 +20,65 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/account")
 class AccountUpdateController {
 
-    private Logger LOGGER = Logger.getLogger(AccountUpdateController.class);
-
+    /**
+     * Account controller service.
+     */
     private AccountControllerService accountControllerService;
 
+    /**
+     * Init account service.
+     */
     @Autowired
     void setAccountControllerService(AccountControllerService accountControllerService) {
         this.accountControllerService = accountControllerService;
     }
 
+    /**
+     * Edit user account information.
+     * @param user data to update.
+     * @return updated data with http status 202 if update success, 400 otherwise.
+     */
     @PutMapping
     ResponseEntity<UserDTO> editUserInfo(@RequestBody UserDTO user) {
 
         boolean update = false;
 
-        if (!StringUtils.hasText(user.getAvatar()) || (!StringUtils.hasText(user.getCover()) && user.getCoverType() != null)) {
+        if (StringUtils.hasText(user.getAvatar()) || (StringUtils.hasText(user.getCover()) && user.getCoverType() != null)) {
 
-            //resources
             accountControllerService.updateAvatarAndCover(user);
 
-            LOGGER.info("USER-UPDATE: UserDTO has been updated!");
             return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
         } else {
             //first name
-            if (!StringUtils.hasText(user.getFirstName())) {
+            if (StringUtils.hasText(user.getFirstName())) {
                 update = true;
             }
             //last name
-            if (!StringUtils.hasText(user.getLastName())) {
+            if (StringUtils.hasText(user.getLastName())) {
                 update = true;
             }
             //address
-            if (!StringUtils.hasText(user.getAddress())) {
+            if (StringUtils.hasText(user.getAddress())) {
                 update = true;
             }
             //username
-            if (!StringUtils.hasText(user.getUsername())) {
+            if (StringUtils.hasText(user.getUsername())) {
                 update = true;
             }
             //phone
-            if (!StringUtils.hasText(user.getPhone())) {
+            if (StringUtils.hasText(user.getPhone())) {
                 update = true;
             }
             //password
-            if (!StringUtils.hasText(user.getPassword())) {
+            if (StringUtils.hasText(user.getPassword())) {
                 update = true;
             }
             //email
-            if (!StringUtils.hasText(user.getEmail())) {
+            if (StringUtils.hasText(user.getEmail())) {
                 update = true;
             }
             //language
-            if (!StringUtils.isEmpty(user.getLanguage())) {
+            if (StringUtils.isEmpty(user.getLanguage())) {
                 update = true;
             }
 
@@ -79,13 +86,11 @@ class AccountUpdateController {
 
             if (update) {
                 accountControllerService.updateUser(user);
-                LOGGER.info("USER-UPDATE: UserDTO has been updated!");
                 return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
             }
 
         }
 
-        LOGGER.error("USER-UPDATE: Nothing to update OR missing parameter");
         return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
     }
 
