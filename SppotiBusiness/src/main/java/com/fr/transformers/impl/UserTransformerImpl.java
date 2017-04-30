@@ -39,6 +39,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
     /**
      * Sport transformer.
      */
+    @Autowired
     private SportTransformer sportTransformer;
 
     /**

@@ -125,7 +125,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             }
             hostTeam = tempTeams.get(0);
 
-            if(!hostTeam.getSport().equals(sppoti.getSport())){
+            if (!hostTeam.getSport().equals(sppoti.getSport())) {
                 throw new BusinessGlobalException("Host team sport not as same as sppoti sport !");
             }
 
@@ -168,8 +168,10 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         sppoti.getTeamHostEntity().getTeamMembers()
                 .forEach(m -> {
                     //exclude sppoti admin from the email.
-                    if(!m.getUsers().getId().equals(sppoti.getUserSppoti().getId())){
-                        sppotiMailer.sendJoinSppotiEmail(sppotiDTO, userTransformer.modelToDto(m.getUsers()), userTransformer.modelToDto(sppoti.getUserSppoti()));
+                    if (!m.getUsers().getId().equals(sppoti.getUserSppoti().getId())) {
+                        new Thread(() -> this.sppotiMailer.sendJoinSppotiEmail(sppotiDTO,
+                                userTransformer.modelToDto(m.getUsers()),
+                                userTransformer.modelToDto(sppoti.getUserSppoti()))).start();
                     }
                 });
 
@@ -270,7 +272,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
     public SppotiDTO updateSppoti(SppotiDTO sppotiRequest, int id) {
 
         SppotiEntity sppoti = sppotiRepository.findByUuid(id);
-        if(sppoti == null) throw new EntityNotFoundException("SppotiEntity not found with id: " + id);
+        if (sppoti == null) throw new EntityNotFoundException("SppotiEntity not found with id: " + id);
 
         if (!StringUtils.hasText(sppotiRequest.getTags())) {
             sppoti.setTags(sppotiRequest.getTags());
@@ -305,7 +307,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
             }
             TeamEntity team = adverseTeam.get(0);
 
-            if(!team.getSport().getId().equals(sppoti.getSport().getId())){
+            if (!team.getSport().getId().equals(sppoti.getSport().getId())) {
                 throw new BusinessGlobalException("Adverse team sport not as same as sppoti sport !");
             }
 
@@ -440,7 +442,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
         }
 
         //check if team sport is as same as sppoti sport.
-        if(!challengeTeam.getSport().equals(sppotiEntity.getSport())){
+        if (!challengeTeam.getSport().getId().equals(sppotiEntity.getSport().getId())) {
             throw new BusinessGlobalException("challenged team sport not as same as sppoti sport !");
         }
 
