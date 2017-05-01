@@ -36,8 +36,9 @@ class UnlikeCommentController
 	
 	/** Init services. */
 	@Autowired
-	UnlikeCommentController(PostControllerService postDataService, CommentControllerService commentControllerService,
-							LikeControllerService likeControllerService)
+	UnlikeCommentController(final PostControllerService postDataService,
+							final CommentControllerService commentControllerService,
+							final LikeControllerService likeControllerService)
 	{
 		this.postDataService = postDataService;
 		this.commentControllerService = commentControllerService;
@@ -53,13 +54,13 @@ class UnlikeCommentController
 	 * @return 200 status if comment has been unliked or 404 if not.
 	 */
 	@DeleteMapping(value = "/comment/{id}")
-	ResponseEntity<Void> unLikeComment(@PathVariable("id") int id, HttpServletRequest request)
+	ResponseEntity<Void> unLikeComment(@PathVariable("id") final int id, final HttpServletRequest request)
 	{
 		
-		CommentEntity commentEntityToLike = commentControllerService.findComment(id);
+		final CommentEntity commentEntityToLike = this.commentControllerService.findComment(id);
 		
-		Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-		UserEntity user = postDataService.getUserById(userId);
+		final Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+		final UserEntity user = this.postDataService.getUserById(userId);
 		
 		if (commentEntityToLike == null || user == null) {
 			
@@ -73,8 +74,8 @@ class UnlikeCommentController
 		}
 		
 		//post must be liked before unlike
-		if (likeControllerService.isCommentAlreadyLikedByUser(id, userId)) {
-			likeControllerService.unLikeComment(commentEntityToLike);
+		if (this.likeControllerService.isCommentAlreadyLikedByUser(id, userId)) {
+			this.likeControllerService.unLikeComment(commentEntityToLike);
 			// delete success:" + id + " has been liked by: " + user.getFirstName()
 			return new ResponseEntity<>(HttpStatus.OK);
 			

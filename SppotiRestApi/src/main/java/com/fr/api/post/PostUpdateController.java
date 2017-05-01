@@ -1,19 +1,16 @@
 package com.fr.api.post;
 
-import com.fr.aop.TraceAuthentification;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.entities.AddressEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
 import com.fr.entities.SportEntity;
 import com.fr.service.PostControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -26,21 +23,14 @@ import java.util.SortedSet;
 public class PostUpdateController
 {
 	
-	/**
-	 * Post controller service.
-	 */
+	/** Post controller service. */
 	private final PostControllerService postDataService;
-	
-	/**
-	 * Class logger.
-	 */
-	private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 	
 	/**
 	 * Init services.
 	 */
 	@Autowired
-	public PostUpdateController(PostControllerService postDataService)
+	public PostUpdateController(final PostControllerService postDataService)
 	{
 		this.postDataService = postDataService;
 	}
@@ -49,17 +39,11 @@ public class PostUpdateController
 	 * Edit post visibility.
 	 */
 	@PutMapping(value = "/{postId}/{visibility}")
-	ResponseEntity<Void> editVisibility(@PathVariable int id, @PathVariable int visibility)
+	ResponseEntity<Void> editVisibility(@PathVariable final int id, @PathVariable final int visibility)
 	{
 		
-		try {
-			postDataService.editPostVisibility(id, visibility);
-		} catch (EntityNotFoundException e) {
-			LOGGER.info("POST_EDIT_VISIBILITY: Can't update visibility!!", e);
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
+		this.postDataService.editPostVisibility(id, visibility);
 		
-		LOGGER.info("POST_EDIT_VISIBILITY: PostEntity VISIBILITY has been changed for postId: " + id);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		
 	}
@@ -68,22 +52,21 @@ public class PostUpdateController
 	 * Update post information.
 	 */
 	@PutMapping(value = "/{postId}")
-	ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("postId") int postId,
-														@RequestBody ContentEditedResponseDTO newData)
+	ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("postId") final int postId,
+														@RequestBody final ContentEditedResponseDTO newData)
 	{
 		
-		PostEntity postToEdit = postDataService.findPost(postId);
+		final PostEntity postToEdit = this.postDataService.findPost(postId);
 		
-		List<EditHistoryEntity> lastPostEditList = postDataService.getLastModification(postId);
+		final List<EditHistoryEntity> lastPostEditList = this.postDataService.getLastModification(postId);
 		EditHistoryEntity lastPostEdit = null;
-		boolean isAlreadyEdited = !lastPostEditList.isEmpty();
+		final boolean isAlreadyEdited = !lastPostEditList.isEmpty();
 		
-		EditHistoryEntity postEditRow = new EditHistoryEntity();
-		SortedSet<AddressEntity> postEditAddress = null;
+		final EditHistoryEntity postEditRow = new EditHistoryEntity();
+		final SortedSet<AddressEntity> postEditAddress = null;
 		
 		// Required attributes
 		if (postToEdit == null) {
-			LOGGER.info("POST_UPDATE: Failed to retreive the post");
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
@@ -96,7 +79,7 @@ public class PostUpdateController
 		
 		// test the received attributes content
 		/*
-         * If post content has been edited -> New row in EDITHISTORY is created
+		 * If post content has been edited -> New row in EDITHISTORY is created
 		 * Otherwise: we just add a new row in address table related to the
 		 * targeted post
 		 */
@@ -105,7 +88,7 @@ public class PostUpdateController
 			postEditRow.setText(newData.getText());
 
             /*
-             related SportDTO can be modified
+			 related SportDTO can be modified
              */
 			if (isAlreadyEdited) {
 				postEditRow.setSport(lastPostEdit.getSport());
@@ -115,7 +98,7 @@ public class PostUpdateController
 			
 		} else if (newData.getSportId() != null) {
 			// SportDTO modification
-			SportEntity sp = postDataService.getSportById(newData.getSportId());
+			final SportEntity sp = this.postDataService.getSportById(newData.getSportId());
 			if (sp != null) {
 				postEditRow.setSport(sp);
 				
@@ -124,19 +107,16 @@ public class PostUpdateController
 				}
 				
 			} else {
-				LOGGER.info("POST_UPDATE: Failed to retrieve the SportDTO to update");
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 		} else {
-			LOGGER.info("POST_UPDATE: No much found for the arguments sent");
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
 		// if all arguments are correctly assigned - edit post
-		if (postDataService.updatePost(postEditRow, postEditAddress, postId)) {
-			LOGGER.info("POST_UPDATE: success");
+		if (this.postDataService.updatePost(postEditRow, postEditAddress, postId)) {
 			
-			ContentEditedResponseDTO edit = new ContentEditedResponseDTO();
+			final ContentEditedResponseDTO edit = new ContentEditedResponseDTO();
 			edit.setId(postToEdit.getId());
 			edit.setDateTime(postEditRow.getDatetimeEdited());
 			edit.setText(postEditRow.getText());
@@ -146,7 +126,6 @@ public class PostUpdateController
 			
 			return new ResponseEntity<>(edit, HttpStatus.ACCEPTED);
 		} else {
-			LOGGER.info("POST_UPDATE: Failed when trying to update the post in DB");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		

@@ -1,9 +1,8 @@
 package com.fr.api.notifications;
 
 import com.fr.commons.dto.notification.NotificationListDTO;
-import com.fr.service.NotificationControllerService;
 import com.fr.security.AccountUserDetails;
-import org.apache.log4j.Logger;
+import com.fr.service.NotificationControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +22,7 @@ class NotificationController
 	
 	/** Init notif service. */
 	@Autowired
-	void setNotificationControllerService(NotificationControllerService notificationControllerService)
+	void setNotificationControllerService(final NotificationControllerService notificationControllerService)
 	{
 		this.notificationControllerService = notificationControllerService;
 	}
@@ -37,10 +36,11 @@ class NotificationController
 	 * @return all unread user notifications.
 	 */
 	@GetMapping("/{page}")
-	ResponseEntity<NotificationListDTO> getAllUserNotifications(@PathVariable int userId, @PathVariable int page)
+	ResponseEntity<NotificationListDTO> getAllUserNotifications(@PathVariable final int userId,
+																@PathVariable final int page)
 	{
 		
-		NotificationListDTO notificationListDTO = notificationControllerService
+		final NotificationListDTO notificationListDTO = this.notificationControllerService
 				.getAllReceivedNotifications(userId, page);
 		
 		return new ResponseEntity<>(notificationListDTO, HttpStatus.OK);
@@ -53,12 +53,12 @@ class NotificationController
 	 * @return 200 http status if notif were updated, 404 http status if notif not found, 500 http status otherwise.
 	 */
 	@PutMapping("/{notifId}")
-	ResponseEntity<Void> openNotification(@PathVariable int notifId, Authentication authentication)
+	ResponseEntity<Void> openNotification(@PathVariable final int notifId, final Authentication authentication)
 	{
 		
-		Long connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		final Long connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 		
-		notificationControllerService.openNotification(notifId, connectedUserId);
+		this.notificationControllerService.openNotification(notifId, connectedUserId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}

@@ -3,19 +3,15 @@ package com.fr.api.team;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.TeamControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 /**
@@ -27,16 +23,12 @@ import javax.validation.Valid;
 class TeamAddController
 {
 	
-	/**
-	 * Team controller service.
-	 */
+	/** Team controller service. */
 	private TeamControllerService teamControllerService;
 	
-	/**
-	 * Init services.
-	 */
+	/** Init services. */
 	@Autowired
-	void setTeamControllerService(TeamControllerService teamControllerService)
+	void setTeamControllerService(final TeamControllerService teamControllerService)
 	{
 		this.teamControllerService = teamControllerService;
 	}
@@ -52,12 +44,12 @@ class TeamAddController
 	 * @return Created team data
 	 */
 	@PostMapping
-	ResponseEntity<TeamDTO> createTeam(@RequestBody @Valid TeamDTO team, Authentication authentication)
+	ResponseEntity<TeamDTO> createTeam(@RequestBody @Valid final TeamDTO team, final Authentication authentication)
 	{
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		TeamDTO teamDTO = teamControllerService.saveTeam(team, accountUserDetails.getId());
+		final TeamDTO teamDTO = this.teamControllerService.saveTeam(team, accountUserDetails.getId());
 		
 		return new ResponseEntity<>(teamDTO, HttpStatus.CREATED);
 	}

@@ -2,7 +2,6 @@ package com.fr.api.gallery;
 
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.service.PostControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +26,7 @@ class GalleryPhotoController
 	
 	/** Init post service. */
 	@Autowired
-	void setPostControllerService(PostControllerService postControllerService)
+	void setPostControllerService(final PostControllerService postControllerService)
 	{
 		this.postControllerService = postControllerService;
 	}
@@ -39,10 +38,10 @@ class GalleryPhotoController
 	 * @return List of all photos posted by a user.
 	 */
 	@GetMapping(value = "/{page}")
-	ResponseEntity<List<PostDTO>> photoGallery(@PathVariable int page, @PathVariable int userId)
+	ResponseEntity<List<PostDTO>> photoGallery(@PathVariable final int page, @PathVariable final int userId)
 	{
 		
-		return new ResponseEntity<>(postControllerService.getPhotoGallery(userId, page), HttpStatus.OK);
+		return new ResponseEntity<>(this.postControllerService.getPhotoGallery(userId, page), HttpStatus.OK);
 		
 	}
 	

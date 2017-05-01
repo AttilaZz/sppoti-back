@@ -4,13 +4,11 @@ import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.SppotiControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 /**
@@ -21,16 +19,12 @@ import java.util.List;
 class RatingSppoter
 {
 	
-	/**
-	 * Sppoti controller service.
-	 */
+	/** Sppoti controller service. */
 	private SppotiControllerService sppotiControllerService;
 	
-	/**
-	 * Init services.
-	 */
+	/** Init services. */
 	@Autowired
-	void setSppotiControllerService(SppotiControllerService sppotiControllerService)
+	void setSppotiControllerService(final SppotiControllerService sppotiControllerService)
 	{
 		this.sppotiControllerService = sppotiControllerService;
 	}
@@ -39,8 +33,8 @@ class RatingSppoter
 	 * Evaluate other sppoters in same sppoti.
 	 */
 	@PostMapping("/sppoter/{sppotiId}")
-	ResponseEntity<List<UserDTO>> rateSppoter(@PathVariable int sppotiId,
-											  @RequestBody List<SppotiRatingDTO> sppotiRatingDTO)
+	ResponseEntity<List<UserDTO>> rateSppoter(@PathVariable final int sppotiId,
+											  @RequestBody final List<SppotiRatingDTO> sppotiRatingDTO)
 	{
 		
 		sppotiRatingDTO.forEach(sp -> {
@@ -53,7 +47,7 @@ class RatingSppoter
 			}
 		});
 		
-		return new ResponseEntity<>(sppotiControllerService.rateSppoters(sppotiRatingDTO, sppotiId),
+		return new ResponseEntity<>(this.sppotiControllerService.rateSppoters(sppotiRatingDTO, sppotiId),
 				HttpStatus.CREATED);
 	}
 	

@@ -2,7 +2,6 @@ package com.fr.api.gallery;
 
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.service.PostControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,7 @@ class GalleryVideoController
 	
 	/** Init post service. */
 	@Autowired
-	void setPostControllerService(PostControllerService postControllerService)
+	void setPostControllerService(final PostControllerService postControllerService)
 	{
 		this.postControllerService = postControllerService;
 	}
@@ -37,10 +36,10 @@ class GalleryVideoController
 	 * @return all videos posted by user.
 	 */
 	@GetMapping(value = "/{page}")
-	ResponseEntity<List<PostDTO>> videoGallery(@PathVariable int page, @PathVariable int userId)
+	ResponseEntity<List<PostDTO>> videoGallery(@PathVariable final int page, @PathVariable final int userId)
 	{
 		
-		return new ResponseEntity<>(postControllerService.getVideoGallery(userId, page), HttpStatus.OK);
+		return new ResponseEntity<>(this.postControllerService.getVideoGallery(userId, page), HttpStatus.OK);
 		
 	}
 }

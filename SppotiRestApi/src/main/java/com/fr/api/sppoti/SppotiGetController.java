@@ -2,7 +2,6 @@ package com.fr.api.sppoti;
 
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.service.SppotiControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,25 +20,15 @@ import java.util.List;
 class SppotiGetController
 {
 	
-	/**
-	 * Sppoti controller service.
-	 */
+	/** Sppoti controller service. */
 	private SppotiControllerService sppotiControllerService;
 	
-	/**
-	 * Init Service.
-	 */
+	/** Init Service. */
 	@Autowired
-	void setSppotiControllerService(SppotiControllerService sppotiControllerService)
+	void setSppotiControllerService(final SppotiControllerService sppotiControllerService)
 	{
 		this.sppotiControllerService = sppotiControllerService;
 	}
-	
-	/**
-	 * Controller logger.
-	 */
-	private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
-	
 	
 	/**
 	 * @param id
@@ -48,10 +37,10 @@ class SppotiGetController
 	 * @return 200 status with the target sppoti, 400 status otherwise.
 	 */
 	@GetMapping("/{id}")
-	ResponseEntity<SppotiDTO> getSppotiById(@PathVariable Integer id)
+	ResponseEntity<SppotiDTO> getSppotiById(@PathVariable final Integer id)
 	{
 		
-		return new ResponseEntity<>(sppotiControllerService.getSppotiByUuid(id), HttpStatus.OK);
+		return new ResponseEntity<>(this.sppotiControllerService.getSppotiByUuid(id), HttpStatus.OK);
 		
 	}
 	
@@ -66,10 +55,11 @@ class SppotiGetController
 	 * @return List of {@link SppotiDTO}
 	 */
 	@GetMapping("/all/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllUserSppoties(@PathVariable("userId") int id, @PathVariable int page)
+	ResponseEntity<List<SppotiDTO>> getAllUserSppoties(@PathVariable("userId") final int id,
+													   @PathVariable final int page)
 	{
 		
-		return new ResponseEntity<>(sppotiControllerService.getAllUserSppoties(id, page), HttpStatus.OK);
+		return new ResponseEntity<>(this.sppotiControllerService.getAllUserSppoties(id, page), HttpStatus.OK);
 		
 	}
 	
@@ -84,10 +74,11 @@ class SppotiGetController
 	 * @return List of {@link SppotiDTO}
 	 */
 	@GetMapping("/all/joined/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllJoinedUserSppoties(@PathVariable("userId") int id, @PathVariable int page)
+	ResponseEntity<List<SppotiDTO>> getAllJoinedUserSppoties(@PathVariable("userId") final int id,
+															 @PathVariable    final int page)
 	{
 		
-		return new ResponseEntity<>(sppotiControllerService.getAllJoinedSppoties(id, page), HttpStatus.OK);
+		return new ResponseEntity<>(this.sppotiControllerService.getAllJoinedSppoties(id, page), HttpStatus.OK);
 		
 	}
 	
@@ -102,10 +93,11 @@ class SppotiGetController
 	 * @return List of {@link SppotiDTO}
 	 */
 	@GetMapping("/all/confirmed/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllConfirmedSppoties(@PathVariable int userId, @PathVariable int page)
+	ResponseEntity<List<SppotiDTO>> getAllConfirmedSppoties(@PathVariable final int userId,
+															@PathVariable final int page)
 	{
 		
-		return new ResponseEntity<>(sppotiControllerService.getAllConfirmedSppoties(userId, page), HttpStatus.OK);
+		return new ResponseEntity<>(this.sppotiControllerService.getAllConfirmedSppoties(userId, page), HttpStatus.OK);
 		
 	}
 	
@@ -120,10 +112,10 @@ class SppotiGetController
 	 * @return List of {@link SppotiDTO}
 	 */
 	@GetMapping("/all/refused/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllRefusedSppoties(@PathVariable int userId, @PathVariable int page)
+	ResponseEntity<List<SppotiDTO>> getAllRefusedSppoties(@PathVariable final int userId, @PathVariable final int page)
 	{
 		
-		return new ResponseEntity<>(sppotiControllerService.getAllRefusedSppoties(userId, page), HttpStatus.OK);
+		return new ResponseEntity<>(this.sppotiControllerService.getAllRefusedSppoties(userId, page), HttpStatus.OK);
 		
 	}
 	
@@ -145,10 +137,10 @@ class SppotiGetController
 	 * @return List of {@link SppotiDTO}
 	 */
 	@GetMapping("/all/upcoming/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllUpcomingSppoties(@PathVariable int userId, @PathVariable int page)
+	ResponseEntity<List<SppotiDTO>> getAllUpcomingSppoties(@PathVariable final int userId, @PathVariable final int page)
 	{
 		
-		return new ResponseEntity<>(sppotiControllerService.getAllUpcomingSppoties(userId, page), HttpStatus.OK);
+		return new ResponseEntity<>(this.sppotiControllerService.getAllUpcomingSppoties(userId, page), HttpStatus.OK);
 		
 	}
 	

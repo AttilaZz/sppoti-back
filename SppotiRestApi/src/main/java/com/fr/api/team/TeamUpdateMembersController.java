@@ -5,7 +5,6 @@ import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.TeamControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,24 +20,15 @@ import org.springframework.web.bind.annotation.*;
 class TeamUpdateMembersController
 {
 	
-	/**
-	 * Team controller service.
-	 */
+	/** Team controller service. */
 	private TeamControllerService teamControllerService;
 	
-	/**
-	 * Init services.
-	 */
+	/** Init services. */
 	@Autowired
-	void setTeamControllerService(TeamControllerService teamControllerService)
+	void setTeamControllerService(final TeamControllerService teamControllerService)
 	{
 		this.teamControllerService = teamControllerService;
 	}
-	
-	/**
-	 * Class logger.
-	 */
-	private Logger LOGGER = Logger.getLogger(TeamUpdateMembersController.class);
 	
 	/**
 	 * Accept/Refuse team information.
@@ -50,14 +40,14 @@ class TeamUpdateMembersController
 	 * @return The updated member information.
 	 */
 	@PutMapping("/{memberId}")
-	ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") int memberId, @PathVariable int teamId,
-												@RequestBody TeamDTO teamDto)
+	ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") final int memberId,
+												@PathVariable final int teamId, @RequestBody final TeamDTO teamDto)
 	{
 		
 		boolean canUpdate = false;
 		
 		if (teamDto.getStatus() != null && !teamDto.getStatus().equals(0)) {
-			for (GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
+			for (final GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
 				if (status.getValue() == teamDto.getStatus()) {
 					canUpdate = true;
 				}
@@ -69,11 +59,10 @@ class TeamUpdateMembersController
 		}
 		
 		if (!canUpdate) {
-			LOGGER.error("Nothing to update, check your json teamDto ! \n " + teamDto);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		teamControllerService.updateTeamMembers(teamDto, memberId, teamId);
+		this.teamControllerService.updateTeamMembers(teamDto, memberId, teamId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		
@@ -88,15 +77,14 @@ class TeamUpdateMembersController
 	 * @return 202 status if captain updated.
 	 */
 	@PutMapping("/captain/{memberId}")
-	ResponseEntity<TeamDTO> updateTeamCaptain(@PathVariable int teamId, @PathVariable int memberId,
-											  Authentication authentication)
+	ResponseEntity<TeamDTO> updateTeamCaptain(@PathVariable final int teamId, @PathVariable final int memberId,
+											  final Authentication authentication)
 	{
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		teamControllerService.updateTeamCaptain(teamId, memberId, accountUserDetails.getUuid());
+		this.teamControllerService.updateTeamCaptain(teamId, memberId, accountUserDetails.getUuid());
 		
-		LOGGER.info("Team captain has been changed to: " + memberId);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 	
@@ -106,15 +94,14 @@ class TeamUpdateMembersController
 	 * @return 200 status if memeber has been added
 	 */
 	@DeleteMapping("/{memberId}")
-	ResponseEntity<Void> deleteMember(@PathVariable int teamId, @PathVariable int memberId,
-									  Authentication authentication)
+	ResponseEntity<Void> deleteMember(@PathVariable final int teamId, @PathVariable final int memberId,
+									  final Authentication authentication)
 	{
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		teamControllerService.deleteMemberFromTeam(teamId, memberId, accountUserDetails.getUuid());
+		this.teamControllerService.deleteMemberFromTeam(teamId, memberId, accountUserDetails.getUuid());
 		
-		LOGGER.info("Team member has been deleted : " + memberId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
@@ -124,17 +111,16 @@ class TeamUpdateMembersController
 	 * @return 201 status if memeber has been added.
 	 */
 	@PostMapping
-	ResponseEntity<Void> addMember(@PathVariable int teamId, @RequestBody UserDTO user)
+	ResponseEntity<UserDTO> addMember(@PathVariable final int teamId, @RequestBody final UserDTO user)
 	{
 		
 		if (user.getId() == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		UserDTO savedTeamMember = teamControllerService.addMember(teamId, user);
+		final UserDTO savedTeamMember = this.teamControllerService.addMember(teamId, user);
 		
-		LOGGER.info("Team member has been added ! " + savedTeamMember);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		return new ResponseEntity<>(savedTeamMember, HttpStatus.CREATED);
 	}
 	
 }

@@ -11,143 +11,173 @@ import java.util.List;
  * Created by: Wail DJENANE on Aug 12, 2016
  */
 @JsonInclude(Include.NON_EMPTY)
-public class CommentDTO extends AbstractCommonDTO {
-
-    private int postId;
-
-    private String authorFirstName;
-    private String authorLastName;
-    private String authorUsername;
-    private String authorAvatar;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+1")
-    private Date creationDate;
-
-    private String text;
-    private String imageLink;
-    private String videoLink;
-
-    private boolean isMyComment;
-
-    private boolean isLikedByUser;
-    private int likeCount;
-
-    private boolean isEdited = false;
-
-    private List<HeaderDataDTO> commentLikers;
-
-    public CommentDTO() {
-    }
-
-    public List<HeaderDataDTO> getCommentLikers() {
-        return commentLikers;
-    }
-
-    public void setCommentLikers(List<HeaderDataDTO> commentLikers) {
-        this.commentLikers = commentLikers;
-    }
-
-    public String getAuthorUsername() {
-        return authorUsername;
-    }
-
-    public void setAuthorUsername(String authorUsername) {
-        this.authorUsername = authorUsername;
-    }
-
-    public String getAuthorLastName() {
-        return authorLastName;
-    }
-
-    public void setAuthorLastName(String authorLastName) {
-        this.authorLastName = authorLastName;
-    }
-
-    public String getAuthorFirstName() {
-        return authorFirstName;
-    }
-
-    public void setAuthorFirstName(String authorFirstName) {
-        this.authorFirstName = authorFirstName;
-    }
-
-    public String getAuthorAvatar() {
-        return authorAvatar;
-    }
-
-    public void setAuthorAvatar(String authorAvatar) {
-        this.authorAvatar = authorAvatar;
-    }
-
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getImageLink() {
-        return imageLink;
-    }
-
-    public void setImageLink(String imageLink) {
-        this.imageLink = imageLink;
-    }
-
-    public boolean isMyComment() {
-        return isMyComment;
-    }
-
-    public void setMyComment(boolean isMyComment) {
-        this.isMyComment = isMyComment;
-    }
-
-    public String getVideoLink() {
-        return videoLink;
-    }
-
-    public void setVideoLink(String videoLink) {
-        this.videoLink = videoLink;
-    }
-
-    public boolean isLikedByUser() {
-        return isLikedByUser;
-    }
-
-    public void setLikedByUser(boolean isLikedByUser) {
-        this.isLikedByUser = isLikedByUser;
-    }
-
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    public boolean isEdited() {
-        return isEdited;
-    }
-
-    public void setEdited(boolean isEdited) {
-        this.isEdited = isEdited;
-    }
-
-    public int getPostId() {
-        return postId;
-    }
-
-    public void setPostId(int postId) {
-        this.postId = postId;
-    }
+public class CommentDTO extends AbstractCommonDTO
+{
+	
+	private int postId;
+	
+	private String authorFirstName;
+	private String authorLastName;
+	private String authorUsername;
+	private String authorAvatar;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+1")
+	private Date creationDate;
+	
+	private String text;
+	private String imageLink;
+	private String videoLink;
+	
+	private boolean isMyComment;
+	
+	private boolean isLikedByUser;
+	private int likeCount;
+	
+	private boolean isEdited = false;
+	
+	private List<HeaderDataDTO> commentLikers;
+	
+	public CommentDTO()
+	{
+	}
+	
+	public List<HeaderDataDTO> getCommentLikers()
+	{
+		return this.commentLikers;
+	}
+	
+	public void setCommentLikers(final List<HeaderDataDTO> commentLikers)
+	{
+		this.commentLikers = commentLikers;
+	}
+	
+	public String getAuthorUsername()
+	{
+		return this.authorUsername;
+	}
+	
+	public void setAuthorUsername(final String authorUsername)
+	{
+		this.authorUsername = authorUsername;
+	}
+	
+	public String getAuthorLastName()
+	{
+		return this.authorLastName;
+	}
+	
+	public void setAuthorLastName(final String authorLastName)
+	{
+		this.authorLastName = authorLastName;
+	}
+	
+	public String getAuthorFirstName()
+	{
+		return this.authorFirstName;
+	}
+	
+	public void setAuthorFirstName(final String authorFirstName)
+	{
+		this.authorFirstName = authorFirstName;
+	}
+	
+	public String getAuthorAvatar()
+	{
+		return this.authorAvatar;
+	}
+	
+	public void setAuthorAvatar(final String authorAvatar)
+	{
+		this.authorAvatar = authorAvatar;
+	}
+	
+	public Date getCreationDate()
+	{
+		return this.creationDate;
+	}
+	
+	public void setCreationDate(final Date creationDate)
+	{
+		this.creationDate = creationDate;
+	}
+	
+	public String getText()
+	{
+		return this.text;
+	}
+	
+	public void setText(final String text)
+	{
+		this.text = text;
+	}
+	
+	public String getImageLink()
+	{
+		return this.imageLink;
+	}
+	
+	public void setImageLink(final String imageLink)
+	{
+		this.imageLink = imageLink;
+	}
+	
+	public boolean isMyComment()
+	{
+		return this.isMyComment;
+	}
+	
+	public void setMyComment(final boolean isMyComment)
+	{
+		this.isMyComment = isMyComment;
+	}
+	
+	public String getVideoLink()
+	{
+		return this.videoLink;
+	}
+	
+	public void setVideoLink(final String videoLink)
+	{
+		this.videoLink = videoLink;
+	}
+	
+	public boolean isLikedByUser()
+	{
+		return this.isLikedByUser;
+	}
+	
+	public void setLikedByUser(final boolean isLikedByUser)
+	{
+		this.isLikedByUser = isLikedByUser;
+	}
+	
+	public int getLikeCount()
+	{
+		return this.likeCount;
+	}
+	
+	public void setLikeCount(final int likeCount)
+	{
+		this.likeCount = likeCount;
+	}
+	
+	public boolean isEdited()
+	{
+		return this.isEdited;
+	}
+	
+	public void setEdited(final boolean isEdited)
+	{
+		this.isEdited = isEdited;
+	}
+	
+	public int getPostId()
+	{
+		return this.postId;
+	}
+	
+	public void setPostId(final int postId)
+	{
+		this.postId = postId;
+	}
 }

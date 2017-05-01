@@ -3,7 +3,6 @@ package com.fr.api.comment;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.service.CommentControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,23 +29,23 @@ class CommentAddController
 	
 	/** Init comment service. */
 	@Autowired
-	void setCommentDataService(CommentControllerService commentDataService)
+	void setCommentDataService(final CommentControllerService commentDataService)
 	{
 		this.commentDataService = commentDataService;
 	}
 	
 	@PostMapping
-	ResponseEntity<CommentDTO> addComment(@RequestBody CommentDTO newComment, HttpServletRequest request)
+	ResponseEntity<CommentDTO> addComment(@RequestBody final CommentDTO newComment, final HttpServletRequest request)
 	{
 		
-		CommentEntity commentEntityToSave = new CommentEntity();
+		final CommentEntity commentEntityToSave = new CommentEntity();
 		
 		if (newComment != null) {
 			
-			String content = newComment.getText();
-			String image = newComment.getImageLink();
-			String video = newComment.getVideoLink();
-			int postId = newComment.getPostId();
+			final String content = newComment.getText();
+			final String image = newComment.getImageLink();
+			final String video = newComment.getVideoLink();
+			final int postId = newComment.getPostId();
 			
 			if (content == null && image == null && video == null) {
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -77,9 +76,9 @@ class CommentAddController
 				commentEntityToSave.setVideoLink(video);
 			}
 			
-			Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+			final Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 			
-			CommentDTO savedComment = commentDataService.saveComment(commentEntityToSave, userId, postId);
+			final CommentDTO savedComment = this.commentDataService.saveComment(commentEntityToSave, userId, postId);
 			
 			savedComment.setMyComment(true);
 			

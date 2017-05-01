@@ -2,11 +2,13 @@ package com.fr.api.sppoti;
 
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.service.SppotiControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -19,18 +21,15 @@ import javax.validation.Valid;
 class SppotiAddController
 {
 	
+	/** Sppoti service. */
 	private SppotiControllerService sppotiControllerService;
 	
+	/** Init service. */
 	@Autowired
-	void setSppotiControllerService(SppotiControllerService sppotiControllerService)
+	void setSppotiControllerService(final SppotiControllerService sppotiControllerService)
 	{
 		this.sppotiControllerService = sppotiControllerService;
 	}
-	
-	/**
-	 * Logger.
-	 */
-	private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
 	
 	/**
 	 * @param newSppoti
@@ -39,23 +38,19 @@ class SppotiAddController
 	 * @return 201 status && SppotiEntity object with the inserted data, 400 status otherwise.
 	 */
 	@PostMapping
-	ResponseEntity<SppotiDTO> addSppoti(@RequestBody @Valid SppotiDTO newSppoti)
+	ResponseEntity<SppotiDTO> addSppoti(@RequestBody @Valid final SppotiDTO newSppoti)
 	{
 		
 		if (newSppoti.getMaxTeamCount() == 0) {
-			LOGGER.error("Max-TeamRequestDTO-Count not found");
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			
 		}
 		
 		if (newSppoti.getTeamHost() == null && newSppoti.getMyTeamId() == 0) {
-			LOGGER.error("TeamHostModel && TeamHostId not found ");
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		SppotiDTO sppotiDTO = sppotiControllerService.saveSppoti(newSppoti);
-		
-		return new ResponseEntity<>(sppotiDTO, HttpStatus.CREATED);
+		return new ResponseEntity<>(this.sppotiControllerService.saveSppoti(newSppoti), HttpStatus.CREATED);
 		
 	}
 	

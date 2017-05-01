@@ -1,9 +1,8 @@
 package com.fr.api.friend;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.service.FriendControllerService;
 import com.fr.security.AccountUserDetails;
-import org.apache.log4j.Logger;
+import com.fr.service.FriendControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,44 +20,41 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/friend")
-class FriendUpdateStatusController {
-
-    private Logger LOGGER = Logger.getLogger(FriendUpdateStatusController.class);
-    private FriendControllerService friendControllerService;
-
-    @Autowired
-    void setFriendControllerService(FriendControllerService friendControllerService) {
-        this.friendControllerService = friendControllerService;
-    }
-
-    /**
-     * @param user           friend id.
-     * @param authentication spring auth.
-     * @return 200 http status if updated, 400 otherwise
-     */
-    @PutMapping
-    ResponseEntity updateFriend(@RequestBody UserDTO user, Authentication authentication) {
-
-        Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
-
-        if (user == null || user.getFriendUuid() == 0) {
-            LOGGER.error("UPDATE-FRIEND: No data found in the body");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        try {
-
-            friendControllerService.updateFriendShip(userId, user.getFriendUuid(), user.getFriendStatus());
-
-        } catch (Exception e) {
-
-            LOGGER.error("UPDATE-FRIEND: FriendShipEntity failed to update", e);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        LOGGER.info("UPDATE-FRIEND: Friend updated");
-        return new ResponseEntity<>(HttpStatus.OK);
-
-    }
-
+class FriendUpdateStatusController
+{
+	
+	/** Friend service. */
+	private FriendControllerService friendControllerService;
+	
+	/** Init service. */
+	@Autowired
+	void setFriendControllerService(final FriendControllerService friendControllerService)
+	{
+		this.friendControllerService = friendControllerService;
+	}
+	
+	/**
+	 * @param user
+	 * 		friend id.
+	 * @param authentication
+	 * 		spring auth.
+	 *
+	 * @return 200 http status if updated, 400 otherwise
+	 */
+	@PutMapping
+	ResponseEntity updateFriend(@RequestBody final UserDTO user, final Authentication authentication)
+	{
+		
+		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		
+		if (user == null || user.getFriendUuid() == 0) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		this.friendControllerService.updateFriendShip(userId, user.getFriendUuid(), user.getFriendStatus());
+		
+		return new ResponseEntity<>(HttpStatus.OK);
+		
+	}
+	
 }

@@ -1,9 +1,8 @@
 package com.fr.api.comment;
 
 import com.fr.commons.dto.CommentDTO;
-import com.fr.service.CommentControllerService;
 import com.fr.security.AccountUserDetails;
-import org.apache.log4j.Logger;
+import com.fr.service.CommentControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,14 +27,10 @@ class CommentGetController
 	
 	/** Init comment service. */
 	@Autowired
-	void setCommentDataService(CommentControllerService commentDataService)
+	void setCommentDataService(final CommentControllerService commentDataService)
 	{
 		this.commentDataService = commentDataService;
 	}
-	
-	private static final String ATT_USER_ID = "USER_ID";
-	
-	private Logger LOGGER = Logger.getLogger(CommentGetController.class);
 	
 	/**
 	 * Get all like for a given post
@@ -50,20 +45,19 @@ class CommentGetController
 	 * @return List of like DTO.
 	 */
 	@GetMapping("/{postId}/{page}")
-	ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable int postId, @PathVariable int page,
-														Authentication authentication)
+	ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable final int postId, @PathVariable final int page,
+														final Authentication authentication)
 	{
 		
-		Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 		
-		List<CommentDTO> commentModelDTOList = commentDataService.getPostCommentsFromLastId(postId, page, userId);
+		final List<CommentDTO> commentModelDTOList = this.commentDataService
+				.getPostCommentsFromLastId(postId, page, userId);
 		
 		if (commentModelDTOList.isEmpty()) {
-			LOGGER.info("COMMENT_LIST: No like has been found");
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		
-		LOGGER.info("COMMENT_LIST: All comments have been returned");
 		return new ResponseEntity<>(commentModelDTOList, HttpStatus.OK);
 		
 	}

@@ -27,7 +27,7 @@ public class ScoreUpdateController
 	
 	/** Init score service. */
 	@Autowired
-	public ScoreUpdateController(ScoreControllerService scoreControllerService)
+	public ScoreUpdateController(final ScoreControllerService scoreControllerService)
 	{
 		this.scoreControllerService = scoreControllerService;
 	}
@@ -39,11 +39,12 @@ public class ScoreUpdateController
 	 * @return 202 status if updated.
 	 */
 	@PutMapping
-	public ResponseEntity updateScoreStatusByAdverseTeam(@RequestBody ScoreDTO scoreDTO, Authentication authentication)
+	public ResponseEntity updateScoreStatusByAdverseTeam(@RequestBody final ScoreDTO scoreDTO,
+														 final Authentication authentication)
 	{
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		scoreControllerService.updateScore(scoreDTO, accountUserDetails.getId());
+		this.scoreControllerService.updateScore(scoreDTO, accountUserDetails.getId());
 		return new ResponseEntity(HttpStatus.ACCEPTED);
 	}
 	

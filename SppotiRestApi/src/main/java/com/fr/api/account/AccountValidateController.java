@@ -3,11 +3,9 @@ package com.fr.api.account;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.AccountControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +22,7 @@ class AccountValidateController
 	
 	/** Init service. */
 	@Autowired
-	void setAccountControllerService(AccountControllerService accountControllerService)
+	void setAccountControllerService(final AccountControllerService accountControllerService)
 	{
 		this.accountControllerService = accountControllerService;
 	}
@@ -38,7 +36,7 @@ class AccountValidateController
 	 * @return 202 status if account enabled.
 	 */
 	@PutMapping(value = "/validate/{code}")
-	ResponseEntity<Void> confirmUserEmail(@PathVariable("code") String code)
+	ResponseEntity<Void> confirmUserEmail(@PathVariable("code") final String code)
 	{
 		
 		if (StringUtils.isEmpty(code)) {
@@ -46,11 +44,10 @@ class AccountValidateController
 		}
 		
 		// if given code exist in database confirm registration
-		accountControllerService.tryActivateAccount(code);
+		this.accountControllerService.tryActivateAccount(code);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		
 	}
-	
 	
 	/**
 	 * Send a new confirmation link.
@@ -58,17 +55,17 @@ class AccountValidateController
 	 * @param userDTO
 	 * 		user data to whom send a link.
 	 *
-	 * @return
+	 * @return 201 http status.
 	 */
 	@PutMapping("/validate/regenerate/code")
-	ResponseEntity<Void> generateNewConfirmationLink(@RequestBody UserDTO userDTO)
+	ResponseEntity<Void> generateNewConfirmationLink(@RequestBody final UserDTO userDTO)
 	{
 		
 		if (StringUtils.isEmpty(userDTO.getEmail())) {
 			throw new BusinessGlobalException("Email is required !");
 		}
 		
-		accountControllerService.generateNewConfirmationEmail(userDTO);
+		this.accountControllerService.generateNewConfirmationEmail(userDTO);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 }

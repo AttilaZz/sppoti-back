@@ -1,11 +1,10 @@
 package com.fr.api.friend;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.service.FriendControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,99 +21,93 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/friend")
-class FriendAddController {
-
-
-    private static final String ATT_USER_ID = "USER_ID";
-
-    private Logger LOGGER = Logger.getLogger(FriendAddController.class);
-
-    private FriendControllerService friendControllerService;
-
-    @Autowired
-    void setFriendControllerService(FriendControllerService friendControllerService) {
-        this.friendControllerService = friendControllerService;
-    }
-
-    /**
-     * @param user    friend to add.
-     * @param request spring secu object.
-     * @return created friend.
-     */
-    @PostMapping
-    ResponseEntity<Object> addFriend(@RequestBody UserDTO user, HttpServletRequest request) {
-
-        /*
-        Chekck received data
-         */
-        if (user == null || user.getFriendUuid() == 0) {
-            LOGGER.error("ADD-FRIEND: No data found in the body");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+class FriendAddController
+{
+	
+	/** user id in session storage. */
+	private static final String ATT_USER_ID = "USER_ID";
+	
+	/** Friend service. */
+	private FriendControllerService friendControllerService;
+	
+	/** Init service. */
+	@Autowired
+	void setFriendControllerService(final FriendControllerService friendControllerService)
+	{
+		this.friendControllerService = friendControllerService;
+	}
+	
+	/**
+	 * @param user
+	 * 		friend to add.
+	 * @param request
+	 * 		spring secu object.
+	 *
+	 * @return created friend.
+	 */
+	@PostMapping
+	ResponseEntity<Object> addFriend(@RequestBody final UserDTO user, final HttpServletRequest request)
+	{
 
         /*
-        Get connected user id
+		Chekck received data
          */
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+		if (user == null || user.getFriendUuid() == 0) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 
         /*
-        Prepare friendShip
+		Get connected user id
          */
-        UserEntity connectedUser = friendControllerService.getUserById(userId);
-        UserEntity friend = friendControllerService.getUserByUuId(user.getFriendUuid());
+		final Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
 
         /*
-        Check if the friend id refers to an existing user account
+		Prepare friendShip
          */
-        if (friend == null) {
-            LOGGER.error("ADD-FRIEND: Friend id not found !!");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+		final UserEntity connectedUser = this.friendControllerService.getUserById(userId);
+		final UserEntity friend = this.friendControllerService.getUserByUuId(user.getFriendUuid());
 
         /*
-        Friend with my self
+		Check if the friend id refers to an existing user account
          */
-        if (connectedUser.equals(friend)) {
-            LOGGER.error("ADD-FRIEND: You can't be friend of your self");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+		if (friend == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 
         /*
-        Check if friendship exist
+		Friend with my self
          */
-        FriendShipEntity tempFriendShip = friendControllerService.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid());
-        if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
-            LOGGER.error("ADD-FRIEND: You are already friends");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        FriendShipEntity friendShip = new FriendShipEntity();
-
-        //friendship aleady exist in a different status
-        if (tempFriendShip != null && tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
-            friendShip = tempFriendShip;
-            friendShip.setStatus(GlobalAppStatusEnum.PENDING);
-        } else {
-            UserEntity u = friendControllerService.getUserByUuId(user.getFriendUuid());
-            friendShip.setFriend(u);
-            friendShip.setUser(connectedUser);
-        }
+		if (connectedUser.equals(friend)) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 
         /*
-        Prepare friendship for saving
+		Check if friendship exist
          */
+		final FriendShipEntity tempFriendShip = this.friendControllerService
+				.getByFriendUuidAndUser(friend.getUuid(), connectedUser.getUuid());
+		if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		FriendShipEntity friendShip = new FriendShipEntity();
+		
+		//friendship aleady exist in a different status
+		if (tempFriendShip != null && tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
+			friendShip = tempFriendShip;
+			friendShip.setStatus(GlobalAppStatusEnum.PENDING);
+		} else {
+			final UserEntity u = this.friendControllerService.getUserByUuId(user.getFriendUuid());
+			friendShip.setFriend(u);
+			friendShip.setUser(connectedUser);
+		}
 
-
-        try {
-            friendControllerService.saveFriendShip(friendShip);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("ADD-FRIEND: Problem saving the friendship ! try again OR read logs");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        LOGGER.info("ADD-FRIEND: Friend has been saved");
-        return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
+        /*
+		Prepare friendship for saving
+         */
+		this.friendControllerService.saveFriendShip(friendShip);
+		
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+	
 }

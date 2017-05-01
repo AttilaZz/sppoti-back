@@ -5,7 +5,6 @@ import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.service.CommentControllerService;
 import com.fr.service.LikeControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +29,8 @@ class GetAllCommentLikesController
 	private final LikeControllerService likeControllerService;
 	
 	/** Init services. */
-	GetAllCommentLikesController(CommentControllerService commentControllerService,
-								 LikeControllerService likeControllerService)
+	GetAllCommentLikesController(final CommentControllerService commentControllerService,
+								 final LikeControllerService likeControllerService)
 	{
 		this.commentControllerService = commentControllerService;
 		this.likeControllerService = likeControllerService;
@@ -47,23 +46,23 @@ class GetAllCommentLikesController
 	 * @return list of likers for a comment
 	 */
 	@GetMapping(value = "/comment/{id}/{page}")
-	ResponseEntity<PostDTO> getCommentLikers(@PathVariable("id") int id, @PathVariable("page") int page)
+	ResponseEntity<PostDTO> getCommentLikers(@PathVariable("id") final int id, @PathVariable("page") final int page)
 	{
 		
-		CommentEntity currentCommentEntity = commentControllerService.findComment(id);
+		final CommentEntity currentCommentEntity = this.commentControllerService.findComment(id);
 		
 		if (currentCommentEntity == null) {
 			// post not fount
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		List<HeaderDataDTO> likersList = likeControllerService.getCommentLikersList(id, page);
+		final List<HeaderDataDTO> likersList = this.likeControllerService.getCommentLikersList(id, page);
 		
 		if (likersList.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		
-		PostDTO pr = new PostDTO();
+		final PostDTO pr = new PostDTO();
 		pr.setLikers(likersList);
 		pr.setLikeCount(currentCommentEntity.getLikes().size());
 		

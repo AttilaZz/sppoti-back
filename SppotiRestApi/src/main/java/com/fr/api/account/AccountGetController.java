@@ -2,9 +2,8 @@ package com.fr.api.account;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.UserEntity;
-import com.fr.service.AccountControllerService;
 import com.fr.security.AccountUserDetails;
-import org.apache.log4j.Logger;
+import com.fr.service.AccountControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by djenanewail on 2/12/17.
@@ -31,7 +28,7 @@ class AccountGetController
 	
 	/** Init account service. */
 	@Autowired
-	void setAccountControllerService(AccountControllerService accountControllerService)
+	void setAccountControllerService(final AccountControllerService accountControllerService)
 	{
 		this.accountControllerService = accountControllerService;
 	}
@@ -41,13 +38,13 @@ class AccountGetController
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@GetMapping
-	ResponseEntity<UserDTO> connectedUserInfo(Authentication authentication)
+	ResponseEntity<UserDTO> connectedUserInfo(final Authentication authentication)
 	{
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-		UserEntity targetUser = accountControllerService.getUserById(accountUserDetails.getId());
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final UserEntity targetUser = this.accountControllerService.getUserById(accountUserDetails.getId());
 		
-		return new ResponseEntity<>(accountControllerService.fillAccountResponse(targetUser), HttpStatus.OK);
+		return new ResponseEntity<>(this.accountControllerService.fillAccountResponse(targetUser), HttpStatus.OK);
 		
 	}
 	
@@ -61,7 +58,8 @@ class AccountGetController
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@GetMapping("/other/{username}/**")
-	ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") String username, Authentication authentication)
+	ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") final String username,
+										  final Authentication authentication)
 	{
 		
 		//        String path = (String) httpServletRequest.getAttribute(
@@ -70,10 +68,10 @@ class AccountGetController
 		//        String bestMatchPattern = (String ) httpServletRequest.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 		//        String finalPath = apm.extractPathWithinPattern(bestMatchPattern, path);
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		return new ResponseEntity<>(accountControllerService.handleFriendShip(username, accountUserDetails.getId()),
-				HttpStatus.OK);
+		return new ResponseEntity<>(
+				this.accountControllerService.handleFriendShip(username, accountUserDetails.getId()), HttpStatus.OK);
 		
 	}
 }

@@ -18,29 +18,31 @@ import static com.fr.filter.HeadersValues.*;
  * Created by: Wail DJENANE On May 22, 2016
  */
 @Component
-public class AuthFailure extends SimpleUrlAuthenticationFailureHandler {
-
-    /**
-     * Class logger.
-     */
-    private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException, ServletException {
-
-        LOGGER.info("Failed to log user :-(");
-
-        response.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
-        response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
-        response.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
-        response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
-        response.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
-
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-    }
-
+public class AuthFailure extends SimpleUrlAuthenticationFailureHandler
+{
+	
+	/**
+	 * Class logger.
+	 */
+	private final Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
+										final AuthenticationException exception) throws IOException, ServletException
+	{
+		
+		this.LOGGER.info("Failed to log user :-(");
+		
+		response.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
+		response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
+		response.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
+		response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
+		response.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
+		
+		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	}
+	
 }

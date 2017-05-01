@@ -2,9 +2,7 @@ package com.fr.api.account;
 
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.AccountControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,7 @@ public class AccountRecoverController
 	
 	/** Init account service. */
 	@Autowired
-	void setAccountControllerService(AccountControllerService accountControllerService)
+	void setAccountControllerService(final AccountControllerService accountControllerService)
 	{
 		this.accountControllerService = accountControllerService;
 	}
@@ -40,7 +38,7 @@ public class AccountRecoverController
 	 * @return 202 status if account recovered correctly.
 	 */
 	@PutMapping("/validate/password/{code}")
-	ResponseEntity<Void> confirmUserEmail(@RequestBody UserDTO userDTO, @PathVariable("code") String code)
+	ResponseEntity<Void> confirmUserEmail(@RequestBody final UserDTO userDTO, @PathVariable("code") final String code)
 	{
 		
 		if (StringUtils.isEmpty(code) || StringUtils.isEmpty(userDTO.getPassword())) {
@@ -48,7 +46,7 @@ public class AccountRecoverController
 		}
 		
 		// if given code exist in database confirm registration
-		accountControllerService.recoverAccount(userDTO, code);
+		this.accountControllerService.recoverAccount(userDTO, code);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		
 	}
@@ -62,7 +60,7 @@ public class AccountRecoverController
 	 * @return 200 if email found and email sent.
 	 */
 	@PutMapping("/recover")
-	ResponseEntity<Void> confirmUserEmail(@RequestBody SignUpDTO userDTO)
+	ResponseEntity<Void> confirmUserEmail(@RequestBody final SignUpDTO userDTO)
 	{
 		
 		if (StringUtils.isEmpty(userDTO.getEmail())) {
@@ -70,7 +68,7 @@ public class AccountRecoverController
 		}
 		
 		// if given code exist in database confirm registration
-		accountControllerService.sendRecoverAccountEmail(userDTO);
+		this.accountControllerService.sendRecoverAccountEmail(userDTO);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		

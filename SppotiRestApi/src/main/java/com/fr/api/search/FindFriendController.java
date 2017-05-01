@@ -5,7 +5,6 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.FriendShipEntity;
 import com.fr.repositories.FriendShipRepository;
 import com.fr.service.AccountControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -38,11 +37,9 @@ class FindFriendController
 	/** Account controller service. */
 	private final AccountControllerService accountControllerService;
 	
-	/** Class logger. */
-	private Logger LOGGER = Logger.getLogger(FindFriendController.class);
-	
 	@Autowired
-	FindFriendController(FriendShipRepository friendShipRepository, AccountControllerService accountControllerService)
+	public FindFriendController(final FriendShipRepository friendShipRepository,
+								final AccountControllerService accountControllerService)
 	{
 		this.friendShipRepository = friendShipRepository;
 		this.accountControllerService = accountControllerService;
@@ -57,43 +54,40 @@ class FindFriendController
 	 * @return All confirmed friends of connected user
 	 */
 	@GetMapping(value = "/{motif}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<List<UserDTO>> searchConfimedFriend(@PathVariable("motif") String userPrefix,
-													   @PathVariable("page") int page)
+	ResponseEntity<List<UserDTO>> searchConfimedFriend(@PathVariable("motif") final String userPrefix,
+													   @PathVariable("page") final int page)
 	{
 		
 		
 		if (userPrefix.isEmpty()) {
-			LOGGER.error("SEARCH-CONFIRMED-FRIEND: Prefix not valid !");
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		List<FriendShipEntity> foundFriends;
-		Pageable pageable = new PageRequest(page, friend_size);
+		final List<FriendShipEntity> foundFriends;
+		final Pageable pageable = new PageRequest(page, this.friend_size);
 		
-		String[] parts = userPrefix.split(" ");
+		final String[] parts = userPrefix.split(" ");
 		
 		if (parts.length > 2) {
-			LOGGER.error("SEARCH-CONFIRMED-FRIEND: Too many words in your request");
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		} else //get users by first name and last name
 			if (parts.length == 2)
-				foundFriends = friendShipRepository.findFriendsByFirstNameAndLastNameAndStatus(parts[0], parts[1],
+				foundFriends = this.friendShipRepository.findFriendsByFirstNameAndLastNameAndStatus(parts[0], parts[1],
 						GlobalAppStatusEnum.CONFIRMED.name(), pageable);
 			else {
 				//get users by username, first name and last name
-				foundFriends = friendShipRepository
+				foundFriends = this.friendShipRepository
 						.findFriendByUsernameAndStatus(parts[0], GlobalAppStatusEnum.CONFIRMED.name(), pageable);
 				
 			}
 		
-		List<UserDTO> users = new ArrayList<>();
+		final List<UserDTO> users = new ArrayList<>();
 		
-		for (FriendShipEntity friendShip : foundFriends) {
+		for (final FriendShipEntity friendShip : foundFriends) {
 			
-			users.add(accountControllerService.fillAccountResponse(friendShip.getFriend()));
+			users.add(this.accountControllerService.fillAccountResponse(friendShip.getFriend()));
 		}
 		
-		LOGGER.info("SEARCH-CONFIRMED-FRIEND: friends has been returned !");
 		return new ResponseEntity<>(users, HttpStatus.OK);
 	}
 }

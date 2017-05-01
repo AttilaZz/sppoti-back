@@ -17,38 +17,44 @@ import java.util.Date;
  * Created by: Wail DJENANE On May 22, 2016
  */
 @Component
-public class UserDetailServiceImpl implements UserDetailsService {
-
-    private static Logger LOGGER = Logger.getLogger(TraceControllers.class);
-
-    private LoginService loginService;
-
-    @Autowired
-    public void setLoginService(LoginService loginService) {
-        this.loginService = loginService;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String loginUser) throws UsernameNotFoundException {
-
-        // database request
-        UserEntity account = loginService.getUserByLogin(loginUser);
-
-        if (account == null) {
-            LOGGER.info("The given login (" + loginUser + " was not found: " + ")");
-            throw new UsernameNotFoundException("no user found with: " + loginUser);
-        }
-
-        Date date = new Date();
-
-        DateFormat mediumDateFormat = DateFormat.getDateTimeInstance(
-                DateFormat.MEDIUM,
-                DateFormat.MEDIUM);
-
-        LOGGER.info("Trying to log user : " + loginUser + " with id=" + account.getId() + " - at: " + mediumDateFormat.format(date));
-        return new AccountUserDetails(account);
-    }
-
-
-
+public class UserDetailServiceImpl implements UserDetailsService
+{
+	/** Class logger. */
+	private static final Logger LOGGER = Logger.getLogger(TraceControllers.class);
+	
+	/** Login service. */
+	private LoginService loginService;
+	
+	/** Init login service. */
+	@Autowired
+	public void setLoginService(final LoginService loginService)
+	{
+		this.loginService = loginService;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public UserDetails loadUserByUsername(final String loginUser) throws UsernameNotFoundException
+	{
+		
+		// database request
+		final UserEntity account = this.loginService.getUserByLogin(loginUser);
+		
+		if (account == null) {
+			LOGGER.info("The given login (" + loginUser + " was not found: " + ")");
+			throw new UsernameNotFoundException("no user found with: " + loginUser);
+		}
+		
+		final Date date = new Date();
+		
+		final DateFormat mediumDateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+		
+		LOGGER.info("Trying to log user : " + loginUser + " with id=" + account.getId() + " - at: " +
+				mediumDateFormat.format(date));
+		return new AccountUserDetails(account);
+	}
+	
+	
 }

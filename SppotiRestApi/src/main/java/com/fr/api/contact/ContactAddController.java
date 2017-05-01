@@ -5,7 +5,10 @@ import com.fr.service.ContactControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -24,7 +27,7 @@ public class ContactAddController
 	
 	/** Init contact service. */
 	@Autowired
-	public ContactAddController(ContactControllerService contactControllerService)
+	public ContactAddController(final ContactControllerService contactControllerService)
 	{
 		this.contactControllerService = contactControllerService;
 	}
@@ -38,10 +41,10 @@ public class ContactAddController
 	 * @return 200 status if email sent.
 	 */
 	@PostMapping
-	public ResponseEntity sendContactEmail(@RequestBody @Valid ContactDTO contactDTO)
+	public ResponseEntity sendContactEmail(@RequestBody @Valid final ContactDTO contactDTO)
 	{
 		
-		contactControllerService.sendGlobalContactEmail(contactDTO);
+		this.contactControllerService.sendGlobalContactEmail(contactDTO);
 		return new ResponseEntity(HttpStatus.CREATED);
 	}
 	

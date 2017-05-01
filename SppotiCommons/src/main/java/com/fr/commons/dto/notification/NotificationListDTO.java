@@ -10,25 +10,30 @@ import java.util.List;
  * Created by wdjenane on 14/02/2017.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class NotificationListDTO extends AbstractCommonDTO {
-
-    private List<NotificationDTO> notifications;
-    private Integer notifCounter;
-    private Date dateCreation;
-
-    public List<NotificationDTO> getNotifications() {
-        return notifications;
-    }
-
-    public void setNotifications(List<NotificationDTO> notifications) {
-        this.notifications = notifications;
-    }
-
-    public Integer getNotifCounter() {
-        return notifCounter;
-    }
-
-    public void setNotifCounter(Integer notifCounter) {
-        this.notifCounter = notifCounter;
-    }
+public class NotificationListDTO extends AbstractCommonDTO
+{
+	
+	private List<NotificationDTO> notifications;
+	private Integer notifCounter;
+	private Date dateCreation;
+	
+	public List<NotificationDTO> getNotifications()
+	{
+		return this.notifications;
+	}
+	
+	public void setNotifications(final List<NotificationDTO> notifications)
+	{
+		this.notifications = notifications;
+	}
+	
+	public Integer getNotifCounter()
+	{
+		return this.notifCounter;
+	}
+	
+	public void setNotifCounter(final Integer notifCounter)
+	{
+		this.notifCounter = notifCounter;
+	}
 }

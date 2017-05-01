@@ -3,18 +3,14 @@ package com.fr.api.sppoti;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.commons.exception.NotAdminException;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.SppotiControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import javax.persistence.EntityNotFoundException;
 
 /**
  * Created by djenanewail on 2/5/17.
@@ -25,16 +21,12 @@ import javax.persistence.EntityNotFoundException;
 class SppotiUpdateController
 {
 	
-	/**
-	 * Sppoti controller service.
-	 */
+	/** Sppoti controller service. */
 	private SppotiControllerService sppotiControllerService;
 	
-	/**
-	 * Init service.
-	 */
+	/** Init service. */
 	@Autowired
-	void setSppotiControllerService(SppotiControllerService sppotiControllerService)
+	void setSppotiControllerService(final SppotiControllerService sppotiControllerService)
 	{
 		this.sppotiControllerService = sppotiControllerService;
 	}
@@ -48,14 +40,14 @@ class SppotiUpdateController
 	 * @return 200 status with the updated sppoti, 400 status otherwise.
 	 */
 	@PutMapping("/{sppotiId}")
-	ResponseEntity<SppotiDTO> updateSppoti(@PathVariable int sppotiId, @RequestBody SppotiDTO sppotiRequest,
-										   Authentication authentication)
+	ResponseEntity<SppotiDTO> updateSppoti(@PathVariable final int sppotiId, @RequestBody final SppotiDTO sppotiRequest,
+										   final Authentication authentication)
 	{
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
 		//throws exception if user is not the sppoti admin
-		sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId());
+		this.sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId());
 		
 		boolean canUpdate = false;
 		
@@ -88,7 +80,7 @@ class SppotiUpdateController
 		}
 		
 		if (canUpdate) {
-			sppotiControllerService.updateSppoti(sppotiRequest, sppotiId);
+			this.sppotiControllerService.updateSppoti(sppotiRequest, sppotiId);
 		} else {
 			throw new IllegalArgumentException("Update not accepted");
 		}
@@ -103,13 +95,13 @@ class SppotiUpdateController
 	 * 		team id to add in the challenge.
 	 */
 	@PutMapping("/challenge/send/{sppotiId}/{teamId}")
-	ResponseEntity<SppotiDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId,
-											Authentication authentication)
+	ResponseEntity<SppotiDTO> sendChallenge(@PathVariable final int sppotiId, @PathVariable final int teamId,
+											final Authentication authentication)
 	{
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		sppotiControllerService.sendChallenge(sppotiId, teamId, accountUserDetails.getId());
+		this.sppotiControllerService.sendChallenge(sppotiId, teamId, accountUserDetails.getId());
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
@@ -125,14 +117,14 @@ class SppotiUpdateController
 	 * @return 202 if update done correctly, 400 if not
 	 */
 	@PutMapping("/challenge/answer/{sppotiId}")
-	ResponseEntity<Void> sendChallenge(@PathVariable int sppotiId, @RequestBody TeamDTO teamDTO)
+	ResponseEntity<Void> sendChallenge(@PathVariable final int sppotiId, @RequestBody final TeamDTO teamDTO)
 	{
 		
 		if (StringUtils.isEmpty(teamDTO.getId()) || StringUtils.isEmpty(teamDTO.getTeamAdverseStatus())) {
 			throw new BusinessGlobalException("Team id not found in the request.");
 		}
 		
-		sppotiControllerService.chooseOneAdverseTeamFromAllRequests(sppotiId, teamDTO);
+		this.sppotiControllerService.chooseOneAdverseTeamFromAllRequests(sppotiId, teamDTO);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}

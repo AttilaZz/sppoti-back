@@ -5,7 +5,6 @@ import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.service.CommentControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,19 +23,19 @@ class CommentUpdateController
 	
 	/** Init comment service. */
 	@Autowired
-	void setCommentDataService(CommentControllerService commentDataService)
+	void setCommentDataService(final CommentControllerService commentDataService)
 	{
 		this.commentDataService = commentDataService;
 	}
 	
 	@PutMapping(value = "/{id}")
-	ResponseEntity<CommentDTO> updateComment(@PathVariable int id, @RequestBody CommentDTO newComment)
+	ResponseEntity<CommentDTO> updateComment(@PathVariable final int id, @RequestBody final CommentDTO newComment)
 	{
 		
-		CommentEntity commentEntityToEdit = commentDataService.findComment(id);
+		final CommentEntity commentEntityToEdit = this.commentDataService.findComment(id);
 		
-		EditHistoryEntity commentEditRow = new EditHistoryEntity();
-		ContentEditedResponseDTO edit = new ContentEditedResponseDTO();
+		final EditHistoryEntity commentEditRow = new EditHistoryEntity();
+		final ContentEditedResponseDTO edit = new ContentEditedResponseDTO();
 		
 		// Required attributes
 		if (commentEntityToEdit == null) {
@@ -53,7 +52,7 @@ class CommentUpdateController
 		}
 		
 		// if all argument are correctly assigned - edit post
-		if (commentDataService.updateComment(commentEditRow)) {
+		if (this.commentDataService.updateComment(commentEditRow)) {
 			
 			edit.setId(commentEntityToEdit.getId());
 			edit.setDateTime(commentEditRow.getDatetimeEdited());

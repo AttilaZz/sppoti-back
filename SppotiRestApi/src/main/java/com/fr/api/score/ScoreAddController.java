@@ -26,7 +26,7 @@ public class ScoreAddController
 	
 	/** Init score service. */
 	@Autowired
-	public void setScoreControllerService(ScoreControllerService scoreControllerService)
+	public void setScoreControllerService(final ScoreControllerService scoreControllerService)
 	{
 		this.scoreControllerService = scoreControllerService;
 	}
@@ -40,9 +40,9 @@ public class ScoreAddController
 	 * @return added score.
 	 */
 	@PostMapping
-	ResponseEntity<ScoreDTO> addScore(@RequestBody @Valid ScoreDTO scoreDTO)
+	ResponseEntity<ScoreDTO> addScore(@RequestBody @Valid final ScoreDTO scoreDTO)
 	{
 		
-		return new ResponseEntity<>(scoreControllerService.addSppotiScore(scoreDTO), HttpStatus.CREATED);
+		return new ResponseEntity<>(this.scoreControllerService.addSppotiScore(scoreDTO), HttpStatus.CREATED);
 	}
 }

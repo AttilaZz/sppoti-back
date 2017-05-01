@@ -2,7 +2,6 @@ package com.fr.api.comment;
 
 import com.fr.entities.CommentEntity;
 import com.fr.service.CommentControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,30 +22,32 @@ class CommentDeleteController
 	/** Comment service. */
 	private CommentControllerService commentDataService;
 	
-	/** Init comment service.*/
+	/** Init comment service. */
 	@Autowired
-	void setCommentDataService(CommentControllerService commentDataService)
+	void setCommentDataService(final CommentControllerService commentDataService)
 	{
 		this.commentDataService = commentDataService;
 	}
 	
+	/**
+	 * @param id
+	 * 		comment id.
+	 * @param authentication
+	 * 		spring secu auth object.
+	 *
+	 * @return 200 http status.
+	 */
 	@DeleteMapping("/{commentId}")
-	ResponseEntity<Void> deleteComment(@PathVariable("commentId") int id, Authentication authentication)
+	ResponseEntity<Void> deleteComment(@PathVariable("commentId") final int id, final Authentication authentication)
 	{
 		
-		
-		CommentEntity commentEntityToDelete = commentDataService.findComment(id);
+		final CommentEntity commentEntityToDelete = this.commentDataService.findComment(id);
 		
 		if (commentEntityToDelete == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			
 		}
-		
-		if (commentDataService.deleteComment(commentEntityToDelete)) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		}
-		
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		this.commentDataService.deleteComment(commentEntityToDelete);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 }

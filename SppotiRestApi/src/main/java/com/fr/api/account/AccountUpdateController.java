@@ -2,7 +2,6 @@ package com.fr.api.account;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.service.AccountControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,7 @@ class AccountUpdateController
 	
 	/** Init account service. */
 	@Autowired
-	void setAccountControllerService(AccountControllerService accountControllerService)
+	void setAccountControllerService(final AccountControllerService accountControllerService)
 	{
 		this.accountControllerService = accountControllerService;
 	}
@@ -40,7 +39,7 @@ class AccountUpdateController
 	 * @return updated data with http status 202 if update success, 400 otherwise.
 	 */
 	@PutMapping
-	ResponseEntity<UserDTO> editUserInfo(@RequestBody UserDTO user)
+	ResponseEntity<UserDTO> editUserInfo(@RequestBody final UserDTO user)
 	{
 		
 		boolean update = false;
@@ -48,7 +47,7 @@ class AccountUpdateController
 		if (StringUtils.hasText(user.getAvatar()) ||
 				(StringUtils.hasText(user.getCover()) && user.getCoverType() != null)) {
 			
-			accountControllerService.updateAvatarAndCover(user);
+			this.accountControllerService.updateAvatarAndCover(user);
 			
 			return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
 		} else {
@@ -88,7 +87,7 @@ class AccountUpdateController
 			//TODO: Update sports
 			
 			if (update) {
-				accountControllerService.updateUser(user);
+				this.accountControllerService.updateUser(user);
 				return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
 			}
 			

@@ -2,7 +2,6 @@ package com.fr.api.comment;
 
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.service.CommentControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -27,7 +25,7 @@ class CommentGetHistoryController
 	
 	/** Init comment service */
 	@Autowired
-	void setCommentDataService(CommentControllerService commentDataService)
+	void setCommentDataService(final CommentControllerService commentDataService)
 	{
 		this.commentDataService = commentDataService;
 	}
@@ -41,11 +39,11 @@ class CommentGetHistoryController
 	 * @return List of like DTO
 	 */
 	@GetMapping("/history/{id}/{page}")
-	ResponseEntity<List<ContentEditedResponseDTO>> getAllCommentModification(@PathVariable int id,
-																			 @PathVariable int page)
+	ResponseEntity<List<ContentEditedResponseDTO>> getAllCommentModification(@PathVariable final int id,
+																			 @PathVariable final int page)
 	{
 		
-		List<ContentEditedResponseDTO> commentModelList = commentDataService.getAllCommentHistory(id, page);
+		final List<ContentEditedResponseDTO> commentModelList = this.commentDataService.getAllCommentHistory(id, page);
 		
 		if (commentModelList.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);

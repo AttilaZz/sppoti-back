@@ -11,117 +11,141 @@ import java.util.Set;
  * Created by: Wail DJENANE on Jun 13, 2016
  */
 @JsonInclude(Include.NON_ABSENT)
-public class PostRequestDTO extends AbstractCommonDTO {
-
-    private Long sportId;
-
-    private Long gameId;
-
-    private Data content;
-
-    private String avatar;
-
-    private String cover;
-
-    private int visibility;
-
-    @JsonProperty("targetUser")
-    private int targetUserUuid;
-
-    public int getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(int visibility) {
-        this.visibility = visibility;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public Long getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(Long gameId) {
-        this.gameId = gameId;
-    }
-
-    public Long getSportId() {
-        return sportId;
-    }
-
-    public void setSportId(Long sportId) {
-        this.sportId = sportId;
-    }
-
-    public Data getContent() {
-        return content;
-    }
-
-    public void setContent(Data content) {
-        this.content = content;
-    }
-
-    public String getNewAvatar() {
-        return avatar;
-    }
-
-    public void setNewAvatar(String newAvatar) {
-        this.avatar = newAvatar;
-    }
-
-    public String getCover() {
-        return cover;
-    }
-
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
-
-    public int getTargetUserUuid() {
-        return targetUserUuid;
-    }
-
-    public void setTargetUserUuid(int targetUserUuid) {
-        this.targetUserUuid = targetUserUuid;
-    }
-
-    public class Data {
-
-        @JsonProperty("text")
-        private String content;
-        private Set<String> imageLink;
-        private String videoLink;
-
-        public String getContent() {
-            return content;
-        }
-
-        public void setContent(String content) {
-            this.content = content;
-        }
-
-        public Set<String> getImageLink() {
-            return imageLink;
-        }
-
-        public void setImageLink(Set<String> imageLink) {
-            this.imageLink = imageLink;
-        }
-
-        public String getVideoLink() {
-            return videoLink;
-        }
-
-        public void setVideoLink(String videoLink) {
-            this.videoLink = videoLink;
-        }
-
-    }
+public class PostRequestDTO extends AbstractCommonDTO
+{
+	
+	private Long sportId;
+	
+	private Long gameId;
+	
+	private Data content;
+	
+	private String avatar;
+	
+	private String cover;
+	
+	private int visibility;
+	
+	@JsonProperty("targetUser")
+	private int targetUserUuid;
+	
+	public int getVisibility()
+	{
+		return this.visibility;
+	}
+	
+	public void setVisibility(final int visibility)
+	{
+		this.visibility = visibility;
+	}
+	
+	public String getAvatar()
+	{
+		return this.avatar;
+	}
+	
+	public void setAvatar(final String avatar)
+	{
+		this.avatar = avatar;
+	}
+	
+	public Long getGameId()
+	{
+		return this.gameId;
+	}
+	
+	public void setGameId(final Long gameId)
+	{
+		this.gameId = gameId;
+	}
+	
+	public Long getSportId()
+	{
+		return this.sportId;
+	}
+	
+	public void setSportId(final Long sportId)
+	{
+		this.sportId = sportId;
+	}
+	
+	public Data getContent()
+	{
+		return this.content;
+	}
+	
+	public void setContent(final Data content)
+	{
+		this.content = content;
+	}
+	
+	public String getNewAvatar()
+	{
+		return this.avatar;
+	}
+	
+	public void setNewAvatar(final String newAvatar)
+	{
+		this.avatar = newAvatar;
+	}
+	
+	public String getCover()
+	{
+		return this.cover;
+	}
+	
+	public void setCover(final String cover)
+	{
+		this.cover = cover;
+	}
+	
+	public int getTargetUserUuid()
+	{
+		return this.targetUserUuid;
+	}
+	
+	public void setTargetUserUuid(final int targetUserUuid)
+	{
+		this.targetUserUuid = targetUserUuid;
+	}
+	
+	public class Data
+	{
+		
+		@JsonProperty("text")
+		private String content;
+		private Set<String> imageLink;
+		private String videoLink;
+		
+		public String getContent()
+		{
+			return this.content;
+		}
+		
+		public void setContent(final String content)
+		{
+			this.content = content;
+		}
+		
+		public Set<String> getImageLink()
+		{
+			return this.imageLink;
+		}
+		
+		public void setImageLink(final Set<String> imageLink)
+		{
+			this.imageLink = imageLink;
+		}
+		
+		public String getVideoLink()
+		{
+			return this.videoLink;
+		}
+		
+		public void setVideoLink(final String videoLink)
+		{
+			this.videoLink = videoLink;
+		}
+		
+	}
 }

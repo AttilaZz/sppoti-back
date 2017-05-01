@@ -1,7 +1,7 @@
 package com.fr.security;
 
-import com.fr.filter.CsrfHeaderFilter;
 import com.fr.commons.enumeration.UserRoleTypeEnum;
+import com.fr.filter.CsrfHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -34,8 +34,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.hibernate.criterion.Restrictions.and;
-
 /**
  * Created by: Wail DJENANE On May 22, 2016
  */
@@ -43,162 +41,139 @@ import static org.hibernate.criterion.Restrictions.and;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-    /**
-     * Custom auth failure.
-     */
-    @Autowired
-    private AuthFailure authFailure;
-
-    /**
-     * Custom auth success.
-     */
-    @Autowired
-    private AuthSuccess authSuccess;
-
-    /**
-     * Security user details.
-     */
-    @Autowired
-    private UserDetailsService userDetailService;
-
-    /**
-     * Custom logout success handler.
-     */
-    @Autowired
-    private LogoutSuccessHandler logoutSuccessHandler;
-
-    /**
-     * Logout handler.
-     */
-    @Autowired
-    private CustomLogoutHandler logoutHandler;
-
-    /**
-     * Remember me token repository.
-     */
-    @Autowired
-    private PersistentTokenRepository tokenRepository;
-
-    /**
-     * Configure authentication provider.
-     */
-    @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService);
-        auth.authenticationProvider(authenticationProvider());
-    }
-
-    /**
-     * Configure CROSS origin.
-     */
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("https://localhost:8000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-
-        http.
-                cors().and()
-                .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
-                .csrf()
-                .csrfTokenRepository(csrfTokenRepository())
-                .and()
-                .formLogin()
-                .successHandler(savedRequestAwareAuthenticationSuccessHandler())
-//                .loginPage("/login")
-                .usernameParameter("username")
-                .passwordParameter("password")
-                .successHandler(authSuccess)
-                .failureHandler(authFailure)
-                .permitAll()
-                .and()
-                .rememberMe()
-                .rememberMeParameter("remember-me")
-                .tokenRepository(tokenRepository)
-                .tokenValiditySeconds(86400)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/account/**", "/sport/**").permitAll()
-                .antMatchers("/admin/**").hasRole(UserRoleTypeEnum.ADMIN.getUserProfileType())
-                .antMatchers("/api/profile/**").hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(),
-                UserRoleTypeEnum.ADMIN.getUserProfileType())
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .logout()
-                .addLogoutHandler(logoutHandler)
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessHandler(logoutSuccessHandler);
-    }
-
-    /**
-     * Configure CSRF token.
-     * @return configured token.
-     */
-    private CsrfTokenRepository csrfTokenRepository() {
-        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-        repository.setHeaderName("X-XSRF-TOKEN");
-        return repository;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Bean
-    public SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler() {
-
-        SavedRequestAwareAuthenticationSuccessHandler auth = new SavedRequestAwareAuthenticationSuccessHandler();
-        auth.setTargetUrlParameter("/");
-        return auth;
-    }
-
-    /**
-     * Init password encoder bean.
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * Init auth provider.
-     */
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailService);
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return authenticationProvider;
-    }
-
-    /**
-     * Init remember me token service.
-     */
-    @Bean
-    public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices() {
-        PersistentTokenBasedRememberMeServices tokenBasedService = new PersistentTokenBasedRememberMeServices(
-                "remember-me", userDetailService, tokenRepository);
-        return tokenBasedService;
-    }
-
-    /**
-     * Init auth trust resolver.
-     */
-    @Bean
-    public AuthenticationTrustResolver getAuthenticationTrustResolver() {
-        return new AuthenticationTrustResolverImpl();
-    }
-
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter
+{
+	
+	/** Custom auth failure. */
+	@Autowired
+	private AuthFailure authFailure;
+	
+	/** Custom auth success. */
+	@Autowired
+	private AuthSuccess authSuccess;
+	
+	/** Security user details. */
+	@Autowired
+	private UserDetailsService userDetailService;
+	
+	/** Custom logout success handler. */
+	@Autowired
+	private LogoutSuccessHandler logoutSuccessHandler;
+	
+	/** Logout handler. */
+	@Autowired
+	private CustomLogoutHandler logoutHandler;
+	
+	/** Remember me token repository. */
+	@Autowired
+	private PersistentTokenRepository tokenRepository;
+	
+	/** Configure authentication provider. */
+	@Autowired
+	public void configureGlobalSecurity(final AuthenticationManagerBuilder auth) throws Exception
+	{
+		auth.userDetailsService(this.userDetailService);
+		auth.authenticationProvider(authenticationProvider());
+	}
+	
+	/** Configure CROSS origin. */
+	@Bean
+	CorsConfigurationSource corsConfigurationSource()
+	{
+		final CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Collections.singletonList("https://localhost:8000"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void configure(final HttpSecurity http) throws Exception
+	{
+		
+		http.
+				cors().and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class).csrf()
+				.csrfTokenRepository(csrfTokenRepository()).and().formLogin()
+				.successHandler(savedRequestAwareAuthenticationSuccessHandler())
+				//                .loginPage("/login")
+				.usernameParameter("username").passwordParameter("password").successHandler(this.authSuccess)
+				.failureHandler(this.authFailure).permitAll().and().rememberMe().rememberMeParameter("remember-me")
+				.tokenRepository(this.tokenRepository).tokenValiditySeconds(86400).and().authorizeRequests()
+				.antMatchers("/account/**", "/sport/**").permitAll().antMatchers("/admin/**")
+				.hasRole(UserRoleTypeEnum.ADMIN.getUserProfileType()).antMatchers("/api/profile/**")
+				.hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(), UserRoleTypeEnum.ADMIN.getUserProfileType())
+				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and().logout()
+				.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+				.logoutSuccessHandler(this.logoutSuccessHandler);
+	}
+	
+	/**
+	 * Configure CSRF token.
+	 *
+	 * @return configured token.
+	 */
+	private CsrfTokenRepository csrfTokenRepository()
+	{
+		final HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+		repository.setHeaderName("X-XSRF-TOKEN");
+		return repository;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Bean
+	public SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler()
+	{
+		
+		final SavedRequestAwareAuthenticationSuccessHandler auth = new SavedRequestAwareAuthenticationSuccessHandler();
+		auth.setTargetUrlParameter("/");
+		return auth;
+	}
+	
+	/**
+	 * Init password encoder bean.
+	 */
+	@Bean
+	public PasswordEncoder passwordEncoder()
+	{
+		return new BCryptPasswordEncoder();
+	}
+	
+	/**
+	 * Init auth provider.
+	 */
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider()
+	{
+		final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(this.userDetailService);
+		authenticationProvider.setPasswordEncoder(passwordEncoder());
+		return authenticationProvider;
+	}
+	
+	/**
+	 * Init remember me token service.
+	 */
+	@Bean
+	public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices()
+	{
+		final PersistentTokenBasedRememberMeServices tokenBasedService = new PersistentTokenBasedRememberMeServices(
+				"remember-me", this.userDetailService, this.tokenRepository);
+		return tokenBasedService;
+	}
+	
+	/**
+	 * Init auth trust resolver.
+	 */
+	@Bean
+	public AuthenticationTrustResolver getAuthenticationTrustResolver()
+	{
+		return new AuthenticationTrustResolverImpl();
+	}
+	
 }

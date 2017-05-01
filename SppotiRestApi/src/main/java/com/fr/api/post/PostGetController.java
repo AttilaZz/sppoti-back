@@ -1,19 +1,19 @@
 package com.fr.api.post;
 
-import com.fr.aop.TraceAuthentification;
-import com.fr.commons.dto.post.PostDTO;
-import com.fr.entities.*;
 import com.fr.commons.dto.ContentEditedResponseDTO;
+import com.fr.commons.dto.post.PostDTO;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.PostControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
@@ -24,36 +24,24 @@ import java.util.*;
 class PostGetController
 {
 	
-	/**
-	 * Post controller service.
-	 */
+	/** Post controller service. */
 	private PostControllerService postDataService;
 	
-	/**
-	 * Init services.
-	 */
+	/** Init services. */
 	@Autowired
-	void setPostDataService(PostControllerService postDataService)
+	void setPostDataService(final PostControllerService postDataService)
 	{
 		this.postDataService = postDataService;
 	}
 	
-	/**
-	 * Class logger.
-	 */
-	private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
-	
-	/**
-	 * Get post details.
-	 */
+	/** Get post details. */
 	@GetMapping(value = "/{postId}")
-	ResponseEntity<PostDTO> detailsPost(@PathVariable int postId, Authentication authentication)
+	ResponseEntity<PostDTO> detailsPost(@PathVariable final int postId, final Authentication authentication)
 	{
 		
-		Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 		
-		PostDTO prep = postDataService.fillPostToSend(postId, userId);
-		LOGGER.info("DETAILS_POST: PostEntity details has been returned for postId: " + postId);
+		final PostDTO prep = this.postDataService.fillPostToSend(postId, userId);
 		return new ResponseEntity<>(prep, HttpStatus.OK);
 		
 	}
@@ -62,14 +50,13 @@ class PostGetController
 	 * Get al posts for a given user id.
 	 */
 	@GetMapping(value = "/all/{userUniqueId}/{page}")
-	ResponseEntity<List<PostDTO>> getAllPosts(@PathVariable("userUniqueId") int targetUserPost, @PathVariable int page,
-											  Authentication authentication)
+	ResponseEntity<List<PostDTO>> getAllPosts(@PathVariable("userUniqueId") final int targetUserPost,
+											  @PathVariable    final int page, final Authentication authentication)
 	{
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		LOGGER.info("ALL_POST: All post have been returned");
-		return new ResponseEntity<>(postDataService
+		return new ResponseEntity<>(this.postDataService
 				.getAllUserPosts(accountUserDetails.getId(), accountUserDetails.getUuid(), targetUserPost, page),
 				HttpStatus.OK);
 		
@@ -79,12 +66,13 @@ class PostGetController
 	 * List of all edition on a post.
 	 */
 	@GetMapping(value = "/history/{postId}/{page}")
-	ResponseEntity<List<ContentEditedResponseDTO>> getPostHistory(@PathVariable int postId, @PathVariable int page)
+	ResponseEntity<List<ContentEditedResponseDTO>> getPostHistory(@PathVariable final int postId,
+																  @PathVariable    final int page)
 	{
 		
-		List<ContentEditedResponseDTO> contentEditedResponseDTOs = postDataService.getAllPostHistory(postId, page);
+		final List<ContentEditedResponseDTO> contentEditedResponseDTOs = this.postDataService
+				.getAllPostHistory(postId, page);
 		
-		LOGGER.info("POST_EDIT_HISTORY: PostEntity HISTORY has been returned for postId: " + postId);
 		return new ResponseEntity<>(contentEditedResponseDTOs, HttpStatus.OK);
 		
 	}
@@ -93,13 +81,13 @@ class PostGetController
 	 * Get all friend posts
 	 */
 	@GetMapping("/all/friend/{userId}/{page}")
-	ResponseEntity<List<PostDTO>> getAllFriendPosts(@PathVariable int userId, @PathVariable int page,
-													Authentication authentication)
+	ResponseEntity<List<PostDTO>> getAllFriendPosts(@PathVariable final int userId, @PathVariable final int page,
+													final Authentication authentication)
 	{
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		return new ResponseEntity<>(postDataService.getAllFriendPosts(userId, page, accountUserDetails.getId()),
+		return new ResponseEntity<>(this.postDataService.getAllFriendPosts(userId, page, accountUserDetails.getId()),
 				HttpStatus.OK);
 	}
 }

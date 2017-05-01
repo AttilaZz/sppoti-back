@@ -14,102 +14,123 @@ import java.util.Date;
  */
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class NotificationDTO extends AbstractCommonDTO {
-
-    private UserDTO from;
-    private UserDTO to;
-    private Integer notificationType;
-    private Boolean opened;
-
-    private Integer teamId;
-    private Integer sppotiId;
-    private Integer postId;
-
-    private TeamDTO team;
-    private SppotiDTO sppoti;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
-    private Date datetime;
-
-    public UserDTO getFrom() {
-        return from;
-    }
-
-    public void setFrom(UserDTO from) {
-        this.from = from;
-    }
-
-    public UserDTO getTo() {
-        return to;
-    }
-
-    public void setTo(UserDTO to) {
-        this.to = to;
-    }
-
-    public Date getDatetime()
-    {
-        return datetime;
-    }
-    public void setDatetime(Date datetime)
-    {
-        this.datetime = datetime;
-    }
-    public Integer getNotificationType() {
-        return notificationType;
-    }
-
-    public void setNotificationType(Integer notificationType) {
-        this.notificationType = notificationType;
-    }
-
-    public Boolean getOpened() {
-        return opened;
-    }
-
-    public void setOpened(Boolean opened) {
-        this.opened = opened;
-    }
-
-    public Integer getTeamId() {
-        return teamId;
-    }
-
-    public void setTeamId(Integer teamId) {
-        this.teamId = teamId;
-    }
-
-    public Integer getSppotiId() {
-        return sppotiId;
-    }
-
-    public void setSppotiId(Integer sppotiId) {
-        this.sppotiId = sppotiId;
-    }
-
-    public Integer getPostId() {
-        return postId;
-    }
-
-    public void setPostId(Integer postId) {
-        this.postId = postId;
-    }
-
-    public TeamDTO getTeam() {
-        return team;
-    }
-
-    public void setTeam(TeamDTO team) {
-        this.team = team;
-    }
-
-    public SppotiDTO getSppoti() {
-        return sppoti;
-    }
-
-    public void setSppoti(SppotiDTO sppoti) {
-        this.sppoti = sppoti;
-    }
+public class NotificationDTO extends AbstractCommonDTO
+{
+	
+	private UserDTO from;
+	private UserDTO to;
+	private Integer notificationType;
+	private Boolean opened;
+	
+	private Integer teamId;
+	private Integer sppotiId;
+	private Integer postId;
+	
+	private TeamDTO team;
+	private SppotiDTO sppoti;
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+	private Date datetime;
+	
+	public UserDTO getFrom()
+	{
+		return this.from;
+	}
+	
+	public void setFrom(final UserDTO from)
+	{
+		this.from = from;
+	}
+	
+	public UserDTO getTo()
+	{
+		return this.to;
+	}
+	
+	public void setTo(final UserDTO to)
+	{
+		this.to = to;
+	}
+	
+	public Date getDatetime()
+	{
+		return this.datetime;
+	}
+	
+	public void setDatetime(final Date datetime)
+	{
+		this.datetime = datetime;
+	}
+	
+	public Integer getNotificationType()
+	{
+		return this.notificationType;
+	}
+	
+	public void setNotificationType(final Integer notificationType)
+	{
+		this.notificationType = notificationType;
+	}
+	
+	public Boolean getOpened()
+	{
+		return this.opened;
+	}
+	
+	public void setOpened(final Boolean opened)
+	{
+		this.opened = opened;
+	}
+	
+	public Integer getTeamId()
+	{
+		return this.teamId;
+	}
+	
+	public void setTeamId(final Integer teamId)
+	{
+		this.teamId = teamId;
+	}
+	
+	public Integer getSppotiId()
+	{
+		return this.sppotiId;
+	}
+	
+	public void setSppotiId(final Integer sppotiId)
+	{
+		this.sppotiId = sppotiId;
+	}
+	
+	public Integer getPostId()
+	{
+		return this.postId;
+	}
+	
+	public void setPostId(final Integer postId)
+	{
+		this.postId = postId;
+	}
+	
+	public TeamDTO getTeam()
+	{
+		return this.team;
+	}
+	
+	public void setTeam(final TeamDTO team)
+	{
+		this.team = team;
+	}
+	
+	public SppotiDTO getSppoti()
+	{
+		return this.sppoti;
+	}
+	
+	public void setSppoti(final SppotiDTO sppoti)
+	{
+		this.sppoti = sppoti;
+	}
 }
 
 

@@ -2,14 +2,12 @@ package com.fr.api.friend;
 
 import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.security.AccountUserDetails;
 import com.fr.service.AccountControllerService;
 import com.fr.service.FriendControllerService;
-import com.fr.security.AccountUserDetails;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,150 +28,161 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/friend")
-class FriendGetController {
-
-    private Logger LOGGER = Logger.getLogger(FriendGetController.class);
-
-    private AccountControllerService accountControllerService;
-
-    private FriendControllerService friendControllerService;
-
-    @Autowired
-    void setFriendControllerService(FriendControllerService friendControllerService) {
-        this.friendControllerService = friendControllerService;
-    }
-
-    @Autowired
-    void setAccountControllerService(AccountControllerService accountControllerService) {
-        this.accountControllerService = accountControllerService;
-    }
-
-    @Value("${key.friendShipPerPage}")
-    private int friend_list_size;
-
-    /**
-     * @param userId connected user id.
-     * @param page   page number.
-     * @return confirmed friend list.
-     */
-    @GetMapping("/confirmed/{userId}/{page}")
-    ResponseEntity<List<UserDTO>> getConfirmedFriendList(@PathVariable int userId, @PathVariable int page) {
-
-        List<UserDTO> friendList = friendControllerService.getConfirmedFriendList(userId, page);
-
-        LOGGER.info("FRIEND_LIST: user friend list has been returned");
-        return new ResponseEntity<>(friendList, HttpStatus.OK);
-
-    }
-
-    /**
-     * @param userId         connected user id.
-     * @param page           page number.
-     * @param authentication spring secu.
-     * @return all refused friend requests.
-     */
-    @GetMapping("/refused/{userId}/{page}")
-    ResponseEntity<FriendResponseDTO> getRefusedFriendList(@PathVariable int userId, @PathVariable int page, Authentication authentication) {
-
-        Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
-        UserEntity connectedUser = friendControllerService.getUserById(connected_user);
-
-
-        Pageable pageable = new PageRequest(page, friend_list_size);
-
-        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.REFUSED, pageable);
-
-        if (friendShips.isEmpty()) {
-            LOGGER.error("GET_REFUSED_FRIEND_REQUEST: No sent friend request found !");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
-
-        LOGGER.info("FRIEND_LIST: user friend list has been returned");
-        return new ResponseEntity<>(friendResponse, HttpStatus.OK);
-
-    }
-
-
-    /**
-     * @param page           page number.
-     * @param authentication spring secu.
-     * @return all pending requests.
-     */
-    @GetMapping("/pending/sent/{page}")
-    ResponseEntity<FriendResponseDTO> getSentPendingFriendList(@PathVariable int page, Authentication authentication) {
-
-        Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
-        UserEntity connectedUser = friendControllerService.getUserById(connected_user);
-
-        Pageable pageable = new PageRequest(page, friend_list_size);
-
-        List<FriendShipEntity> friendShips = friendControllerService.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
-
-        if (friendShips.isEmpty()) {
-            LOGGER.error("GET_PENDING_SENT: No sent friend request found !");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
-
-        LOGGER.info("FRIEND_LIST: user friend list has been returned");
-        return new ResponseEntity<>(friendResponse, HttpStatus.OK);
-
-    }
-
-    /**
-     * @param page           page number.
-     * @param authentication spring secu.
-     * @return all friend pending requests.
-     */
-    @GetMapping("/pending/received/{page}")
-    ResponseEntity<FriendResponseDTO> getReceivedPendingFriendList(@PathVariable int page, Authentication authentication) {
-
-        Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
-        UserEntity connectedUser = friendControllerService.getUserById(connected_user);
-
-        Pageable pageable = new PageRequest(page, friend_list_size);
-
-        List<FriendShipEntity> friendShips = friendControllerService.getByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
-
-        if (friendShips.isEmpty()) {
-            LOGGER.error("GET_PENDING_RECEIVED: No received request friend found !");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-
-        FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
-
-        LOGGER.info("FRIEND_LIST: user friend list has been returned");
-        return new ResponseEntity<>(friendResponse, HttpStatus.OK);
-
-    }
-
-    /**
-     * @param friendShips list of all friendships.
-     * @return friend response DTO.
-     */
-    private FriendResponseDTO getFriendResponse(List<FriendShipEntity> friendShips, Long connectedUser) {
-        List<UserDTO> friendList = new ArrayList<>();
-
-        for (FriendShipEntity friendShip : friendShips) {
-            UserEntity user;
-
-            if (friendShip.getFriend().getId().equals(connectedUser)) {
-                user = friendShip.getUser();
-            } else {
-                user = friendShip.getFriend();
-            }
-
-            friendList.add(accountControllerService.fillAccountResponse(user));
-
-        }
-
-        FriendResponseDTO friendResponse = new FriendResponseDTO();
-        friendResponse.setPendingList(friendList);
-
-        return friendResponse;
-    }
+class FriendGetController
+{
+	
+	/** Account service. */
+	private AccountControllerService accountControllerService;
+	
+	/** Friend service. */
+	private FriendControllerService friendControllerService;
+	
+	/** Friend list size. */
+	@Value("${key.friendShipPerPage}")
+	private int friendListSize;
+	
+	/**
+	 * @param userId
+	 * 		connected user id.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return confirmed friend list.
+	 */
+	@GetMapping("/confirmed/{userId}/{page}")
+	ResponseEntity<List<UserDTO>> getConfirmedFriendList(@PathVariable final int userId, @PathVariable final int page)
+	{
+		
+		final List<UserDTO> friendList = this.friendControllerService.getConfirmedFriendList(userId, page);
+		
+		return new ResponseEntity<>(friendList, HttpStatus.OK);
+		
+	}
+	
+	/**
+	 * @param userId
+	 * 		connected user id.
+	 * @param page
+	 * 		page number.
+	 * @param authentication
+	 * 		spring secu.
+	 *
+	 * @return all refused friend requests.
+	 */
+	@GetMapping("/refused/{userId}/{page}")
+	ResponseEntity<FriendResponseDTO> getRefusedFriendList(@PathVariable final int userId, @PathVariable final int page,
+														   final Authentication authentication)
+	{
+		
+		final Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		final UserEntity connectedUser = this.friendControllerService.getUserById(connected_user);
+		
+		
+		final Pageable pageable = new PageRequest(page, this.friendListSize);
+		
+		final List<FriendShipEntity> friendShips = this.friendControllerService
+				.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.REFUSED, pageable);
+		
+		if (friendShips.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		final FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
+		
+		return new ResponseEntity<>(friendResponse, HttpStatus.OK);
+		
+	}
+	
+	
+	/**
+	 * @param page
+	 * 		page number.
+	 * @param authentication
+	 * 		spring secu.
+	 *
+	 * @return all pending requests.
+	 */
+	@GetMapping("/pending/sent/{page}")
+	ResponseEntity<FriendResponseDTO> getSentPendingFriendList(@PathVariable final int page,
+															   final Authentication authentication)
+	{
+		
+		final Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		final UserEntity connectedUser = this.friendControllerService.getUserById(connected_user);
+		
+		final Pageable pageable = new PageRequest(page, this.friendListSize);
+		
+		final List<FriendShipEntity> friendShips = this.friendControllerService
+				.getByUserAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
+		
+		if (friendShips.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		final FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
+		
+		return new ResponseEntity<>(friendResponse, HttpStatus.OK);
+		
+	}
+	
+	/**
+	 * @param page
+	 * 		page number.
+	 * @param authentication
+	 * 		spring secu.
+	 *
+	 * @return all friend pending requests.
+	 */
+	@GetMapping("/pending/received/{page}")
+	ResponseEntity<FriendResponseDTO> getReceivedPendingFriendList(@PathVariable final int page,
+																   final Authentication authentication)
+	{
+		
+		final Long connected_user = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		final UserEntity connectedUser = this.friendControllerService.getUserById(connected_user);
+		
+		final Pageable pageable = new PageRequest(page, this.friendListSize);
+		
+		final List<FriendShipEntity> friendShips = this.friendControllerService
+				.getByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
+		
+		if (friendShips.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		
+		final FriendResponseDTO friendResponse = getFriendResponse(friendShips, connected_user);
+		
+		return new ResponseEntity<>(friendResponse, HttpStatus.OK);
+		
+	}
+	
+	/**
+	 * @param friendShips
+	 * 		list of all friendships.
+	 *
+	 * @return friend response DTO.
+	 */
+	private FriendResponseDTO getFriendResponse(final List<FriendShipEntity> friendShips, final Long connectedUser)
+	{
+		final List<UserDTO> friendList = new ArrayList<>();
+		
+		for (final FriendShipEntity friendShip : friendShips) {
+			final UserEntity user;
+			
+			if (friendShip.getFriend().getId().equals(connectedUser)) {
+				user = friendShip.getUser();
+			} else {
+				user = friendShip.getFriend();
+			}
+			
+			friendList.add(this.accountControllerService.fillAccountResponse(user));
+			
+		}
+		
+		final FriendResponseDTO friendResponse = new FriendResponseDTO();
+		friendResponse.setPendingList(friendList);
+		
+		return friendResponse;
+	}
 }

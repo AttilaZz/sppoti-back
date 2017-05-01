@@ -23,7 +23,7 @@ class PostDeleteController
 	
 	/** Init post service. */
 	@Autowired
-	void setPostDataService(PostControllerService postDataService)
+	void setPostDataService(final PostControllerService postDataService)
 	{
 		this.postDataService = postDataService;
 	}
@@ -35,10 +35,10 @@ class PostDeleteController
 	 * @return 200 status if post deleted.
 	 */
 	@DeleteMapping(value = "/{postId}")
-	ResponseEntity<Void> deletePost(@PathVariable int postId)
+	ResponseEntity<Void> deletePost(@PathVariable final int postId)
 	{
 		
-		postDataService.deletePost(postId);
+		this.postDataService.deletePost(postId);
 		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

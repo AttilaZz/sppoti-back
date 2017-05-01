@@ -17,30 +17,34 @@ import java.util.List;
  */
 
 @RestController
-class SportController {
-
-    @Autowired
-    private SportControllerService sportService;
-
-    @GetMapping(value = "/sport/all")
-    ResponseEntity<Object> getAllSports() {
-
-        List<SportEntity> allSports = sportService.getAllSports();
-
-        if (allSports.isEmpty()) {
-            return new ResponseEntity<>(allSports, HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(allSports, HttpStatus.OK);
-
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping(value = "/sport")
-    ResponseEntity<Object> addSports() {
-
-        return new ResponseEntity<>(HttpStatus.OK);
-
-    }
-
+class SportController
+{
+	
+	/** Sport service. */
+	@Autowired
+	private SportControllerService sportService;
+	
+	@GetMapping(value = "/sport/all")
+	ResponseEntity<Object> getAllSports()
+	{
+		
+		final List<SportEntity> allSports = this.sportService.getAllSports();
+		
+		if (allSports.isEmpty()) {
+			return new ResponseEntity<>(allSports, HttpStatus.NO_CONTENT);
+		}
+		
+		return new ResponseEntity<>(allSports, HttpStatus.OK);
+		
+	}
+	
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PostMapping(value = "/sport")
+	ResponseEntity<Object> addSports()
+	{
+		
+		return new ResponseEntity<>(HttpStatus.OK);
+		
+	}
+	
 }

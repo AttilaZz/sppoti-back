@@ -19,20 +19,22 @@ import java.io.IOException;
  */
 
 @Component
-public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
-
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response,
-                       AccessDeniedException accessDeniedException) throws IOException, ServletException {
-
-        response.setHeader(HeadersAttributes.ATTR_ORIGIN.getValue(), HeadersValues.Origins.getValue());
-        response.setHeader(HeadersAttributes.ATTR_CREDENTIALS.getValue(), HeadersValues.AllowCredentials.getValue());
-        response.setHeader(HeadersAttributes.ATTR_METHODS.getValue(), HeadersValues.AllMethods.getValue());
-        response.setHeader(HeadersAttributes.ATTR_AGE.getValue(), HeadersValues.Max_Age.getValue());
-        response.setHeader(HeadersAttributes.ATTR_HEADER.getValue(), HeadersValues.Allowed_Headers.getValue());
-
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-
-    }
-
+public class AccessDeniedHandlerImpl implements AccessDeniedHandler
+{
+	
+	@Override
+	public void handle(final HttpServletRequest request, final HttpServletResponse response,
+					   final AccessDeniedException accessDeniedException) throws IOException, ServletException
+	{
+		
+		response.setHeader(HeadersAttributes.ATTR_ORIGIN.getValue(), HeadersValues.Origins.getValue());
+		response.setHeader(HeadersAttributes.ATTR_CREDENTIALS.getValue(), HeadersValues.AllowCredentials.getValue());
+		response.setHeader(HeadersAttributes.ATTR_METHODS.getValue(), HeadersValues.AllMethods.getValue());
+		response.setHeader(HeadersAttributes.ATTR_AGE.getValue(), HeadersValues.Max_Age.getValue());
+		response.setHeader(HeadersAttributes.ATTR_HEADER.getValue(), HeadersValues.Allowed_Headers.getValue());
+		
+		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+		
+	}
+	
 }

@@ -5,7 +5,6 @@ import com.fr.entities.LikeContentEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.CommentControllerService;
 import com.fr.service.LikeControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,8 +30,8 @@ class LikeCommentController
 	private static final String ATT_USER_ID = "USER_ID";
 	
 	/** Init services. */
-	LikeCommentController(CommentControllerService commentControllerService,
-						  LikeControllerService likeControllerService)
+	LikeCommentController(final CommentControllerService commentControllerService,
+						  final LikeControllerService likeControllerService)
 	{
 		this.commentControllerService = commentControllerService;
 		this.likeControllerService = likeControllerService;
@@ -47,13 +46,13 @@ class LikeCommentController
 	 * @return status 200 if comment were liked or 404 if not
 	 */
 	@PutMapping(value = "/comment/{id}")
-	ResponseEntity<Void> likeComment(@PathVariable("id") int id, HttpServletRequest request)
+	ResponseEntity<Void> likeComment(@PathVariable("id") final int id, final HttpServletRequest request)
 	{
 		
-		CommentEntity commentEntityToLike = commentControllerService.findComment(id);
+		final CommentEntity commentEntityToLike = this.commentControllerService.findComment(id);
 		
-		Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-		UserEntity user = likeControllerService.getUserById(userId);
+		final Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+		final UserEntity user = this.likeControllerService.getUserById(userId);
 		
 		if (commentEntityToLike == null || user == null) {
 			
@@ -66,12 +65,12 @@ class LikeCommentController
 			
 		}
 		
-		LikeContentEntity likeToSave = new LikeContentEntity();
+		final LikeContentEntity likeToSave = new LikeContentEntity();
 		likeToSave.setComment(commentEntityToLike);
 		likeToSave.setUser(user);
 		
-		if (!likeControllerService.isCommentAlreadyLikedByUser(id, userId)) {
-			likeControllerService.likeComment(likeToSave);
+		if (!this.likeControllerService.isCommentAlreadyLikedByUser(id, userId)) {
+			this.likeControllerService.likeComment(likeToSave);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

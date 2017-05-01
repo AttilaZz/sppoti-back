@@ -1,7 +1,6 @@
 package com.fr.api.sppoti;
 
 import com.fr.service.SppotiControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 class SppotiDeleteController
 {
 	
+	/** Sppoti service. */
 	private SppotiControllerService sppotiControllerService;
 	
+	/** Init service. */
 	@Autowired
-	void setSppotiControllerService(SppotiControllerService sppotiControllerService)
+	void setSppotiControllerService(final SppotiControllerService sppotiControllerService)
 	{
 		this.sppotiControllerService = sppotiControllerService;
 	}
@@ -34,10 +35,10 @@ class SppotiDeleteController
 	 * @return 200 status if deleted, 400 status otherwise.
 	 */
 	@DeleteMapping("/{id}")
-	ResponseEntity deleteSppoti(@PathVariable int id)
+	ResponseEntity deleteSppoti(@PathVariable final int id)
 	{
 		
-		sppotiControllerService.deleteSppoti(id);
+		this.sppotiControllerService.deleteSppoti(id);
 		return new ResponseEntity(HttpStatus.OK);
 		
 	}

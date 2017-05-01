@@ -13,21 +13,24 @@ import javax.servlet.http.HttpServletResponse;
  * Created by Moi on 19-Nov-16.
  */
 @Component
-public class CustomLogoutHandler implements LogoutHandler {
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth != null && auth.isAuthenticated()) {
-            new SecurityContextLogoutHandler().logout(httpServletRequest, httpServletResponse, auth);
-            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
-        }
-
-        httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-    }
+public class CustomLogoutHandler implements LogoutHandler
+{
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void logout(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse,
+					   final Authentication authentication)
+	{
+		
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth != null && auth.isAuthenticated()) {
+			new SecurityContextLogoutHandler().logout(httpServletRequest, httpServletResponse, auth);
+			httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+		}
+		
+		httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+	}
 }

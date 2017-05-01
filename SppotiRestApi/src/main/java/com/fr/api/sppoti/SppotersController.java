@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.*;
 class SppotersController
 {
 	
+	/** Sppoti service. */
 	private SppotiControllerService sppotiControllerService;
 	
+	/** Init service. */
 	@Autowired
-	void setSppotiControllerService(SppotiControllerService sppotiControllerService)
+	void setSppotiControllerService(final SppotiControllerService sppotiControllerService)
 	{
 		this.sppotiControllerService = sppotiControllerService;
 	}
@@ -33,10 +35,10 @@ class SppotersController
 	 * @return 202 status if sppoti status updated.
 	 */
 	@PutMapping("/accept/{userId}")
-	ResponseEntity<String> acceptSppoti(@PathVariable int sppotiId, @PathVariable int userId)
+	ResponseEntity<String> acceptSppoti(@PathVariable final int sppotiId, @PathVariable final int userId)
 	{
 		
-		sppotiControllerService.acceptSppoti(sppotiId, userId);
+		this.sppotiControllerService.acceptSppoti(sppotiId, userId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		
@@ -51,10 +53,10 @@ class SppotersController
 	 * @return 202 status if sppoti status updated.
 	 */
 	@PutMapping("/refuse/{userId}")
-	ResponseEntity<Void> refuseSppoti(@PathVariable int sppotiId, @PathVariable int userId)
+	ResponseEntity<Void> refuseSppoti(@PathVariable final int sppotiId, @PathVariable final int userId)
 	{
 		
-		sppotiControllerService.refuseSppoti(userId, sppotiId);
+		this.sppotiControllerService.refuseSppoti(userId, sppotiId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		
@@ -66,15 +68,13 @@ class SppotersController
 	 * @return 201 status if memeber has been added.
 	 */
 	@PostMapping("/add")
-	ResponseEntity<UserDTO> addMember(@PathVariable int sppotiId, @RequestBody UserDTO user)
+	ResponseEntity<UserDTO> addMember(@PathVariable final int sppotiId, @RequestBody final UserDTO user)
 	{
 		
 		if (user.getId() == null) {
 			throw new BusinessGlobalException("Sppoter id not found !!");
 		}
 		
-		UserDTO savedTeamMember = sppotiControllerService.addSppoter(sppotiId, user);
-		
-		return new ResponseEntity<>(savedTeamMember, HttpStatus.CREATED);
+		return new ResponseEntity<>(this.sppotiControllerService.addSppoter(sppotiId, user), HttpStatus.CREATED);
 	}
 }

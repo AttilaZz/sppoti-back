@@ -1,13 +1,11 @@
 package com.fr.api.post;
 
-import com.fr.aop.TraceAuthentification;
-import com.fr.commons.dto.post.PostRequestDTO;
 import com.fr.commons.dto.post.PostDTO;
-import com.fr.entities.*;
+import com.fr.commons.dto.post.PostRequestDTO;
 import com.fr.commons.exception.PostContentMissingException;
+import com.fr.entities.*;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.PostControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by djenanewail on 2/13/17.
@@ -35,13 +34,10 @@ class PostAddController
 	
 	/** Init post service. */
 	@Autowired
-	void setPostDataService(PostControllerService postDataService)
+	void setPostDataService(final PostControllerService postDataService)
 	{
 		this.postDataService = postDataService;
 	}
-	
-	/** Class logger. */
-	private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
 	
 	/**
 	 * @param newPostReq
@@ -51,42 +47,39 @@ class PostAddController
 	 */
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@PostMapping
-	ResponseEntity<PostDTO> addPost(@RequestBody PostRequestDTO newPostReq, Authentication authentication)
+	ResponseEntity<PostDTO> addPost(@RequestBody final PostRequestDTO newPostReq, final Authentication authentication)
 	{
 		
 		// get current logged user
-		Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
-		UserEntity user = postDataService.getUserById(userId);
-		LOGGER.debug("POST-ADD: LOGGED UserDTO: => " + userId);
+		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		final UserEntity user = this.postDataService.getUserById(userId);
 		
 		boolean canAdd = false;
 		
-		SportEntity targedSport;
-		SppotiEntity game;
-		Long sportId;
-		Long gameId;
+		final SportEntity targedSport;
+		final SppotiEntity game;
+		final Long sportId;
+		final Long gameId;
 		
-		PostEntity newPostToSave = new PostEntity(); // Object to save in database
+		final PostEntity newPostToSave = new PostEntity(); // Object to save in database
 		newPostToSave.setUser(user);
 		
-		PostDTO postRep = new PostDTO();// object to send on success
+		final PostDTO postRep = new PostDTO();// object to send on success
 		
 		// SportEntity is required
 		if (newPostReq.getSportId() != null) {
 			
 			sportId = newPostReq.getSportId();
-			targedSport = postDataService.getSportToUse(sportId);
+			targedSport = this.postDataService.getSportToUse(sportId);
 			
 			if (targedSport != null) {
 				newPostToSave.setSport(targedSport);
 				postRep.setSportId(sportId);
 			} else {
-				LOGGER.debug("POST-ADD: The received SportDTO ID is not valid");
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			
 		} else {
-			LOGGER.debug("POST-ADD: A sport_id must be defined ");
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
@@ -94,10 +87,9 @@ class PostAddController
 		if (newPostReq.getGameId() != null) {
 			
 			gameId = newPostReq.getGameId();
-			game = postDataService.getSppotiById(gameId);
+			game = this.postDataService.getSppotiById(gameId);
 			
 			if (game == null) {
-				LOGGER.info("POST-ADD: Game id is not valid");
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			
@@ -108,7 +100,7 @@ class PostAddController
 		}
 		
 		// visibility
-		int visibility = newPostReq.getVisibility();
+		final int visibility = newPostReq.getVisibility();
 		newPostToSave.setVisibility(visibility);
 		postRep.setVisibility(visibility);
 
@@ -129,9 +121,9 @@ class PostAddController
         /*
 			---- End address
          */
-		String content;
-		Set<String> image;
-		String video;
+		final String content;
+		final Set<String> image;
+		final String video;
 		
 		content = newPostReq.getContent().getContent();
 		image = newPostReq.getContent().getImageLink();
@@ -141,18 +133,15 @@ class PostAddController
 		if (newPostReq.getContent() != null) {
 			
 			if (content == null && image == null && video == null) {
-				LOGGER.info("POST-ADD: missing attributes");
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			
 			if (image != null && video != null) {
-				LOGGER.info("POST-ADD: image OR video, make a choice !!");
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			
 			if (content != null) {
 				if (content.trim().length() <= 0) {
-					LOGGER.info("POST-ADD: Content value is empty");
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 				}
 				
@@ -162,7 +151,6 @@ class PostAddController
 			
 			if (image != null) {
 				if (image.size() <= 0) {
-					LOGGER.info("POST-ADD: image link value is empty");
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 				}
 				postRep.setImageLink(image);
@@ -171,7 +159,6 @@ class PostAddController
 			
 			if (video != null) {
 				if (video.trim().length() <= 0) {
-					LOGGER.info("POST-ADD: video link value is empty");
 					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 				}
 				postRep.setVideoLink(video);
@@ -186,7 +173,7 @@ class PostAddController
 		postRep.setLastName(user.getLastName());
 		postRep.setUsername(user.getUsername());
 		
-		List<ResourcesEntity> resources = new ArrayList<>();
+		final List<ResourcesEntity> resources = new ArrayList<>();
 		resources.addAll(user.getResources());
 		
 		if (!resources.isEmpty()) {
@@ -200,15 +187,14 @@ class PostAddController
         /*
 		Check target user
          */
-		int requestTargetUserId = newPostReq.getTargetUserUuid();
-		UserEntity targetUser = postDataService.getUserByUuId(requestTargetUserId);
+		final int requestTargetUserId = newPostReq.getTargetUserUuid();
+		final UserEntity targetUser = this.postDataService.getUserByUuId(requestTargetUserId);
 		if (requestTargetUserId != 0 && targetUser != null) {
 			
 			newPostToSave.setTargetUserProfileUuid(newPostReq.getTargetUserUuid());
 			postRep.setTargetUser(targetUser.getFirstName(), targetUser.getLastName(), targetUser.getUsername(),
 					targetUser.getUuid(), false);
 		} else if (requestTargetUserId != 0) {
-			LOGGER.error("ADD-POST: Target user id not found !");
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
@@ -220,19 +206,16 @@ class PostAddController
 				throw new PostContentMissingException("At least a game or a post content must be assigned");
 			//Save and get the inserted id
 			
-			int insertedPostId = postDataService.savePost(newPostToSave).getUuid();
+			final int insertedPostId = this.postDataService.savePost(newPostToSave).getUuid();
 			
 			//Fill the id in the response object
 			postRep.setId(insertedPostId);
 			postRep.setDatetimeCreated(newPostToSave.getDatetimeCreated());
-			LOGGER.info("POST-ADD: post has been saved");
 			
 			postRep.setMyPost(true);
-			LOGGER.info("UUID: " + postRep.getId());
 			return new ResponseEntity<>(postRep, HttpStatus.CREATED);
 			
-		} catch (PostContentMissingException e1) {
-			LOGGER.error("POST-ADD: At least a game or a post content must be assigned", e1);
+		} catch (final PostContentMissingException e1) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			
 		}

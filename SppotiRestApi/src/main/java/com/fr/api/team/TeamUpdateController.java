@@ -6,7 +6,6 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.TeamControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,27 +22,18 @@ import org.springframework.web.bind.annotation.*;
 class TeamUpdateController
 {
 	
-	/**
-	 * Team controller service.
-	 */
+	/** Team controller service. */
 	private TeamControllerService teamControllerService;
 	
-	/**
-	 * Class logger.
-	 */
-	private Logger LOGGER = Logger.getLogger(TeamAddController.class);
-	
-	/**
-	 * Init controller services.
-	 */
+	/** Init controller services. */
 	@Autowired
-	void setTeamControllerService(TeamControllerService teamControllerService)
+	void setTeamControllerService(final TeamControllerService teamControllerService)
 	{
 		this.teamControllerService = teamControllerService;
 	}
 	
 	/**
-	 * This method update general team informations,
+	 * This method update general team informations.
 	 * Title, Logos, Cover
 	 *
 	 * @param teamId
@@ -54,8 +44,8 @@ class TeamUpdateController
 	 * @return The updated team.
 	 */
 	@PutMapping
-	ResponseEntity<TeamDTO> updateTeam(@PathVariable int teamId, @RequestBody TeamDTO teamRequestDTO,
-									   Authentication authentication)
+	ResponseEntity<TeamDTO> updateTeam(@PathVariable final int teamId, @RequestBody final TeamDTO teamRequestDTO,
+									   final Authentication authentication)
 	{
 		
 		boolean canUpdate = false;
@@ -80,10 +70,10 @@ class TeamUpdateController
 			canUpdate = true;
 		}
 		
-		int connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getUuid();
+		final int connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getUuid();
 		teamRequestDTO.setId(teamId);
 		if (canUpdate) {
-			teamControllerService.updateTeam(connectedUserId, teamRequestDTO);
+			this.teamControllerService.updateTeam(connectedUserId, teamRequestDTO);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -100,12 +90,12 @@ class TeamUpdateController
 	 * @return 202 http status if updated succeed.
 	 */
 	@PutMapping("/accept")
-	ResponseEntity<Void> acceptTeam(@PathVariable int teamId, Authentication authentication)
+	ResponseEntity<Void> acceptTeam(@PathVariable final int teamId, final Authentication authentication)
 	{
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		teamControllerService.acceptTeam(teamId, accountUserDetails.getUuid());
+		this.teamControllerService.acceptTeam(teamId, accountUserDetails.getUuid());
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
@@ -119,12 +109,12 @@ class TeamUpdateController
 	 * @return 202 http status if updated succeed.
 	 */
 	@PutMapping("/refuse")
-	ResponseEntity<Void> refuseTeam(@PathVariable int teamId, Authentication authentication)
+	ResponseEntity<Void> refuseTeam(@PathVariable final int teamId, final Authentication authentication)
 	{
 		
-		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		teamControllerService.refuseTeam(teamId, accountUserDetails.getUuid());
+		this.teamControllerService.refuseTeam(teamId, accountUserDetails.getUuid());
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
@@ -138,7 +128,7 @@ class TeamUpdateController
 	 * @return 202 http status if updated succeed.
 	 */
 	@PutMapping("/challenge")
-	ResponseEntity<TeamDTO> requestChallenge(@PathVariable int teamId, @RequestBody SppotiDTO dto)
+	ResponseEntity<TeamDTO> requestChallenge(@PathVariable final int teamId, @RequestBody final SppotiDTO dto)
 	{
 		
 		if (dto.getId() == null || !StringUtils.hasText(dto.getTeamAdverseStatus())) {
@@ -146,16 +136,19 @@ class TeamUpdateController
 		}
 		
 		boolean statusExist = false;
-		for (GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
-			if (status.name().equals(dto.getTeamAdverseStatus())) {
+		for (final GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
+			if (status.name().equals(dto.getTeamAdverseStatus()) &&
+					(dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.CONFIRMED.name()) ||
+							dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.REFUSED.name()))) {
 				statusExist = true;
 			}
 		}
+		
 		if (!statusExist) {
 			throw new BusinessGlobalException("Status must be (CONFIRMED) or (REFUSED)");
 		}
 		
-		TeamDTO adverseTeam = teamControllerService.requestToSppotiAdminChallenge(dto, teamId);
+		final TeamDTO adverseTeam = this.teamControllerService.requestToSppotiAdminChallenge(dto, teamId);
 		
 		return new ResponseEntity<>(adverseTeam, HttpStatus.ACCEPTED);
 		
