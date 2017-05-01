@@ -19,26 +19,32 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/score")
-public class ScoreUpdateController {
-
-    private final ScoreControllerService scoreControllerService;
-
-    @Autowired
-    public ScoreUpdateController(ScoreControllerService scoreControllerService) {
-        this.scoreControllerService = scoreControllerService;
-    }
-
-    /**
-     *
-     * @param scoreDTO score data.
-     * @return 202 status if updated.
-     */
-    @PutMapping
-    public ResponseEntity updateScoreStatusByAdverseTeam(@RequestBody ScoreDTO scoreDTO, Authentication authentication){
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-
-        scoreControllerService.updateScore(scoreDTO, accountUserDetails.getId());
-        return new ResponseEntity(HttpStatus.ACCEPTED);
-    }
-
+public class ScoreUpdateController
+{
+	
+	/** Score controller service. */
+	private final ScoreControllerService scoreControllerService;
+	
+	/** Init score service. */
+	@Autowired
+	public ScoreUpdateController(ScoreControllerService scoreControllerService)
+	{
+		this.scoreControllerService = scoreControllerService;
+	}
+	
+	/**
+	 * @param scoreDTO
+	 * 		score data.
+	 *
+	 * @return 202 status if updated.
+	 */
+	@PutMapping
+	public ResponseEntity updateScoreStatusByAdverseTeam(@RequestBody ScoreDTO scoreDTO, Authentication authentication)
+	{
+		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		
+		scoreControllerService.updateScore(scoreDTO, accountUserDetails.getId());
+		return new ResponseEntity(HttpStatus.ACCEPTED);
+	}
+	
 }

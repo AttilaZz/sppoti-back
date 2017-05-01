@@ -14,18 +14,18 @@ import java.util.List;
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
  */
-@Service
-public interface CommentControllerService extends AbstractControllerService {
-
-    CommentDTO saveComment(CommentEntity newCommentEntity, Long userId, int postId);
-
-    boolean deleteComment(CommentEntity commentEntity);
-
-    CommentEntity findComment(int commentId);
-
-    boolean updateComment(EditHistoryEntity commentEditRow);
-
-    List<CommentDTO> getPostCommentsFromLastId(int postId, int page, Long userId);
-
-    List<ContentEditedResponseDTO> getAllCommentHistory(int id, int page);
+public interface CommentControllerService extends AbstractControllerService
+{
+	
+	CommentDTO saveComment(CommentEntity newCommentEntity,Long userId,int postId);
+	
+	boolean deleteComment(CommentEntity commentEntity);
+	
+	CommentEntity findComment(int commentId);
+	
+	boolean updateComment(EditHistoryEntity commentEditRow);
+	
+	List<CommentDTO> getPostCommentsFromLastId(int postId,int page,Long userId);
+	
+	List<ContentEditedResponseDTO> getAllCommentHistory(int id,int page);
 }

@@ -15,36 +15,60 @@ import com.fr.service.MessageControllerService;
  */
 
 @Component
-class MessageControllerServiceImpl extends AbstractControllerServiceImpl implements MessageControllerService {
-
-
-    @Override
-    public List<MessageEntity> getSentUserMessages(Long userId, int page) {
-        return null;
-    }
-
-    @Override
-    public List<MessageEntity> getReceivedUserMessages(Long userId, int page) {
-        return null;
-    }
-
-    @Override
-    public Boolean saveMessage(MessageEntity msg) {
-        return null;
-    }
-
-    @Override
-    public Boolean updateMessage(MessageEntity msg) {
-        return null;
-    }
-
-    @Override
-    public Boolean deteleMessageById(Long msgId) {
-        return null;
-    }
-
-    @Override
-    public MessageEntity findMessageById(Long msgId) {
-        return null;
-    }
+class MessageControllerServiceImpl extends AbstractControllerServiceImpl implements MessageControllerService
+{
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<MessageEntity> getSentUserMessages(Long userId,int page)
+	{
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<MessageEntity> getReceivedUserMessages(Long userId,int page)
+	{
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean saveMessage(MessageEntity msg)
+	{
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean updateMessage(MessageEntity msg)
+	{
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean deteleMessageById(Long msgId)
+	{
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public MessageEntity findMessageById(Long msgId)
+	{
+		return null;
+	}
 }

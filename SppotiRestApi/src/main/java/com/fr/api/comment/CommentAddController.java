@@ -20,82 +20,74 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/comment")
-class CommentAddController {
-
-    private static final String ATT_USER_ID = "USER_ID";
-    private Logger LOGGER = Logger.getLogger(CommentAddController.class);
-
-    private CommentControllerService commentDataService;
-
-    @Autowired
-    void setCommentDataService(CommentControllerService commentDataService) {
-        this.commentDataService = commentDataService;
-    }
-
-    @PostMapping
-    ResponseEntity<CommentDTO> addComment(@RequestBody CommentDTO newComment, HttpServletRequest request) {
-
-        CommentEntity commentEntityToSave = new CommentEntity();
-
-        if (newComment != null) {
-
-            String content = newComment.getText();
-            String image = newComment.getImageLink();
-            String video = newComment.getVideoLink();
-            int postId = newComment.getPostId();
-
-            if (content == null && image == null && video == null) {
-                LOGGER.info("COMMENT: Missing attributes");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-            if (content != null) {
-                if (content.trim().length() <= 0) {
-                    LOGGER.info("COMMENT: Content value is empty");
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                }
-                commentEntityToSave.setContent(content);
-            }
-
-            if (image != null && video != null) {
-                LOGGER.info("COMMENT: Image or Video ! make a choice");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-            if (image != null) {
-                if (image.trim().length() <= 0) {
-                    LOGGER.info("COMMENT: imageLink value is empty");
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                }
-                commentEntityToSave.setImageLink(image);
-            }
-
-            if (video != null) {
-                if (video.trim().length() <= 0) {
-                    LOGGER.info("COMMENT: videoLink value is empty");
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-                }
-                commentEntityToSave.setVideoLink(video);
-            }
-
-            Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-
-            try {
-                CommentDTO savedComment = commentDataService.saveComment(commentEntityToSave, userId, postId);
-
-                savedComment.setMyComment(true);
-
-                LOGGER.info("COMMENT: post has been saved: \n" + newComment);
-                return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
-            } catch (Exception e) {
-                LOGGER.error("COMMENT: Failed to save like", e);
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-        } else {
-            LOGGER.error("COMMENT: Object received is null");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
+class CommentAddController
+{
+	
+	private static final String ATT_USER_ID = "USER_ID";
+	
+	/** Comment service. */
+	private CommentControllerService commentDataService;
+	
+	/** Init comment service. */
+	@Autowired
+	void setCommentDataService(CommentControllerService commentDataService)
+	{
+		this.commentDataService = commentDataService;
+	}
+	
+	@PostMapping
+	ResponseEntity<CommentDTO> addComment(@RequestBody CommentDTO newComment, HttpServletRequest request)
+	{
+		
+		CommentEntity commentEntityToSave = new CommentEntity();
+		
+		if (newComment != null) {
+			
+			String content = newComment.getText();
+			String image = newComment.getImageLink();
+			String video = newComment.getVideoLink();
+			int postId = newComment.getPostId();
+			
+			if (content == null && image == null && video == null) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			
+			if (content != null) {
+				if (content.trim().length() <= 0) {
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				}
+				commentEntityToSave.setContent(content);
+			}
+			
+			if (image != null && video != null) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			
+			if (image != null) {
+				if (image.trim().length() <= 0) {
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				}
+				commentEntityToSave.setImageLink(image);
+			}
+			
+			if (video != null) {
+				if (video.trim().length() <= 0) {
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				}
+				commentEntityToSave.setVideoLink(video);
+			}
+			
+			Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+			
+			CommentDTO savedComment = commentDataService.saveComment(commentEntityToSave, userId, postId);
+			
+			savedComment.setMyComment(true);
+			
+			return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
+			
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 }

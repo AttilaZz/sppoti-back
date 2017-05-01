@@ -22,105 +22,118 @@ import javax.persistence.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/sppoti")
-class SppotiUpdateController {
-
-    /**
-     * Sppoti controller service.
-     */
-    private SppotiControllerService sppotiControllerService;
-
-    /**
-     * Init service.
-     */
-    @Autowired
-    void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
-        this.sppotiControllerService = sppotiControllerService;
-    }
-
-    /**
-     * @param sppotiId      sppotiId of sppoti.
-     * @param sppotiRequest data to update.
-     * @return 200 status with the updated sppoti, 400 status otherwise.
-     */
-    @PutMapping("/{sppotiId}")
-    ResponseEntity<SppotiDTO> updateSppoti(@PathVariable int sppotiId, @RequestBody SppotiDTO sppotiRequest,
-                                           Authentication authentication) {
-
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-
-        //throws exception if user is not the sppoti admin
-        sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId());
-
-        boolean canUpdate = false;
-
-        if (!StringUtils.isEmpty(sppotiRequest.getTags())) {
-            canUpdate = true;
-        }
-
-        if (!StringUtils.isEmpty(sppotiRequest.getDescription())) {
-            canUpdate = true;
-        }
-
-        if (sppotiRequest.getDateTimeStart() != null) {
-            canUpdate = true;
-        }
-
-        if (!StringUtils.isEmpty(sppotiRequest.getName())) {
-            canUpdate = true;
-        }
-
-        if (!StringUtils.isEmpty(sppotiRequest.getLocation())) {
-            canUpdate = true;
-        }
-
-        if (sppotiRequest.getVsTeam() != 0) {
-            canUpdate = true;
-        }
-
-        if (sppotiRequest.getMaxMembersCount() != null && sppotiRequest.getMaxTeamCount() != 0) {
-            canUpdate = true;
-        }
-
-        if (canUpdate) {
-            sppotiControllerService.updateSppoti(sppotiRequest, sppotiId);
-        } else {
-            throw new IllegalArgumentException("Update not accepted");
-        }
-
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
-
-    /**
-     * @param sppotiId id of the challenged sppoti.
-     * @param teamId   team id to add in the challenge.
-     */
-    @PutMapping("/challenge/send/{sppotiId}/{teamId}")
-    ResponseEntity<SppotiDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId,
-                                            Authentication authentication) {
-
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-
-        sppotiControllerService.sendChallenge(sppotiId, teamId, accountUserDetails.getId());
-
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
-
-    /**
-     * Accept/Refuse a challenge.
-     *
-     * @param sppotiId sppoti id.
-     * @param teamDTO  team DTO containing the id of the accepted team.
-     * @return 202 if update done correctly, 400 if not
-     */
-    @PutMapping("/challenge/answer/{sppotiId}")
-    ResponseEntity<Void> sendChallenge(@PathVariable int sppotiId, @RequestBody TeamDTO teamDTO) {
-
-        if (StringUtils.isEmpty(teamDTO.getId()) || StringUtils.isEmpty(teamDTO.getTeamAdverseStatus())) {
-            throw new BusinessGlobalException("Team id not found in the request.");
-        }
-
-        sppotiControllerService.chooseOneAdverseTeamFromAllRequests(sppotiId, teamDTO);
-
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
+class SppotiUpdateController
+{
+	
+	/**
+	 * Sppoti controller service.
+	 */
+	private SppotiControllerService sppotiControllerService;
+	
+	/**
+	 * Init service.
+	 */
+	@Autowired
+	void setSppotiControllerService(SppotiControllerService sppotiControllerService)
+	{
+		this.sppotiControllerService = sppotiControllerService;
+	}
+	
+	/**
+	 * @param sppotiId
+	 * 		sppotiId of sppoti.
+	 * @param sppotiRequest
+	 * 		data to update.
+	 *
+	 * @return 200 status with the updated sppoti, 400 status otherwise.
+	 */
+	@PutMapping("/{sppotiId}")
+	ResponseEntity<SppotiDTO> updateSppoti(@PathVariable int sppotiId, @RequestBody SppotiDTO sppotiRequest,
+										   Authentication authentication)
+	{
+		
+		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		
+		//throws exception if user is not the sppoti admin
+		sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId());
+		
+		boolean canUpdate = false;
+		
+		if (!StringUtils.isEmpty(sppotiRequest.getTags())) {
+			canUpdate = true;
+		}
+		
+		if (!StringUtils.isEmpty(sppotiRequest.getDescription())) {
+			canUpdate = true;
+		}
+		
+		if (sppotiRequest.getDateTimeStart() != null) {
+			canUpdate = true;
+		}
+		
+		if (!StringUtils.isEmpty(sppotiRequest.getName())) {
+			canUpdate = true;
+		}
+		
+		if (!StringUtils.isEmpty(sppotiRequest.getLocation())) {
+			canUpdate = true;
+		}
+		
+		if (sppotiRequest.getVsTeam() != 0) {
+			canUpdate = true;
+		}
+		
+		if (sppotiRequest.getMaxMembersCount() != null && sppotiRequest.getMaxTeamCount() != 0) {
+			canUpdate = true;
+		}
+		
+		if (canUpdate) {
+			sppotiControllerService.updateSppoti(sppotiRequest, sppotiId);
+		} else {
+			throw new IllegalArgumentException("Update not accepted");
+		}
+		
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
+	/**
+	 * @param sppotiId
+	 * 		id of the challenged sppoti.
+	 * @param teamId
+	 * 		team id to add in the challenge.
+	 */
+	@PutMapping("/challenge/send/{sppotiId}/{teamId}")
+	ResponseEntity<SppotiDTO> sendChallenge(@PathVariable int sppotiId, @PathVariable int teamId,
+											Authentication authentication)
+	{
+		
+		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		
+		sppotiControllerService.sendChallenge(sppotiId, teamId, accountUserDetails.getId());
+		
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
+	/**
+	 * Accept/Refuse a challenge.
+	 *
+	 * @param sppotiId
+	 * 		sppoti id.
+	 * @param teamDTO
+	 * 		team DTO containing the id of the accepted team.
+	 *
+	 * @return 202 if update done correctly, 400 if not
+	 */
+	@PutMapping("/challenge/answer/{sppotiId}")
+	ResponseEntity<Void> sendChallenge(@PathVariable int sppotiId, @RequestBody TeamDTO teamDTO)
+	{
+		
+		if (StringUtils.isEmpty(teamDTO.getId()) || StringUtils.isEmpty(teamDTO.getTeamAdverseStatus())) {
+			throw new BusinessGlobalException("Team id not found in the request.");
+		}
+		
+		sppotiControllerService.chooseOneAdverseTeamFromAllRequests(sppotiId, teamDTO);
+		
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
 }

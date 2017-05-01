@@ -11,10 +11,15 @@ import java.util.List;
  */
 
 @Component
-class SportControllerServiceImpl extends AbstractControllerServiceImpl implements SportControllerService {
-
-    @Override
-    public List<SportEntity> getAllSports() {
-        return sportRepository.findAll();
-    }
+class SportControllerServiceImpl extends AbstractControllerServiceImpl implements SportControllerService
+{
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<SportEntity> getAllSports()
+	{
+		return sportRepository.findAll();
+	}
 }

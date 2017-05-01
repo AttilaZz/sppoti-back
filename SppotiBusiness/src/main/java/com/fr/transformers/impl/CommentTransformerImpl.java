@@ -14,46 +14,51 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Transactional(readOnly = true)
-public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, CommentEntity>
-implements CommentTransformer {
-
-    /** User transformer. */
-    private final UserTransformerImpl userTransformer;
-
-    @Autowired
-    public CommentTransformerImpl(UserTransformerImpl userTransformer) {
-        this.userTransformer = userTransformer;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public CommentEntity dtoToModel(CommentDTO dto) {
-        return super.dtoToModel(dto);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public CommentDTO modelToDto(CommentEntity model) {
-        CommentDTO commentDTO = new CommentDTO();
-        UserEntity userEntity = model.getUser();
-        commentDTO.setAuthorFirstName(userEntity.getFirstName());
-        commentDTO.setAuthorLastName(userEntity.getLastName());
-        commentDTO.setAuthorUsername(userEntity.getUsername());
-        commentDTO.setId(model.getUuid());
-        commentDTO.setAuthorUsername(userEntity.getUsername());
-        commentDTO.setText(model.getContent());
-
-        commentDTO.setImageLink(model.getImageLink());
-        commentDTO.setVideoLink(model.getVideoLink());
-        commentDTO.setCreationDate(model.getDatetimeCreated());
-
-        commentDTO.setAuthorAvatar(userTransformer.getUserCoverAndAvatar(userEntity).getAvatar());
-
-        return commentDTO;
-    }
-
+public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, CommentEntity> implements
+		CommentTransformer
+{
+	
+	/** User transformer. */
+	private final UserTransformerImpl userTransformer;
+	
+	/** Init user transformer. */
+	@Autowired
+	public CommentTransformerImpl(UserTransformerImpl userTransformer)
+	{
+		this.userTransformer = userTransformer;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CommentEntity dtoToModel(CommentDTO dto)
+	{
+		return super.dtoToModel(dto);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public CommentDTO modelToDto(CommentEntity model)
+	{
+		CommentDTO commentDTO = new CommentDTO();
+		UserEntity userEntity = model.getUser();
+		commentDTO.setAuthorFirstName(userEntity.getFirstName());
+		commentDTO.setAuthorLastName(userEntity.getLastName());
+		commentDTO.setAuthorUsername(userEntity.getUsername());
+		commentDTO.setId(model.getUuid());
+		commentDTO.setAuthorUsername(userEntity.getUsername());
+		commentDTO.setText(model.getContent());
+		
+		commentDTO.setImageLink(model.getImageLink());
+		commentDTO.setVideoLink(model.getVideoLink());
+		commentDTO.setCreationDate(model.getDatetimeCreated());
+		
+		commentDTO.setAuthorAvatar(userTransformer.getUserCoverAndAvatar(userEntity).getAvatar());
+		
+		return commentDTO;
+	}
+	
 }

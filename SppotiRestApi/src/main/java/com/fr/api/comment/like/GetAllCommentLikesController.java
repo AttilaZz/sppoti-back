@@ -5,9 +5,7 @@ import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.service.CommentControllerService;
 import com.fr.service.LikeControllerService;
-import com.fr.service.PostControllerService;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,59 +21,52 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/like")
-class GetAllCommentLikesController {
-
-    private PostControllerService postDataService;
-    private CommentControllerService commentControllerService;
-    private LikeControllerService likeControllerService;
-
-    @Autowired
-    void setLikeControllerService(LikeControllerService likeControllerService) {
-        this.likeControllerService = likeControllerService;
-    }
-
-    @Autowired
-    void setCommentControllerService(CommentControllerService commentControllerService) {
-        this.commentControllerService = commentControllerService;
-    }
-
-    @Autowired
-    void setPostDataService(PostControllerService postDataService) {
-        this.postDataService = postDataService;
-    }
-
-    private Logger LOGGER = Logger.getLogger(GetAllCommentLikesController.class);
-
-    private static final String ATT_USER_ID = "USER_ID";
-
-
-    /**
-     * @param id   comment id.
-     * @param page page number.
-     * @return list of likers for a comment
-     */
-    @GetMapping(value = "/comment/{id}/{page}")
-    ResponseEntity<PostDTO> getCommentLikers(@PathVariable("id") int id, @PathVariable("page") int page) {
-
-        CommentEntity currentCommentEntity = commentControllerService.findComment(id);
-
-        if (currentCommentEntity == null) {
-            // post not fount
-            LOGGER.info("COMMENT_LIKERS_LIST: Failed to retreive the comment id:" + id);
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        List<HeaderDataDTO> likersList = likeControllerService.getCommentLikersList(id, page);
-
-        if (likersList.isEmpty()) {
-            LOGGER.info("COMMENT_LIKERS_LIST: No like for comment id:" + id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        PostDTO pr = new PostDTO();
-        pr.setLikers(likersList);
-        pr.setLikeCount(currentCommentEntity.getLikes().size());
-
-        return new ResponseEntity<>(pr, HttpStatus.OK);
-    }
+class GetAllCommentLikesController
+{
+	
+	/** Comment service. */
+	private final CommentControllerService commentControllerService;
+	/** Like service. */
+	private final LikeControllerService likeControllerService;
+	
+	/** Init services. */
+	GetAllCommentLikesController(CommentControllerService commentControllerService,
+								 LikeControllerService likeControllerService)
+	{
+		this.commentControllerService = commentControllerService;
+		this.likeControllerService = likeControllerService;
+	}
+	
+	
+	/**
+	 * @param id
+	 * 		comment id.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return list of likers for a comment
+	 */
+	@GetMapping(value = "/comment/{id}/{page}")
+	ResponseEntity<PostDTO> getCommentLikers(@PathVariable("id") int id, @PathVariable("page") int page)
+	{
+		
+		CommentEntity currentCommentEntity = commentControllerService.findComment(id);
+		
+		if (currentCommentEntity == null) {
+			// post not fount
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		List<HeaderDataDTO> likersList = likeControllerService.getCommentLikersList(id, page);
+		
+		if (likersList.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		PostDTO pr = new PostDTO();
+		pr.setLikers(likersList);
+		pr.setLikeCount(currentCommentEntity.getLikes().size());
+		
+		return new ResponseEntity<>(pr, HttpStatus.OK);
+	}
 }

@@ -13,18 +13,19 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
- public interface MessageControllerService extends AbstractControllerService {
-
-     List<MessageEntity> getSentUserMessages(Long userId, int page);
-
-     List<MessageEntity> getReceivedUserMessages(Long userId, int page);
-
-     Boolean saveMessage(MessageEntity msg);
-
-     Boolean updateMessage(MessageEntity msg);
-
-     Boolean deteleMessageById(Long msgId);
-
-     MessageEntity findMessageById(Long msgId);
-
+public interface MessageControllerService extends AbstractControllerService
+{
+	
+	List<MessageEntity> getSentUserMessages(Long userId,int page);
+	
+	List<MessageEntity> getReceivedUserMessages(Long userId,int page);
+	
+	Boolean saveMessage(MessageEntity msg);
+	
+	Boolean updateMessage(MessageEntity msg);
+	
+	Boolean deteleMessageById(Long msgId);
+	
+	MessageEntity findMessageById(Long msgId);
+	
 }

@@ -16,36 +16,41 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/team")
-class TeamDeleteTeam {
-
-    /**
-     * Class logger.
-     */
-    private Logger LOGGER = Logger.getLogger(TeamAddController.class);
-
-    /**
-     * Team service.
-     */
-    private TeamControllerService teamControllerService;
-
-    @Autowired
-    void setTeamControllerService(TeamControllerService teamControllerService) {
-        this.teamControllerService = teamControllerService;
-    }
-
-    /**
-     * This method delete a team
-     *
-     * @param id team id.
-     * @return 200 status if team was deleted, 400 status otherwise
-     */
-    @DeleteMapping("{/id}")
-    ResponseEntity deleteTeam(@PathVariable int id) {
-
-        teamControllerService.deleteTeam(id);
-
-        LOGGER.info("TeamEntity has been deleted (" + id + ")");
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
+class TeamDeleteTeam
+{
+	
+	/**
+	 * Class logger.
+	 */
+	private Logger LOGGER = Logger.getLogger(TeamAddController.class);
+	
+	/**
+	 * Team service.
+	 */
+	private TeamControllerService teamControllerService;
+	
+	@Autowired
+	void setTeamControllerService(TeamControllerService teamControllerService)
+	{
+		this.teamControllerService = teamControllerService;
+	}
+	
+	/**
+	 * This method delete a team
+	 *
+	 * @param id
+	 * 		team id.
+	 *
+	 * @return 200 status if team was deleted, 400 status otherwise
+	 */
+	@DeleteMapping("{/id}")
+	ResponseEntity deleteTeam(@PathVariable int id)
+	{
+		
+		teamControllerService.deleteTeam(id);
+		
+		LOGGER.info("TeamEntity has been deleted (" + id + ")");
+		return new ResponseEntity(HttpStatus.OK);
+	}
+	
 }

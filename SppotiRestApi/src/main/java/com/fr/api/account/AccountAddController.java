@@ -19,41 +19,43 @@ import javax.validation.Valid;
  */
 @RestController
 @RequestMapping(value = "/account")
-class AccountAddController {
-
-    private Logger LOGGER = Logger.getLogger(AccountAddController.class);
-
-    private AccountControllerService accountControllerService;
-
-    @Autowired
-    void setAccountControllerService(AccountControllerService accountControllerService) {
-        this.accountControllerService = accountControllerService;
-    }
-
-    /**
-     * @param user user to add.
-     * @return http status 201 if created, ...
-     */
-    @PostMapping(value = "/create")
-    @ResponseBody
-    ResponseEntity createUser(@RequestBody @Valid SignUpDTO user) {
-
-        try {
-            accountControllerService.saveNewUser(user);
-
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-
-        } catch (ConflictEmailException e) {
-            LOGGER.error("Error creating user : " + user.getFirstName() + " " + user.getLastName() + " Email already exist!");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        } catch (ConflictUsernameException e) {
-            LOGGER.error("Error creating user : " + user.getFirstName() + " " + user.getLastName() + " Username already exist!");
-            return ResponseEntity.status(411).body(e.getMessage());
-        }catch (AccountConfirmationLinkExpiredException e) {
-            LOGGER.error("Error creating user : " + user.getFirstName() + " " + user.getLastName() + " Username already exist!");
-            return ResponseEntity.status(413).body(e.getMessage());
-        }
-
-    }
-
+class AccountAddController
+{
+	
+	/** Account service. */
+	private AccountControllerService accountControllerService;
+	
+	/** Init account service. */
+	@Autowired
+	void setAccountControllerService(AccountControllerService accountControllerService)
+	{
+		this.accountControllerService = accountControllerService;
+	}
+	
+	/**
+	 * @param user
+	 * 		user to add.
+	 *
+	 * @return http status 201 if created, ...
+	 */
+	@PostMapping(value = "/create")
+	@ResponseBody
+	ResponseEntity createUser(@RequestBody @Valid SignUpDTO user)
+	{
+		
+		try {
+			accountControllerService.saveNewUser(user);
+			
+			return ResponseEntity.status(HttpStatus.CREATED).build();
+			
+		} catch (ConflictEmailException e) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		} catch (ConflictUsernameException e) {
+			return ResponseEntity.status(411).body(e.getMessage());
+		} catch (AccountConfirmationLinkExpiredException e) {
+			return ResponseEntity.status(413).body(e.getMessage());
+		}
+		
+	}
+	
 }

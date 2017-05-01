@@ -16,25 +16,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/sppoti")
-class SppotiDeleteController {
-
-    private SppotiControllerService sppotiControllerService;
-
-    @Autowired
-    void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
-        this.sppotiControllerService = sppotiControllerService;
-    }
-
-    /**
-     * @param id sppoti id.
-     * @return 200 status if deleted, 400 status otherwise.
-     */
-    @DeleteMapping("/{id}")
-    ResponseEntity deleteSppoti(@PathVariable int id) {
-
-        sppotiControllerService.deleteSppoti(id);
-        return new ResponseEntity(HttpStatus.OK);
-
-    }
-
+class SppotiDeleteController
+{
+	
+	private SppotiControllerService sppotiControllerService;
+	
+	@Autowired
+	void setSppotiControllerService(SppotiControllerService sppotiControllerService)
+	{
+		this.sppotiControllerService = sppotiControllerService;
+	}
+	
+	/**
+	 * @param id
+	 * 		sppoti id.
+	 *
+	 * @return 200 status if deleted, 400 status otherwise.
+	 */
+	@DeleteMapping("/{id}")
+	ResponseEntity deleteSppoti(@PathVariable int id)
+	{
+		
+		sppotiControllerService.deleteSppoti(id);
+		return new ResponseEntity(HttpStatus.OK);
+		
+	}
+	
 }

@@ -15,42 +15,51 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/notification/{userId}")
-class NotificationController {
-
-    private Logger LOGGER = Logger.getLogger(NotificationController.class);
-
-    private NotificationControllerService notificationControllerService;
-
-    @Autowired
-    void setNotificationControllerService(NotificationControllerService notificationControllerService) {
-        this.notificationControllerService = notificationControllerService;
-    }
-
-    /**
-     * @param userId user id.
-     * @param page   number.
-     * @return all unread user notifications.
-     */
-    @GetMapping("/{page}")
-    ResponseEntity<NotificationListDTO> getAllUserNotifications(@PathVariable int userId, @PathVariable int page) {
-
-        NotificationListDTO notificationListDTO = notificationControllerService.getAllReceivedNotifications(userId, page);
-
-        LOGGER.info("All notifications has been returned to user id" + userId);
-        return new ResponseEntity<>(notificationListDTO, HttpStatus.OK);
-    }
-
-    /**
-     * @param notifId notif id.
-     * @return 200 http status if notif were updated, 404 http status if notif not found, 500 http status otherwise.
-     */
-    @PutMapping("/{notifId}")
-    ResponseEntity<Void> openNotification(@PathVariable int notifId, Authentication authentication) {
-
-        Long connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getId();
-
-        notificationControllerService.openNotification(notifId, connectedUserId);
-
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
+class NotificationController
+{
+	
+	/** Notification service. */
+	private NotificationControllerService notificationControllerService;
+	
+	/** Init notif service. */
+	@Autowired
+	void setNotificationControllerService(NotificationControllerService notificationControllerService)
+	{
+		this.notificationControllerService = notificationControllerService;
+	}
+	
+	/**
+	 * @param userId
+	 * 		user id.
+	 * @param page
+	 * 		number.
+	 *
+	 * @return all unread user notifications.
+	 */
+	@GetMapping("/{page}")
+	ResponseEntity<NotificationListDTO> getAllUserNotifications(@PathVariable int userId, @PathVariable int page)
+	{
+		
+		NotificationListDTO notificationListDTO = notificationControllerService
+				.getAllReceivedNotifications(userId, page);
+		
+		return new ResponseEntity<>(notificationListDTO, HttpStatus.OK);
+	}
+	
+	/**
+	 * @param notifId
+	 * 		notif id.
+	 *
+	 * @return 200 http status if notif were updated, 404 http status if notif not found, 500 http status otherwise.
+	 */
+	@PutMapping("/{notifId}")
+	ResponseEntity<Void> openNotification(@PathVariable int notifId, Authentication authentication)
+	{
+		
+		Long connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		
+		notificationControllerService.openNotification(notifId, connectedUserId);
+		
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
 }

@@ -18,28 +18,29 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/gallery/video/{userId}")
-class GalleryVideoController {
-    private PostControllerService postControllerService;
-
-    @Autowired
-    void setPostControllerService(PostControllerService postControllerService) {
-        this.postControllerService = postControllerService;
-    }
-
-    private Logger LOGGER = Logger.getLogger(GalleryVideoController.class);
-
-
-    /**
-     * @param page page number.
-     * @return all videos posted by user.
-     */
-    @GetMapping(value = "/{page}")
-    ResponseEntity<List<PostDTO>> videoGallery(@PathVariable int page, @PathVariable int userId) {
-
-        List<PostDTO> videoGallery = postControllerService.getVideoGallery(userId, page);
-
-        LOGGER.info("Video gallery has been returned: " + videoGallery);
-        return new ResponseEntity<>(videoGallery, HttpStatus.OK);
-
-    }
+class GalleryVideoController
+{
+	/** Post service. */
+	private PostControllerService postControllerService;
+	
+	/** Init post service. */
+	@Autowired
+	void setPostControllerService(PostControllerService postControllerService)
+	{
+		this.postControllerService = postControllerService;
+	}
+	
+	/**
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return all videos posted by user.
+	 */
+	@GetMapping(value = "/{page}")
+	ResponseEntity<List<PostDTO>> videoGallery(@PathVariable int page, @PathVariable int userId)
+	{
+		
+		return new ResponseEntity<>(postControllerService.getVideoGallery(userId, page), HttpStatus.OK);
+		
+	}
 }

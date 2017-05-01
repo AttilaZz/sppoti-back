@@ -10,19 +10,23 @@ import org.springframework.stereotype.Component;
  * Created by wdjenane on 30/03/2017.
  */
 @Component
-public class SportTransformer {
-
-    /**
-     * Transform sport entity to dto.
-     *
-     * @param sportEntity sport entity to transform.
-     * @return SportDTO.
-     */
-    public SportDTO modelToDto(SportEntity sportEntity){
-        SportDTO sportDTO = new SportDTO();
-        sportDTO.setId(sportEntity.getId());
-        sportDTO.setName(sportEntity.getName());
-        return sportDTO;
-    }
-
+public class SportTransformer
+{
+	
+	/**
+	 * Transform sport entity to dto.
+	 *
+	 * @param sportEntity
+	 * 		sport entity to transform.
+	 *
+	 * @return SportDTO.
+	 */
+	public SportDTO modelToDto(SportEntity sportEntity)
+	{
+		SportDTO sportDTO = new SportDTO();
+		sportDTO.setId(sportEntity.getId());
+		sportDTO.setName(sportEntity.getName());
+		return sportDTO;
+	}
+	
 }

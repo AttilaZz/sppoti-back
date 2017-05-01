@@ -21,41 +21,50 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/comment")
- class CommentGetController {
-
-    private CommentControllerService commentDataService;
-
-    @Autowired
-     void setCommentDataService(CommentControllerService commentDataService) {
-        this.commentDataService = commentDataService;
-    }
-
-    private static final String ATT_USER_ID = "USER_ID";
-
-    private Logger LOGGER = Logger.getLogger(CommentGetController.class);
-
-    /**
-     * Get all like for a given post
-     *
-     * @param postId post id.
-     * @param page page number.
-     * @param authentication auth object spring secu.
-     * @return List of like DTO.
-     */
-    @GetMapping("/{postId}/{page}")
-     ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable int postId, @PathVariable int page, Authentication authentication) {
-
-        Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
-
-        List<CommentDTO> commentModelDTOList = commentDataService.getPostCommentsFromLastId(postId, page, userId);
-
-        if (commentModelDTOList.isEmpty()) {
-            LOGGER.info("COMMENT_LIST: No like has been found");
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        LOGGER.info("COMMENT_LIST: All comments have been returned");
-        return new ResponseEntity<>(commentModelDTOList, HttpStatus.OK);
-
-    }
+class CommentGetController
+{
+	/** Comment service. */
+	private CommentControllerService commentDataService;
+	
+	/** Init comment service. */
+	@Autowired
+	void setCommentDataService(CommentControllerService commentDataService)
+	{
+		this.commentDataService = commentDataService;
+	}
+	
+	private static final String ATT_USER_ID = "USER_ID";
+	
+	private Logger LOGGER = Logger.getLogger(CommentGetController.class);
+	
+	/**
+	 * Get all like for a given post
+	 *
+	 * @param postId
+	 * 		post id.
+	 * @param page
+	 * 		page number.
+	 * @param authentication
+	 * 		auth object spring secu.
+	 *
+	 * @return List of like DTO.
+	 */
+	@GetMapping("/{postId}/{page}")
+	ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable int postId, @PathVariable int page,
+														Authentication authentication)
+	{
+		
+		Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		
+		List<CommentDTO> commentModelDTOList = commentDataService.getPostCommentsFromLastId(postId, page, userId);
+		
+		if (commentModelDTOList.isEmpty()) {
+			LOGGER.info("COMMENT_LIST: No like has been found");
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		LOGGER.info("COMMENT_LIST: All comments have been returned");
+		return new ResponseEntity<>(commentModelDTOList, HttpStatus.OK);
+		
+	}
 }

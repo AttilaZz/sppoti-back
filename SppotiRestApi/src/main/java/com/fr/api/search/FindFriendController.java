@@ -26,63 +26,74 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/find/friends")
-class FindFriendController {
-
-    @Value("${key.friendShipPerPage}")
-    private int friend_size;
-
-    private final FriendShipRepository friendShipRepository;
-
-    private final AccountControllerService accountControllerService;
-
-    private Logger LOGGER = Logger.getLogger(FindFriendController.class);
-
-    @Autowired
-    FindFriendController(FriendShipRepository friendShipRepository, AccountControllerService accountControllerService) {
-        this.friendShipRepository = friendShipRepository;
-        this.accountControllerService = accountControllerService;
-    }
-
-    /**
-     * @param userPrefix user prefix to search.
-     * @param page       page number.
-     * @return All confirmed friends of connected user
-     */
-    @GetMapping(value = "/{motif}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<UserDTO>> searchConfimedFriend(@PathVariable("motif") String userPrefix,
-                                                       @PathVariable("page") int page) {
-
-
-        if (userPrefix.isEmpty()) {
-            LOGGER.error("SEARCH-CONFIRMED-FRIEND: Prefix not valid !");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        List<FriendShipEntity> foundFriends;
-        Pageable pageable = new PageRequest(page, friend_size);
-
-        String[] parts = userPrefix.split(" ");
-
-        if (parts.length > 2) {
-            LOGGER.error("SEARCH-CONFIRMED-FRIEND: Too many words in your request");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else //get users by first name and last name
-            if (parts.length == 2)
-                foundFriends = friendShipRepository.findFriendsByFirstNameAndLastNameAndStatus(parts[0], parts[1], GlobalAppStatusEnum.CONFIRMED.name(), pageable);
-            else {
-                //get users by username, first name and last name
-                foundFriends = friendShipRepository.findFriendByUsernameAndStatus(parts[0], GlobalAppStatusEnum.CONFIRMED.name(), pageable);
-
-            }
-
-        List<UserDTO> users = new ArrayList<>();
-
-        for (FriendShipEntity friendShip : foundFriends) {
-
-            users.add(accountControllerService.fillAccountResponse(friendShip.getFriend()));
-        }
-
-        LOGGER.info("SEARCH-CONFIRMED-FRIEND: friends has been returned !");
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
+class FindFriendController
+{
+	/** Friend list size. */
+	@Value("${key.friendShipPerPage}")
+	private int friend_size;
+	
+	/** Friend repository. */
+	private final FriendShipRepository friendShipRepository;
+	
+	/** Account controller service. */
+	private final AccountControllerService accountControllerService;
+	
+	/** Class logger. */
+	private Logger LOGGER = Logger.getLogger(FindFriendController.class);
+	
+	@Autowired
+	FindFriendController(FriendShipRepository friendShipRepository, AccountControllerService accountControllerService)
+	{
+		this.friendShipRepository = friendShipRepository;
+		this.accountControllerService = accountControllerService;
+	}
+	
+	/**
+	 * @param userPrefix
+	 * 		user prefix to search.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return All confirmed friends of connected user
+	 */
+	@GetMapping(value = "/{motif}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
+	ResponseEntity<List<UserDTO>> searchConfimedFriend(@PathVariable("motif") String userPrefix,
+													   @PathVariable("page") int page)
+	{
+		
+		
+		if (userPrefix.isEmpty()) {
+			LOGGER.error("SEARCH-CONFIRMED-FRIEND: Prefix not valid !");
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		List<FriendShipEntity> foundFriends;
+		Pageable pageable = new PageRequest(page, friend_size);
+		
+		String[] parts = userPrefix.split(" ");
+		
+		if (parts.length > 2) {
+			LOGGER.error("SEARCH-CONFIRMED-FRIEND: Too many words in your request");
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} else //get users by first name and last name
+			if (parts.length == 2)
+				foundFriends = friendShipRepository.findFriendsByFirstNameAndLastNameAndStatus(parts[0], parts[1],
+						GlobalAppStatusEnum.CONFIRMED.name(), pageable);
+			else {
+				//get users by username, first name and last name
+				foundFriends = friendShipRepository
+						.findFriendByUsernameAndStatus(parts[0], GlobalAppStatusEnum.CONFIRMED.name(), pageable);
+				
+			}
+		
+		List<UserDTO> users = new ArrayList<>();
+		
+		for (FriendShipEntity friendShip : foundFriends) {
+			
+			users.add(accountControllerService.fillAccountResponse(friendShip.getFriend()));
+		}
+		
+		LOGGER.info("SEARCH-CONFIRMED-FRIEND: friends has been returned !");
+		return new ResponseEntity<>(users, HttpStatus.OK);
+	}
 }

@@ -16,27 +16,33 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/contact")
-public class ContactAddController {
-
-    /** Contact service. */
-    private final ContactControllerService contactControllerService;
-
-    @Autowired
-    public ContactAddController(ContactControllerService contactControllerService) {
-        this.contactControllerService = contactControllerService;
-    }
-
-    /**
-     * Send Email to sppoti.contact@gmail.com
-     *
-     * @param contactDTO contact data.
-     * @return 200 status if email sent.
-     */
-    @PostMapping
-    public ResponseEntity sendContactEmail(@RequestBody @Valid ContactDTO contactDTO) {
-
-        contactControllerService.sendGlobalContactEmail(contactDTO);
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
-
+public class ContactAddController
+{
+	
+	/** Contact service. */
+	private final ContactControllerService contactControllerService;
+	
+	/** Init contact service. */
+	@Autowired
+	public ContactAddController(ContactControllerService contactControllerService)
+	{
+		this.contactControllerService = contactControllerService;
+	}
+	
+	/**
+	 * Send Email to sppoti.contact@gmail.com
+	 *
+	 * @param contactDTO
+	 * 		contact data.
+	 *
+	 * @return 200 status if email sent.
+	 */
+	@PostMapping
+	public ResponseEntity sendContactEmail(@RequestBody @Valid ContactDTO contactDTO)
+	{
+		
+		contactControllerService.sendGlobalContactEmail(contactDTO);
+		return new ResponseEntity(HttpStatus.CREATED);
+	}
+	
 }

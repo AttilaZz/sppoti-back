@@ -18,43 +18,47 @@ import java.util.Optional;
  * Created by wdjenane on 04/04/2017.
  */
 @Component
-public class ScoreTransformerImpl extends AbstractTransformerImpl<ScoreDTO, ScoreEntity>
-        implements ScoreTransformer {
-
-    private final SppotiRepository sppotiRepository;
-
-    @Autowired
-    public ScoreTransformerImpl(SppotiRepository sppotiRepository) {
-        this.sppotiRepository = sppotiRepository;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ScoreEntity dtoToModel(ScoreDTO dto) {
-        ScoreEntity entity = new ScoreEntity();
-        SppotiBeanUtils.copyProperties(entity, dto);
-
-        Optional<SppotiEntity> optional = Optional.ofNullable(sppotiRepository.findByUuid(dto.getSppotiId()));
-        optional.ifPresent(s -> {
-            entity.setSppotiEntity(s);
-            s.setScoreEntity(entity);
-        });
-        optional.orElseThrow(() -> new EntityNotFoundException("Sppoti not found !!"));
-
-        return entity;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ScoreDTO modelToDto(ScoreEntity model) {
-        ScoreDTO scoreDTO = new ScoreDTO();
-        SppotiBeanUtils.copyProperties(scoreDTO, model);
-        scoreDTO.setStatus(model.getScoreStatus().name());
-        scoreDTO.setSppotiId(model.getSppotiEntity().getUuid());
-        return scoreDTO;
-    }
+public class ScoreTransformerImpl extends AbstractTransformerImpl<ScoreDTO, ScoreEntity> implements ScoreTransformer
+{
+	/** Sppoti repository.*/
+	private final SppotiRepository sppotiRepository;
+	
+	/** Init sppoti repository. */
+	@Autowired
+	public ScoreTransformerImpl(SppotiRepository sppotiRepository)
+	{
+		this.sppotiRepository = sppotiRepository;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ScoreEntity dtoToModel(ScoreDTO dto)
+	{
+		ScoreEntity entity = new ScoreEntity();
+		SppotiBeanUtils.copyProperties(entity,dto);
+		
+		Optional<SppotiEntity> optional = Optional.ofNullable(sppotiRepository.findByUuid(dto.getSppotiId()));
+		optional.ifPresent(s -> {
+			entity.setSppotiEntity(s);
+			s.setScoreEntity(entity);
+		});
+		optional.orElseThrow(() -> new EntityNotFoundException("Sppoti not found !!"));
+		
+		return entity;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ScoreDTO modelToDto(ScoreEntity model)
+	{
+		ScoreDTO scoreDTO = new ScoreDTO();
+		SppotiBeanUtils.copyProperties(scoreDTO,model);
+		scoreDTO.setStatus(model.getScoreStatus().name());
+		scoreDTO.setSppotiId(model.getSppotiEntity().getUuid());
+		return scoreDTO;
+	}
 }

@@ -16,42 +16,47 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/sppoti")
-class SppotiAddController {
-
-    private SppotiControllerService sppotiControllerService;
-
-    @Autowired
-    void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
-        this.sppotiControllerService = sppotiControllerService;
-    }
-
-    /**
-     * Logger.
-     */
-    private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
-
-    /**
-     * @param newSppoti sppoti to save.
-     * @return 201 status && SppotiEntity object with the inserted data, 400 status otherwise.
-     */
-    @PostMapping
-    ResponseEntity<SppotiDTO> addSppoti(@RequestBody @Valid SppotiDTO newSppoti) {
-
-        if (newSppoti.getMaxTeamCount() == 0) {
-            LOGGER.error("Max-TeamRequestDTO-Count not found");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        }
-
-        if (newSppoti.getTeamHost() == null && newSppoti.getMyTeamId() == 0) {
-            LOGGER.error("TeamHostModel && TeamHostId not found ");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        SppotiDTO sppotiDTO = sppotiControllerService.saveSppoti(newSppoti);
-
-        return new ResponseEntity<>(sppotiDTO, HttpStatus.CREATED);
-
-    }
-
+class SppotiAddController
+{
+	
+	private SppotiControllerService sppotiControllerService;
+	
+	@Autowired
+	void setSppotiControllerService(SppotiControllerService sppotiControllerService)
+	{
+		this.sppotiControllerService = sppotiControllerService;
+	}
+	
+	/**
+	 * Logger.
+	 */
+	private Logger LOGGER = Logger.getLogger(SppotiAddController.class);
+	
+	/**
+	 * @param newSppoti
+	 * 		sppoti to save.
+	 *
+	 * @return 201 status && SppotiEntity object with the inserted data, 400 status otherwise.
+	 */
+	@PostMapping
+	ResponseEntity<SppotiDTO> addSppoti(@RequestBody @Valid SppotiDTO newSppoti)
+	{
+		
+		if (newSppoti.getMaxTeamCount() == 0) {
+			LOGGER.error("Max-TeamRequestDTO-Count not found");
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			
+		}
+		
+		if (newSppoti.getTeamHost() == null && newSppoti.getMyTeamId() == 0) {
+			LOGGER.error("TeamHostModel && TeamHostId not found ");
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		SppotiDTO sppotiDTO = sppotiControllerService.saveSppoti(newSppoti);
+		
+		return new ResponseEntity<>(sppotiDTO, HttpStatus.CREATED);
+		
+	}
+	
 }

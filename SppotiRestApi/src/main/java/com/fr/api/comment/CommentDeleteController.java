@@ -18,36 +18,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/comment")
- class CommentDeleteController {
-
-    private Logger LOGGER = Logger.getLogger(CommentDeleteController.class);
-
-    private CommentControllerService commentDataService;
-
-    @Autowired
-     void setCommentDataService(CommentControllerService commentDataService) {
-        this.commentDataService = commentDataService;
-    }
-
-    @DeleteMapping("/{commentId}")
-     ResponseEntity<Void> deleteComment(@PathVariable("commentId") int id, Authentication authentication) {
-
-
-        CommentEntity commentEntityToDelete = commentDataService.findComment(id);
-
-        if (commentEntityToDelete == null) {
-            LOGGER.error("POST: Failed to retreive the like");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        }
-
-        if (commentDataService.deleteComment(commentEntityToDelete)) {
-            LOGGER.info("DELETE: CommentEntity with postId:" + id + " has been deleted");
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-
-        LOGGER.info("DELETE: Database deleted problem !!");
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
+class CommentDeleteController
+{
+	/** Comment service. */
+	private CommentControllerService commentDataService;
+	
+	/** Init comment service.*/
+	@Autowired
+	void setCommentDataService(CommentControllerService commentDataService)
+	{
+		this.commentDataService = commentDataService;
+	}
+	
+	@DeleteMapping("/{commentId}")
+	ResponseEntity<Void> deleteComment(@PathVariable("commentId") int id, Authentication authentication)
+	{
+		
+		
+		CommentEntity commentEntityToDelete = commentDataService.findComment(id);
+		
+		if (commentEntityToDelete == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			
+		}
+		
+		if (commentDataService.deleteComment(commentEntityToDelete)) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+		
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
 }

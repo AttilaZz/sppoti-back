@@ -17,56 +17,53 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/comment")
-class CommentUpdateController {
-
-    private CommentControllerService commentDataService;
-
-    @Autowired
-    void setCommentDataService(CommentControllerService commentDataService) {
-        this.commentDataService = commentDataService;
-    }
-
-    private Logger LOGGER = Logger.getLogger(CommentUpdateController.class);
-
-    @PutMapping(value = "/{id}")
-    ResponseEntity<CommentDTO> updateComment(@PathVariable int id, @RequestBody CommentDTO newComment) {
-
-        CommentEntity commentEntityToEdit = commentDataService.findComment(id);
-
-        EditHistoryEntity commentEditRow = new EditHistoryEntity();
-        ContentEditedResponseDTO edit = new ContentEditedResponseDTO();
-
-        // Required attributes
-        if (commentEntityToEdit == null) {
-            LOGGER.info("COMMENT_UPDATE: Failed to retreive the like");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        commentEditRow.setComment(commentEntityToEdit);
-
-        // test the received attributes content
-        if (newComment.getText() != null && newComment.getText().trim().length() > 0) {
-            commentEditRow.setText(newComment.getText());
-        } else {
-            LOGGER.info("COMMENT_UPDATE: No content assigned with this like");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        // if all argument are correctly assigned - edit post
-        if (commentDataService.updateComment(commentEditRow)) {
-
-            edit.setId(commentEntityToEdit.getId());
-            edit.setDateTime(commentEditRow.getDatetimeEdited());
-            edit.setText(commentEditRow.getText());
-
-            LOGGER.info("COMMENT_UPDATE: update success");
-            return new ResponseEntity<>(newComment, HttpStatus.ACCEPTED);
-
-        } else {
-            LOGGER.error("COMMENT_UPDATE: Failed when trying to update the like in DB");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-    }
-
+class CommentUpdateController
+{
+	/** Comment service. */
+	private CommentControllerService commentDataService;
+	
+	/** Init comment service. */
+	@Autowired
+	void setCommentDataService(CommentControllerService commentDataService)
+	{
+		this.commentDataService = commentDataService;
+	}
+	
+	@PutMapping(value = "/{id}")
+	ResponseEntity<CommentDTO> updateComment(@PathVariable int id, @RequestBody CommentDTO newComment)
+	{
+		
+		CommentEntity commentEntityToEdit = commentDataService.findComment(id);
+		
+		EditHistoryEntity commentEditRow = new EditHistoryEntity();
+		ContentEditedResponseDTO edit = new ContentEditedResponseDTO();
+		
+		// Required attributes
+		if (commentEntityToEdit == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		commentEditRow.setComment(commentEntityToEdit);
+		
+		// test the received attributes content
+		if (newComment.getText() != null && newComment.getText().trim().length() > 0) {
+			commentEditRow.setText(newComment.getText());
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		// if all argument are correctly assigned - edit post
+		if (commentDataService.updateComment(commentEditRow)) {
+			
+			edit.setId(commentEntityToEdit.getId());
+			edit.setDateTime(commentEditRow.getDatetimeEdited());
+			edit.setText(commentEditRow.getText());
+			return new ResponseEntity<>(newComment, HttpStatus.ACCEPTED);
+			
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+	}
+	
 }

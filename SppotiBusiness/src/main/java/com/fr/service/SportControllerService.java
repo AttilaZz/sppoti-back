@@ -11,8 +11,9 @@ import java.util.List;
  */
 
 @Service
-public interface SportControllerService extends AbstractControllerService{
-
-    List<SportEntity> getAllSports();
-
+public interface SportControllerService extends AbstractControllerService
+{
+	
+	List<SportEntity> getAllSports();
+	
 }

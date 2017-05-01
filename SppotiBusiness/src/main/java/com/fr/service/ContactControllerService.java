@@ -7,12 +7,14 @@ import org.springframework.stereotype.Service;
  * Created by djenanewail on 4/8/17.
  */
 @Service
-public interface ContactControllerService extends AbstractControllerService{
-
-    /**
-     * Contact sppoti admins for a bug or information.
-     *
-     * @param contactDTO contact data.
-     */
-    void sendGlobalContactEmail(ContactDTO contactDTO);
+public interface ContactControllerService extends AbstractControllerService
+{
+	
+	/**
+	 * Contact sppoti admins for a bug or information.
+	 *
+	 * @param contactDTO
+	 * 		contact data.
+	 */
+	void sendGlobalContactEmail(ContactDTO contactDTO);
 }

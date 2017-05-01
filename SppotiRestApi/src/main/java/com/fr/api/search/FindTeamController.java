@@ -18,60 +18,76 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/find/team")
-class FindTeamController {
-
-    /**
-     * Team search types.
-     */
-    private static final int MY_TEAM_SEARCH = 1;
-    private static final int ALL_TEAM_SEARCH = 0;
-
-    /**
-     * Team controller service.
-     */
-    private final TeamControllerService teamControllerService;
-
-    /**
-     * Init team service.
-     */
-    @Autowired
-    FindTeamController(TeamControllerService teamControllerService) {
-        this.teamControllerService = teamControllerService;
-    }
-
-    /**
-     * @param team team to find.
-     * @param page page number.
-     * @return All found teams containing the String (team).
-     */
-    @GetMapping("/" + MY_TEAM_SEARCH + "/{team}/{page}")
-    ResponseEntity<List<TeamDTO>> findMyTeams(@PathVariable String team, @PathVariable int page) {
-
-        return new ResponseEntity<>(teamControllerService.findAllMyTeams(team, page), HttpStatus.OK);
-    }
-
-    /**
-     * @param team team to find.
-     * @param page page number.
-     * @return All found teams containing the String (team).
-     */
-    @GetMapping("/" + ALL_TEAM_SEARCH + "/{team}/{page}")
-    ResponseEntity<List<TeamDTO>> findAllTeams(@PathVariable String team, @PathVariable int page) {
-
-        return new ResponseEntity<>(teamControllerService.findAllTeams(team, page), HttpStatus.OK);
-
-    }
-
-    /**
-     * @param team  team to find.
-     * @param page  page number.
-     * @param sport sport id.
-     * @return All found teams containing the String (team) and linked to the sport in parameter.
-     */
-    @GetMapping("/" + ALL_TEAM_SEARCH + "/{team}/{sportId}/{page}")
-    ResponseEntity<List<TeamDTO>> findAllTeams(@PathVariable String team, @PathVariable int page, @PathVariable Long sport) {
-
-        return new ResponseEntity<>(teamControllerService.findAllTeamsBySport(team, sport, page), HttpStatus.OK);
-    }
-
+class FindTeamController
+{
+	
+	/**
+	 * Team search types.
+	 */
+	private static final int MY_TEAM_SEARCH = 1;
+	private static final int ALL_TEAM_SEARCH = 0;
+	
+	/**
+	 * Team controller service.
+	 */
+	private final TeamControllerService teamControllerService;
+	
+	/**
+	 * Init team service.
+	 */
+	@Autowired
+	FindTeamController(TeamControllerService teamControllerService)
+	{
+		this.teamControllerService = teamControllerService;
+	}
+	
+	/**
+	 * @param team
+	 * 		team to find.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return All found teams containing the String (team).
+	 */
+	@GetMapping("/" + MY_TEAM_SEARCH + "/{team}/{page}")
+	ResponseEntity<List<TeamDTO>> findMyTeams(@PathVariable String team, @PathVariable int page)
+	{
+		
+		return new ResponseEntity<>(teamControllerService.findAllMyTeams(team, page), HttpStatus.OK);
+	}
+	
+	/**
+	 * @param team
+	 * 		team to find.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return All found teams containing the String (team).
+	 */
+	@GetMapping("/" + ALL_TEAM_SEARCH + "/{team}/{page}")
+	ResponseEntity<List<TeamDTO>> findAllTeams(@PathVariable String team, @PathVariable int page)
+	{
+		
+		return new ResponseEntity<>(teamControllerService.findAllTeams(team, page), HttpStatus.OK);
+		
+	}
+	
+	/**
+	 * @param team
+	 * 		team to find.
+	 * @param page
+	 * 		page number.
+	 * @param sport
+	 * 		sport id.
+	 *
+	 * @return All found teams containing the String (team) and linked to the sport in parameter.
+	 */
+	@GetMapping("/" + ALL_TEAM_SEARCH + "/{team}/{sportId}/{page}")
+	ResponseEntity<List<TeamDTO>> findAllTeams(@PathVariable String team, @PathVariable int page,
+											   @PathVariable Long sport)
+	{
+		
+		return new ResponseEntity<>(teamControllerService.findAllTeamsBySport(team, sport, page), HttpStatus.OK);
+	}
+	
 }

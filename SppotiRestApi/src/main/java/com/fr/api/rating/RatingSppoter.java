@@ -18,38 +18,43 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/rating")
-class RatingSppoter {
-
-    /**
-     * Sppoti controller service.
-     */
-    private SppotiControllerService sppotiControllerService;
-
-    /**
-     * Init services.
-     */
-    @Autowired
-    void setSppotiControllerService(SppotiControllerService sppotiControllerService) {
-        this.sppotiControllerService = sppotiControllerService;
-    }
-
-    /**
-     * Evaluate other sppoters in same sppoti.
-     */
-    @PostMapping("/sppoter/{sppotiId}")
-    ResponseEntity<List<UserDTO>> rateSppoter(@PathVariable int sppotiId, @RequestBody List<SppotiRatingDTO> sppotiRatingDTO) {
-
-        sppotiRatingDTO.forEach(sp -> {
-            if (sp.getStars() == null || (sp.getStars() > 10 || sp.getStars() < 0)) {
-                throw new BusinessGlobalException("Stars count are not correct in the request");
-            }
-
-            if (sp.getSppoterRatedId() == null) {
-                throw new BusinessGlobalException("Rated sppoter id is required");
-            }
-        });
-
-        return new ResponseEntity<>(sppotiControllerService.rateSppoters(sppotiRatingDTO, sppotiId), HttpStatus.CREATED);
-    }
-
+class RatingSppoter
+{
+	
+	/**
+	 * Sppoti controller service.
+	 */
+	private SppotiControllerService sppotiControllerService;
+	
+	/**
+	 * Init services.
+	 */
+	@Autowired
+	void setSppotiControllerService(SppotiControllerService sppotiControllerService)
+	{
+		this.sppotiControllerService = sppotiControllerService;
+	}
+	
+	/**
+	 * Evaluate other sppoters in same sppoti.
+	 */
+	@PostMapping("/sppoter/{sppotiId}")
+	ResponseEntity<List<UserDTO>> rateSppoter(@PathVariable int sppotiId,
+											  @RequestBody List<SppotiRatingDTO> sppotiRatingDTO)
+	{
+		
+		sppotiRatingDTO.forEach(sp -> {
+			if (sp.getStars() == null || (sp.getStars() > 10 || sp.getStars() < 0)) {
+				throw new BusinessGlobalException("Stars count are not correct in the request");
+			}
+			
+			if (sp.getSppoterRatedId() == null) {
+				throw new BusinessGlobalException("Rated sppoter id is required");
+			}
+		});
+		
+		return new ResponseEntity<>(sppotiControllerService.rateSppoters(sppotiRatingDTO, sppotiId),
+				HttpStatus.CREATED);
+	}
+	
 }

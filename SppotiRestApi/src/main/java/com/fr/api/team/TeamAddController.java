@@ -24,36 +24,42 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/team")
-class TeamAddController {
-
-    /**
-     * Team controller service.
-     */
-    private TeamControllerService teamControllerService;
-
-    /**
-     * Init services.
-     */
-    @Autowired
-    void setTeamControllerService(TeamControllerService teamControllerService) {
-        this.teamControllerService = teamControllerService;
-    }
-
-    /**
-     * This service create team
-     *
-     * @param team           team to add.
-     * @param authentication auth object.
-     * @return Created team data
-     */
-    @PostMapping
-    ResponseEntity<TeamDTO> createTeam(@RequestBody @Valid TeamDTO team, Authentication authentication) {
-
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-
-        TeamDTO teamDTO = teamControllerService.saveTeam(team, accountUserDetails.getId());
-
-        return new ResponseEntity<>(teamDTO, HttpStatus.CREATED);
-    }
-
+class TeamAddController
+{
+	
+	/**
+	 * Team controller service.
+	 */
+	private TeamControllerService teamControllerService;
+	
+	/**
+	 * Init services.
+	 */
+	@Autowired
+	void setTeamControllerService(TeamControllerService teamControllerService)
+	{
+		this.teamControllerService = teamControllerService;
+	}
+	
+	/**
+	 * This service create team
+	 *
+	 * @param team
+	 * 		team to add.
+	 * @param authentication
+	 * 		auth object.
+	 *
+	 * @return Created team data
+	 */
+	@PostMapping
+	ResponseEntity<TeamDTO> createTeam(@RequestBody @Valid TeamDTO team, Authentication authentication)
+	{
+		
+		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		
+		TeamDTO teamDTO = teamControllerService.saveTeam(team, accountUserDetails.getId());
+		
+		return new ResponseEntity<>(teamDTO, HttpStatus.CREATED);
+	}
+	
 }

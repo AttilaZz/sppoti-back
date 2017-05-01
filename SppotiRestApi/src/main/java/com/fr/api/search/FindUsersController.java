@@ -27,61 +27,66 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/find/users")
-class FindUsersController {
-
-    @Value("${key.friendShipPerPage}")
-    private int friend_size;
-
-    private final UserRepository userRepository;
-    private final AccountControllerService accountControllerService;
-
-    private Logger LOGGER = Logger.getLogger(FindUsersController.class);
-
-    @Autowired
-    FindUsersController(UserRepository userRepository, AccountControllerService accountControllerService) {
-        this.userRepository = userRepository;
-        this.accountControllerService = accountControllerService;
-    }
-
-    /**
-     * @param userPrefix user prefix to find.
-     * @param page page number.
-     * @return List of all users containing the STRING in request
-     */
-    @GetMapping(value = "/{user}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<List<UserDTO>> searchUser(@PathVariable("user") String userPrefix,
-                                             @PathVariable("page") int page) {
-
-        //TODO: move implementation to CORE MODULE
-
-        if (userPrefix.isEmpty()) {
-            LOGGER.error("SEARCH-USER: Prefix not valid !");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        List<UserEntity> foundUsers;
-        Pageable pageable = new PageRequest(page, friend_size);
-
-        String[] parts = userPrefix.split(" ");
-
-        if (parts.length > 2) {
-            LOGGER.error("SEARCH-USER: Too many words in your request");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } else if (parts.length == 2) {
-            //get users by first name and last name
-            foundUsers = userRepository.getSearchedUsersByFirstNameAndLastName(parts[0], parts[1], pageable);
-        } else {
-            //get users by username, first name and last name
-            foundUsers = userRepository.getSearchedUsers(parts[0], pageable);
-
-        }
-
-        List<UserDTO> users = foundUsers.stream().map(accountControllerService::fillAccountResponse)
-                .collect(Collectors.toList());
-
-        LOGGER.info("PROFILE SEARCH-USER: UserEntity has been returned !");
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
-
-
+class FindUsersController
+{
+	
+	@Value("${key.friendShipPerPage}")
+	private int friend_size;
+	
+	private final UserRepository userRepository;
+	private final AccountControllerService accountControllerService;
+	
+	private Logger LOGGER = Logger.getLogger(FindUsersController.class);
+	
+	@Autowired
+	FindUsersController(UserRepository userRepository, AccountControllerService accountControllerService)
+	{
+		this.userRepository = userRepository;
+		this.accountControllerService = accountControllerService;
+	}
+	
+	/**
+	 * @param userPrefix
+	 * 		user prefix to find.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return List of all users containing the STRING in request
+	 */
+	@GetMapping(value = "/{user}/{page}", produces = MediaType.APPLICATION_JSON_VALUE)
+	ResponseEntity<List<UserDTO>> searchUser(@PathVariable("user") String userPrefix, @PathVariable("page") int page)
+	{
+		
+		//TODO: move implementation to CORE MODULE
+		
+		if (userPrefix.isEmpty()) {
+			LOGGER.error("SEARCH-USER: Prefix not valid !");
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		List<UserEntity> foundUsers;
+		Pageable pageable = new PageRequest(page, friend_size);
+		
+		String[] parts = userPrefix.split(" ");
+		
+		if (parts.length > 2) {
+			LOGGER.error("SEARCH-USER: Too many words in your request");
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} else if (parts.length == 2) {
+			//get users by first name and last name
+			foundUsers = userRepository.getSearchedUsersByFirstNameAndLastName(parts[0], parts[1], pageable);
+		} else {
+			//get users by username, first name and last name
+			foundUsers = userRepository.getSearchedUsers(parts[0], pageable);
+			
+		}
+		
+		List<UserDTO> users = foundUsers.stream().map(accountControllerService::fillAccountResponse)
+				.collect(Collectors.toList());
+		
+		LOGGER.info("PROFILE SEARCH-USER: UserEntity has been returned !");
+		return new ResponseEntity<>(users, HttpStatus.OK);
+	}
+	
+	
 }

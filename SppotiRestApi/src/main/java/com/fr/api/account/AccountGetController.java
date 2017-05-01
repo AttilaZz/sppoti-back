@@ -23,53 +23,57 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/account")
-class AccountGetController {
-
-    /**
-     * Account controller service.
-     */
-    private AccountControllerService accountControllerService;
-
-    /**
-     * Init account service.
-     */
-    @Autowired
-    void setAccountControllerService(AccountControllerService accountControllerService) {
-        this.accountControllerService = accountControllerService;
-    }
-
-    /**
-     * Get connected user account informations.
-     */
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping
-    ResponseEntity<UserDTO> connectedUserInfo(Authentication authentication) {
-
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-        UserEntity targetUser = accountControllerService.getUserById(accountUserDetails.getId());
-
-        return new ResponseEntity<>(accountControllerService.fillAccountResponse(targetUser), HttpStatus.OK);
-
-    }
-
-    /**
-     * HGet any user account information by its username.
-     * @param username username of a user.
-     * @return user data.
-     */
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
-    @GetMapping("/other/{username}/**")
-    ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") String username, Authentication authentication) {
-
-//        String path = (String) httpServletRequest.getAttribute(
-//                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-//        AntPathMatcher apm = new AntPathMatcher();
-//        String bestMatchPattern = (String ) httpServletRequest.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-//        String finalPath = apm.extractPathWithinPattern(bestMatchPattern, path);
-
-        AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-
-        return new ResponseEntity<>(accountControllerService.handleFriendShip(username, accountUserDetails.getId()), HttpStatus.OK);
-
-    }
+class AccountGetController
+{
+	
+	/** Account controller service. */
+	private AccountControllerService accountControllerService;
+	
+	/** Init account service. */
+	@Autowired
+	void setAccountControllerService(AccountControllerService accountControllerService)
+	{
+		this.accountControllerService = accountControllerService;
+	}
+	
+	/**
+	 * Get connected user account informations.
+	 */
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@GetMapping
+	ResponseEntity<UserDTO> connectedUserInfo(Authentication authentication)
+	{
+		
+		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		UserEntity targetUser = accountControllerService.getUserById(accountUserDetails.getId());
+		
+		return new ResponseEntity<>(accountControllerService.fillAccountResponse(targetUser), HttpStatus.OK);
+		
+	}
+	
+	/**
+	 * HGet any user account information by its username.
+	 *
+	 * @param username
+	 * 		username of a user.
+	 *
+	 * @return user data.
+	 */
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@GetMapping("/other/{username}/**")
+	ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") String username, Authentication authentication)
+	{
+		
+		//        String path = (String) httpServletRequest.getAttribute(
+		//                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+		//        AntPathMatcher apm = new AntPathMatcher();
+		//        String bestMatchPattern = (String ) httpServletRequest.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+		//        String finalPath = apm.extractPathWithinPattern(bestMatchPattern, path);
+		
+		AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
+		
+		return new ResponseEntity<>(accountControllerService.handleFriendShip(username, accountUserDetails.getId()),
+				HttpStatus.OK);
+		
+	}
 }

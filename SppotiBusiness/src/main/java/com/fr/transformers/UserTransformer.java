@@ -10,21 +10,26 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public interface UserTransformer extends CommonTransformer<UserDTO, UserEntity> {
-
-    /**
-     * Get selected avatr and cover for the given user.
-     *
-     * @param targetUser user entity to map.
-     * @return userDto with only avatar and cover.
-     */
-    UserDTO getUserCoverAndAvatar(UserEntity targetUser);
-
-    /**
-     * Transform sign up DTO to user entity.
-     *
-     * @param dto sign up DTO.
-     * @return user Entity.
-     */
-    UserEntity signUpDtoToEntity(SignUpDTO dto);
+public interface UserTransformer extends CommonTransformer<UserDTO, UserEntity>
+{
+	
+	/**
+	 * Get selected avatr and cover for the given user.
+	 *
+	 * @param targetUser
+	 * 		user entity to map.
+	 *
+	 * @return userDto with only avatar and cover.
+	 */
+	UserDTO getUserCoverAndAvatar(UserEntity targetUser);
+	
+	/**
+	 * Transform sign up DTO to user entity.
+	 *
+	 * @param dto
+	 * 		sign up DTO.
+	 *
+	 * @return user Entity.
+	 */
+	UserEntity signUpDtoToEntity(SignUpDTO dto);
 }

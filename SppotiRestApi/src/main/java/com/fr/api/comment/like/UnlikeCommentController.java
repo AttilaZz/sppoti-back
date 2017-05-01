@@ -5,7 +5,6 @@ import com.fr.entities.UserEntity;
 import com.fr.service.CommentControllerService;
 import com.fr.service.LikeControllerService;
 import com.fr.service.PostControllerService;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,76 +21,67 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/like")
-class UnlikeCommentController {
-
-    private PostControllerService postDataService;
-    private CommentControllerService commentControllerService;
-    private LikeControllerService likeControllerService;
-
-    @Autowired
-    void setLikeControllerService(LikeControllerService likeControllerService) {
-        this.likeControllerService = likeControllerService;
-    }
-
-    @Autowired
-    void setCommentControllerService(CommentControllerService commentControllerService) {
-        this.commentControllerService = commentControllerService;
-    }
-
-    @Autowired
-    void setPostDataService(PostControllerService postDataService) {
-        this.postDataService = postDataService;
-    }
-
-    private Logger LOGGER = Logger.getLogger(GetAllCommentLikesController.class);
-
-    private static final String ATT_USER_ID = "USER_ID";
-
-
-    /**
-     * @param id      post id.
-     * @param request
-     * @return 200 status if comment has been unliked or 404 if not.
-     */
-    @DeleteMapping(value = "/comment/{id}")
-    ResponseEntity<Void> unLikeComment(@PathVariable("id") int id, HttpServletRequest request) {
-
-        CommentEntity commentEntityToLike = commentControllerService.findComment(id);
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        UserEntity user = postDataService.getUserById(userId);
-
-        if (commentEntityToLike == null || user == null) {
-
-            if (commentEntityToLike == null) {
-                // post not fount
-                LOGGER.info("UNLIKE_COMMENT: Failed to retreive the comment id:" + id);
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else {
-                LOGGER.error("UNLIKE_COMMENT: Failed to retreive comment id: " + id + " to unlike");
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-        }
-
-        //post must be liked before unlike
-        if (likeControllerService.isCommentAlreadyLikedByUser(id, userId)) {
-            try {
-                likeControllerService.unLikeComment(commentEntityToLike);
-                // delete success
-                LOGGER.info("UNLIKE_COMMENT: CommentEntity with id:" + id + " has been liked by: " + user.getFirstName() + " "
-                        + user.getLastName());
-                return new ResponseEntity<>(HttpStatus.OK);
-            } catch (RuntimeException e) {
-                LOGGER.error("UNLIKE_COMMENT: Problem found when trying to unlike comment id" + id, e);
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-        } else {
-            LOGGER.error("UNLIKE_COMMENT: CommentEntity id:" + id + "- NOT liked by: " + user.getFirstName() + " " + user.getLastName());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-
+class UnlikeCommentController
+{
+	
+	/** Post service. */
+	private final PostControllerService postDataService;
+	/** Comment service. */
+	private final CommentControllerService commentControllerService;
+	/** Like service. */
+	private final LikeControllerService likeControllerService;
+	
+	/** User id in session context */
+	private static final String ATT_USER_ID = "USER_ID";
+	
+	/** Init services. */
+	@Autowired
+	UnlikeCommentController(PostControllerService postDataService, CommentControllerService commentControllerService,
+							LikeControllerService likeControllerService)
+	{
+		this.postDataService = postDataService;
+		this.commentControllerService = commentControllerService;
+		this.likeControllerService = likeControllerService;
+	}
+	
+	
+	/**
+	 * @param id
+	 * 		post id.
+	 * @param request
+	 *
+	 * @return 200 status if comment has been unliked or 404 if not.
+	 */
+	@DeleteMapping(value = "/comment/{id}")
+	ResponseEntity<Void> unLikeComment(@PathVariable("id") int id, HttpServletRequest request)
+	{
+		
+		CommentEntity commentEntityToLike = commentControllerService.findComment(id);
+		
+		Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+		UserEntity user = postDataService.getUserById(userId);
+		
+		if (commentEntityToLike == null || user == null) {
+			
+			if (commentEntityToLike == null) {
+				// post not fount
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			} else {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			
+		}
+		
+		//post must be liked before unlike
+		if (likeControllerService.isCommentAlreadyLikedByUser(id, userId)) {
+			likeControllerService.unLikeComment(commentEntityToLike);
+			// delete success:" + id + " has been liked by: " + user.getFirstName()
+			return new ResponseEntity<>(HttpStatus.OK);
+			
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	
 }

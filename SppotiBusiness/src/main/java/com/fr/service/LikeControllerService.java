@@ -13,65 +13,66 @@ import java.util.List;
  */
 
 @Service
-public interface LikeControllerService extends AbstractControllerService{
-
-    /**
-     * Like like or post
-     *
-     * @param likeToSave
-     */
-    LikeContentEntity likePost(LikeContentEntity likeToSave);
-
-    /**
-     * unlike post
-     *
-     * @param post
-     */
-    void unLikePost(PostEntity post);
-
-    /**
-     *
-     * @param postId
-     * @param userId
-     * @return true if post already liked, false otherwise
-     */
-    boolean isPostAlreadyLikedByUser(int postId, Long userId);
-
-    /**
-     * Unlike content, post or like
-     *
-     * @param commentEntityToLike
-     */
-    void unLikeComment(CommentEntity commentEntityToLike);
-
-    /**
-     *
-     * @param id
-     * @param userId
-     * @return true if like already liked, false otherwise
-     */
-    boolean isCommentAlreadyLikedByUser(int id, Long userId);
-
-    /**
-     * Like like
-     *
-     * @param likeToSave
-     */
-    void likeComment(LikeContentEntity likeToSave);
-
-    /**
-     *
-     * @param id
-     * @param page
-     * @return All persons who likes the post
-     */
-    List<HeaderDataDTO> getPostLikersList(int id, int page);
-
-    /**
-     *
-     * @param id
-     * @param page
-     * @return All persons who likes the like
-     */
-    List<HeaderDataDTO> getCommentLikersList(int id, int page);
+public interface LikeControllerService extends AbstractControllerService
+{
+	
+	/**
+	 * Like like or post
+	 *
+	 * @param likeToSave
+	 */
+	LikeContentEntity likePost(LikeContentEntity likeToSave);
+	
+	/**
+	 * unlike post
+	 *
+	 * @param post
+	 */
+	void unLikePost(PostEntity post);
+	
+	/**
+	 * @param postId
+	 * @param userId
+	 *
+	 * @return true if post already liked, false otherwise
+	 */
+	boolean isPostAlreadyLikedByUser(int postId,Long userId);
+	
+	/**
+	 * Unlike content, post or like
+	 *
+	 * @param commentEntityToLike
+	 */
+	void unLikeComment(CommentEntity commentEntityToLike);
+	
+	/**
+	 * @param id
+	 * @param userId
+	 *
+	 * @return true if like already liked, false otherwise
+	 */
+	boolean isCommentAlreadyLikedByUser(int id,Long userId);
+	
+	/**
+	 * Like like
+	 *
+	 * @param likeToSave
+	 */
+	void likeComment(LikeContentEntity likeToSave);
+	
+	/**
+	 * @param id
+	 * @param page
+	 *
+	 * @return All persons who likes the post
+	 */
+	List<HeaderDataDTO> getPostLikersList(int id,int page);
+	
+	/**
+	 * @param id
+	 * @param page
+	 *
+	 * @return All persons who likes the like
+	 */
+	List<HeaderDataDTO> getCommentLikersList(int id,int page);
 }

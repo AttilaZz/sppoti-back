@@ -19,29 +19,31 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/gallery/photo/{userId}")
-class GalleryPhotoController {
-
-    private PostControllerService postControllerService;
-
-    @Autowired
-    void setPostControllerService(PostControllerService postControllerService) {
-        this.postControllerService = postControllerService;
-    }
-
-    private Logger LOGGER = Logger.getLogger(GalleryPhotoController.class);
-
-    /**
-     * @param page page number.
-     * @return List of all photos posted by a user.
-     */
-    @GetMapping(value = "/{page}")
-    ResponseEntity<List<PostDTO>> photoGallery(@PathVariable int page, @PathVariable int userId) {
-
-        List<PostDTO> photoGallery = postControllerService.getPhotoGallery(userId, page);
-
-        LOGGER.info("Photos gallery has been returned: " + photoGallery);
-        return new ResponseEntity<>(photoGallery, HttpStatus.OK);
-
-    }
-
+class GalleryPhotoController
+{
+	
+	/** Post service. */
+	private PostControllerService postControllerService;
+	
+	/** Init post service. */
+	@Autowired
+	void setPostControllerService(PostControllerService postControllerService)
+	{
+		this.postControllerService = postControllerService;
+	}
+	
+	/**
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return List of all photos posted by a user.
+	 */
+	@GetMapping(value = "/{page}")
+	ResponseEntity<List<PostDTO>> photoGallery(@PathVariable int page, @PathVariable int userId)
+	{
+		
+		return new ResponseEntity<>(postControllerService.getPhotoGallery(userId, page), HttpStatus.OK);
+		
+	}
+	
 }

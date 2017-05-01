@@ -18,26 +18,31 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/score")
-public class ScoreAddController {
-
-    /** Service des scores. */
-    private ScoreControllerService scoreControllerService;
-
-    /** Init score service. */
-    @Autowired
-    public void setScoreControllerService(ScoreControllerService scoreControllerService) {
-        this.scoreControllerService = scoreControllerService;
-    }
-
-    /**
-     * Add score to a sppoti.
-     *
-     * @param scoreDTO score to add.
-     * @return added score.
-     */
-    @PostMapping
-    ResponseEntity<ScoreDTO> addScore(@RequestBody @Valid ScoreDTO scoreDTO) {
-
-        return new ResponseEntity<>(scoreControllerService.addSppotiScore(scoreDTO), HttpStatus.CREATED);
-    }
+public class ScoreAddController
+{
+	
+	/** Service des scores. */
+	private ScoreControllerService scoreControllerService;
+	
+	/** Init score service. */
+	@Autowired
+	public void setScoreControllerService(ScoreControllerService scoreControllerService)
+	{
+		this.scoreControllerService = scoreControllerService;
+	}
+	
+	/**
+	 * Add score to a sppoti.
+	 *
+	 * @param scoreDTO
+	 * 		score to add.
+	 *
+	 * @return added score.
+	 */
+	@PostMapping
+	ResponseEntity<ScoreDTO> addScore(@RequestBody @Valid ScoreDTO scoreDTO)
+	{
+		
+		return new ResponseEntity<>(scoreControllerService.addSppotiScore(scoreDTO), HttpStatus.CREATED);
+	}
 }
