@@ -4,16 +4,16 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
+import com.fr.security.AccountUserDetails;
 import com.fr.service.FriendControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by djenanewail on 2/11/17.
@@ -23,9 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/friend")
 class FriendAddController
 {
-	
-	/** user id in session storage. */
-	private static final String ATT_USER_ID = "USER_ID";
 	
 	/** Friend service. */
 	private FriendControllerService friendControllerService;
@@ -40,17 +37,17 @@ class FriendAddController
 	/**
 	 * @param user
 	 * 		friend to add.
-	 * @param request
-	 * 		spring secu object.
+	 * @param authentication
+	 * 		spring auth.
 	 *
 	 * @return created friend.
 	 */
 	@PostMapping
-	ResponseEntity<Object> addFriend(@RequestBody final UserDTO user, final HttpServletRequest request)
+	ResponseEntity<Object> addFriend(@RequestBody final UserDTO user, final Authentication authentication)
 	{
 
         /*
-		Chekck received data
+		Check received data
          */
 		if (user == null || user.getFriendUuid() == 0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -59,8 +56,8 @@ class FriendAddController
         /*
 		Get connected user id
          */
-		final Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-
+		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		
         /*
 		Prepare friendShip
          */

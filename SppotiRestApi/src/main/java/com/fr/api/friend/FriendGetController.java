@@ -8,6 +8,7 @@ import com.fr.entities.UserEntity;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.AccountControllerService;
 import com.fr.service.FriendControllerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,14 +33,23 @@ class FriendGetController
 {
 	
 	/** Account service. */
-	private AccountControllerService accountControllerService;
+	private final AccountControllerService accountControllerService;
 	
 	/** Friend service. */
-	private FriendControllerService friendControllerService;
+	private final FriendControllerService friendControllerService;
 	
 	/** Friend list size. */
 	@Value("${key.friendShipPerPage}")
 	private int friendListSize;
+	
+	/** Init services. */
+	@Autowired
+	FriendGetController(final AccountControllerService accountControllerService,
+						final FriendControllerService friendControllerService)
+	{
+		this.accountControllerService = accountControllerService;
+		this.friendControllerService = friendControllerService;
+	}
 	
 	/**
 	 * @param userId

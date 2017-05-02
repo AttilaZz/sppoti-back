@@ -2,16 +2,16 @@ package com.fr.api.comment;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.entities.CommentEntity;
+import com.fr.security.AccountUserDetails;
 import com.fr.service.CommentControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by djenanewail on 2/12/17.
@@ -21,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/comment")
 class CommentAddController
 {
-	
-	private static final String ATT_USER_ID = "USER_ID";
 	
 	/** Comment service. */
 	private CommentControllerService commentDataService;
@@ -35,7 +33,7 @@ class CommentAddController
 	}
 	
 	@PostMapping
-	ResponseEntity<CommentDTO> addComment(@RequestBody final CommentDTO newComment, final HttpServletRequest request)
+	ResponseEntity<CommentDTO> addComment(@RequestBody final CommentDTO newComment, final Authentication authentication)
 	{
 		
 		final CommentEntity commentEntityToSave = new CommentEntity();
@@ -76,7 +74,7 @@ class CommentAddController
 				commentEntityToSave.setVideoLink(video);
 			}
 			
-			final Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
+			final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 			
 			final CommentDTO savedComment = this.commentDataService.saveComment(commentEntityToSave, userId, postId);
 			
