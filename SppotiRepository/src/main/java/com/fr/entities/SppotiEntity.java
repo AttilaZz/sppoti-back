@@ -12,268 +12,321 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "SPPOTI")
-public class SppotiEntity
-        extends AbstractCommonEntity {
-
-    @Column(nullable = false)
-    private String name;
-
-    private String description;
-
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date datetimeCreated = new Date();
-
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dateTimeStart;
-
-    @Column(nullable = false)
-    private String location;
-
-    @Column(nullable = false)
-    private Integer maxTeamCount;
-
-    private Long sppotiDuration;
-    private String cover;
-    private String tags;
-
-    @Column(nullable = false)
-    private Long altitude;
-    @Column(nullable = false)
-    private Long longitude;
-
-    @Column(nullable = false)
-    private boolean deleted = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "sport_id", nullable = false)
-    @JsonIgnore
-    private SportEntity sport;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
-    private UserEntity userSppoti;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_host_id")
-    @JsonIgnore
-    private TeamEntity teamHostEntity;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sppoti", cascade = CascadeType.ALL)
-    private Set<SppotiAdverseEntity> adverseTeams = new HashSet<>();
-
-    @OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SppoterEntity> sppotiMembers = new HashSet<>();
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "score_id")
-    private ScoreEntity scoreEntity;
-
-    /**
-     * to get trace of the connected user when using transformers.
-     */
-    private transient Long connectedUserId;
-
-    public ScoreEntity getScoreEntity() {
-        return scoreEntity;
-    }
-
-    public void setScoreEntity(ScoreEntity scoreEntity) {
-        this.scoreEntity = scoreEntity;
-    }
-
-    public Date getDatetimeCreated() {
-        return datetimeCreated;
-    }
-
-    public void setDatetimeCreated(Date datetimeCreated) {
-        this.datetimeCreated = datetimeCreated;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public SportEntity getSport() {
-        return sport;
-    }
-
-    public void setSport(SportEntity sport) {
-        this.sport = sport;
-    }
-
-    public UserEntity getUserSppoti() {
-        return userSppoti;
-    }
-
-    public void setUserSppoti(UserEntity userSppoti) {
-        this.userSppoti = userSppoti;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getMaxTeamCount() {
-        return maxTeamCount;
-    }
-
-    public void setMaxTeamCount(Integer maxTeamCount) {
-        this.maxTeamCount = maxTeamCount;
-    }
-
-    public Date getDateTimeStart() {
-        return dateTimeStart;
-    }
-
-    public void setDateTimeStart(Date dateTimeStart) {
-        this.dateTimeStart = dateTimeStart;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
-    public TeamEntity getTeamHostEntity() {
-        return teamHostEntity;
-    }
-
-    public void setTeamHostEntity(TeamEntity teamHostEntity) {
-        this.teamHostEntity = teamHostEntity;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public Set<SppoterEntity> getSppotiMembers() {
-        return sppotiMembers;
-    }
-
-    public void setSppotiMembers(Set<SppoterEntity> sppotiMembers) {
-        this.sppotiMembers = sppotiMembers;
-    }
-
-    public String getCover() {
-        return cover;
-    }
-
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
-
-    public Long getSppotiDuration() {
-        return sppotiDuration;
-    }
-
-    public void setSppotiDuration(Long sppotiDuration) {
-        this.sppotiDuration = sppotiDuration;
-    }
-
-    public Long getAltitude() {
-        return altitude;
-    }
-
-    public void setAltitude(Long altitude) {
-        this.altitude = altitude;
-    }
-
-    public Long getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Long longitude) {
-        this.longitude = longitude;
-    }
-
-    public Set<SppotiAdverseEntity> getAdverseTeams() {
-        return adverseTeams;
-    }
-
-    public void setAdverseTeams(Set<SppotiAdverseEntity> adverseTeams) {
-        this.adverseTeams = adverseTeams;
-    }
-
-    public Long getConnectedUserId() {
-        return connectedUserId;
-    }
-
-    public void setConnectedUserId(Long connectedUserId) {
-        this.connectedUserId = connectedUserId;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        SppotiEntity that = (SppotiEntity) o;
-
-        if (deleted != that.deleted) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (datetimeCreated != null ? !datetimeCreated.equals(that.datetimeCreated) : that.datetimeCreated != null)
-            return false;
-        if (dateTimeStart != null ? !dateTimeStart.equals(that.dateTimeStart) : that.dateTimeStart != null)
-            return false;
-        if (location != null ? !location.equals(that.location) : that.location != null) return false;
-        if (maxTeamCount != null ? !maxTeamCount.equals(that.maxTeamCount) : that.maxTeamCount != null) return false;
-        if (sppotiDuration != null ? !sppotiDuration.equals(that.sppotiDuration) : that.sppotiDuration != null)
-            return false;
-        if (cover != null ? !cover.equals(that.cover) : that.cover != null) return false;
-        if (tags != null ? !tags.equals(that.tags) : that.tags != null) return false;
-        if (altitude != null ? !altitude.equals(that.altitude) : that.altitude != null) return false;
-        return longitude != null ? longitude.equals(that.longitude) : that.longitude == null;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (datetimeCreated != null ? datetimeCreated.hashCode() : 0);
-        result = 31 * result + (dateTimeStart != null ? dateTimeStart.hashCode() : 0);
-        result = 31 * result + (location != null ? location.hashCode() : 0);
-        result = 31 * result + (cover != null ? cover.hashCode() : 0);
-        result = 31 * result + (maxTeamCount != null ? maxTeamCount.hashCode() : 0);
-        result = 31 * result + (tags != null ? tags.hashCode() : 0);
-        result = 31 * result + (deleted ? 1 : 0);
-        result = 31 * result + (sppotiDuration != null ? sppotiDuration.hashCode() : 0);
-        result = 31 * result + (altitude != null ? altitude.hashCode() : 0);
-        result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
-        return result;
-    }
+public class SppotiEntity extends AbstractCommonEntity
+{
+	
+	@Column(nullable = false)
+	private String name;
+	
+	private String description;
+	
+	@Column(nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date datetimeCreated = new Date();
+	
+	@Column(nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateTimeStart;
+	
+	@Column(nullable = false)
+	private String location;
+	
+	@Column(nullable = false)
+	private Integer maxTeamCount;
+	
+	private Long sppotiDuration;
+	private String cover;
+	private String tags;
+	
+	@Column(nullable = false)
+	private Long altitude;
+	@Column(nullable = false)
+	private Long longitude;
+	
+	@Column(nullable = false)
+	private boolean deleted = false;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "sport_id", nullable = false)
+	@JsonIgnore
+	private SportEntity sport;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "user_id", nullable = false)
+	@JsonIgnore
+	private UserEntity userSppoti;
+	
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "team_host_id")
+	@JsonIgnore
+	private TeamEntity teamHostEntity;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sppoti")
+	private Set<SppotiAdverseEntity> adverseTeams = new HashSet<>();
+	
+	@OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<SppoterEntity> sppotiMembers = new HashSet<>();
+	
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "score_id")
+	private ScoreEntity scoreEntity;
+	
+	/**
+	 * to get trace of the connected user when using transformers.
+	 */
+	private transient Long connectedUserId;
+	
+	public ScoreEntity getScoreEntity()
+	{
+		return this.scoreEntity;
+	}
+	
+	public void setScoreEntity(final ScoreEntity scoreEntity)
+	{
+		this.scoreEntity = scoreEntity;
+	}
+	
+	public Date getDatetimeCreated()
+	{
+		return this.datetimeCreated;
+	}
+	
+	public void setDatetimeCreated(final Date datetimeCreated)
+	{
+		this.datetimeCreated = datetimeCreated;
+	}
+	
+	public String getLocation()
+	{
+		return this.location;
+	}
+	
+	public void setLocation(final String location)
+	{
+		this.location = location;
+	}
+	
+	public SportEntity getSport()
+	{
+		return this.sport;
+	}
+	
+	public void setSport(final SportEntity sport)
+	{
+		this.sport = sport;
+	}
+	
+	public UserEntity getUserSppoti()
+	{
+		return this.userSppoti;
+	}
+	
+	public void setUserSppoti(final UserEntity userSppoti)
+	{
+		this.userSppoti = userSppoti;
+	}
+	
+	public String getName()
+	{
+		return this.name;
+	}
+	
+	public void setName(final String name)
+	{
+		this.name = name;
+	}
+	
+	public String getDescription()
+	{
+		return this.description;
+	}
+	
+	public void setDescription(final String description)
+	{
+		this.description = description;
+	}
+	
+	public Integer getMaxTeamCount()
+	{
+		return this.maxTeamCount;
+	}
+	
+	public void setMaxTeamCount(final Integer maxTeamCount)
+	{
+		this.maxTeamCount = maxTeamCount;
+	}
+	
+	public Date getDateTimeStart()
+	{
+		return this.dateTimeStart;
+	}
+	
+	public void setDateTimeStart(final Date dateTimeStart)
+	{
+		this.dateTimeStart = dateTimeStart;
+	}
+	
+	public String getTags()
+	{
+		return this.tags;
+	}
+	
+	public void setTags(final String tags)
+	{
+		this.tags = tags;
+	}
+	
+	public TeamEntity getTeamHostEntity()
+	{
+		return this.teamHostEntity;
+	}
+	
+	public void setTeamHostEntity(final TeamEntity teamHostEntity)
+	{
+		this.teamHostEntity = teamHostEntity;
+	}
+	
+	public boolean isDeleted()
+	{
+		return this.deleted;
+	}
+	
+	public void setDeleted(final boolean deleted)
+	{
+		this.deleted = deleted;
+	}
+	
+	public Set<SppoterEntity> getSppotiMembers()
+	{
+		return this.sppotiMembers;
+	}
+	
+	public void setSppotiMembers(final Set<SppoterEntity> sppotiMembers)
+	{
+		this.sppotiMembers = sppotiMembers;
+	}
+	
+	public String getCover()
+	{
+		return this.cover;
+	}
+	
+	public void setCover(final String cover)
+	{
+		this.cover = cover;
+	}
+	
+	public Long getSppotiDuration()
+	{
+		return this.sppotiDuration;
+	}
+	
+	public void setSppotiDuration(final Long sppotiDuration)
+	{
+		this.sppotiDuration = sppotiDuration;
+	}
+	
+	public Long getAltitude()
+	{
+		return this.altitude;
+	}
+	
+	public void setAltitude(final Long altitude)
+	{
+		this.altitude = altitude;
+	}
+	
+	public Long getLongitude()
+	{
+		return this.longitude;
+	}
+	
+	public void setLongitude(final Long longitude)
+	{
+		this.longitude = longitude;
+	}
+	
+	public Set<SppotiAdverseEntity> getAdverseTeams()
+	{
+		return this.adverseTeams;
+	}
+	
+	public void setAdverseTeams(final Set<SppotiAdverseEntity> adverseTeams)
+	{
+		this.adverseTeams = adverseTeams;
+	}
+	
+	public Long getConnectedUserId()
+	{
+		return this.connectedUserId;
+	}
+	
+	public void setConnectedUserId(final Long connectedUserId)
+	{
+		this.connectedUserId = connectedUserId;
+	}
+	
+	/**
+	 * {@inheritDoc}.
+	 */
+	@Override
+	public boolean equals(final Object o)
+	{
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		if (!super.equals(o))
+			return false;
+		
+		final SppotiEntity that = (SppotiEntity) o;
+		
+		if (this.deleted != that.deleted)
+			return false;
+		if (this.name != null ? !this.name.equals(that.name) : that.name != null)
+			return false;
+		if (this.description != null ? !this.description.equals(that.description) : that.description != null)
+			return false;
+		if (this.datetimeCreated != null ? !this.datetimeCreated.equals(that.datetimeCreated) :
+				that.datetimeCreated != null)
+			return false;
+		if (this.dateTimeStart != null ? !this.dateTimeStart.equals(that.dateTimeStart) : that.dateTimeStart != null)
+			return false;
+		if (this.location != null ? !this.location.equals(that.location) : that.location != null)
+			return false;
+		if (this.maxTeamCount != null ? !this.maxTeamCount.equals(that.maxTeamCount) : that.maxTeamCount != null)
+			return false;
+		if (this.sppotiDuration != null ? !this.sppotiDuration.equals(that.sppotiDuration) :
+				that.sppotiDuration != null)
+			return false;
+		if (this.cover != null ? !this.cover.equals(that.cover) : that.cover != null)
+			return false;
+		if (this.tags != null ? !this.tags.equals(that.tags) : that.tags != null)
+			return false;
+		if (this.altitude != null ? !this.altitude.equals(that.altitude) : that.altitude != null)
+			return false;
+		return this.longitude != null ? this.longitude.equals(that.longitude) : that.longitude == null;
+	}
+	
+	/**
+	 * {@inheritDoc}.
+	 */
+	@Override
+	public int hashCode()
+	{
+		int result = super.hashCode();
+		result = 31 * result + (this.name != null ? this.name.hashCode() : 0);
+		result = 31 * result + (this.description != null ? this.description.hashCode() : 0);
+		result = 31 * result + (this.datetimeCreated != null ? this.datetimeCreated.hashCode() : 0);
+		result = 31 * result + (this.dateTimeStart != null ? this.dateTimeStart.hashCode() : 0);
+		result = 31 * result + (this.location != null ? this.location.hashCode() : 0);
+		result = 31 * result + (this.cover != null ? this.cover.hashCode() : 0);
+		result = 31 * result + (this.maxTeamCount != null ? this.maxTeamCount.hashCode() : 0);
+		result = 31 * result + (this.tags != null ? this.tags.hashCode() : 0);
+		result = 31 * result + (this.deleted ? 1 : 0);
+		result = 31 * result + (this.sppotiDuration != null ? this.sppotiDuration.hashCode() : 0);
+		result = 31 * result + (this.altitude != null ? this.altitude.hashCode() : 0);
+		result = 31 * result + (this.longitude != null ? this.longitude.hashCode() : 0);
+		return result;
+	}
 }
