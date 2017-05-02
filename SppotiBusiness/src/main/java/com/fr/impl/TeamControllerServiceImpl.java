@@ -379,7 +379,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		return this.teamTransformer.modelToDto(this.teamRepository.save(teamEntity));
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -387,11 +387,11 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public void updateTeamCaptain(final int teamId, final int memberId, final int connectedUserId)
 	{
-		
+
 		checkTeamAdminAccess(teamId, connectedUserId);
-		
+
 		final List<TeamMemberEntity> teamMemberEntity = this.teamMembersRepository.findByTeamUuid(teamId);
-		
+
 		teamMemberEntity.forEach(t -> {
 			if (t.getUuid() == memberId || t.getUsers().getUuid() == memberId) {
 				t.setTeamCaptain(true);
@@ -400,9 +400,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			}
 		});
 		this.teamMembersRepository.save(teamMemberEntity);
-		
+
 	}
-	
+
 	/**
 	 * Allow access only for team admin.
 	 *
@@ -417,7 +417,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			throw new NotAdminException("You must be the team admin to access this service");
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -425,7 +425,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public List<TeamDTO> getAllJoinedTeamsByUserId(final int userId, final int page)
 	{
 		final Pageable pageable = new PageRequest(page, this.teamPageSize);
-		
+
 		final Predicate<TeamMemberEntity> filter;
 		if (getConnectedUser().getUuid() == userId) {
 			filter = t -> t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name()) ||
@@ -434,12 +434,12 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		} else {
 			filter = t -> t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name());
 		}
-		
+
 		return this.teamMembersRepository.findByUsersUuidAndAdminFalse(userId, pageable).stream().filter(filter)
 				.map(t -> this.teamTransformer.modelToDto(t.getTeam()))
 				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -447,26 +447,26 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public List<TeamDTO> getAllDeletedTeamsByUserId(final int userId, final int page)
 	{
 		final Pageable pageable = new PageRequest(page, this.teamPageSize);
-		
+
 		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
 				.findByUsersUuidAndTeamDeletedFalse(getConnectedUser().getUuid(), pageable);
-		
+
 		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null))
 				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	@Transactional
+	@Override
 	public TeamDTO requestToSppotiAdminChallenge(final SppotiDTO dto, final int teamId)
 	{
-		
+
 		checkTeamAdminAccess(teamId, getConnectedUser().getUuid());
-		
+
 		final Optional<SppotiEntity> optional = Optional.ofNullable(this.sppotiRepository.findByUuid(dto.getId()));
-		
+
 		if (optional.isPresent()) {
 			final SppotiEntity sp = optional.get();
 			//Check if sppoti has already a CONFIRMED adverse team in the adverse team list.
@@ -474,45 +474,59 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 					sp.getAdverseTeams().stream().anyMatch(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
 				throw new BusinessGlobalException("This sppoti has already an adverse team");
 			}
-			
+
 			//Check if team exists.
 			final TeamEntity team = getTeamEntityIfExist(teamId);
-			
+
 			//Check if team is not already accepted as challenger of this sppoti.
 			final Optional<SppotiAdverseEntity> sppotiAdverseEntityOptional = sp.getAdverseTeams().stream()
-					.filter(t -> t.getTeam().getId().equals(team.getId()) &&
-							t.getFromSppotiAdmin().equals(Boolean.TRUE)).findAny();
-			
+					.filter(t -> t.getTeam().getId().equals(team.getId())).findAny();
+
 			//Team not found in sppoti adverse team list.
 			sppotiAdverseEntityOptional
-					.orElseThrow(() -> new BusinessGlobalException("This team has no challenge to confirm."));
-			
+					.orElseThrow(() -> new BusinessGlobalException("This team has no challenge to respond."));
+
 			//Team found in awaiting list.
 			if (sppotiAdverseEntityOptional.isPresent()) {
 				final SppotiAdverseEntity t = sppotiAdverseEntityOptional.get();
-				//Team already CONFIRMED.
-				if (t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
-					throw new BusinessGlobalException("This team is already selected to challenge the host team");
-				}
-				//Team already REFUSED.
-				else if (t.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
-					throw new BusinessGlobalException("This team was already refused to challenge the host team");
-				} else {
-					//Team exist in adverse team list in PENDING mode.
-					if (dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.CONFIRMED.name())) {
-						t.setStatus(GlobalAppStatusEnum.valueOf(dto.getTeamAdverseStatus()));
-						return this.teamTransformer.modelToDto(this.sppotiAdverseRepository.save(t).getTeam());
+				//answer to sppoti admin challenge request
+				if(t.getFromSppotiAdmin().equals(Boolean.TRUE)){
+					//Team already CONFIRMED.
+					if (t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+						throw new BusinessGlobalException("This team is already selected to challenge the host team");
+					}
+					//Team already REFUSED.
+					else if (t.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
+						throw new BusinessGlobalException("This team was already refused to challenge the host team");
 					} else {
-						//Challenge refused -> Delete row from database.
+						//Team exist in adverse team list in PENDING mode.
+						if (dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.CONFIRMED.name())) {
+							t.setStatus(GlobalAppStatusEnum.valueOf(dto.getTeamAdverseStatus()));
+							return this.teamTransformer.modelToDto(this.sppotiAdverseRepository.save(t).getTeam());
+						} else {
+							//Challenge refused -> Delete row from database.
+							this.sppotiAdverseRepository.delete(t);
+							this.sppotiAdverseRepository.flush();
+							return new TeamDTO();
+						}
+					}
+				}
+				//Cancel my challenge request.
+				else{
+					if (dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.REFUSED.name())) {
 						this.sppotiAdverseRepository.delete(t);
+						this.sppotiAdverseRepository.flush();
+						return new TeamDTO();
+					}else{
+						throw new BusinessGlobalException("Status unauthorized in the request");
 					}
 				}
 			}
 		}
-		
+
 		throw new EntityNotFoundException("Sppoti id (" + dto.getId() + ") not found");
 	}
-	
+
 	private TeamEntity getTeamEntityIfExist(final int teamId)
 	{
 		//Check if team exists.

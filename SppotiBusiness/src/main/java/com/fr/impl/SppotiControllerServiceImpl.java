@@ -388,9 +388,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		}
 		final TeamEntity challengeTeam = teamEntities.get(0);
 		
-		//check if user has rights to send challenge.
+		//check if user has rights to send challenge. (team adverse admin)
 		if (!connectedUserId.equals(this.teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUsers().getId())) {
-			throw new NotAdminException("You don't have privileges to send challenge");
+			throw new NotAdminException("You have to be the admin of the team to send challenge");
 		}
 		
 		//check if sppoti exists.
@@ -412,7 +412,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		//Check if team adverse was not already challenged.
 		if (sppotiEntity.getAdverseTeams().stream().anyMatch(t -> Integer.compare(t.getTeam().getUuid(), teamId) == 0 &&
-				!t.getStatus().equals(GlobalAppStatusEnum.REFUSED))) {
+				t.getStatus().equals(GlobalAppStatusEnum.PENDING))) {
 			throw new EntityExistsException("Challenge already sent to this team");
 		}
 		
