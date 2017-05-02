@@ -37,6 +37,7 @@ class FindFriendController
 	/** Account controller service. */
 	private final AccountControllerService accountControllerService;
 	
+	/** Init services. */
 	@Autowired
 	public FindFriendController(final FriendShipRepository friendShipRepository,
 								final AccountControllerService accountControllerService)
