@@ -8,7 +8,6 @@ import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.entities.*;
 import com.fr.service.PostControllerService;
 import com.fr.transformers.CommentTransformer;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -38,7 +37,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	
 	/** Init dependencies. */
 	@Autowired
-	public PostControllerServiceImpl(CommentTransformer commentTransformer)
+	public PostControllerServiceImpl(final CommentTransformer commentTransformer)
 	{
 		this.commentTransformer = commentTransformer;
 	}
@@ -48,18 +47,18 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public PostEntity savePost(PostEntity post)
+	public PostEntity savePost(final PostEntity post)
 	{
-		PostEntity postEntity = postRepository.save(post);
+		final PostEntity postEntity = this.postRepository.save(post);
 		
 		if (postEntity != null && post.getTargetUserProfileUuid() != 0 &&
 				post.getTargetUserProfileUuid() != getConnectedUser().getUuid()) {
 			
-			addNotification(NotificationTypeEnum.X_POSTED_ON_YOUR_PROFILE,getConnectedUser(),
-					getUserByUuId(postEntity.getTargetUserProfileUuid()),null,null);
+			addNotification(NotificationTypeEnum.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(),
+					getUserByUuId(postEntity.getTargetUserProfileUuid()), null, null);
 			
 			if (post.getContent() != null) {
-				addTagNotification(postEntity,null);
+				addTagNotification(postEntity, null);
 			}
 			
 		}
@@ -80,27 +79,28 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public boolean updatePost(EditHistoryEntity postEditRow,SortedSet<AddressEntity> postEditAddress,int postId)
+	public boolean updatePost(final EditHistoryEntity postEditRow, final SortedSet<AddressEntity> postEditAddress,
+							  final int postId)
 	{
 		if (postEditAddress != null) {
 			
 			try {
-				List<PostEntity> post = postRepository.getByUuid(postId);
+				final List<PostEntity> post = this.postRepository.getByUuid(postId);
 				if (post == null) {
 					throw new IllegalArgumentException("Trying to update non existing post");
 				} else {
 					post.get(0).setAddresses(postEditAddress);
 				}
 				
-				postRepository.save(post);
-			} catch (Exception e) {
+				this.postRepository.save(post);
+			} catch (final Exception e) {
 				e.printStackTrace();
 				return false;
 			}
 		} else {
 			try {
-				editHistoryRepository.save(postEditRow);
-			} catch (Exception e) {
+				this.editHistoryRepository.save(postEditRow);
+			} catch (final Exception e) {
 				e.printStackTrace();
 				return false;
 			}
@@ -114,17 +114,17 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void deletePost(int postId)
+	public void deletePost(final int postId)
 	{
 		
-		List<PostEntity> postEntity = postRepository.getByUuid(postId);
+		final List<PostEntity> postEntity = this.postRepository.getByUuid(postId);
 		
 		if (postEntity.isEmpty()) {
 			throw new EntityNotFoundException("Post (" + postId + ") not found");
 		}
 		
 		postEntity.get(0).setDeleted(true);
-		postRepository.save(postEntity.get(0));
+		this.postRepository.save(postEntity.get(0));
 		
 	}
 	
@@ -132,10 +132,10 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PostEntity findPost(int id)
+	public PostEntity findPost(final int id)
 	{
 		
-		List<PostEntity> posts = postRepository.getByUuid(id);
+		final List<PostEntity> posts = this.postRepository.getByUuid(id);
 		
 		if (posts == null || posts.isEmpty()) {
 			return null;
@@ -149,80 +149,80 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SportEntity getSportToUse(Long id)
+	public SportEntity getSportToUse(final Long id)
 	{
 		
-		return sportRepository.getById(id);
+		return this.sportRepository.getById(id);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SppotiEntity getSppotiById(Long id)
+	public SppotiEntity getSppotiById(final Long id)
 	{
 		
-		return sppotiRepository.getOne(id);
+		return this.sppotiRepository.getOne(id);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostDTO> getPhotoGallery(int userId,int page)
+	public List<PostDTO> getPhotoGallery(final int userId, final int page)
 	{
 		
-		Pageable pageable = new PageRequest(page,postSize);
+		final Pageable pageable = new PageRequest(page, this.postSize);
 		
-		UserEntity userEntity = getUserByUuId(userId);
+		final UserEntity userEntity = getUserByUuId(userId);
 		if (userEntity == null) {
 			throw new EntityNotFoundException("User id (" + userId + ") not found !!");
 		}
 		
-		List<PostEntity> postEntities = postRepository
-				.getByAlbumIsNotNullAndUserUuidOrderByDatetimeCreatedDesc(userId,pageable);
+		final List<PostEntity> postEntities = this.postRepository
+				.getByAlbumIsNotNullAndUserUuidOrderByDatetimeCreatedDesc(userId, pageable);
 		
-		return postEntityToDto(postEntities,userEntity);
+		return postEntityToDto(postEntities, userEntity);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostDTO> getVideoGallery(int userId,int page)
+	public List<PostDTO> getVideoGallery(final int userId, final int page)
 	{
-		Pageable pageable = new PageRequest(page,postSize);
+		final Pageable pageable = new PageRequest(page, this.postSize);
 		
-		UserEntity userEntity = getUserByUuId(userId);
+		final UserEntity userEntity = getUserByUuId(userId);
 		if (userEntity == null) {
 			throw new EntityNotFoundException("User id (" + userId + ") not found !!");
 		}
 		
-		List<PostEntity> postEntities = postRepository
-				.getByVideoIsNotNullAndUserUuidOrderByDatetimeCreatedDesc(userId,pageable);
+		final List<PostEntity> postEntities = this.postRepository
+				.getByVideoIsNotNullAndUserUuidOrderByDatetimeCreatedDesc(userId, pageable);
 		
-		return postEntityToDto(postEntities,userEntity);
+		return postEntityToDto(postEntities, userEntity);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PostDTO fillPostToSend(int postId,Long userId)
+	public PostDTO fillPostToSend(final int postId, final Long userId)
 	{
 		
 		
-		List<PostEntity> posts = postRepository.getByUuid(postId);
+		final List<PostEntity> posts = this.postRepository.getByUuid(postId);
 		if (posts.isEmpty()) {
 			throw new EntityNotFoundException("Post id (" + postId + ") introuvable.");
 		}
 		
-		UserEntity userEntity = userRepository.findOne(userId);
+		final UserEntity userEntity = this.userRepository.findOne(userId);
 		if (userEntity == null) {
 			throw new EntityNotFoundException("User id (" + userId + ") not found !!");
 		}
 		
-		return postEntityToDto(posts,userEntity).get(0);
+		return postEntityToDto(posts, userEntity).get(0);
 		
 	}
 	
@@ -234,17 +234,17 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 *
 	 * @return list of all posts.
 	 */
-	public List<PostDTO> postEntityToDto(final List<PostEntity> postEntities,final UserEntity userPost)
+	public List<PostDTO> postEntityToDto(final List<PostEntity> postEntities, final UserEntity userPost)
 	{
 		
-		List<PostDTO> postDTOS = new ArrayList<PostDTO>();
+		final List<PostDTO> postDTOS = new ArrayList<PostDTO>();
 		
 		postEntities.forEach(
 				
 				p -> {
-					PostDTO pres = new PostDTO();
+					final PostDTO pres = new PostDTO();
 					
-					UserEntity owner = p.getUser();
+					final UserEntity owner = p.getUser();
 					
 					pres.setId(p.getUuid());
 					
@@ -269,19 +269,19 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 					}
 					
 					// check if content has been modified or not
-					List<EditHistoryEntity> editHistory = editHistoryRepository
+					final List<EditHistoryEntity> editHistory = this.editHistoryRepository
 							.getByPostUuidOrderByDatetimeEditedDesc(p.getUuid());
 					
 					if (!editHistory.isEmpty()) {
 						pres.setEdited(true);
-						EditHistoryEntity ec = editHistory.get(0);
+						final EditHistoryEntity ec = editHistory.get(0);
 						pres.setDatetimeCreated(ec.getDatetimeEdited());
 						if (ec.getText() != null) {
 							pres.setContent(ec.getText());
 						}
 						
 						if (ec.getSport() != null) {
-							Long spId = ec.getSport().getId();
+							final Long spId = ec.getSport().getId();
 							pres.setSportId(spId);
 						}
 					} else {
@@ -298,20 +298,20 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
             /*
 			Manage commentEntities count + last like
              */
-					Set<CommentEntity> commentEntities = new TreeSet<>();
+					final Set<CommentEntity> commentEntities = new TreeSet<>();
 					commentEntities.addAll(p.getCommentEntities());
 					pres.setCommentsCount(commentEntities.size());
 					
-					List<CommentEntity> commentsListTemp = new ArrayList<CommentEntity>();
+					final List<CommentEntity> commentsListTemp = new ArrayList<CommentEntity>();
 					commentsListTemp.addAll(commentEntities);
 					
-					List<CommentDTO> commentList = new ArrayList<CommentDTO>();
+					final List<CommentDTO> commentList = new ArrayList<CommentDTO>();
 					if (!commentsListTemp.isEmpty()) {
-						CommentEntity commentEntity = commentsListTemp.get(commentEntities.size() - 1);
+						final CommentEntity commentEntity = commentsListTemp.get(commentEntities.size() - 1);
 						
-						CommentDTO commentModelDTO = commentTransformer.modelToDto(commentEntity);
+						final CommentDTO commentModelDTO = this.commentTransformer.modelToDto(commentEntity);
 						commentModelDTO.setMyComment(commentEntity.getUser().getId().equals(userPost.getId()));
-						commentModelDTO.setLikedByUser(isContentLikedByUser(commentEntity,userPost.getId()));
+						commentModelDTO.setLikedByUser(isContentLikedByUser(commentEntity, userPost.getId()));
 						commentModelDTO.setLikeCount(commentEntity.getLikes().size());
 						
 						commentList.add(commentModelDTO);
@@ -324,21 +324,21 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
              */
 
             /*
-            manage post like + count like
+			manage post like + count like
              */
 					pres.setLikeCount(p.getLikes().size());
 					
-					boolean isPostLikedByMe = isContentLikedByUser(p,userPost.getId());
+					final boolean isPostLikedByMe = isContentLikedByUser(p, userPost.getId());
 					pres.setLikedByUser(isPostLikedByMe);
 
             /*
-            set post owner info
+			set post owner info
              */
 					pres.setFirstName(owner.getFirstName());
 					pres.setLastName(owner.getLastName());
 					pres.setUsername(owner.getUsername());
 					
-					List<ResourcesEntity> resources = new ArrayList<ResourcesEntity>();
+					final List<ResourcesEntity> resources = new ArrayList<ResourcesEntity>();
 					resources.addAll(owner.getResources());
 					
 					if (!resources.isEmpty()) {
@@ -350,14 +350,14 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 					}
 
             /*
-            Check if post has been posted on a friend profile -- default value for integer is ZERO (UUID can never be a zero)
+			Check if post has been posted on a friend profile -- default value for integer is ZERO (UUID can never be a zero)
              */
 					if (p.getTargetUserProfileUuid() != 0) {
 						
-						UserEntity target = getUserByUuId(p.getTargetUserProfileUuid());
+						final UserEntity target = getUserByUuId(p.getTargetUserProfileUuid());
 						
-						pres.setTargetUser(target.getFirstName(),target.getLastName(),target.getUsername(),
-								target.getUuid(),userPost.getId().equals(target.getId()));
+						pres.setTargetUser(target.getFirstName(), target.getLastName(), target.getUsername(),
+								target.getUuid(), userPost.getId().equals(target.getId()));
 						
 					}
 					
@@ -379,12 +379,13 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ContentEditedResponseDTO> getAllPostHistory(int id,int page)
+	public List<ContentEditedResponseDTO> getAllPostHistory(final int id, final int page)
 	{
 		
-		Pageable pageable = new PageRequest(page,postSize);
+		final Pageable pageable = new PageRequest(page, this.postSize);
 		
-		List<EditHistoryEntity> postHistory = editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(id,pageable);
+		final List<EditHistoryEntity> postHistory = this.editHistoryRepository
+				.getByPostUuidOrderByDatetimeEditedDesc(id, pageable);
 		
 		return fillEditContentResponse(postHistory);
 	}
@@ -393,19 +394,19 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<EditHistoryEntity> getLastModification(int postId)
+	public List<EditHistoryEntity> getLastModification(final int postId)
 	{
 		//        return editContentDaoService.getLastEditedPost(postId);
-		return editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(postId);
+		return this.editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(postId);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SportEntity getSportById(Long sportId)
+	public SportEntity getSportById(final Long sportId)
 	{
-		return sportRepository.getOne(sportId);
+		return this.sportRepository.getOne(sportId);
 	}
 	
 	/**
@@ -413,19 +414,19 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void editPostVisibility(int id,int visibility)
+	public void editPostVisibility(final int id, final int visibility)
 	{
 		
-		List<PostEntity> posts = postRepository.getByUuidOrderByDatetimeCreatedDesc(id,null);
+		final List<PostEntity> posts = this.postRepository.getByUuidOrderByDatetimeCreatedDesc(id, null);
 		
 		if (posts.isEmpty()) {
 			throw new EntityNotFoundException("Post Not found");
 		}
 		
-		PostEntity post = posts.get(0);
+		final PostEntity post = posts.get(0);
 		post.setVisibility(visibility);
 		
-		postRepository.save(post);
+		this.postRepository.save(post);
 		
 	}
 	
@@ -433,32 +434,35 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostEntity> findAllPosts(Long userLongId,int userIntId,List visibility,int page)
+	public List<PostEntity> findAllPosts(final Long userLongId, final int userIntId, final List visibility,
+										 final int page)
 	{
 		
-		Pageable pageable = new PageRequest(page,postSize,Sort.Direction.DESC,"datetimeCreated");
+		final Pageable pageable = new PageRequest(page, this.postSize, Sort.Direction.DESC, "datetimeCreated");
 		
-		return postRepository.getAllPosts(userIntId,userLongId,visibility,pageable);
+		return this.postRepository.getAllPosts(userIntId, userLongId, visibility, pageable);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isTargetUserFriendOfMe(int connectedUserUuid,int friendId)
+	public boolean isTargetUserFriendOfMe(final int connectedUserUuid, final int friendId)
 	{
-		return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friendId,connectedUserUuid) != null;
+		return this.friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friendId, connectedUserUuid) !=
+				null;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostDTO> getAllUserPosts(Long connectedUserId,int connectedUserUuid,int userID,int page)
+	public List<PostDTO> getAllUserPosts(final Long connectedUserId, final int connectedUserUuid, final int userID,
+										 final int page)
 	{
-		List<PostEntity> posts;
+		final List<PostEntity> posts;
 		
-		UserEntity requestUser = this.getUserByUuId(userID);
+		final UserEntity requestUser = this.getUserByUuId(userID);
 		
 		if (requestUser == null) {
 			throw new EntityNotFoundException("User (" + userID + ") not found");
@@ -466,20 +470,20 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		if (connectedUserId.equals(requestUser.getId())) {
 			//get connected user posts - visibility: 0,1,2
-			List visibility = Arrays.asList(0,1,2);
-			posts = this.findAllPosts(connectedUserId,userID,visibility,page);
-		} else if (this.isTargetUserFriendOfMe(connectedUserUuid,userID)) {
+			final List visibility = Arrays.asList(0, 1, 2);
+			posts = this.findAllPosts(connectedUserId, userID, visibility, page);
+		} else if (this.isTargetUserFriendOfMe(connectedUserUuid, userID)) {
 			//get friend posts - visibility: 0,1
-			List visibility = Arrays.asList(0,1);
-			posts = this.findAllPosts(requestUser.getId(),userID,visibility,page);
+			final List visibility = Arrays.asList(0, 1);
+			posts = this.findAllPosts(requestUser.getId(), userID, visibility, page);
 		} else {
 			//get unknown user posts - visibility: 0
-			List visibility = Collections.singletonList(0);
-			posts = this.findAllPosts(requestUser.getId(),userID,visibility,page);
+			final List visibility = Collections.singletonList(0);
+			posts = this.findAllPosts(requestUser.getId(), userID, visibility, page);
 		}
 		
-		List<PostDTO> postDTOS = new ArrayList<>();
-		posts.forEach(t -> postDTOS.add(this.fillPostToSend(t.getUuid(),connectedUserId)));
+		final List<PostDTO> postDTOS = new ArrayList<>();
+		posts.forEach(t -> postDTOS.add(this.fillPostToSend(t.getUuid(), connectedUserId)));
 		
 		return postDTOS;
 	}
@@ -488,30 +492,33 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostDTO> getAllFriendPosts(int userId,int page,Long accountUserId)
+	public List<PostDTO> getAllTimelinePosts(final int userId, final int page, final Long accountUserId)
 	{
 		
-		Pageable pageable = new PageRequest(page,postSize);
+		final Pageable pageable = new PageRequest(page, this.postSize);
 		
-		Optional<UserEntity> optional = userRepository.getByUuidAndDeletedFalse(userId);
+		final Optional<UserEntity> optional = this.userRepository.getByUuidAndDeletedFalse(userId);
 		
 		if (optional.isPresent()) {
-			List<PostEntity> postEntities = new ArrayList<>();
+			final List<PostEntity> postEntities = new ArrayList<>();
 			
 			//get recent posts from each friend
-			friendShipRepository.findByUserUuidOrFriendUuidAndDeletedFalse(userId,userId,pageable).stream()
+			this.friendShipRepository.findByUserUuidOrFriendUuidAndDeletedFalse(userId, userId, pageable).stream()
 					.filter(f -> f.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)).forEach(f -> {
 				if (f.getFriend().getUuid() != userId) {
-					postEntities.addAll(postRepository.getByUserUuid(f.getFriend().getUuid(),pageable));
+					postEntities.addAll(this.postRepository.getByUserUuid(f.getFriend().getUuid(), pageable));
 				} else if (f.getUser().getUuid() != userId) {
-					postEntities.addAll(postRepository.getByUserUuid(f.getUser().getUuid(),pageable));
+					postEntities.addAll(this.postRepository.getByUserUuid(f.getUser().getUuid(), pageable));
 					
 				}
 			});
 			
+			//add connected user posts
+			postEntities.addAll(this.postRepository.getByUserUuid(getConnectedUser().getUuid(), pageable));
+			
 			//transform posts from entities to dto, with sorting by creation date.
-			return postEntities.stream().map(p -> this.fillPostToSend(p.getUuid(),accountUserId))
-					.sorted((p1,p2) -> p2.getDatetimeCreated().compareTo(p1.getDatetimeCreated()))
+			return postEntities.stream().map(p -> this.fillPostToSend(p.getUuid(), accountUserId))
+					.sorted((p1, p2) -> p2.getDatetimeCreated().compareTo(p1.getDatetimeCreated()))
 					.collect(Collectors.toList());
 			
 		}

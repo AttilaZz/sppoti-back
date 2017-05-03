@@ -41,7 +41,7 @@ public interface PostControllerService extends AbstractControllerService
 	 *
 	 * @return true if post has been edited, false otherwise.
 	 */
-	boolean updatePost(EditHistoryEntity postEditRow,SortedSet<AddressEntity> postEditAddress,int postId);
+	boolean updatePost(EditHistoryEntity postEditRow, SortedSet<AddressEntity> postEditAddress, int postId);
 	
 	/**
 	 * @param postId
@@ -81,7 +81,7 @@ public interface PostControllerService extends AbstractControllerService
 	 *
 	 * @return all posted photos.
 	 */
-	List<PostDTO> getPhotoGallery(int userId,int page);
+	List<PostDTO> getPhotoGallery(int userId, int page);
 	
 	/**
 	 * @param userId
@@ -91,7 +91,7 @@ public interface PostControllerService extends AbstractControllerService
 	 *
 	 * @return all posted videos.
 	 */
-	List<PostDTO> getVideoGallery(int userId,int page);
+	List<PostDTO> getVideoGallery(int userId, int page);
 	
 	/**
 	 * @param postId
@@ -101,7 +101,7 @@ public interface PostControllerService extends AbstractControllerService
 	 *
 	 * @return prepare post to be sent via service.
 	 */
-	PostDTO fillPostToSend(int postId,Long userId);
+	PostDTO fillPostToSend(int postId, Long userId);
 	
 	/**
 	 * @param id
@@ -111,7 +111,7 @@ public interface PostControllerService extends AbstractControllerService
 	 *
 	 * @return list of all edited posts.
 	 */
-	List<ContentEditedResponseDTO> getAllPostHistory(int id,int page);
+	List<ContentEditedResponseDTO> getAllPostHistory(int id, int page);
 	
 	/**
 	 * @param postId
@@ -135,7 +135,7 @@ public interface PostControllerService extends AbstractControllerService
 	 * @param visibility
 	 * 		visibility type.
 	 */
-	void editPostVisibility(int id,int visibility);
+	void editPostVisibility(int id, int visibility);
 	
 	/**
 	 * @param userLongId
@@ -149,7 +149,7 @@ public interface PostControllerService extends AbstractControllerService
 	 *
 	 * @return all user posts
 	 */
-	List<PostEntity> findAllPosts(Long userLongId,int userIntId,List visibility,int page);
+	List<PostEntity> findAllPosts(Long userLongId, int userIntId, List visibility, int page);
 	
 	/**
 	 * @param connectedUserUuid
@@ -159,7 +159,7 @@ public interface PostControllerService extends AbstractControllerService
 	 *
 	 * @return true if target user is friend, false otherwise
 	 */
-	boolean isTargetUserFriendOfMe(int connectedUserUuid,int friendId);
+	boolean isTargetUserFriendOfMe(int connectedUserUuid, int friendId);
 	
 	/**
 	 * Get all friend posts.
@@ -172,7 +172,7 @@ public interface PostControllerService extends AbstractControllerService
 	 *
 	 * @return list of posts.
 	 */
-	List<PostDTO> getAllFriendPosts(int userId,int page,Long accountUserId);
+	List<PostDTO> getAllTimelinePosts(int userId, int page, Long accountUserId);
 	
 	/**
 	 * Get all user posts.
@@ -188,5 +188,5 @@ public interface PostControllerService extends AbstractControllerService
 	 *
 	 * @return list of posts.
 	 */
-	List<PostDTO> getAllUserPosts(Long connectedUserId,int connectedUserUuid,int targetUserPost,int page);
+	List<PostDTO> getAllUserPosts(Long connectedUserId, int connectedUserUuid, int targetUserPost, int page);
 }

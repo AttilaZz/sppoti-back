@@ -80,14 +80,14 @@ class PostGetController
 	/**
 	 * Get all friend posts
 	 */
-	@GetMapping("/all/friend/{userId}/{page}")
+	@GetMapping("/all/timeline/{userId}/{page}")
 	ResponseEntity<List<PostDTO>> getAllFriendPosts(@PathVariable final int userId, @PathVariable final int page,
 													final Authentication authentication)
 	{
 		
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		return new ResponseEntity<>(this.postDataService.getAllFriendPosts(userId, page, accountUserDetails.getId()),
+		return new ResponseEntity<>(this.postDataService.getAllTimelinePosts(userId, page, accountUserDetails.getId()),
 				HttpStatus.OK);
 	}
 }
