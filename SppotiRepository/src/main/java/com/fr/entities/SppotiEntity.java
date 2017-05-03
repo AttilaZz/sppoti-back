@@ -61,7 +61,7 @@ public class SppotiEntity extends AbstractCommonEntity
 	@JsonIgnore
 	private TeamEntity teamHostEntity;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sppoti", cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sppoti", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<SppotiAdverseEntity> adverseTeams = new HashSet<>();
 	
 	@OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -505,8 +505,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 							return this.teamTransformer.modelToDto(this.sppotiAdverseRepository.save(t).getTeam());
 						} else {
 							//Challenge refused -> Delete row from database.
-							this.sppotiAdverseRepository.delete(t);
-							this.sppotiAdverseRepository.flush();
+							sp.getAdverseTeams().remove(t);
+							this.sppotiRepository.save(sp);
 							return new TeamDTO();
 						}
 					}
@@ -514,8 +514,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 				//Cancel my challenge request.
 				else{
 					if (dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.REFUSED.name())) {
-						this.sppotiAdverseRepository.delete(t);
-						this.sppotiAdverseRepository.flush();
+						sp.getAdverseTeams().remove(t);
+						this.sppotiRepository.save(sp);
 						return new TeamDTO();
 					}else{
 						throw new BusinessGlobalException("Status unauthorized in the request");
