@@ -652,6 +652,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Transactional
 	@Override
 	public List<SppotiDTO> getAllPendingChallengeRequestSppoties(final int userId, final int page)
 	{
@@ -663,7 +664,20 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final List<SppotiDTO> result = new ArrayList<>();
 		
 		teamMemberEntities.stream().map(t -> this.sppotiAdverseRepository.findByTeamUuid(t.getTeam().getUuid()))
-				.forEach(k -> k.forEach(a -> this.sppotiTransformer.modelToDto(a.getSppoti())));
+				.forEach(k -> k.forEach(a -> {
+					if (GlobalAppStatusEnum.PENDING.equals(a.getStatus())) {
+						final SppotiEntity sp = a.getSppoti();
+						sp.setConnectedUserId(getConnectedUser().getId());
+						
+						final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sp);
+						
+						sppotiDTO.setTeamAdverse(
+								sppotiDTO.getTeamAdverse().stream().filter(t -> t.getId().equals(a.getTeam().getUuid()))
+										.collect(Collectors.toList()));
+						
+						result.add(sppotiDTO);
+					}
+				}));
 		
 		return result;
 	}
