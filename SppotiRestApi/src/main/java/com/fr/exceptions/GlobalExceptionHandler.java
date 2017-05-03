@@ -22,9 +22,7 @@ import javax.persistence.EntityNotFoundException;
 public class GlobalExceptionHandler
 {
 	
-	/**
-	 * Class logger.
-	 */
+	/** Class logger. */
 	private final Logger LOGGER = Logger.getLogger(GlobalExceptionHandler.class);
 	
 	/**
