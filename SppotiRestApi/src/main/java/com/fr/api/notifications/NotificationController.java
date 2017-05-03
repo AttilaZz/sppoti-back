@@ -1,6 +1,9 @@
 package com.fr.api.notifications;
 
+import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationListDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.NotificationControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by djenanewail on 2/9/17.
  */
 @RestController
-@RequestMapping("/notification/{userId}")
+@RequestMapping("/notification")
 class NotificationController
 {
 	
@@ -53,12 +56,23 @@ class NotificationController
 	 * @return 200 http status if notif were updated, 404 http status if notif not found, 500 http status otherwise.
 	 */
 	@PutMapping("/{notifId}")
-	ResponseEntity<Void> openNotification(@PathVariable final int notifId, final Authentication authentication)
+	ResponseEntity<Void> openNotification(@PathVariable final int notifId,
+										  @RequestBody final NotificationDTO notificationDTO,
+										  final Authentication authentication)
 	{
 		
 		final Long connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 		
-		this.notificationControllerService.openNotification(notifId, connectedUserId);
+		if (notificationDTO.getStatus() == null) {
+			throw new BusinessGlobalException("Notification status missing");
+		}
+		
+		if (!notificationDTO.getStatus().equals(GlobalAppStatusEnum.CLOSED) ||
+				!notificationDTO.getStatus().equals(GlobalAppStatusEnum.OPENED)) {
+			throw new BusinessGlobalException("Status not accepted.");
+		}
+		
+		this.notificationControllerService.openNotification(notifId, connectedUserId, notificationDTO);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}

@@ -33,8 +33,8 @@ public class NotificationTransformer
 	 * Init class transformers.
 	 */
 	@Autowired
-	public NotificationTransformer(TeamTransformerImpl teamTransformer,UserTransformerImpl userTransformer,
-								   SppotiTransformerImpl sppotiTransformer)
+	public NotificationTransformer(final TeamTransformerImpl teamTransformer, final UserTransformerImpl userTransformer,
+								   final SppotiTransformerImpl sppotiTransformer)
 	{
 		this.teamTransformer = teamTransformer;
 		this.userTransformer = userTransformer;
@@ -47,22 +47,22 @@ public class NotificationTransformer
 	 *
 	 * @return NotificationEntity DTO.
 	 */
-	public NotificationDTO notificationEntityToDto(NotificationEntity notification)
+	public NotificationDTO notificationEntityToDto(final NotificationEntity notification)
 	{
-		NotificationDTO notificationDTO = new NotificationDTO();
+		final NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(notification.getUuid());
 		notificationDTO.setDatetime(notification.getCreationDate());
 		notificationDTO.setFrom(notificationUserEntityToDto(notification.getFrom()));
 		notificationDTO.setTo(notificationUserEntityToDto(notification.getTo()));
 		notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
-		notificationDTO.setOpened(notification.isOpened());
+		notificationDTO.setStatus(notification.getStatus());
 		
-		Optional<TeamEntity> optionalTeam = Optional.ofNullable(notification.getTeam());
-		optionalTeam.ifPresent(t -> notificationDTO.setTeam(teamTransformer.modelToDto(notification.getTeam())));
+		final Optional<TeamEntity> optionalTeam = Optional.ofNullable(notification.getTeam());
+		optionalTeam.ifPresent(t -> notificationDTO.setTeam(this.teamTransformer.modelToDto(notification.getTeam())));
 		
-		Optional<SppotiEntity> optionalSppoti = Optional.ofNullable(notification.getSppoti());
+		final Optional<SppotiEntity> optionalSppoti = Optional.ofNullable(notification.getSppoti());
 		optionalSppoti
-				.ifPresent(t -> notificationDTO.setSppoti(sppotiTransformer.modelToDto(notification.getSppoti())));
+				.ifPresent(t -> notificationDTO.setSppoti(this.sppotiTransformer.modelToDto(notification.getSppoti())));
 		
 		return notificationDTO;
 	}
@@ -73,9 +73,10 @@ public class NotificationTransformer
 	 *
 	 * @return user DTO used in notifications.
 	 */
-	public UserDTO notificationUserEntityToDto(UserEntity userEntity)
+	public UserDTO notificationUserEntityToDto(final UserEntity userEntity)
 	{
-		UserDTO userDTO = new UserDTO(), resourceUserDto = userTransformer.getUserCoverAndAvatar(userEntity);
+		final UserDTO userDTO = new UserDTO();
+		final UserDTO resourceUserDto = this.userTransformer.getUserCoverAndAvatar(userEntity);
 		userDTO.setFirstName(userEntity.getFirstName());
 		userDTO.setLastName(userEntity.getLastName());
 		userDTO.setEmail(userDTO.getEmail());

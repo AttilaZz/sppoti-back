@@ -5,12 +5,12 @@ import com.fr.commons.dto.notification.NotificationListDTO;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.NotificationEntity;
 import com.fr.service.NotificationControllerService;
+import com.fr.transformers.impl.NotificationTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import com.fr.transformers.impl.NotificationTransformer;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -37,18 +37,18 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 	 * {@inheritDoc}
 	 */
 	@Override
-	public NotificationListDTO getAllReceivedNotifications(int userId,int page)
+	public NotificationListDTO getAllReceivedNotifications(final int userId, final int page)
 	{
 		
-		Pageable pageable = new PageRequest(page,notificationSize);
+		final Pageable pageable = new PageRequest(page, this.notificationSize);
 		
-		List<NotificationEntity> notifications = notificationRepository.findByToUuid(userId,pageable);
+		final List<NotificationEntity> notifications = this.notificationRepository.findByToUuid(userId, pageable);
 		
-		NotificationListDTO notificationListDTO = new NotificationListDTO();
+		final NotificationListDTO notificationListDTO = new NotificationListDTO();
 		notificationListDTO.setNotifications(
-				notifications.stream().map(notificationTransformer::notificationEntityToDto)
-						.collect(Collectors.toList()));
-		notificationListDTO.setNotifCounter(notificationRepository.countByToUuid(userId));
+				notifications.stream().map(this.notificationTransformer::notificationEntityToDto)
+						.sorted((t2, t1) -> t1.getDatetime().compareTo(t2.getDatetime())).collect(Collectors.toList()));
+		notificationListDTO.setNotifCounter(this.notificationRepository.countByToUuid(userId));
 		
 		return notificationListDTO;
 	}
@@ -57,7 +57,7 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<NotificationDTO> getAllSentNotifications(int userId,int page)
+	public List<NotificationDTO> getAllSentNotifications(final int userId, final int page)
 	{
 		return null;
 	}
@@ -67,17 +67,18 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 	 */
 	@Transactional
 	@Override
-	public void openNotification(int notifId,Long connectedUserId)
+	public void openNotification(final int notifId, final Long connectedUserId, final NotificationDTO notificationDTO)
 	{
-		Optional<NotificationEntity> notification = Optional.ofNullable(notificationRepository.findByUuid(notifId));
+		final Optional<NotificationEntity> notification = Optional
+				.ofNullable(this.notificationRepository.findByUuid(notifId));
 		
 		notification.ifPresent(n -> {
 			if (!n.getTo().getId().equals(connectedUserId)) {
-				throw new NotAdminException("ACCESS DENIED TO THIS SERVICE");
+				throw new NotAdminException("This is not your notification");
 			}
 			
-			n.setOpened(true);
-			notificationRepository.save(n);
+			n.setStatus(notificationDTO.getStatus());
+			this.notificationRepository.save(n);
 		});
 		
 		notification.orElseThrow(() -> new EntityNotFoundException("Notification not Found"));

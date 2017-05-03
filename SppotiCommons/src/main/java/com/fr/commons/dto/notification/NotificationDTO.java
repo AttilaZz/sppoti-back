@@ -6,6 +6,7 @@ import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import java.util.Date;
 
@@ -20,7 +21,7 @@ public class NotificationDTO extends AbstractCommonDTO
 	private UserDTO from;
 	private UserDTO to;
 	private Integer notificationType;
-	private Boolean opened;
+	private GlobalAppStatusEnum status;
 	
 	private Integer teamId;
 	private Integer sppotiId;
@@ -72,14 +73,14 @@ public class NotificationDTO extends AbstractCommonDTO
 		this.notificationType = notificationType;
 	}
 	
-	public Boolean getOpened()
+	public GlobalAppStatusEnum getStatus()
 	{
-		return this.opened;
+		return this.status;
 	}
 	
-	public void setOpened(final Boolean opened)
+	public void setStatus(final GlobalAppStatusEnum status)
 	{
-		this.opened = opened;
+		this.status = status;
 	}
 	
 	public Integer getTeamId()
