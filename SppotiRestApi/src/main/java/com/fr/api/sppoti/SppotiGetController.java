@@ -144,4 +144,25 @@ class SppotiGetController
 		
 	}
 	
+	/**
+	 * Get all sppoties where challenge has been sent and waiting for response.
+	 *
+	 * @param userId
+	 * 		user id.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return list of sppoties.
+	 */
+	@GetMapping("/all/pending/challenge/request/{userId}/{page}")
+	ResponseEntity<List<SppotiDTO>> getAllPendingChallengeRequest(@PathVariable final int userId,
+																  @PathVariable final int page)
+	{
+		
+		return new ResponseEntity<>(this.sppotiControllerService.getAllPendingChallengeRequestSppoties(userId, page),
+				HttpStatus.OK);
+		
+	}
+	
+	
 }

@@ -41,7 +41,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 *
 	 * @return all sppoties created by a user.
 	 */
-	List<SppotiDTO> getAllUserSppoties(Integer id,int page);
+	List<SppotiDTO> getAllUserSppoties(Integer id, int page);
 	
 	/**
 	 * Logical delete of a sppoti.
@@ -61,7 +61,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 *
 	 * @return sppoti DTO with updated data.
 	 */
-	SppotiDTO updateSppoti(SppotiDTO sppotiRequest,int id);
+	SppotiDTO updateSppoti(SppotiDTO sppotiRequest, int id);
 	
 	/**
 	 * ACCEPT sppoti and add notification.
@@ -73,7 +73,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @param userId
 	 * 		sppoter id.
 	 */
-	void acceptSppoti(int sppotiId,int userId);
+	void acceptSppoti(int sppotiId, int userId);
 	
 	/**
 	 * REFUSE sppoti and add notification.
@@ -85,7 +85,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @param userId
 	 * 		sppoter id.
 	 */
-	void refuseSppoti(int sppotiId,int userId);
+	void refuseSppoti(int sppotiId, int userId);
 	
 	/**
 	 * Get all sppoties that user asked to join, even those he rejects.
@@ -97,7 +97,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 *
 	 * @return all sppoties that user has joined.
 	 */
-	List<SppotiDTO> getAllJoinedSppoties(int id,int page);
+	List<SppotiDTO> getAllJoinedSppoties(int id, int page);
 	
 	/**
 	 * Check if user is the sppoti admin.
@@ -107,7 +107,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @param sppotiId
 	 * 		id of the sppoti.
 	 */
-	void isSppotiAdmin(int sppotiId,Long userId);
+	void isSppotiAdmin(int sppotiId, Long userId);
 	
 	/**
 	 * This method allow to challenge a team in a sppoti.
@@ -117,7 +117,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @param teamId
 	 * 		team id.
 	 */
-	SppotiDTO sendChallenge(int sppotiId,int teamId,Long connectedUserId);
+	SppotiDTO sendChallenge(int sppotiId, int teamId, Long connectedUserId);
 	
 	/**
 	 * rating many sppoters at a time.
@@ -127,7 +127,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @param sppotiId
 	 * 		sppoti id.
 	 */
-	List<UserDTO> rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO,int sppotiId);
+	List<UserDTO> rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, int sppotiId);
 	
 	/**
 	 * Get all confirmed sppoties.
@@ -139,7 +139,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 *
 	 * @return all confirmed sppoties.
 	 */
-	List<SppotiDTO> getAllConfirmedSppoties(int userId,int page);
+	List<SppotiDTO> getAllConfirmedSppoties(int userId, int page);
 	
 	/**
 	 * Get all refused sppoties.
@@ -151,7 +151,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 *
 	 * @return all refused sppoties.
 	 */
-	List<SppotiDTO> getAllRefusedSppoties(int userId,int page);
+	List<SppotiDTO> getAllRefusedSppoties(int userId, int page);
 	
 	/**
 	 * Add sppoter.
@@ -163,7 +163,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 *
 	 * @return sppoter data.
 	 */
-	UserDTO addSppoter(int sppotiId,UserDTO user);
+	UserDTO addSppoter(int sppotiId, UserDTO user);
 	
 	/**
 	 * Accept / Refuse a sppoti challenge.
@@ -173,7 +173,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @param teamDTO
 	 * 		team DTO containing the id of the accepted team.
 	 */
-	void chooseOneAdverseTeamFromAllRequests(int sppotiId,TeamDTO teamDTO);
+	void chooseOneAdverseTeamFromAllRequests(int sppotiId, TeamDTO teamDTO);
 	
 	/**
 	 * Get all upcoming sppoties with pagination.
@@ -185,5 +185,17 @@ public interface SppotiControllerService extends AbstractControllerService
 	 *
 	 * @return list of upcoming sppoties.
 	 */
-	List<SppotiDTO> getAllUpcomingSppoties(int userId,int page);
+	List<SppotiDTO> getAllUpcomingSppoties(int userId, int page);
+	
+	/**
+	 * Get all sppoties where i had sent a challenge request and waiting for a request.
+	 *
+	 * @param userId
+	 * 		user id.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return list of sppoties.
+	 */
+	List<SppotiDTO> getAllPendingChallengeRequestSppoties(int userId, int page);
 }

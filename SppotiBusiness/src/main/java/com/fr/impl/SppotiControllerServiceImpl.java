@@ -652,6 +652,25 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public List<SppotiDTO> getAllPendingChallengeRequestSppoties(final int userId, final int page)
+	{
+		final Pageable pageable = new PageRequest(page, this.sppotiSize);
+		
+		final List<TeamMemberEntity> teamMemberEntities = this.teamMembersRepository
+				.findByUsersUuidAndAdminTrue(userId, pageable);
+		
+		final List<SppotiDTO> result = new ArrayList<>();
+		
+		teamMemberEntities.stream().map(t -> this.sppotiAdverseRepository.findByTeamUuid(t.getTeam().getUuid()))
+				.forEach(k -> k.forEach(a -> this.sppotiTransformer.modelToDto(a.getSppoti())));
+		
+		return result;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Transactional
 	@Override
 	public UserDTO addSppoter(final int sppotiId, final UserDTO user)
