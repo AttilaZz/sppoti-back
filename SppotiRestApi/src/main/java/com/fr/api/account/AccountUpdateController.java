@@ -80,7 +80,7 @@ class AccountUpdateController
 				update = true;
 			}
 			//language
-			if (StringUtils.isEmpty(user.getLanguage())) {
+			if (StringUtils.hasText(user.getLanguage())) {
 				update = true;
 			}
 			
