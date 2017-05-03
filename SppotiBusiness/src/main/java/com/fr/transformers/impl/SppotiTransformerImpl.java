@@ -7,6 +7,7 @@ import com.fr.entities.SportEntity;
 import com.fr.entities.SppotiAdverseEntity;
 import com.fr.entities.SppotiEntity;
 import com.fr.repositories.SportRepository;
+import com.fr.repositories.UserRepository;
 import com.fr.transformers.ScoreTransformer;
 import com.fr.transformers.SppotiTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,19 +39,19 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 	private final SportTransformer sportTransformer;
 	
 	/** Team members repository. */
-	private final TeamMemberTransformer teamMemberTransformer;
+	private final UserRepository userRepository;
 	
 	/** Init dependencies. */
 	@Autowired
 	public SppotiTransformerImpl(final ScoreTransformer scoreTransformer, final SportRepository sportRepository,
 								 final TeamTransformerImpl teamTransformer, final SportTransformer sportTransformer,
-								 final TeamMemberTransformer teamMemberTransformer)
+								 final UserRepository userRepository)
 	{
 		this.scoreTransformer = scoreTransformer;
 		this.sportRepository = sportRepository;
 		this.teamTransformer = teamTransformer;
 		this.sportTransformer = sportTransformer;
-		this.teamMemberTransformer = teamMemberTransformer;
+		this.userRepository = userRepository;
 	}
 	
 	/**
@@ -91,6 +92,8 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 		SppotiBeanUtils.copyProperties(sppotiDTO, model);
 		
 		sppotiDTO.setId(model.getUuid());
+		
+		sppotiDTO.setConnectedUserId(this.userRepository.findOne(model.getConnectedUserId()).getUuid());
 		
 		if (model.getSport() != null) {
 			sppotiDTO.setRelatedSport(this.sportTransformer.modelToDto(model.getSport()));

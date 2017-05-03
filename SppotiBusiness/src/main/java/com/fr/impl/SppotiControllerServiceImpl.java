@@ -667,14 +667,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 				.forEach(k -> k.forEach(a -> {
 					if (GlobalAppStatusEnum.PENDING.equals(a.getStatus())) {
 						final SppotiEntity sp = a.getSppoti();
-						sp.setConnectedUserId(getConnectedUser().getId());
+						final UserEntity connecteUser = getConnectedUser();
+						sp.setConnectedUserId(connecteUser.getId());
 						
 						final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sp);
 						
 						sppotiDTO.setTeamAdverse(
 								sppotiDTO.getTeamAdverse().stream().filter(t -> t.getId().equals(a.getTeam().getUuid()))
 										.collect(Collectors.toList()));
-						
 						result.add(sppotiDTO);
 					}
 				}));
