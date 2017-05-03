@@ -25,36 +25,31 @@ import java.util.stream.Collectors;
 public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, SppotiEntity> implements SppotiTransformer
 {
 	
-	/**
-	 * Score transformer.
-	 */
+	/** Score transformer. */
 	private final ScoreTransformer scoreTransformer;
 	
-	/**
-	 * Sport repository.
-	 */
+	/** Sport repository. */
 	private final SportRepository sportRepository;
 	
-	/**
-	 * Team repository.
-	 */
+	/** Team repository. */
 	private final TeamTransformerImpl teamTransformer;
 	
-	/**
-	 * Team members repository.
-	 */
+	/** Sport transformer. */
+	private final SportTransformer sportTransformer;
+	
+	/** Team members repository. */
 	private final TeamMemberTransformer teamMemberTransformer;
 	
-	/**
-	 * Init dependencies.
-	 */
+	/** Init dependencies. */
 	@Autowired
-	public SppotiTransformerImpl(ScoreTransformer scoreTransformer,SportRepository sportRepository,
-								 TeamTransformerImpl teamTransformer,TeamMemberTransformer teamMemberTransformer)
+	public SppotiTransformerImpl(final ScoreTransformer scoreTransformer, final SportRepository sportRepository,
+								 final TeamTransformerImpl teamTransformer, final SportTransformer sportTransformer,
+								 final TeamMemberTransformer teamMemberTransformer)
 	{
 		this.scoreTransformer = scoreTransformer;
 		this.sportRepository = sportRepository;
 		this.teamTransformer = teamTransformer;
+		this.sportTransformer = sportTransformer;
 		this.teamMemberTransformer = teamMemberTransformer;
 	}
 	
@@ -62,13 +57,13 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SppotiEntity dtoToModel(SppotiDTO dto)
+	public SppotiEntity dtoToModel(final SppotiDTO dto)
 	{
-		SppotiEntity entity = new SppotiEntity();
-		SppotiBeanUtils.copyProperties(entity,dto);
+		final SppotiEntity entity = new SppotiEntity();
+		SppotiBeanUtils.copyProperties(entity, dto);
 		
 		//Sppoti Sport
-		SportEntity sportEntity = sportRepository.findOne(dto.getSportId());
+		final SportEntity sportEntity = this.sportRepository.findOne(dto.getSportId());
 		if (sportEntity == null) {
 			throw new EntityNotFoundException("SportEntity id is incorrect");
 		}
@@ -90,19 +85,23 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SppotiDTO modelToDto(SppotiEntity model)
+	public SppotiDTO modelToDto(final SppotiEntity model)
 	{
-		SppotiDTO sppotiDTO = new SppotiDTO();
-		SppotiBeanUtils.copyProperties(sppotiDTO,model);
+		final SppotiDTO sppotiDTO = new SppotiDTO();
+		SppotiBeanUtils.copyProperties(sppotiDTO, model);
 		
 		sppotiDTO.setId(model.getUuid());
 		
+		if (model.getSport() != null) {
+			sppotiDTO.setRelatedSport(this.sportTransformer.modelToDto(model.getSport()));
+		}
+		
 		if (model.getScoreEntity() != null) {
-			sppotiDTO.setScore(scoreTransformer.modelToDto(model.getScoreEntity()));
+			sppotiDTO.setScore(this.scoreTransformer.modelToDto(model.getScoreEntity()));
 		}
 		
 		if (model.getTeamHostEntity() != null) {
-			sppotiDTO.setTeamHost(teamTransformer.modelToDto(model.getTeamHostEntity()));
+			sppotiDTO.setTeamHost(this.teamTransformer.modelToDto(model.getTeamHostEntity()));
 		}
 		
 		if (model.getAdverseTeams() != null) {
@@ -110,7 +109,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 			//connected user is one of the adverse teams.
 			//connected user is member of one of the adverse teams.
 			
-			Predicate<SppotiAdverseEntity> dtoPredicate = t ->
+			final Predicate<SppotiAdverseEntity> dtoPredicate = t ->
 					model.getConnectedUserId().equals(model.getUserSppoti().getId()) ||
 							(!model.getConnectedUserId().equals(model.getUserSppoti().getId()) &&
 									t.getTeam().getTeamMembers().stream()
@@ -118,7 +117,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 			
 			sppotiDTO.setTeamAdverse(model.getAdverseTeams().stream().filter(dtoPredicate).map(t -> {
 				t.getTeam().setRelatedSppotiId(model.getId());
-				TeamDTO dto = teamTransformer.modelToDto(t.getTeam());
+				TeamDTO dto = this.teamTransformer.modelToDto(t.getTeam());
 				dto.setTeamAdverseStatus(t.getStatus().name());
 				dto.setSentFromSppotiAdmin(t.getFromSppotiAdmin());
 				return dto;
