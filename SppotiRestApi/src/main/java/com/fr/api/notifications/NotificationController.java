@@ -31,18 +31,18 @@ class NotificationController
 	}
 	
 	/**
-	 * @param userId
-	 * 		user id.
 	 * @param page
 	 * 		number.
 	 *
 	 * @return all unread user notifications.
 	 */
 	@GetMapping("/{page}")
-	ResponseEntity<NotificationListDTO> getAllUserNotifications(@PathVariable final int userId,
-																@PathVariable final int page)
+	ResponseEntity<NotificationListDTO> getAllUserNotifications(@PathVariable final int page,
+																Authentication authentication)
 	{
-		
+
+		int userId = ( (AccountUserDetails) authentication.getPrincipal()).getUuid();
+
 		final NotificationListDTO notificationListDTO = this.notificationControllerService
 				.getAllReceivedNotifications(userId, page);
 		
