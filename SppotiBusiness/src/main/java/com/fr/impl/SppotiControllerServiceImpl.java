@@ -441,6 +441,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	@Transactional
 	@Override
+	//TODO: delete row on challenge refuse
 	public void chooseOneAdverseTeamFromAllRequests(final int sppotiId, final TeamDTO teamDTO)
 	{
 		
