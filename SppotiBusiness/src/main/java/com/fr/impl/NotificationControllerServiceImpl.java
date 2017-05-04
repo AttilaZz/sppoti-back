@@ -67,7 +67,8 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 	 */
 	@Transactional
 	@Override
-	public void openNotification(final int notifId, final Long connectedUserId, final NotificationDTO notificationDTO)
+	public void switchNotificationStatus(final int notifId, final Long connectedUserId,
+										 final NotificationDTO notificationDTO)
 	{
 		final Optional<NotificationEntity> notification = Optional
 				.ofNullable(this.notificationRepository.findByUuid(notifId));

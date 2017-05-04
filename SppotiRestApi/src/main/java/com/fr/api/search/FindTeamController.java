@@ -23,6 +23,7 @@ class FindTeamController
 	/** Team search types. */
 	private static final int MY_TEAM_SEARCH = 1;
 	private static final int ALL_TEAM_SEARCH = 0;
+	private static final int ALL_ADVERSE_TEAM_SEARCH = 2;
 	
 	/**
 	 * Team controller service.
@@ -84,7 +85,16 @@ class FindTeamController
 											   @PathVariable final Long sport)
 	{
 		
-		return new ResponseEntity<>(this.teamControllerService.findAllTeamsBySport(team, sport, page), HttpStatus.OK);
+		return new ResponseEntity<>(this.teamControllerService.findAllMyTeamsBySport(team, sport, page), HttpStatus.OK);
+	}
+	
+	@GetMapping("/" + ALL_ADVERSE_TEAM_SEARCH + "/{sppotiId}/{team}/{page}")
+	ResponseEntity<List<TeamDTO>> findAllAdverseTeamss(@PathVariable final String team,
+													   @PathVariable final int sppotiId, @PathVariable final int page)
+	{
+		
+		return new ResponseEntity<>(this.teamControllerService.findAllAdverseTeams(sppotiId, team, page),
+				HttpStatus.OK);
 	}
 	
 }

@@ -22,8 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -318,35 +320,6 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public List<TeamDTO> findAllTeams(final String team, final int page)
-	{
-		final Pageable pageable = new PageRequest(page, this.teamPageSize);
-		
-		final List<TeamEntity> myTeams = this.teamRepository.findByNameContaining(team, pageable);
-		
-		return myTeams.stream().map(t -> fillTeamResponse(t, null))
-				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<TeamDTO> findAllTeamsBySport(final String team, final Long sport, final int page)
-	{
-		final Pageable pageable = new PageRequest(page, this.teamPageSize);
-		
-		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
-				.findByTeamSportIdAndUsersUuidAndTeamNameContaining(sport, getConnectedUser().getUuid(), team,
-						pageable);
-		
-		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null)).collect(Collectors.toList());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
 	@Transactional
 	@Override
 	public TeamDTO updateTeam(final int connectedUserId, final TeamDTO TeamDTO)
@@ -379,7 +352,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		return this.teamTransformer.modelToDto(this.teamRepository.save(teamEntity));
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -387,11 +360,11 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public void updateTeamCaptain(final int teamId, final int memberId, final int connectedUserId)
 	{
-
+		
 		checkTeamAdminAccess(teamId, connectedUserId);
-
+		
 		final List<TeamMemberEntity> teamMemberEntity = this.teamMembersRepository.findByTeamUuid(teamId);
-
+		
 		teamMemberEntity.forEach(t -> {
 			if (t.getUuid() == memberId || t.getUsers().getUuid() == memberId) {
 				t.setTeamCaptain(true);
@@ -400,9 +373,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			}
 		});
 		this.teamMembersRepository.save(teamMemberEntity);
-
+		
 	}
-
+	
 	/**
 	 * Allow access only for team admin.
 	 *
@@ -417,7 +390,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			throw new NotAdminException("You must be the team admin to access this service");
 		}
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -425,7 +398,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public List<TeamDTO> getAllJoinedTeamsByUserId(final int userId, final int page)
 	{
 		final Pageable pageable = new PageRequest(page, this.teamPageSize);
-
+		
 		final Predicate<TeamMemberEntity> filter;
 		if (getConnectedUser().getUuid() == userId) {
 			filter = t -> t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name()) ||
@@ -434,12 +407,12 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		} else {
 			filter = t -> t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name());
 		}
-
+		
 		return this.teamMembersRepository.findByUsersUuidAndAdminFalse(userId, pageable).stream().filter(filter)
 				.map(t -> this.teamTransformer.modelToDto(t.getTeam()))
 				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -447,14 +420,14 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public List<TeamDTO> getAllDeletedTeamsByUserId(final int userId, final int page)
 	{
 		final Pageable pageable = new PageRequest(page, this.teamPageSize);
-
+		
 		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
 				.findByUsersUuidAndTeamDeletedFalse(getConnectedUser().getUuid(), pageable);
-
+		
 		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null))
 				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -462,11 +435,11 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public TeamDTO requestToSppotiAdminChallenge(final SppotiDTO dto, final int teamId)
 	{
-
+		
 		checkTeamAdminAccess(teamId, getConnectedUser().getUuid());
-
+		
 		final Optional<SppotiEntity> optional = Optional.ofNullable(this.sppotiRepository.findByUuid(dto.getId()));
-
+		
 		if (optional.isPresent()) {
 			final SppotiEntity sp = optional.get();
 			//Check if sppoti has already a CONFIRMED adverse team in the adverse team list.
@@ -474,23 +447,23 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 					sp.getAdverseTeams().stream().anyMatch(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
 				throw new BusinessGlobalException("This sppoti has already an adverse team");
 			}
-
+			
 			//Check if team exists.
 			final TeamEntity team = getTeamEntityIfExist(teamId);
-
+			
 			//Check if team is not already accepted as challenger of this sppoti.
 			final Optional<SppotiAdverseEntity> sppotiAdverseEntityOptional = sp.getAdverseTeams().stream()
 					.filter(t -> t.getTeam().getId().equals(team.getId())).findAny();
-
+			
 			//Team not found in sppoti adverse team list.
 			sppotiAdverseEntityOptional
 					.orElseThrow(() -> new BusinessGlobalException("This team has no challenge to respond."));
-
+			
 			//Team found in awaiting list.
 			if (sppotiAdverseEntityOptional.isPresent()) {
 				final SppotiAdverseEntity t = sppotiAdverseEntityOptional.get();
 				//answer to sppoti admin challenge request
-				if(t.getFromSppotiAdmin().equals(Boolean.TRUE)){
+				if (t.getFromSppotiAdmin().equals(Boolean.TRUE)) {
 					//Team already CONFIRMED.
 					if (t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
 						throw new BusinessGlobalException("This team is already selected to challenge the host team");
@@ -512,21 +485,21 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 					}
 				}
 				//Cancel my challenge request.
-				else{
+				else {
 					if (dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.REFUSED.name())) {
 						sp.getAdverseTeams().remove(t);
 						this.sppotiRepository.save(sp);
 						return new TeamDTO();
-					}else{
+					} else {
 						throw new BusinessGlobalException("Status unauthorized in the request");
 					}
 				}
 			}
 		}
-
+		
 		throw new EntityNotFoundException("Sppoti id (" + dto.getId() + ") not found");
 	}
-
+	
 	private TeamEntity getTeamEntityIfExist(final int teamId)
 	{
 		//Check if team exists.
@@ -564,6 +537,37 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
+	public List<TeamDTO> findAllAdverseTeams(final int sppotiId, final String team, final int page)
+	{
+		final Optional<SppotiEntity> sppotiEntity = Optional.ofNullable(this.sppotiRepository.findByUuid(sppotiId));
+		
+		if (sppotiEntity.isPresent()) {
+			//Test that connected user is sppoti admin
+			
+			//filter all teams with adverse teams.
+			final Set<SppotiAdverseEntity> sppotiAdverseEntities = sppotiEntity.get().getAdverseTeams();
+			
+			final List<TeamDTO> teams = this.findAllTeamsBySport(team, sppotiEntity.get().getSport().getId(), page);
+			final List<TeamDTO> result = new ArrayList<>();
+			result.addAll(teams);
+			
+			teams.forEach(t -> sppotiAdverseEntities.forEach(a -> {
+				if (t.getId().equals(a.getTeam().getUuid()) ||
+						t.getId().equals(sppotiEntity.get().getTeamHostEntity().getUuid())) {
+					result.remove(t);
+				}
+			}));
+			
+			return result;
+		}
+		
+		throw new EntityNotFoundException("Sppoti not found");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public List<TeamDTO> findAllMyTeams(final String team, final int page)
 	{
 		final Pageable pageable = new PageRequest(page, this.teamPageSize);
@@ -574,5 +578,47 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null))
 				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<TeamDTO> findAllTeams(final String team, final int page)
+	{
+		final Pageable pageable = new PageRequest(page, this.teamPageSize);
+		
+		final List<TeamEntity> myTeams = this.teamRepository.findByNameContaining(team, pageable);
+		
+		return myTeams.stream().map(t -> fillTeamResponse(t, null))
+				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<TeamDTO> findAllMyTeamsBySport(final String team, final Long sport, final int page)
+	{
+		final Pageable pageable = new PageRequest(page, this.teamPageSize);
+		
+		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
+				.findByTeamSportIdAndUsersUuidAndTeamNameContaining(sport, getConnectedUser().getUuid(), team,
+						pageable);
+		
+		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null)).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Find all teams by name prefix and sport.
+	 */
+	private List<TeamDTO> findAllTeamsBySport(final String team, final Long sport, final int page)
+	{
+		final Pageable pageable = new PageRequest(page, this.teamPageSize);
+		
+		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
+				.findByTeamSportIdAndTeamNameContaining(sport, team, pageable);
+		
+		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null)).collect(Collectors.toList());
 	}
 }

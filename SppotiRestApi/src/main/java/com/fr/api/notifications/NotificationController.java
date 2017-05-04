@@ -38,11 +38,11 @@ class NotificationController
 	 */
 	@GetMapping("/{page}")
 	ResponseEntity<NotificationListDTO> getAllUserNotifications(@PathVariable final int page,
-																Authentication authentication)
+																final Authentication authentication)
 	{
-
-		int userId = ( (AccountUserDetails) authentication.getPrincipal()).getUuid();
-
+		
+		final int userId = ((AccountUserDetails) authentication.getPrincipal()).getUuid();
+		
 		final NotificationListDTO notificationListDTO = this.notificationControllerService
 				.getAllReceivedNotifications(userId, page);
 		
@@ -72,7 +72,7 @@ class NotificationController
 			throw new BusinessGlobalException("Status not accepted.");
 		}
 		
-		this.notificationControllerService.openNotification(notifId, connectedUserId, notificationDTO);
+		this.notificationControllerService.switchNotificationStatus(notifId, connectedUserId, notificationDTO);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
