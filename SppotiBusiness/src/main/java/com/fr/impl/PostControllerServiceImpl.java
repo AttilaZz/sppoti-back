@@ -381,8 +381,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public List<ContentEditedResponseDTO> getAllPostHistory(final int id, final int page)
 	{
-		
-		final Pageable pageable = new PageRequest(page, this.postSize);
+		final Pageable pageable = new PageRequest(page, this.postSize, Sort.Direction.DESC, "datetimeEdited");
 		
 		final List<EditHistoryEntity> postHistory = this.editHistoryRepository
 				.getByPostUuidOrderByDatetimeEditedDesc(id, pageable);
@@ -495,7 +494,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public List<PostDTO> getAllTimelinePosts(final int userId, final int page, final Long accountUserId)
 	{
 		
-		final Pageable pageable = new PageRequest(page, this.postSize);
+		final Pageable pageable = new PageRequest(page, this.postSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		final Optional<UserEntity> optional = this.userRepository.getByUuidAndDeletedFalse(userId);
 		

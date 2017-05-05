@@ -45,7 +45,7 @@ public class ContactMailer extends ApplicationMailer
 	 */
 	public void sendContactEmail(final ContactDTO contactDTO)
 	{
-		this.prepareAndSendEmail(contactDTO, this.emailContactSubject, this.emailContact);
+		this.prepareAndSendEmail(contactDTO, this.emailContactSubject, this.emailContact, null);
 	}
 	
 	/**
@@ -56,7 +56,8 @@ public class ContactMailer extends ApplicationMailer
 	 * @param subject
 	 * 		email subject.
 	 */
-	public void prepareAndSendEmail(final ContactDTO contactDTO, final String subject, final String emailContact)
+	public void prepareAndSendEmail(final ContactDTO contactDTO, final String subject, final String emailContact,
+									final ResourceContent resourceContent)
 	{
 		
 		final Context context = new Context();
@@ -68,7 +69,7 @@ public class ContactMailer extends ApplicationMailer
 		final String text = this.templateEngine.process(PATH_TO_CONTACT_TEMPLATE, context);
 		
 		
-		super.prepareAndSendEmail(emailContact, subject, text);
+		super.prepareAndSendEmail(emailContact, subject, text, resourceContent);
 		
 	}
 }

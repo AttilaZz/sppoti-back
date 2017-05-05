@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -145,12 +146,11 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public List<TeamDTO> getAllTeamsByUserId(final int userId, final int page)
 	{
 		
-		final Pageable pageable = new PageRequest(page, this.teamPageSize);
+		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<TeamMemberEntity> myTeams = this.teamMembersRepository.findByUsersUuidAndAdminTrue(userId, pageable);
 		
-		return myTeams.stream().map(team -> fillTeamResponse(team.getTeam(), null))
-				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
+		return myTeams.stream().map(team -> fillTeamResponse(team.getTeam(), null)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -397,7 +397,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public List<TeamDTO> getAllJoinedTeamsByUserId(final int userId, final int page)
 	{
-		final Pageable pageable = new PageRequest(page, this.teamPageSize);
+		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
 		
 		final Predicate<TeamMemberEntity> filter;
 		if (getConnectedUser().getUuid() == userId) {
@@ -409,8 +409,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		}
 		
 		return this.teamMembersRepository.findByUsersUuidAndAdminFalse(userId, pageable).stream().filter(filter)
-				.map(t -> this.teamTransformer.modelToDto(t.getTeam()))
-				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
+				.map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -419,13 +418,12 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public List<TeamDTO> getAllDeletedTeamsByUserId(final int userId, final int page)
 	{
-		final Pageable pageable = new PageRequest(page, this.teamPageSize);
+		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
 				.findByUsersUuidAndTeamDeletedFalse(getConnectedUser().getUuid(), pageable);
 		
-		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null))
-				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
+		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -500,6 +498,12 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		throw new EntityNotFoundException("Sppoti id (" + dto.getId() + ") not found");
 	}
 	
+	/**
+	 * @param teamId
+	 * 		team id.
+	 *
+	 * @return team entity if exist.
+	 */
 	private TeamEntity getTeamEntityIfExist(final int teamId)
 	{
 		//Check if team exists.
@@ -527,9 +531,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 				.findByTeamUuidAndFromSppotiAdminTrue(teamId);
 		
 		return sppotiAdverseEntities.stream().filter(v -> v.getStatus().equals(GlobalAppStatusEnum.PENDING))
-				.map(ad -> this.sppotiTransformer.modelToDto(ad.getSppoti()))
-				.sorted((u1, u2) -> u2.getDatetimeCreated().compareTo(u1.getDatetimeCreated()))
-				.collect(Collectors.toList());
+				.map(ad -> this.sppotiTransformer.modelToDto(ad.getSppoti())).collect(Collectors.toList());
 		
 	}
 	
@@ -570,13 +572,12 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public List<TeamDTO> findAllMyTeams(final String team, final int page)
 	{
-		final Pageable pageable = new PageRequest(page, this.teamPageSize);
+		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
 				.findByUsersUuidAndTeamNameContaining(getConnectedUser().getUuid(), team, pageable);
 		
-		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null))
-				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
+		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null)).collect(Collectors.toList());
 		
 	}
 	
@@ -590,8 +591,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		final List<TeamEntity> myTeams = this.teamRepository.findByNameContaining(team, pageable);
 		
-		return myTeams.stream().map(t -> fillTeamResponse(t, null))
-				.sorted((t2, t1) -> t1.getCreationDate().compareTo(t2.getCreationDate())).collect(Collectors.toList());
+		return myTeams.stream().map(t -> fillTeamResponse(t, null)).collect(Collectors.toList());
 	}
 	
 	/**

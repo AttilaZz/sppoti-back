@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -362,15 +363,13 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	public List<SppotiDTO> getAllUserSppoties(final Integer id, final int page)
 	{
 		
-		final Pageable pageable = new PageRequest(page, this.sppotiSize);
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		final List<SppotiEntity> sppoties = this.sppotiRepository.findByUserSppotiUuid(id, pageable);
 		
 		return sppoties.stream()
 				//.filter(s -> !s.getTeamAdverseStatusEnum().equals(GlobalAppStatusEnum.REFUSED))
-				.map(this::getSppotiResponse)
-				.sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
-				.collect(Collectors.toList());
+				.map(this::getSppotiResponse).collect(Collectors.toList());
 		
 	}
 	
@@ -578,15 +577,13 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		CheckConnectedUserAccessPrivileges(userId);
 		
-		final Pageable pageable = new PageRequest(page, this.sppotiSize);
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		final List<SppoterEntity> sppotiMembers = this.sppotiMembersRepository
 				.findByTeamMemberUsersUuid(userId, pageable);
 		
 		return sppotiMembers.stream().filter(s -> s.getSppoti().getUserSppoti().getUuid() != userId)
-				.map(s -> getSppotiResponse(s.getSppoti()))
-				.sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
-				.collect(Collectors.toList());
+				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -599,13 +596,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		CheckConnectedUserAccessPrivileges(userId);
 		
-		final Pageable pageable = new PageRequest(page, this.sppotiSize);
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		return this.sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable).stream()
 				.filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
-				.map(s -> getSppotiResponse(s.getSppoti()))
-				.sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
-				.collect(Collectors.toList());
+				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -618,13 +613,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		CheckConnectedUserAccessPrivileges(userId);
 		
-		final Pageable pageable = new PageRequest(page, this.sppotiSize);
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		return this.sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable).stream()
 				.filter(m -> m.getStatus().equals(GlobalAppStatusEnum.REFUSED))
-				.map(s -> getSppotiResponse(s.getSppoti()))
-				.sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
-				.collect(Collectors.toList());
+				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -636,7 +629,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		CheckConnectedUserAccessPrivileges(userId);
 		
-		final Pageable pageable = new PageRequest(page, this.sppotiSize);
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		return this.sppotiRepository.findByUserSppotiUuid(userId, pageable).stream().filter(s ->
 				s.getAdverseTeams().stream().anyMatch(
@@ -645,9 +638,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 										t.getTeam().getTeamMembers().stream().anyMatch(
 												am -> Integer.compare(am.getUsers().getUuid(), userId) == 0))) ||
 						s.getTeamHostEntity().getTeamMembers().stream().anyMatch(t -> t.getUsers().getUuid() == userId))
-				.map(this.sppotiTransformer::modelToDto)
-				.sorted((t2, t1) -> t1.getDatetimeCreated().compareTo(t2.getDatetimeCreated()))
-				.collect(Collectors.toList());
+				.map(this.sppotiTransformer::modelToDto).collect(Collectors.toList());
 	}
 	
 	/**
@@ -657,7 +648,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	@Override
 	public List<SppotiDTO> getAllPendingChallengeRequestSppoties(final int userId, final int page)
 	{
-		final Pageable pageable = new PageRequest(page, this.sppotiSize);
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		final List<TeamMemberEntity> teamMemberEntities = this.teamMembersRepository
 				.findByUsersUuidAndAdminTrue(userId, pageable);
