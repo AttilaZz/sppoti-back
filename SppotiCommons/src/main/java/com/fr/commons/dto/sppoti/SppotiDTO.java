@@ -22,7 +22,6 @@ public class SppotiDTO extends AbstractCommonDTO
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
 	private Date datetimeCreated;
 	
-	private Integer maxMembersCount;
 	private String cover;
 	@JsonProperty("sport")
 	private SportDTO relatedSport;
@@ -64,254 +63,196 @@ public class SppotiDTO extends AbstractCommonDTO
 	private String tags;
 	
 	private String teamAdverseStatus;
-	
-	public Date getDatetimeCreated()
-	{
-		return this.datetimeCreated;
+
+	public Date getDatetimeCreated() {
+		return datetimeCreated;
 	}
-	
-	public void setDatetimeCreated(final Date datetimeCreated)
-	{
+
+	public void setDatetimeCreated(Date datetimeCreated) {
 		this.datetimeCreated = datetimeCreated;
 	}
-	
-	public Integer getMaxMembersCount()
-	{
-		return this.maxMembersCount;
+
+	public String getCover() {
+		return cover;
 	}
-	
-	public void setMaxMembersCount(final Integer maxMembersCount)
-	{
-		this.maxMembersCount = maxMembersCount;
-	}
-	
-	public String getCover()
-	{
-		return this.cover;
-	}
-	
-	public void setCover(final String cover)
-	{
+
+	public void setCover(String cover) {
 		this.cover = cover;
 	}
-	
-	public SportDTO getRelatedSport()
-	{
-		return this.relatedSport;
+
+	public SportDTO getRelatedSport() {
+		return relatedSport;
 	}
-	
-	public void setRelatedSport(final SportDTO relatedSport)
-	{
+
+	public void setRelatedSport(SportDTO relatedSport) {
 		this.relatedSport = relatedSport;
 	}
-	
-	public TeamDTO getTeamHost()
-	{
-		return this.teamHost;
+
+	public TeamDTO getTeamHost() {
+		return teamHost;
 	}
-	
-	public void setTeamHost(final TeamDTO teamHost)
-	{
+
+	public void setTeamHost(TeamDTO teamHost) {
 		this.teamHost = teamHost;
 	}
-	
-	public List<TeamDTO> getTeamAdverse()
-	{
-		return this.teamAdverse;
+
+	public Integer getSppotiCounter() {
+		return sppotiCounter;
 	}
-	
-	public void setTeamAdverse(final List<TeamDTO> teamAdverse)
-	{
-		this.teamAdverse = teamAdverse;
-	}
-	
-	public Integer getSppotiCounter()
-	{
-		return this.sppotiCounter;
-	}
-	
-	public void setSppotiCounter(final Integer sppotiCounter)
-	{
+
+	public void setSppotiCounter(Integer sppotiCounter) {
 		this.sppotiCounter = sppotiCounter;
 	}
-	
-	public Boolean getMySppoti()
-	{
-		return this.mySppoti;
+
+	public Boolean getMySppoti() {
+		return mySppoti;
 	}
-	
-	public void setMySppoti(final Boolean mySppoti)
-	{
+
+	public void setMySppoti(Boolean mySppoti) {
 		this.mySppoti = mySppoti;
 	}
-	
-	public Integer getAdminUserId()
-	{
-		return this.adminUserId;
+
+	public Integer getAdminUserId() {
+		return adminUserId;
 	}
-	
-	public void setAdminUserId(final Integer adminUserId)
-	{
+
+	public void setAdminUserId(Integer adminUserId) {
 		this.adminUserId = adminUserId;
 	}
-	
-	public Integer getAdminTeamId()
-	{
-		return this.adminTeamId;
+
+	public Integer getAdminTeamId() {
+		return adminTeamId;
 	}
-	
-	public void setAdminTeamId(final Integer adminTeamId)
-	{
+
+	public void setAdminTeamId(Integer adminTeamId) {
 		this.adminTeamId = adminTeamId;
 	}
-	
-	public Integer getConnectedUserId()
-	{
-		return this.connectedUserId;
+
+	public Integer getConnectedUserId() {
+		return connectedUserId;
 	}
-	
-	public void setConnectedUserId(final Integer connectedUserId)
-	{
+
+	public void setConnectedUserId(Integer connectedUserId) {
 		this.connectedUserId = connectedUserId;
 	}
-	
-	public Long getSppotiDuration()
-	{
-		return this.sppotiDuration;
+
+	public Long getSppotiDuration() {
+		return sppotiDuration;
 	}
-	
-	public void setSppotiDuration(final Long sppotiDuration)
-	{
+
+	public void setSppotiDuration(Long sppotiDuration) {
 		this.sppotiDuration = sppotiDuration;
 	}
-	
-	public ScoreDTO getScore()
-	{
-		return this.score;
+
+	public ScoreDTO getScore() {
+		return score;
 	}
-	
-	public void setScore(final ScoreDTO score)
-	{
+
+	public void setScore(ScoreDTO score) {
 		this.score = score;
 	}
-	
-	public String getName()
-	{
-		return this.name;
+
+	public List<TeamDTO> getTeamAdverse() {
+		return teamAdverse;
 	}
-	
-	public void setName(final String name)
-	{
+
+	public void setTeamAdverse(List<TeamDTO> teamAdverse) {
+		this.teamAdverse = teamAdverse;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public Long getSportId()
-	{
-		return this.sportId;
+
+	public Long getSportId() {
+		return sportId;
 	}
-	
-	public void setSportId(final Long sportId)
-	{
+
+	public void setSportId(Long sportId) {
 		this.sportId = sportId;
 	}
-	
-	public String getDescription()
-	{
-		return this.description;
+
+	public String getDescription() {
+		return description;
 	}
-	
-	public void setDescription(final String description)
-	{
+
+	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	public Date getDateTimeStart()
-	{
-		return this.dateTimeStart;
+
+	public Date getDateTimeStart() {
+		return dateTimeStart;
 	}
-	
-	public void setDateTimeStart(final Date dateTimeStart)
-	{
+
+	public void setDateTimeStart(Date dateTimeStart) {
 		this.dateTimeStart = dateTimeStart;
 	}
-	
-	public Integer getMyTeamId()
-	{
-		return this.myTeamId;
+
+	public Integer getMyTeamId() {
+		return myTeamId;
 	}
-	
-	public void setMyTeamId(final Integer myTeamId)
-	{
+
+	public void setMyTeamId(Integer myTeamId) {
 		this.myTeamId = myTeamId;
 	}
-	
-	public Integer getVsTeam()
-	{
-		return this.vsTeam;
+
+	public Integer getVsTeam() {
+		return vsTeam;
 	}
-	
-	public void setVsTeam(final Integer vsTeam)
-	{
+
+	public void setVsTeam(Integer vsTeam) {
 		this.vsTeam = vsTeam;
 	}
-	
-	public String getLocation()
-	{
-		return this.location;
+
+	public String getLocation() {
+		return location;
 	}
-	
-	public void setLocation(final String location)
-	{
+
+	public void setLocation(String location) {
 		this.location = location;
 	}
-	
-	public Long getAltitude()
-	{
-		return this.altitude;
+
+	public Long getAltitude() {
+		return altitude;
 	}
-	
-	public void setAltitude(final Long altitude)
-	{
+
+	public void setAltitude(Long altitude) {
 		this.altitude = altitude;
 	}
-	
-	public Long getLongitude()
-	{
-		return this.longitude;
+
+	public Long getLongitude() {
+		return longitude;
 	}
-	
-	public void setLongitude(final Long longitude)
-	{
+
+	public void setLongitude(Long longitude) {
 		this.longitude = longitude;
 	}
-	
-	public Integer getMaxTeamCount()
-	{
-		return this.maxTeamCount;
+
+	public Integer getMaxTeamCount() {
+		return maxTeamCount;
 	}
-	
-	public void setMaxTeamCount(final Integer maxTeamCount)
-	{
+
+	public void setMaxTeamCount(Integer maxTeamCount) {
 		this.maxTeamCount = maxTeamCount;
 	}
-	
-	public String getTags()
-	{
-		return this.tags;
+
+	public String getTags() {
+		return tags;
 	}
-	
-	public void setTags(final String tags)
-	{
+
+	public void setTags(String tags) {
 		this.tags = tags;
 	}
-	
-	public String getTeamAdverseStatus()
-	{
-		return this.teamAdverseStatus;
+
+	public String getTeamAdverseStatus() {
+		return teamAdverseStatus;
 	}
-	
-	public void setTeamAdverseStatus(final String teamAdverseStatus)
-	{
+
+	public void setTeamAdverseStatus(String teamAdverseStatus) {
 		this.teamAdverseStatus = teamAdverseStatus;
 	}
 }

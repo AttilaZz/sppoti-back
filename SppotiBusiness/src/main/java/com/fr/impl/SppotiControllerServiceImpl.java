@@ -245,11 +245,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			sppoti.setLocation(sppotiRequest.getLocation());
 		}
 		
-		if (sppotiRequest.getMaxMembersCount() != null && sppotiRequest.getMaxTeamCount() != 0) {
+		if (sppotiRequest.getMaxTeamCount() != null && sppotiRequest.getMaxTeamCount() != 0) {
 			sppoti.setMaxTeamCount(sppotiRequest.getMaxTeamCount());
 		}
 		
-		if (sppotiRequest.getVsTeam() != 0) {
+		if (sppotiRequest.getVsTeam() != null && sppotiRequest.getVsTeam() != 0) {
 			final List<TeamEntity> adverseTeam = this.teamRepository.findByUuid(sppotiRequest.getVsTeam());
 			
 			//check if adverse team exist

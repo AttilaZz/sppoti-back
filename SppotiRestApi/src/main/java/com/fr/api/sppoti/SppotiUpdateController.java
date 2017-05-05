@@ -71,18 +71,18 @@ class SppotiUpdateController
 			canUpdate = true;
 		}
 		
-		if (sppotiRequest.getVsTeam() != 0) {
+		if (sppotiRequest.getVsTeam() != null && sppotiRequest.getVsTeam() != 0) {
 			canUpdate = true;
 		}
 		
-		if (sppotiRequest.getMaxMembersCount() != null && sppotiRequest.getMaxTeamCount() != 0) {
+		if (sppotiRequest.getMaxTeamCount() != null && sppotiRequest.getMaxTeamCount() != 0) {
 			canUpdate = true;
 		}
 		
 		if (canUpdate) {
 			this.sppotiControllerService.updateSppoti(sppotiRequest, sppotiId);
 		} else {
-			throw new IllegalArgumentException("Update not accepted");
+			throw new BusinessGlobalException("Update not accepted");
 		}
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
