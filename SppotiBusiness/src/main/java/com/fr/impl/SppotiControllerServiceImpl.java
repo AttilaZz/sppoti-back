@@ -441,7 +441,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	@Transactional
 	@Override
-	//TODO: delete row on challenge refuse
 	public void chooseOneAdverseTeamFromAllRequests(final int sppotiId, final TeamDTO teamDTO)
 	{
 		
@@ -472,7 +471,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 						.ifPresent(teamAdverse -> {
 							//update team adverse status if CONFIRMED, delete row if REFUSED
 							if (teamDTO.getTeamAdverseStatus().equals(GlobalAppStatusEnum.REFUSED.name())) {
-								this.sppotiAdverseRepository.delete(teamAdverse);
+								sp.getAdverseTeams().remove(teamAdverse);
+								this.sppotiRepository.save(sp);
 							} else {
 								teamAdverse.setStatus(GlobalAppStatusEnum.valueOf(teamDTO.getTeamAdverseStatus()));
 								this.sppotiRepository.save(sp);
