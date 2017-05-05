@@ -51,11 +51,11 @@ class SppotiUpdateController
 		
 		boolean canUpdate = false;
 		
-		if (!StringUtils.isEmpty(sppotiRequest.getTags())) {
+		if (StringUtils.hasText(sppotiRequest.getTags())) {
 			canUpdate = true;
 		}
 		
-		if (!StringUtils.isEmpty(sppotiRequest.getDescription())) {
+		if (StringUtils.hasText(sppotiRequest.getDescription())) {
 			canUpdate = true;
 		}
 		
@@ -63,11 +63,11 @@ class SppotiUpdateController
 			canUpdate = true;
 		}
 		
-		if (!StringUtils.isEmpty(sppotiRequest.getName())) {
+		if (StringUtils.hasText(sppotiRequest.getName())) {
 			canUpdate = true;
 		}
 		
-		if (!StringUtils.isEmpty(sppotiRequest.getLocation())) {
+		if (StringUtils.hasText(sppotiRequest.getLocation())) {
 			canUpdate = true;
 		}
 		

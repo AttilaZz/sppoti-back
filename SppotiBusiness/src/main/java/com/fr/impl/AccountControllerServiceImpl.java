@@ -20,8 +20,6 @@ import com.fr.transformers.impl.UserTransformerImpl;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,12 +40,12 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	/**
 	 * Class logger.
 	 */
-	private Logger LOGGER = Logger.getLogger(AccountControllerServiceImpl.class);
+	private final Logger LOGGER = Logger.getLogger(AccountControllerServiceImpl.class);
 	
 	/**
 	 * Spring security Password encoder.
 	 */
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 	
 	/**
 	 * {@link AccountMailer} to send emails.
@@ -71,8 +69,9 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * Init dependencies.
 	 */
 	@Autowired
-	public AccountControllerServiceImpl(AccountMailer accountMailer,PasswordEncoder passwordEncoder,
-										UserTransformerImpl userTransformer,SportTransformer sportTransformer)
+	public AccountControllerServiceImpl(final AccountMailer accountMailer, final PasswordEncoder passwordEncoder,
+										final UserTransformerImpl userTransformer,
+										final SportTransformer sportTransformer)
 	{
 		this.accountMailer = accountMailer;
 		this.passwordEncoder = passwordEncoder;
@@ -85,7 +84,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Transactional
 	@Override
-	public void saveNewUser(SignUpDTO user)
+	public void saveNewUser(final SignUpDTO user)
 	{
 
         /*
@@ -93,17 +92,17 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
              - reject sign_up
              - delete old account
          */
-		Optional<UserEntity> checkUsername = Optional
-				.ofNullable(userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
-		Optional<UserEntity> checkEmail = Optional
-				.ofNullable(userRepository.getByEmailAndDeletedFalse(user.getEmail()));
+		final Optional<UserEntity> checkUsername = Optional
+				.ofNullable(this.userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
+		final Optional<UserEntity> checkEmail = Optional
+				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(user.getEmail()));
 		
 		checkEmail.ifPresent(this::checkifAccountExist);
 		checkUsername.ifPresent(this::checkifAccountExist);
 		
-		UserEntity newUser = userTransformer.signUpDtoToEntity(user);
+		final UserEntity newUser = this.userTransformer.signUpDtoToEntity(user);
 		
-		newUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(daysBeforeExpiration));
+		newUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(this.daysBeforeExpiration));
 		
 		//        for (Long sportId : user.getSportId()) {
 		//            // if the parsed SportDTO exist in database == correct request
@@ -119,24 +118,24 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		//        newUser.setRelatedSports(userSports);
 
 		/*
-         * processing user Profile
+		 * processing user Profile
 		 */
-		RoleEntity profile = roleRepository.getByName(UserRoleTypeEnum.USER);
+		final RoleEntity profile = this.roleRepository.getByName(UserRoleTypeEnum.USER);
 		
 		if (profile == null) {
 			throw new EntityNotFoundException("Profile name <" + UserRoleTypeEnum.USER.name() + "> not found !!");
 		}
 		
-		Set<RoleEntity> roles = new HashSet<>();
+		final Set<RoleEntity> roles = new HashSet<>();
 		roles.add(profile);
 		newUser.setRoles(roles);
 		
 		//save new user.
-		userRepository.save(newUser);
-		LOGGER.info("Account has been created for user : " + user.getEmail());
+		this.userRepository.save(newUser);
+		this.LOGGER.info("Account has been created for user : " + user.getEmail());
 
         /*
-         * Send email to confirm account
+		 * Send email to confirm account
          */
 		SendEmailToActivateAccount(newUser);
 		
@@ -145,17 +144,17 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	/**
 	 * Send Email to activate new account.
 	 */
-	private void SendEmailToActivateAccount(UserEntity user)
+	private void SendEmailToActivateAccount(final UserEntity user)
 	{
-		UserDTO userDTO = userTransformer.modelToDto(user);
-		Thread thread = new Thread(() -> {
-			this.sendConfirmationEmail(userDTO,user.getConfirmationCode());
-			LOGGER.info("Confirmation email has been sent successfully !");
+		final UserDTO userDTO = this.userTransformer.modelToDto(user);
+		final Thread thread = new Thread(() -> {
+			this.sendConfirmationEmail(userDTO, user.getConfirmationCode());
+			this.LOGGER.info("Confirmation email has been sent successfully !");
 		});
 		thread.start();
 	}
 	
-	private void checkifAccountExist(UserEntity u)
+	private void checkifAccountExist(final UserEntity u)
 	{
 		if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate()) || u.isConfirmed()) {
 			throw new ConflictUsernameException("Username already exist");
@@ -170,22 +169,23 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Transactional
 	@Override
-	public void tryActivateAccount(String code)
+	public void tryActivateAccount(final String code)
 	{
 		
-		Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByConfirmationCodeAndDeletedFalse(code));
+		final Optional<UserEntity> optional = Optional
+				.ofNullable(this.userRepository.getByConfirmationCodeAndDeletedFalse(code));
 		
 		optional.ifPresent(u -> {
 			
 			if (SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
-				userRepository.delete(u);
-				LOGGER.info("Token expired for user: " + u.getEmail());
+				this.userRepository.delete(u);
+				this.LOGGER.info("Token expired for user: " + u.getEmail());
 				throw new BusinessGlobalException("Your token has been expired and deleted, try creating new account " +
 						"and confirm before 24h");
 			}
 			
 			u.setConfirmed(true);
-			userRepository.save(u);
+			this.userRepository.save(u);
 		});
 		
 		optional.orElseThrow(() -> new EntityNotFoundException("Account not found, " +
@@ -202,11 +202,11 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * @param code
 	 * 		account confirmation code.
 	 */
-	private void sendConfirmationEmail(UserDTO userDTO,String code)
+	private void sendConfirmationEmail(final UserDTO userDTO, final String code)
 	{
 		
 		final Thread thread = new Thread(() -> {
-			this.accountMailer.sendAccountConfirmationEmail(userDTO,code);
+			this.accountMailer.sendAccountConfirmationEmail(userDTO, code);
 		});
 		thread.start();
 	}
@@ -216,64 +216,64 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Transactional
 	@Override
-	public void updateUser(UserDTO userDTO)
+	public void updateUser(final UserDTO userDTO)
 	{
 		
-		UserEntity connectedUser = getConnectedUser();
+		final UserEntity connectedUser = getConnectedUser();
 		
-		if (!StringUtils.isEmpty(userDTO.getFirstName())) {
+		if (StringUtils.hasText(userDTO.getFirstName())) {
 			connectedUser.setFirstName(userDTO.getFirstName());
 		}
 		//last name
-		if (!StringUtils.isEmpty(userDTO.getLastName())) {
+		if (StringUtils.hasText(userDTO.getLastName())) {
 			connectedUser.setLastName(userDTO.getLastName());
 		}
 		//address
-		if (!StringUtils.isEmpty(userDTO.getAddress())) {
+		if (StringUtils.hasText(userDTO.getAddress())) {
 			connectedUser.getAddresses().add(new AddressEntity(userDTO.getAddress()));
 		}
 		//username
-		if (!StringUtils.isEmpty(userDTO.getUsername())) {
+		if (StringUtils.hasText(userDTO.getUsername())) {
 			connectedUser.setUsername(userDTO.getUsername());
 		}
 		//phone
-		if (!StringUtils.isEmpty(userDTO.getPhone())) {
+		if (StringUtils.hasText(userDTO.getPhone())) {
 			connectedUser.setTelephone(userDTO.getPhone());
 		}
 		//password
-		else if (!StringUtils.isEmpty(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
-				!StringUtils.isEmpty(userDTO.getOldPassword())) {
+		else if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
+				StringUtils.hasText(userDTO.getOldPassword())) {
 			
 			//Check that old password is correct
-			if (!passwordEncoder.matches(userDTO.getOldPassword(),connectedUser.getPassword())) {
+			if (!this.passwordEncoder.matches(userDTO.getOldPassword(), connectedUser.getPassword())) {
 				throw new BusinessGlobalException("Old password not correct");
 			}
 			
-			String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+			final String encodedPassword = this.passwordEncoder.encode(userDTO.getPassword());
 			connectedUser.setPassword(encodedPassword);
 		}
-        /*
-            email --
+		/*
+			email --
             User must confirm new email address to login next time.
          */
-		else if (!StringUtils.isEmpty(userDTO.getEmail()) && !StringUtils.isEmpty(userDTO.getPassword())) {
+		else if (StringUtils.hasText(userDTO.getEmail()) && StringUtils.hasText(userDTO.getPassword())) {
 			
 			//Check that password is correct
-			if (!passwordEncoder.matches(userDTO.getPassword(),connectedUser.getPassword())) {
+			if (!this.passwordEncoder.matches(userDTO.getPassword(), connectedUser.getPassword())) {
 				throw new BusinessGlobalException("Password not correct");
 			}
 			
 			connectedUser.setEmail(userDTO.getEmail());
 			connectedUser.setConfirmed(false);
-			String confirmationCode = SppotiUtils.generateConfirmationKey();
+			final String confirmationCode = SppotiUtils.generateConfirmationKey();
 			connectedUser.setConfirmationCode(confirmationCode);
 			
-			sendConfirmationEmail(userDTO,confirmationCode);
-		} else if (!StringUtils.isEmpty(userDTO.getLanguage())) {
+			sendConfirmationEmail(userDTO, confirmationCode);
+		} else if (StringUtils.hasText(userDTO.getLanguage())) {
 			connectedUser.setLanguageEnum(LanguageEnum.valueOf(userDTO.getLanguage()));
 		}
 		
-		userRepository.save(connectedUser);
+		this.userRepository.save(connectedUser);
 	}
 	
 	/**
@@ -281,12 +281,12 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Transactional
 	@Override
-	public void unSelectOldResource(Long userId,int i)
+	public void unSelectOldResource(final Long userId, final int i)
 	{
-		ResourcesEntity resourcesEntity = resourceRepository.getByUserIdAndTypeAndIsSelectedTrue(userId,i);
+		final ResourcesEntity resourcesEntity = this.resourceRepository.getByUserIdAndTypeAndIsSelectedTrue(userId, i);
 		if (resourcesEntity != null) {
 			resourcesEntity.setSelected(false);
-			resourceRepository.save(resourcesEntity);
+			this.resourceRepository.save(resourcesEntity);
 		}
 	}
 	
@@ -294,9 +294,9 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity getUserByUsername(String username)
+	public UserEntity getUserByUsername(final String username)
 	{
-		return userRepository.getByUsernameAndDeletedFalse(username);
+		return this.userRepository.getByUsernameAndDeletedFalse(username);
 	}
 	
 	/**
@@ -304,31 +304,31 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Override
 	@Transactional
-	public void updateAvatarAndCover(UserDTO user)
+	public void updateAvatarAndCover(final UserDTO user)
 	{
 		
-		UserEntity connectedUser = getConnectedUser();
+		final UserEntity connectedUser = getConnectedUser();
 		
-		ResourcesEntity resource = new ResourcesEntity();
+		final ResourcesEntity resource = new ResourcesEntity();
 		resource.setSelected(true);
 		
 		if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
 			resource.setUrl(user.getAvatar());
 			resource.setType(1);
 			resource.setTypeExtension(1);
-			this.unSelectOldResource(connectedUser.getId(),1);
+			this.unSelectOldResource(connectedUser.getId(), 1);
 		} else if (user.getCover() != null && !user.getCover().isEmpty() &&
 				(CoverType.IMAGE.type() == user.getCoverType() || CoverType.VIDEO.type() == user.getCoverType())) {
 			resource.setUrl(user.getCover());
 			resource.setType(2);
 			resource.setTypeExtension(user.getCoverType());
-			this.unSelectOldResource(connectedUser.getId(),2);
+			this.unSelectOldResource(connectedUser.getId(), 2);
 		}
 		
 		resource.setUser(connectedUser);
 		connectedUser.getResources().add(resource);
 		
-		userRepository.save(connectedUser);
+		this.userRepository.save(connectedUser);
 	}
 	
 	/**
@@ -338,25 +338,25 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Override
 	@Transactional
-	public void sendRecoverAccountEmail(SignUpDTO userDTO)
+	public void sendRecoverAccountEmail(final SignUpDTO userDTO)
 	{
 		
-		Optional<UserEntity> optional = Optional
-				.ofNullable(userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
+		final Optional<UserEntity> optional = Optional
+				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
 		
 		optional.ifPresent(u -> {
-			String code = SppotiUtils.generateConfirmationKey();
+			final String code = SppotiUtils.generateConfirmationKey();
 			
-			Date tokenExpiryDate = SppotiUtils.generateExpiryDate(daysBeforeExpiration);
+			final Date tokenExpiryDate = SppotiUtils.generateExpiryDate(this.daysBeforeExpiration);
 			
 			u.setRecoverCodeCreationDate(tokenExpiryDate);
 			u.setRecoverCode(code);
-			userRepository.save(u);
-			LOGGER.info("Recover password email sent tocommit: " + u.getEmail());
+			this.userRepository.save(u);
+			this.LOGGER.info("Recover password email sent tocommit: " + u.getEmail());
 			
 			
 			final Thread thread = new Thread(() -> this.accountMailer
-					.sendRecoverPasswordEmail(userTransformer.modelToDto(u),code,tokenExpiryDate));
+					.sendRecoverPasswordEmail(this.userTransformer.modelToDto(u), code, tokenExpiryDate));
 			thread.start();
 		});
 		
@@ -368,20 +368,21 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Override
 	@Transactional
-	public void recoverAccount(UserDTO userDTO,String code)
+	public void recoverAccount(final UserDTO userDTO, final String code)
 	{
 		
-		Optional<UserEntity> optional = Optional.ofNullable(userRepository.getByRecoverCodeAndDeletedFalse(code));
+		final Optional<UserEntity> optional = Optional
+				.ofNullable(this.userRepository.getByRecoverCodeAndDeletedFalse(code));
 		
 		optional.ifPresent(u -> {
 			
 			if (SppotiUtils.isDateExpired(u.getRecoverCodeCreationDate())) {
-				LOGGER.info("Token expired for user: " + u.getEmail());
+				this.LOGGER.info("Token expired for user: " + u.getEmail());
 				throw new BusinessGlobalException("Your token has been expired");
 			}
 			
 			u.setPassword(userDTO.getPassword());
-			userRepository.save(u);
+			this.userRepository.save(u);
 		});
 		
 		optional.orElseThrow(() -> new EntityNotFoundException("Account not found !"));
@@ -393,26 +394,26 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Override
 	@Transactional
-	public void generateNewConfirmationEmail(UserDTO userDTO)
+	public void generateNewConfirmationEmail(final UserDTO userDTO)
 	{
 		
-		Optional<UserEntity> optional = Optional
-				.ofNullable(userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
+		final Optional<UserEntity> optional = Optional
+				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
 		
 		optional.ifPresent(u -> {
 			if (u.isConfirmed()) {
 				throw new BusinessGlobalException("Account Already activated");
 			}
 			//generate new code
-			String confirmationCode = SppotiUtils.generateConfirmationKey();
+			final String confirmationCode = SppotiUtils.generateConfirmationKey();
 			u.setConfirmationCode(confirmationCode);
 			//generate new expiry date
-			u.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(daysBeforeExpiration));
+			u.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(this.daysBeforeExpiration));
 			//update
-			userRepository.saveAndFlush(u);
+			this.userRepository.saveAndFlush(u);
 			//send email
 			SendEmailToActivateAccount(u);
-			LOGGER.info("New activation link has been sent to user: " + userDTO.getEmail());
+			this.LOGGER.info("New activation link has been sent to user: " + userDTO.getEmail());
 		});
 		
 		optional.orElseThrow(() -> new EntityNotFoundException("Email not associated to an account"));
@@ -422,40 +423,40 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserDTO fillAccountResponse(UserEntity entity)
+	public UserDTO fillAccountResponse(final UserEntity entity)
 	{
 		entity.setPassword(null);
-		return userTransformer.modelToDto(entity);
+		return this.userTransformer.modelToDto(entity);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserDTO handleFriendShip(String username,Long connectedUserId)
+	public UserDTO handleFriendShip(final String username, final Long connectedUserId)
 	{
 		
-		UserEntity targetUser = this.getUserByUsername(username);
+		final UserEntity targetUser = this.getUserByUsername(username);
 		if (targetUser == null) {
 			throw new EntityNotFoundException("Target user id not found");
 		}
-		UserEntity connectedUser = this.getUserById(connectedUserId);
+		final UserEntity connectedUser = this.getUserById(connectedUserId);
 		
 		targetUser.setPassword(null);//do not return password
-		UserDTO user = userTransformer.modelToDto(targetUser);
+		final UserDTO user = this.userTransformer.modelToDto(targetUser);
 		user.setFriendStatus(GlobalAppStatusEnum.PUBLIC_RELATION.getValue());
 		
 		if (connectedUser != null) {
 			if (!connectedUser.getId().equals(targetUser.getId())) {
-                /* manage requests sent to me. */
+				/* manage requests sent to me. */
 				FriendShipEntity friendShip;
 				
-				friendShip = friendShipRepository
-						.findByFriendUuidAndUserUuidAndDeletedFalse(connectedUser.getUuid(),targetUser.getUuid());
+				friendShip = this.friendShipRepository
+						.findByFriendUuidAndUserUuidAndDeletedFalse(connectedUser.getUuid(), targetUser.getUuid());
 				
 				if (friendShip == null) {
-					friendShip = friendShipRepository
-							.findByFriendUuidAndUserUuidAndDeletedFalse(targetUser.getUuid(),connectedUser.getUuid());
+					friendShip = this.friendShipRepository
+							.findByFriendUuidAndUserUuidAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid());
 				}
 				
 				if (friendShip == null) {
@@ -476,9 +477,9 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 						
 					}
 				}
-                /*  Manage request sent by me. */
-				if (!friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(),
-						connectedUser.getUuid(),GlobalAppStatusEnum.PENDING).isEmpty()) {
+				/*  Manage request sent by me. */
+				if (!this.friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(),
+						connectedUser.getUuid(), GlobalAppStatusEnum.PENDING).isEmpty()) {
 					user.setFriendStatus(GlobalAppStatusEnum.PENDING_SENT.getValue());
 				}
 			}
@@ -488,7 +489,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		}
 		
 		//Map all user sports
-		List<SportDTO> sportDTOs = targetUser.getRelatedSports().stream().map(sportTransformer::modelToDto)
+		final List<SportDTO> sportDTOs = targetUser.getRelatedSports().stream().map(this.sportTransformer::modelToDto)
 				.collect(Collectors.toList());
 		user.setSportDTOs(sportDTOs);
 		
