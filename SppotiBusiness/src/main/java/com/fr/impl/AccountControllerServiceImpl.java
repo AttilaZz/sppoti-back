@@ -8,6 +8,7 @@ import com.fr.commons.enumeration.LanguageEnum;
 import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
 import com.fr.commons.exception.BusinessGlobalException;
+import com.fr.commons.exception.ConflictEmailException;
 import com.fr.commons.exception.ConflictUsernameException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
@@ -97,29 +98,22 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		final Optional<UserEntity> checkEmail = Optional
 				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(user.getEmail()));
 		
-		checkEmail.ifPresent(this::checkifAccountExist);
-		checkUsername.ifPresent(this::checkifAccountExist);
+		checkEmail.ifPresent(e -> {
+			if (accountExist(e)) {
+				throw new ConflictEmailException("L'adresse email existe déjà.");
+			}
+		});
+		checkUsername.ifPresent(e -> {
+			if (accountExist(e)) {
+				throw new ConflictUsernameException("Le username existe déjà.");
+			}
+		});
 		
 		final UserEntity newUser = this.userTransformer.signUpDtoToEntity(user);
 		
 		newUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(this.daysBeforeExpiration));
 		
-		//        for (Long sportId : user.getSportId()) {
-		//            // if the parsed SportDTO exist in database == correct request
-		//            SportEntity mSport = accountControllerService.getSportById(sportId);
-		//            if (mSport != null) {
-		//                userSports.add(mSport);
-		//            } else {
-		//                LOGGER.info("INSCRIPTION: le nom de SportDTO envoyé n'est pas reconnu");
-		//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		//            }
-		//        }
-		
-		//        newUser.setRelatedSports(userSports);
-
-		/*
-		 * processing user Profile
-		 */
+		// processing user Profile
 		final RoleEntity profile = this.roleRepository.getByName(UserRoleTypeEnum.USER);
 		
 		if (profile == null) {
@@ -154,14 +148,15 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		thread.start();
 	}
 	
-	private void checkifAccountExist(final UserEntity u)
+	private boolean accountExist(final UserEntity u)
 	{
 		if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate()) || u.isConfirmed()) {
-			throw new ConflictUsernameException("Username already exist");
+			return true;
 		} else if (!u.isConfirmed()) {
 			throw new AccountConfirmationLinkExpiredException(
 					"Account exist, but not confirmed yet ! Ask for another confirmation code.");
 		}
+		return false;
 	}
 	
 	/**

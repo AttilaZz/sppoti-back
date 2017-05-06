@@ -1,9 +1,6 @@
 package com.fr.api.account;
 
 import com.fr.commons.dto.SignUpDTO;
-import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
-import com.fr.commons.exception.ConflictEmailException;
-import com.fr.commons.exception.ConflictUsernameException;
 import com.fr.service.AccountControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,18 +39,9 @@ class AccountAddController
 	ResponseEntity createUser(@RequestBody @Valid final SignUpDTO user)
 	{
 		
-		try {
-			this.accountControllerService.saveNewUser(user);
-			
-			return ResponseEntity.status(HttpStatus.CREATED).build();
-			
-		} catch (final ConflictEmailException e) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-		} catch (final ConflictUsernameException e) {
-			return ResponseEntity.status(411).body(e.getMessage());
-		} catch (final AccountConfirmationLinkExpiredException e) {
-			return ResponseEntity.status(413).body(e.getMessage());
-		}
+		this.accountControllerService.saveNewUser(user);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 		
 	}
 	

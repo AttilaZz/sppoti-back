@@ -1,8 +1,6 @@
 package com.fr.exceptions;
 
-import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.commons.exception.NoRightToAcceptOrRefuseChallenge;
-import com.fr.commons.exception.NotAdminException;
+import com.fr.commons.exception.*;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -19,11 +17,11 @@ import javax.persistence.EntityNotFoundException;
  * Created by djenanewail on 3/7/17.
  */
 @ControllerAdvice
-public class GlobalExceptionHandler
+public class SppotiExceptionHandler
 {
 	
 	/** Class logger. */
-	private final Logger LOGGER = Logger.getLogger(GlobalExceptionHandler.class);
+	private final Logger LOGGER = Logger.getLogger(SppotiExceptionHandler.class);
 	
 	/**
 	 * Catch All {@link NotAdminException} exceptions.
@@ -123,5 +121,51 @@ public class GlobalExceptionHandler
 		this.LOGGER.error(e.getMessage(), e);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 	}
+	
+	/**
+	 * Catch all {@link ConflictUsernameException}
+	 *
+	 * @param e
+	 * 		exception content.
+	 *
+	 * @return 411 http status.
+	 */
+	@ExceptionHandler(value = ConflictUsernameException.class)
+	public ResponseEntity conflictUsernameException(final ConflictUsernameException e)
+	{
+		this.LOGGER.error(e.getMessage(), e);
+		return ResponseEntity.status(411).body(e.getMessage());
+	}
+	
+	/**
+	 * Catch all {@link ConflictEmailException}
+	 *
+	 * @param e
+	 * 		exception content.
+	 *
+	 * @return 409 hhtp status.
+	 */
+	@ExceptionHandler(value = ConflictEmailException.class)
+	public ResponseEntity conflictEmailException(final ConflictEmailException e)
+	{
+		this.LOGGER.error(e.getMessage(), e);
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+	}
+	
+	/**
+	 * Catch all {@link AccountConfirmationLinkExpiredException}
+	 *
+	 * @param e
+	 * 		exception content.
+	 *
+	 * @return 413 http status.
+	 */
+	@ExceptionHandler(value = AccountConfirmationLinkExpiredException.class)
+	public ResponseEntity conflictEmailException(final AccountConfirmationLinkExpiredException e)
+	{
+		this.LOGGER.error(e.getMessage(), e);
+		return ResponseEntity.status(413).body(e.getMessage());
+	}
+	
 	
 }
