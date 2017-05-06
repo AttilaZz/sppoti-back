@@ -152,7 +152,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		sppoti.setTeamHostEntity(hostTeam);
 		
 		final SppotiEntity savedSppoti = this.sppotiRepository.save(sppoti);
-		
+		savedSppoti.setConnectedUserId(getConnectedUser().getId());
 		//If team has been saved with the sppoti, send email to its members.
 		if (teamDTO != null) {
 			final TeamEntity team = savedSppoti.getTeamHostEntity();
@@ -173,7 +173,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 								this.userTransformer.modelToDto(sppoti.getUserSppoti()))).start();
 			}
 		});
-		
 		return sppotiDTO;
 		
 	}

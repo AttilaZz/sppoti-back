@@ -1,11 +1,13 @@
 package com.fr.commons.dto.sppoti;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.utils.JsonDateDeserializer;
 import com.fr.commons.utils.JsonDateSerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -40,23 +42,31 @@ public class SppotiDTO extends AbstractCommonDTO
 	@NotEmpty
 	@JsonProperty("titre")
 	private String name;
+	
 	@NotNull
 	private Long sportId;
+	
 	@NotEmpty
 	private String description;
+	
 	@NotNull
 	@JsonSerialize(using = JsonDateSerializer.class)
+	@JsonDeserialize(using = JsonDateDeserializer.class)
 	@JsonProperty("sppotiDatetime")
 	private Date dateTimeStart;
 	
 	@JsonProperty("teamHostId")
 	private Integer myTeamId;
+	
 	@JsonProperty("teamAdverseId")
 	private Integer vsTeam;
+	
 	@NotEmpty
 	private String location;
+	
 	@NotNull
 	private Long altitude;
+	
 	@NotNull
 	private Long longitude;
 	

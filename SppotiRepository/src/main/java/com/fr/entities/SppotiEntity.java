@@ -20,11 +20,11 @@ public class SppotiEntity extends AbstractCommonEntity
 	
 	private String description;
 	
-	@Column(nullable = false)
+	@Column(nullable = false, name = "datetime_created")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date datetimeCreated = new Date();
 	
-	@Column(nullable = false)
+	@Column(nullable = false, name = "date_time_start")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateTimeStart;
 	
