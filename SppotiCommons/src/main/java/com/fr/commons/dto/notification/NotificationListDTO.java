@@ -36,4 +36,14 @@ public class NotificationListDTO extends AbstractCommonDTO
 	{
 		this.notifCounter = notifCounter;
 	}
+	
+	public Date getDateCreation()
+	{
+		return this.dateCreation;
+	}
+	
+	public void setDateCreation(final Date dateCreation)
+	{
+		this.dateCreation = dateCreation;
+	}
 }

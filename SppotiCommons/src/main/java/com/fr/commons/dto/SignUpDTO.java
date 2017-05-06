@@ -1,7 +1,8 @@
 package com.fr.commons.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fr.commons.utils.JsonDateSerializer;
 import com.sun.istack.internal.NotNull;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -21,7 +22,7 @@ public class SignUpDTO extends AbstractCommonDTO
 	private String firstName;
 	
 	@NotNull
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	@JsonSerialize(using = JsonDateSerializer.class)
 	private Date dateBorn;
 	
 	@NotEmpty

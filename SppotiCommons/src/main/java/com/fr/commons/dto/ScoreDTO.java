@@ -13,19 +13,15 @@ import javax.validation.constraints.NotNull;
 public class ScoreDTO extends AbstractCommonDTO
 {
 	
-	/**
-	 * Sppoti Id.
-	 */
+	/** Sppoti Id. */
 	@NotNull
 	private Integer sppotiId;
-	/**
-	 * Host team score.
-	 */
+	
+	/** Host team score. */
 	@NotNull
 	private Integer host;
-	/**
-	 * Adverse team score.
-	 */
+	
+	/** Adverse team score. */
 	@NotNull
 	private Integer visitor;
 	

@@ -7,11 +7,11 @@ public class SppotiRatingDTO extends AbstractCommonDTO
 {
 	
 	//set automatically using the connected user.
-	Integer sppoterRaterId;
+	private Integer sppoterRaterId;
 	
-	Integer sppoterRatedId;
+	private Integer sppoterRatedId;
 	
-	Integer stars;
+	private Integer stars;
 	
 	public Integer getStars()
 	{

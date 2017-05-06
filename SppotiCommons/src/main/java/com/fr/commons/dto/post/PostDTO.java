@@ -1,12 +1,13 @@
 package com.fr.commons.dto.post;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.HeaderDataDTO;
+import com.fr.commons.utils.JsonDateSerializer;
 
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ public class PostDTO extends AbstractCommonDTO
 	
 	private Long sportId;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+1")
+	@JsonSerialize(using = JsonDateSerializer.class)
 	private Date datetimeCreated;
 	
 	@JsonProperty("text")

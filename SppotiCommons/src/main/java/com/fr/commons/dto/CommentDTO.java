@@ -1,8 +1,9 @@
 package com.fr.commons.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fr.commons.utils.JsonDateSerializer;
 
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ public class CommentDTO extends AbstractCommonDTO
 	private String authorUsername;
 	private String authorAvatar;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+1")
+	@JsonSerialize(using = JsonDateSerializer.class)
 	private Date creationDate;
 	
 	private String text;

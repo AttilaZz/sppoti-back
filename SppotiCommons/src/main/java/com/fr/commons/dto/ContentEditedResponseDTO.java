@@ -1,8 +1,9 @@
 package com.fr.commons.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fr.commons.utils.JsonDateSerializer;
 
 import java.util.Date;
 
@@ -15,7 +16,7 @@ public class ContentEditedResponseDTO
 	
 	private Long id;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+	@JsonSerialize(using = JsonDateSerializer.class)
 	private Date dateTime = new Date();
 	
 	private String text;

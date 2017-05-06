@@ -1,12 +1,13 @@
 package com.fr.commons.dto.notification;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.utils.JsonDateSerializer;
 
 import java.util.Date;
 
@@ -30,7 +31,7 @@ public class NotificationDTO extends AbstractCommonDTO
 	private TeamDTO team;
 	private SppotiDTO sppoti;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+	@JsonSerialize(using = JsonDateSerializer.class)
 	private Date datetime;
 	
 	public UserDTO getFrom()
