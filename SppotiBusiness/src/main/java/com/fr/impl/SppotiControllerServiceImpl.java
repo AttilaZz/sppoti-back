@@ -577,7 +577,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		CheckConnectedUserAccessPrivileges(userId);
 		
-		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<SppoterEntity> sppotiMembers = this.sppotiMembersRepository
 				.findByTeamMemberUsersUuid(userId, pageable);
@@ -596,7 +596,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		CheckConnectedUserAccessPrivileges(userId);
 		
-		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		return this.sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable).stream()
 				.filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
@@ -613,7 +613,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		CheckConnectedUserAccessPrivileges(userId);
 		
-		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		return this.sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable).stream()
 				.filter(m -> m.getStatus().equals(GlobalAppStatusEnum.REFUSED))
@@ -648,7 +648,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	@Override
 	public List<SppotiDTO> getAllPendingChallengeRequestSppoties(final int userId, final int page)
 	{
-		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<TeamMemberEntity> teamMemberEntities = this.teamMembersRepository
 				.findByUsersUuidAndAdminTrue(userId, pageable);
