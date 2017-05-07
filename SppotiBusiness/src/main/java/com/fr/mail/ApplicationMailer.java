@@ -30,24 +30,24 @@ abstract class ApplicationMailer
 	protected static Logger LOGGER = LoggerFactory.getLogger(ApplicationMailer.class);
 	
 	/** Templates. */
-	protected static final String PATH_TO_ACCOUNT_TEMPLATE = "account/account";
-	protected static final String PATH_TO_CONTACT_TEMPLATE = "contact/contact";
-	protected static final String PATH_TO_TEAM_TEMPLATE = "team/team";
-	protected static final String PATH_TO_SPPOTI_TEMPLATE = "sppoti/sppoti";
+	static final String PATH_TO_ACCOUNT_TEMPLATE = "account/account";
+	static final String PATH_TO_CONTACT_TEMPLATE = "contact/contact";
+	static final String PATH_TO_TEAM_TEMPLATE = "team/team";
+	static final String PATH_TO_SPPOTI_TEMPLATE = "sppoti/sppoti";
 	
 	/** Email charset. */
-	protected static final String CHARSET_NAME = "UTF-8";
+	private static final String CHARSET_NAME = "UTF-8";
 	
 	/** Error message. */
-	protected static final String ERROR_SENDING_MAIL = "Error sending email";
+	private static final String ERROR_SENDING_MAIL = "Error sending email";
 	private static final String ERROR_OPENING_RESOURCE_FILE = "Resource file not found";
 	
 	/** Java mail sender. */
-	final JavaMailSender sender;
+	protected final JavaMailSender sender;
 	/** Mail properties. */
 	final MailProperties mailProperties;
 	/** Template engine. */
-	final TemplateEngine templateEngine;
+	protected final TemplateEngine templateEngine;
 	
 	/** Front app path. */
 	@Value("${spring.app.originFront}")
@@ -56,10 +56,25 @@ abstract class ApplicationMailer
 	/** resource content type. */
 	private static final String IMAGE_PNG = "image/png";
 	
+	/** Email images directory. */
+	static final String IMAGES_DIRECTORY = "templates/images/";
+	
 	/** name resources to use inside templates. */
-	protected final String logoResourceName = "logo.png";
-	protected final String teamAvatarResourceName = "team_avatar.png";
-	protected final String sppotiCoverResourceName = "sppoti_bg.png";
+	static final String logoResourceName = "sppoti_logo.png";
+	static final String teamAvatarResourceName = "team_avatar.png";
+	static final String sppotiCoverResourceName = "sppoti_bg.png";
+	
+	/** Global email texts - for translation. */
+	@Value("${spring.app.mail.intended.for}")
+	String emailIntendedForMessage;
+	@Value("${spring.app.mail.not.your.account}")
+	String notYourAccountMessage;
+	@Value("${spring.app.mail.contact.us.link}")
+	String contactUsLink;
+	@Value("${spring.app.mail.contact.us}")
+	String contactUsMessage;
+	@Value("${spring.app.mail.sent.to}")
+	String sentToTextMessage;
 	
 	/** Init dependencies. */
 	@Autowired
@@ -70,7 +85,6 @@ abstract class ApplicationMailer
 		this.mailProperties = mailProperties;
 		this.templateEngine = templateEngine;
 	}
-	
 	
 	/**
 	 * @param to
@@ -95,13 +109,10 @@ abstract class ApplicationMailer
 			
 			helper.setText(content, true);
 			
+			//add image resource
 			if (resourceContent != null) {
 				// Add the inline image, referenced from the HTML code as "cid:${imageResourceName}"
-				final ClassLoader classLoader = getClass().getClassLoader();
-				final File file = new File(classLoader.getResource(resourceContent.getPath()).getFile());
-				
-				final byte[] imageBytes = Files.readAllBytes(file.toPath());
-				final InputStreamSource imageSource = new ByteArrayResource(imageBytes);
+				final InputStreamSource imageSource = getImageResource(resourceContent);
 				helper.addInline(resourceContent.getResourceName(), imageSource, IMAGE_PNG);
 			}
 			
@@ -112,6 +123,15 @@ abstract class ApplicationMailer
 		} catch (final IOException e) {
 			LOGGER.error(ERROR_OPENING_RESOURCE_FILE, e);
 		}
+	}
+	
+	private InputStreamSource getImageResource(final ResourceContent resourceContent) throws IOException
+	{
+		final ClassLoader classLoader = getClass().getClassLoader();
+		final File file = new File(classLoader.getResource(resourceContent.getPath()).getFile());
+		
+		final byte[] imageBytes = Files.readAllBytes(file.toPath());
+		return new ByteArrayResource(imageBytes);
 	}
 	
 }

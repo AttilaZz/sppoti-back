@@ -201,7 +201,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	{
 		
 		final Thread thread = new Thread(() -> {
-			this.accountMailer.sendAccountConfirmationEmail(userDTO, code);
+			this.accountMailer.sendCreateAccountConfirmationEmail(userDTO, code);
 		});
 		thread.start();
 	}

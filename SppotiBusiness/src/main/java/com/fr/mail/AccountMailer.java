@@ -32,6 +32,8 @@ public class AccountMailer extends ApplicationMailer
 	private String recoverAccountSubject;
 	@Value("${spring.app.mail.account.recover.button}")
 	private String recoverAccountButtonText;
+	@Value("${spring.app.mail.account.recover.information}")
+	private String recoverAccountConcatUsMessage;
 	
 	// path to activate account and validate new email address
 	@Value("${spring.app.mail.account.confirmation.path}")
@@ -58,13 +60,13 @@ public class AccountMailer extends ApplicationMailer
 	 * @param confirmationCode
 	 * 		Send email to user to confirm account
 	 */
-	public void sendAccountConfirmationEmail(final UserDTO to, final String confirmationCode)
+	public void sendCreateAccountConfirmationEmail(final UserDTO to, final String confirmationCode)
 	{
 		
 		final String activateLink = this.frontRootPath + this.pathToValidateAccount + confirmationCode;
 		
 		this.prepareAndSendEmail(to, this.confirmationAccountSubject, this.confirmationAccountMessage,
-				this.confirmationAccountButtonText, activateLink, 1, null);
+				this.confirmationAccountButtonText, activateLink, 1);
 	}
 	
 	/**
@@ -84,7 +86,7 @@ public class AccountMailer extends ApplicationMailer
 				SppotiUtils.encodeTo64(dateToEncode);
 		
 		this.prepareAndSendEmail(to, this.recoverAccountSubject, this.recoverAccountMessage,
-				this.recoverAccountButtonText, recoverLink, 2, null);
+				this.recoverAccountButtonText, recoverLink, 2);
 	}
 	
 	/**
@@ -113,9 +115,12 @@ public class AccountMailer extends ApplicationMailer
 	 * 		activation link.
 	 */
 	public void prepareAndSendEmail(final UserDTO to, final String subject, final String message,
-									final String buttonText, final String activateLinkTag, final int op,
-									final ResourceContent resourceContent)
+									final String buttonText, final String activateLinkTag, final int op)
 	{
+		
+		final ResourceContent resourceContent = new ResourceContent();
+		resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
+		resourceContent.setResourceName(logoResourceName);
 		
 		final Context context = new Context();
 		context.setVariable("title", to.getFirstName());
@@ -124,6 +129,14 @@ public class AccountMailer extends ApplicationMailer
 		context.setVariable("textButtonLink", buttonText);
 		context.setVariable("receiverEmail", to.getEmail());
 		context.setVariable("receiverUsername", to.getUsername());
+		context.setVariable("imageResourceName", resourceContent.getResourceName());
+		context.setVariable("recoverAccountConcatUsMessage", this.recoverAccountConcatUsMessage);
+		
+		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
+		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
+		context.setVariable("contactUsMessageText", this.contactUsMessage);
+		context.setVariable("contactUsLink", this.contactUsLink);
+		context.setVariable("sentToText", this.sentToTextMessage);
 		
 		switch (op) {
 			case 1:
