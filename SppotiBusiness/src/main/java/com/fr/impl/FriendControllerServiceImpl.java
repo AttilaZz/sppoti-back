@@ -27,7 +27,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 {
 	
 	/** Class logger. */
-	private Logger LOGGER = Logger.getLogger(FriendControllerServiceImpl.class);
+	private final Logger LOGGER = Logger.getLogger(FriendControllerServiceImpl.class);
 	
 	/** {@link UserEntity} transformer. */
 	private final UserTransformer userTransformer;
@@ -38,7 +38,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	
 	/** Init services. */
 	@Autowired
-	public FriendControllerServiceImpl(UserTransformer userTransformer)
+	public FriendControllerServiceImpl(final UserTransformer userTransformer)
 	{
 		this.userTransformer = userTransformer;
 	}
@@ -47,27 +47,29 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<FriendShipEntity> getByUserAndStatus(int uuid,GlobalAppStatusEnum name,Pageable pageable)
+	public List<FriendShipEntity> getByUserAndStatus(final int uuid, final GlobalAppStatusEnum name,
+													 final Pageable pageable)
 	{
-		return friendShipRepository.findByUserUuidAndStatusAndDeletedFalse(uuid,name,pageable);
+		return this.friendShipRepository.findByUserUuidAndStatusAndDeletedFalse(uuid, name, pageable);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<FriendShipEntity> getByFriendUuidAndStatus(int uuid,GlobalAppStatusEnum name,Pageable pageable)
+	public List<FriendShipEntity> getByFriendUuidAndStatus(final int uuid, final GlobalAppStatusEnum name,
+														   final Pageable pageable)
 	{
-		return friendShipRepository.findByFriendUuidAndStatusAndDeletedFalse(uuid,name,pageable);
+		return this.friendShipRepository.findByFriendUuidAndStatusAndDeletedFalse(uuid, name, pageable);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public FriendShipEntity getByFriendUuidAndUser(int friendId,int userId)
+	public FriendShipEntity getByFriendUuidAndUser(final int friendId, final int userId)
 	{
-		return friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friendId,userId);
+		return this.friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friendId, userId);
 	}
 	
 	/**
@@ -75,12 +77,12 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	@Transactional
 	@Override
-	public void saveFriendShip(FriendShipEntity friendShip)
+	public void saveFriendShip(final FriendShipEntity friendShip)
 	{
 		
-		if (friendShipRepository.save(friendShip) != null) {
-			addNotification(NotificationTypeEnum.FRIEND_REQUEST_SENT,friendShip.getUser(),friendShip.getFriend(),null,
-					null);
+		if (this.friendShipRepository.save(friendShip) != null) {
+			addNotification(NotificationTypeEnum.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend(),
+					null, null);
 		}
 		
 	}
@@ -90,42 +92,42 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	@Transactional
 	@Override
-	public void updateFriendShip(Long userId,int friendUuid,int friendStatus)
+	public void updateFriendShip(final Long userId, final int friendUuid, final int friendStatus)
 	{
 
          /*
 		Prepare friendShip
          */
-		UserEntity connectedUser = getUserById(userId);
+		final UserEntity connectedUser = getUserById(userId);
 
          /*
 		Check if i received a friend request from the USER in the request
          */
-		FriendShipEntity tempFriendShip = getByFriendUuidAndUser(connectedUser.getUuid(),friendUuid);
+		final FriendShipEntity tempFriendShip = getByFriendUuidAndUser(connectedUser.getUuid(), friendUuid);
 		if (tempFriendShip == null) {
-			LOGGER.error("UPDATE-FRIEND: FriendShipEntity not found !");
+			this.LOGGER.error("UPDATE-FRIEND: FriendShipEntity not found !");
 			throw new EntityNotFoundException(
 					"FriendShipEntity not found between (" + connectedUser.getUuid() + ") And (" + friendUuid + ")");
 		}
 
         /*
-        prepare update
+		prepare update
          */
-		for (GlobalAppStatusEnum globalAppStatus : GlobalAppStatusEnum.values()) {
+		for (final GlobalAppStatusEnum globalAppStatus : GlobalAppStatusEnum.values()) {
 			if (globalAppStatus.getValue() == friendStatus) {
 				tempFriendShip.setStatus(globalAppStatus);
 			}
 		}
 		
 		//update and add notification
-		FriendShipEntity friendShip = friendShipRepository.save(tempFriendShip);
+		final FriendShipEntity friendShip = this.friendShipRepository.save(tempFriendShip);
 		if (friendShip != null) {
 			if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
-				addNotification(NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED,friendShip.getFriend(),
-						friendShip.getUser(),null,null);
+				addNotification(NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED, friendShip.getFriend(),
+						friendShip.getUser(), null, null);
 			} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
-				addNotification(NotificationTypeEnum.FRIEND_REQUEST_REFUSED,friendShip.getFriend(),friendShip.getUser(),
-						null,null);
+				addNotification(NotificationTypeEnum.FRIEND_REQUEST_REFUSED, friendShip.getFriend(),
+						friendShip.getUser(), null, null);
 			}
 		}
 		
@@ -136,11 +138,11 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	@Transactional
 	@Override
-	public void deleteFriendShip(FriendShipEntity friendShip)
+	public void deleteFriendShip(final FriendShipEntity friendShip)
 	{
 		
 		friendShip.setDeleted(true);
-		friendShipRepository.save(friendShip);
+		this.friendShipRepository.save(friendShip);
 		
 	}
 	
@@ -148,24 +150,34 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 * {@inheritDoc}
 	 */
 	@Override
-	public FriendShipEntity findFriendShip(int user1,int user2)
+	public FriendShipEntity findFriendShip(final int user1, final int user2)
 	{
-		return friendShipRepository.findFriendShip(user1,user2);
+		return this.friendShipRepository.findFriendShip(user1, user2);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<UserDTO> getConfirmedFriendList(int userId,int page)
+	public List<UserDTO> getConfirmedFriendList(final int userId, final int page)
 	{
 		
-		Pageable pageable = new PageRequest(page,friendListSize);
+		final Pageable pageable = new PageRequest(page, this.friendListSize);
 		
-		List<FriendShipEntity> friendShips = this.getByUserAndStatus(userId,GlobalAppStatusEnum.CONFIRMED,pageable);
+		final List<FriendShipEntity> friendShips = this.friendShipRepository
+				.findByUserUuidOrFriendUuidAndDeletedFalse(userId, userId, pageable);
 		
-		return friendShips.stream().map(f -> this.userTransformer.modelToDto(f.getFriend()))
-				.collect(Collectors.toList());
+		return friendShips.stream().filter(f -> f.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name()))
+				.map(f -> {
+					UserDTO userDTO;
+					if (f.getUser().getUuid() == userId) {
+						userDTO = this.userTransformer.modelToDto(f.getFriend());
+					} else {
+						userDTO = this.userTransformer.modelToDto(f.getUser());
+					}
+					userDTO.setPassword(null);
+					return userDTO;
+				}).collect(Collectors.toList());
 		
 	}
 }

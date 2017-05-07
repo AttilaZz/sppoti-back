@@ -139,7 +139,7 @@ class FriendGetController
 	 * @param page
 	 * 		page number.
 	 * @param authentication
-	 * 		spring secu.
+	 * 		spring security.
 	 *
 	 * @return all friend pending requests.
 	 */
