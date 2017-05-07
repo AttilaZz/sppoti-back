@@ -23,24 +23,22 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 			"(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend())) && !filterObject.isDeleted() ")
 	List<PostEntity> findAll();
 	
-	@PostFilter("filterObject.user.id == authentication.getPrincipal().getId() && !filterObject.isDeleted()")
-	List<PostEntity> getByUuidOrderByDatetimeCreatedDesc(int id, Pageable pageable);
+	@PostFilter("filterObject.user.id == authentication.getPrincipal().getId()")
+	List<PostEntity> getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(int id, Pageable pageable);
 	
 	@PostFilter(
 			"(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend())) && !filterObject.isDeleted() ")
 	List<PostEntity> getByUserUuidOrderByDatetimeCreatedDesc(int uuid, Pageable pageable);
 	
-	@PostFilter("!filterObject.isDeleted() ")
-	List<PostEntity> getByAlbumIsNotNullAndUserUuidOrderByDatetimeCreatedDesc(int userdId, Pageable pageable);
+	List<PostEntity> getByAlbumIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(int userdId,
+																							 Pageable pageable);
 	
-	@PostFilter("!filterObject.isDeleted() ")
-	List<PostEntity> getByVideoIsNotNullAndUserUuidOrderByDatetimeCreatedDesc(int userId, Pageable pageable);
+	List<PostEntity> getByVideoIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(int userId,
+																							 Pageable pageable);
 	
-	@PostFilter("!filterObject.isDeleted() ")
-	@Query("SELECT p FROM PostEntity p WHERE (p.user.id = :userId OR p.targetUserProfileUuid = :userUuid) AND p.visibility IN (:visibility)")
+	@Query("SELECT p FROM PostEntity p WHERE (p.user.id = :userId OR p.targetUserProfileUuid = :userUuid) AND p.visibility IN (:visibility) AND p.deleted = false ")
 	List<PostEntity> getAllPosts(@Param("userUuid") int userIntId, @Param("userId") Long userLongId,
 								 @Param("visibility") List visibility, Pageable pageable);
 	
-	@PostFilter("!filterObject.isDeleted() ")
-	List<PostEntity> getByUserUuid(int uuid, Pageable pageable);
+	List<PostEntity> getByUserUuidAndDeletedFalse(int uuid, Pageable pageable);
 }

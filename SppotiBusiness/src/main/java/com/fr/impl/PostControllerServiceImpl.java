@@ -180,7 +180,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		}
 		
 		final List<PostEntity> postEntities = this.postRepository
-				.getByAlbumIsNotNullAndUserUuidOrderByDatetimeCreatedDesc(userId, pageable);
+				.getByAlbumIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(userId, pageable);
 		
 		return postEntityToDto(postEntities, userEntity);
 	}
@@ -199,7 +199,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		}
 		
 		final List<PostEntity> postEntities = this.postRepository
-				.getByVideoIsNotNullAndUserUuidOrderByDatetimeCreatedDesc(userId, pageable);
+				.getByVideoIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(userId, pageable);
 		
 		return postEntityToDto(postEntities, userEntity);
 	}
@@ -416,7 +416,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public void editPostVisibility(final int id, final int visibility)
 	{
 		
-		final List<PostEntity> posts = this.postRepository.getByUuidOrderByDatetimeCreatedDesc(id, null);
+		final List<PostEntity> posts = this.postRepository.getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(id, null);
 		
 		if (posts.isEmpty()) {
 			throw new EntityNotFoundException("Post Not found");
@@ -505,15 +505,18 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 			this.friendShipRepository.findByUserUuidOrFriendUuidAndDeletedFalse(userId, userId, pageable).stream()
 					.filter(f -> f.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)).forEach(f -> {
 				if (f.getFriend().getUuid() != userId) {
-					postEntities.addAll(this.postRepository.getByUserUuid(f.getFriend().getUuid(), pageable));
+					postEntities.addAll(this.postRepository
+							.getByUserUuidAndDeletedFalse(f.getFriend().getUuid(), pageable));
 				} else if (f.getUser().getUuid() != userId) {
-					postEntities.addAll(this.postRepository.getByUserUuid(f.getUser().getUuid(), pageable));
+					postEntities
+							.addAll(this.postRepository.getByUserUuidAndDeletedFalse(f.getUser().getUuid(), pageable));
 					
 				}
 			});
 			
 			//add connected user posts
-			postEntities.addAll(this.postRepository.getByUserUuid(getConnectedUser().getUuid(), pageable));
+			postEntities
+					.addAll(this.postRepository.getByUserUuidAndDeletedFalse(getConnectedUser().getUuid(), pageable));
 			
 			//transform posts from entities to dto, with sorting by creation date.
 			return postEntities.stream().map(p -> this.fillPostToSend(p.getUuid(), accountUserId))
