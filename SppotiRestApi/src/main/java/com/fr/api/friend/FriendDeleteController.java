@@ -1,13 +1,9 @@
 package com.fr.api.friend;
 
-import com.fr.entities.FriendShipEntity;
-import com.fr.entities.UserEntity;
-import com.fr.security.AccountUserDetails;
 import com.fr.service.FriendControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,28 +31,14 @@ class FriendDeleteController
 	/**
 	 * @param friendId
 	 * 		friend id.
-	 * @param authentication
-	 * 		spring auth.
 	 *
 	 * @return 200 http status if friendship deleted, 400 status otherwise
 	 */
 	@DeleteMapping("/{friend_id}")
-	ResponseEntity deleteFriend(@PathVariable("friend_id") final int friendId, final Authentication authentication)
+	ResponseEntity deleteFriend(@PathVariable("friend_id") final int friendId)
 	{
 		
-		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
-		final UserEntity connectedUser = this.friendControllerService.getUserById(userId);
-
-        /*
-		Check if friendship exist
-         */
-		final FriendShipEntity friendShip = this.friendControllerService
-				.findFriendShip(friendId, connectedUser.getUuid());
-		if (friendShip == null) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-		
-		this.friendControllerService.deleteFriendShip(friendShip);
+		this.friendControllerService.deleteFriendShip(friendId);
 		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

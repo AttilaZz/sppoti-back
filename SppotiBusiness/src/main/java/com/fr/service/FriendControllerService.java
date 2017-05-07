@@ -1,9 +1,7 @@
 package com.fr.service;
 
+import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.FriendShipEntity;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,44 +14,12 @@ public interface FriendControllerService extends AbstractControllerService
 {
 	
 	/**
-	 * Fiend a all friends matching the given status
-	 *
-	 * @param uuid
-	 * @param name
-	 * @param pageable
-	 *
-	 * @return List FriendShipEntity DTO
-	 */
-	List<FriendShipEntity> getByUserAndStatus(int uuid,GlobalAppStatusEnum name,Pageable pageable);
-	
-	/**
-	 * Fiend a all friends matching the given status
-	 *
-	 * @param uuid
-	 * @param name
-	 * @param pageable
-	 *
-	 * @return List of Friendship DTO
-	 */
-	List<FriendShipEntity> getByFriendUuidAndStatus(int uuid,GlobalAppStatusEnum name,Pageable pageable);
-	
-	/**
-	 * Fiend friendship between two users
-	 *
-	 * @param uuid
-	 * @param uuid1
-	 *
-	 * @return Friendship DTO
-	 */
-	FriendShipEntity getByFriendUuidAndUser(int uuid,int uuid1);
-	
-	/**
 	 * Save the friendship and send notification
 	 *
 	 * @param friendShip
 	 * 		friendship.
 	 */
-	void saveFriendShip(FriendShipEntity friendShip);
+	void saveFriendShip(UserDTO friendShip);
 	
 	/**
 	 * Update status (ACCEPT/REFUSE) friend request and send notification
@@ -65,20 +31,15 @@ public interface FriendControllerService extends AbstractControllerService
 	 * @param friendStatus
 	 * 		friend status.
 	 */
-	void updateFriendShip(Long userId,int friendUuid,int friendStatus);
+	void updateFriendShip(Long userId, int friendUuid, int friendStatus);
 	
 	/**
 	 * Delete friendship by the sender
 	 *
-	 * @param friendShip
-	 * 		friendship.
+	 * @param friendId
+	 * 		id of user friend.
 	 */
-	void deleteFriendShip(FriendShipEntity friendShip);
-	
-	/**
-	 * @return friendship between two users.
-	 */
-	FriendShipEntity findFriendShip(int user1,int user2);
+	void deleteFriendShip(int friendId);
 	
 	/**
 	 * @param userId
@@ -86,5 +47,31 @@ public interface FriendControllerService extends AbstractControllerService
 	 *
 	 * @return all confirmed friend requests.
 	 */
-	List<UserDTO> getConfirmedFriendList(int userId,int page);
+	List<UserDTO> getConfirmedFriendList(int userId, int page);
+	
+	/**
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return list of all pending friend request sent.
+	 */
+	FriendResponseDTO getAllSentPendingFriendList(int page);
+	
+	/**
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return list of all received friend request sent.
+	 */
+	FriendResponseDTO getAllReceivedPendingFriendList(int page);
+	
+	/**
+	 * Get all refused friendship request for the connected user.
+	 *
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return list of refused friend request.
+	 */
+	FriendResponseDTO getRefusedFriendList(int page);
 }

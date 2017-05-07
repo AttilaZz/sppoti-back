@@ -1,8 +1,10 @@
 package com.fr.impl;
 
+import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.FriendControllerService;
@@ -12,10 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,40 +50,55 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	
 	/**
 	 * {@inheritDoc}
-	 */
-	@Override
-	public List<FriendShipEntity> getByUserAndStatus(final int uuid, final GlobalAppStatusEnum name,
-													 final Pageable pageable)
-	{
-		return this.friendShipRepository.findByUserUuidAndStatusAndDeletedFalse(uuid, name, pageable);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<FriendShipEntity> getByFriendUuidAndStatus(final int uuid, final GlobalAppStatusEnum name,
-														   final Pageable pageable)
-	{
-		return this.friendShipRepository.findByFriendUuidAndStatusAndDeletedFalse(uuid, name, pageable);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public FriendShipEntity getByFriendUuidAndUser(final int friendId, final int userId)
-	{
-		return this.friendShipRepository.findByFriendUuidAndUserUuidAndDeletedFalse(friendId, userId);
-	}
-	
-	/**
-	 * {@inheritDoc}
+	 *
+	 * @param user
+	 * 		friend data.
 	 */
 	@Transactional
 	@Override
-	public void saveFriendShip(final FriendShipEntity friendShip)
+	public void saveFriendShip(final UserDTO user)
 	{
+		
+        /*
+		Prepare friendShip
+         */
+		final UserEntity connectedUser = this.getConnectedUser();
+		final UserEntity friend = this.getUserByUuId(user.getFriendUuid());
+
+        /*
+		Check if the friend id refers to an existing user account
+         */
+		if (friend == null) {
+			throw new EntityNotFoundException("Friend id not found");
+		}
+
+        /*
+		Friend with my self
+         */
+		if (connectedUser.equals(friend)) {
+			throw new BusinessGlobalException("You're already friend with your self body !");
+		}
+
+        /*
+		Check if friendship exist
+         */
+		final FriendShipEntity tempFriendShip = this.friendShipRepository
+				.findByFriendUuidAndUserUuidAndDeletedFalse(friend.getUuid(), connectedUser.getUuid());
+		if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
+			throw new EntityExistsException("FriendShip already exists !");
+		}
+		
+		FriendShipEntity friendShip = new FriendShipEntity();
+		
+		//friendship already exist in a different status
+		if (tempFriendShip != null && tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
+			friendShip = tempFriendShip;
+			friendShip.setStatus(GlobalAppStatusEnum.PENDING);
+		} else {
+			final UserEntity u = this.getUserByUuId(user.getFriendUuid());
+			friendShip.setFriend(u);
+			friendShip.setUser(connectedUser);
+		}
 		
 		if (this.friendShipRepository.save(friendShip) != null) {
 			addNotification(NotificationTypeEnum.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend(),
@@ -103,7 +123,8 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
          /*
 		Check if i received a friend request from the USER in the request
          */
-		final FriendShipEntity tempFriendShip = getByFriendUuidAndUser(connectedUser.getUuid(), friendUuid);
+		final FriendShipEntity tempFriendShip = this.friendShipRepository
+				.findByFriendUuidAndUserUuidAndDeletedFalse(connectedUser.getUuid(), friendUuid);
 		if (tempFriendShip == null) {
 			this.LOGGER.error("UPDATE-FRIEND: FriendShipEntity not found !");
 			throw new EntityNotFoundException(
@@ -138,21 +159,20 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	@Transactional
 	@Override
-	public void deleteFriendShip(final FriendShipEntity friendShip)
+	public void deleteFriendShip(final int friendId)
 	{
+		
+		final UserEntity connectedUser = getConnectedUser();
+		
+		//Check if friendship exist
+		final FriendShipEntity friendShip = this.friendShipRepository.findFriendShip(friendId, connectedUser.getUuid());
+		if (friendShip == null) {
+			throw new EntityNotFoundException("Friendship not found");
+		}
 		
 		friendShip.setDeleted(true);
 		this.friendShipRepository.save(friendShip);
 		
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public FriendShipEntity findFriendShip(final int user1, final int user2)
-	{
-		return this.friendShipRepository.findFriendShip(user1, user2);
 	}
 	
 	/**
@@ -179,5 +199,86 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 					return userDTO;
 				}).collect(Collectors.toList());
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public FriendResponseDTO getAllSentPendingFriendList(final int page)
+	{
+		final UserEntity connectedUser = this.getConnectedUser();
+		
+		final Pageable pageable = new PageRequest(page, this.friendListSize, Sort.Direction.DESC, "datetimeCreated");
+		
+		final List<FriendShipEntity> friendShips = this.friendShipRepository
+				.findByUserUuidAndStatusAndDeletedFalse(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
+		
+		return getFriendResponse(friendShips, connectedUser.getId());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public FriendResponseDTO getAllReceivedPendingFriendList(final int page)
+	{
+		
+		final UserEntity connectedUser = getConnectedUser();
+		
+		final Pageable pageable = new PageRequest(page, this.friendListSize, Sort.Direction.DESC, "datetimeCreated");
+		
+		final List<FriendShipEntity> friendShips = this.friendShipRepository
+				.findByFriendUuidAndStatusAndDeletedFalse(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING,
+						pageable);
+		
+		return getFriendResponse(friendShips, connectedUser.getId());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public FriendResponseDTO getRefusedFriendList(final int page)
+	{
+		
+		final UserEntity connectedUser = getConnectedUser();
+		
+		
+		final Pageable pageable = new PageRequest(page, this.friendListSize, Sort.Direction.DESC, "datetimeCreated");
+		
+		final List<FriendShipEntity> friendShips = this.friendShipRepository
+				.findByUserUuidAndStatusAndDeletedFalse(connectedUser.getUuid(), GlobalAppStatusEnum.REFUSED, pageable);
+		
+		return getFriendResponse(friendShips, connectedUser.getId());
+	}
+	
+	/**
+	 * @param friendShips
+	 * 		list of all friendships.
+	 *
+	 * @return friend response DTO.
+	 */
+	private FriendResponseDTO getFriendResponse(final List<FriendShipEntity> friendShips, final Long connectedUser)
+	{
+		final List<UserDTO> friendList = new ArrayList<>();
+		
+		for (final FriendShipEntity friendShip : friendShips) {
+			final UserEntity user;
+			
+			if (friendShip.getFriend().getId().equals(connectedUser)) {
+				user = friendShip.getUser();
+			} else {
+				user = friendShip.getFriend();
+			}
+			
+			friendList.add(this.userTransformer.modelToDto(user));
+			
+		}
+		
+		final FriendResponseDTO friendResponse = new FriendResponseDTO();
+		friendResponse.setPendingList(friendList);
+		
+		return friendResponse;
 	}
 }
