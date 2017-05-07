@@ -544,7 +544,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		final Optional<SppotiEntity> sppotiEntity = Optional.ofNullable(this.sppotiRepository.findByUuid(sppotiId));
 		
 		if (sppotiEntity.isPresent()) {
-			//Test that connected user is sppoti admin
+			//TODO: Test that connected user is sppoti admin
 			
 			//filter all teams with adverse teams.
 			final Set<SppotiAdverseEntity> sppotiAdverseEntities = sppotiEntity.get().getAdverseTeams();
@@ -556,6 +556,42 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			teams.forEach(t -> sppotiAdverseEntities.forEach(a -> {
 				if (t.getId().equals(a.getTeam().getUuid()) ||
 						t.getId().equals(sppotiEntity.get().getTeamHostEntity().getUuid())) {
+					result.remove(t);
+				}
+			}));
+			
+			return result;
+		}
+		
+		throw new EntityNotFoundException("Sppoti not found");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<TeamDTO> getAllAllowedTeamsToChallengeSppoti(final Long userId, final Integer sppotiId, final int page)
+	{
+		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
+		
+		final Optional<SppotiEntity> optional = Optional.ofNullable(this.sppotiRepository.findByUuid(sppotiId));
+		
+		if (optional.isPresent()) {
+			final SppotiEntity sppoti = optional.get();
+			//Sppoti adverse teams.
+			final List<TeamDTO> sppotiAdverseTeams = sppoti.getAdverseTeams().stream()
+					.map(ad -> this.teamTransformer.modelToDto(ad.getTeam())).collect(Collectors.toList());
+			
+			//all user teams.
+			final List<TeamDTO> teamDTOList = this.teamMembersRepository
+					.findByTeamSportIdAndUsersId(sppoti.getSport().getId(), userId, pageable).stream()
+					.map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
+			
+			//Do not return teams that are already in sppoti adverse team list.
+			final List<TeamDTO> result = new ArrayList<>();
+			result.addAll(teamDTOList);
+			teamDTOList.forEach(t -> sppotiAdverseTeams.forEach(ad -> {
+				if (t.getId().equals(ad.getId())) {
 					result.remove(t);
 				}
 			}));

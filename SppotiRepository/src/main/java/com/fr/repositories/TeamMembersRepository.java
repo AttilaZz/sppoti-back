@@ -121,9 +121,21 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 * @param team
 	 * 		team name prefix.
 	 * @param pageable
-	 * 		page id.
+	 * 		page number.
 	 *
 	 * @return list of team members.
 	 */
 	List<TeamMemberEntity> findByTeamSportIdAndTeamNameContaining(Long sport, String team, Pageable pageable);
+	
+	/**
+	 * @param sportId
+	 * 		sppoti sport id.
+	 * @param userId
+	 * 		connected user id.
+	 * @param pageable
+	 * 		page number.
+	 *
+	 * @return list of team members.
+	 */
+	List<TeamMemberEntity> findByTeamSportIdAndUsersId(Long sportId, Long userId, Pageable pageable);
 }

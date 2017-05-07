@@ -1,10 +1,12 @@
 package com.fr.api.team;
 
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.security.AccountUserDetails;
 import com.fr.service.TeamControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,6 +80,8 @@ class TeamGetController
 	}
 	
 	/**
+	 * GEt all deleted teams for a user.
+	 *
 	 * @param userId
 	 * 		user id.
 	 * @param page
@@ -106,4 +110,29 @@ class TeamGetController
 	{
 		return new ResponseEntity<>(this.teamControllerService.getAllPendingChallenges(teamId, page), HttpStatus.OK);
 	}
+	
+	/**
+	 * Get all teams allowed to challenge a sppoti. (same sport, not already in sppoti adverse)
+	 *
+	 * @param page
+	 * 		page number.
+	 * @param authentication
+	 * 		spring security auth.
+	 * @param sppotiId
+	 * 		if of sppoti.
+	 *
+	 * @return list of teams.
+	 */
+	@GetMapping("/all/challenge/allowed/{sppotiId}/{page}")
+	ResponseEntity getAllTeamSAllowedToChallengeSppoti(@PathVariable final int page,
+													   @PathVariable final Integer sppotiId,
+													   final Authentication authentication)
+	{
+		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		
+		return new ResponseEntity<>(
+				this.teamControllerService.getAllAllowedTeamsToChallengeSppoti(userId, sppotiId, page), HttpStatus.OK);
+	}
+	
+	
 }

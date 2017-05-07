@@ -217,4 +217,18 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @return list of teams.
 	 */
 	List<TeamDTO> findAllAdverseTeams(int sppotiId, String team, int page);
+	
+	/**
+	 * Get all my teams that can send challenge request to sppoti admin.
+	 *
+	 * @param userId
+	 * 		connected user id.
+	 * @param sppotiId
+	 * 		sppoti id.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return list of all founded teams.
+	 */
+	List<TeamDTO> getAllAllowedTeamsToChallengeSppoti(Long userId, Integer sppotiId, int page);
 }

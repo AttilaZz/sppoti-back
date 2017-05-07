@@ -88,9 +88,21 @@ class FindTeamController
 		return new ResponseEntity<>(this.teamControllerService.findAllMyTeamsBySport(team, sport, page), HttpStatus.OK);
 	}
 	
+	/**
+	 * Find all teams that sppoti admin can challenge.
+	 *
+	 * @param team
+	 * 		team prefix.
+	 * @param sppotiId
+	 * 		sppoti id.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return list of teams.
+	 */
 	@GetMapping("/" + ALL_ADVERSE_TEAMS_SEARCH + "/{sppotiId}/{team}/{page}")
-	ResponseEntity<List<TeamDTO>> findAllAdverseTeamss(@PathVariable final String team,
-													   @PathVariable final int sppotiId, @PathVariable final int page)
+	ResponseEntity<List<TeamDTO>> findAllAdverseTeams(@PathVariable final String team, @PathVariable final int sppotiId,
+													  @PathVariable final int page)
 	{
 		
 		return new ResponseEntity<>(this.teamControllerService.findAllAdverseTeams(sppotiId, team, page),
