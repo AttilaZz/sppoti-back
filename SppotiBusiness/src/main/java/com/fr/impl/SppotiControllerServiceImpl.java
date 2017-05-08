@@ -262,6 +262,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 				throw new BusinessGlobalException("Adverse team sport not as same as sppoti sport !");
 			}
 			
+			//check if adverse team already exist.
+			if (sppoti.getAdverseTeams().stream().anyMatch(a -> a.getTeam().getId().equals(team.getId()))) {
+				throw new EntityExistsException("This team was already challenged.");
+			}
+			
 			//check if adverse team members are not in conflict with team host members
 			sppoti.getTeamHostEntity().getTeamMembers()
 					.forEach(hostMember -> team.getTeamMembers().forEach(adverseMember -> {

@@ -69,27 +69,34 @@ public class SppotiExceptionHandler
 	}
 	
 	/**
-	 * Catch All {@link javax.persistence.EntityExistsException} exceptions.
-	 * && {@link org.springframework.dao.DataIntegrityViolationException}
+	 * Catch All {@link org.springframework.dao.DataIntegrityViolationException}
 	 *
 	 * @param e
-	 * 		instace of {@link EntityNotFoundException}
+	 * 		instace of {@link DataIntegrityViolationException}
 	 *
 	 * @return 404 http status if exception was catched.
 	 */
-	@ExceptionHandler(value = {EntityExistsException.class, DataIntegrityViolationException.class})
-	public ResponseEntity conflictException(final EntityExistsException e, final DataIntegrityViolationException e1)
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity conflictException(final DataIntegrityViolationException e)
 	{
-		String message = null;
-		if (e != null) {
-			this.LOGGER.error(e.getMessage(), e);
-			message = e.getMessage();
-		} else if (e1 != null) {
-			this.LOGGER.error(e1.getMessage(), e1);
-			message = e1.getMessage();
-		}
 		
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+		this.LOGGER.error(e.getMessage(), e);
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+	}
+	
+	/**
+	 * Catch All {@link javax.persistence.EntityExistsException} exceptions.
+	 *
+	 * @param e
+	 * 		instace of {@link EntityExistsException}
+	 *
+	 * @return 404 http status if exception was catched.
+	 */
+	@ExceptionHandler(EntityExistsException.class)
+	public ResponseEntity conflictExistException(final EntityExistsException e)
+	{
+		this.LOGGER.error(e.getMessage(), e);
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 	}
 	
 	/**

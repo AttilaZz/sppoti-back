@@ -231,4 +231,16 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @return list of all founded teams.
 	 */
 	List<TeamDTO> getAllAllowedTeamsToChallengeSppoti(Long userId, Integer sppotiId, int page);
+	
+	/**
+	 * Get all teams by sport id.
+	 *
+	 * @param sportId
+	 * 		sport id.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return list of teams.
+	 */
+	List<TeamDTO> getAllTeamsBySportType(Long sportId, int page);
 }

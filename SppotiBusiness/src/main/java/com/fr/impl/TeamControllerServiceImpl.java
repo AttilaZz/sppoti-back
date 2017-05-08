@@ -606,6 +606,19 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
+	public List<TeamDTO> getAllTeamsBySportType(final Long sportId, final int page)
+	{
+		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
+		
+		return this.teamMembersRepository.findByTeamSportIdAndUsersId(sportId, getConnectedUser().getId(), pageable)
+				.stream().map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public List<TeamDTO> findAllMyTeams(final String team, final int page)
 	{
 		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");

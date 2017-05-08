@@ -134,5 +134,21 @@ class TeamGetController
 				this.teamControllerService.getAllAllowedTeamsToChallengeSppoti(userId, sppotiId, page), HttpStatus.OK);
 	}
 	
+	/**
+	 * Get all teams by the sport id.
+	 *
+	 * @param page
+	 * 		page number
+	 * @param sportId
+	 * 		sport id.
+	 *
+	 * @return list of teams.
+	 */
+	@GetMapping("/all/by/sport/{sportId}/{page}")
+	ResponseEntity getAllTeamBySportType(@PathVariable final int page, @PathVariable final Long sportId)
+	{
+		
+		return new ResponseEntity<>(this.teamControllerService.getAllTeamsBySportType(sportId, page), HttpStatus.OK);
+	}
 	
 }
