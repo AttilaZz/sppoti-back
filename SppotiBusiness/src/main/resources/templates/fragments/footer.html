@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+<p class=" ftr" th:fragment="footer">
+    <span>© sppoti, 2017</span>
+    <span class="remove-your-email">
+        <span th:text="${sentToText}">This message was sent to </span>
+        <span th:text="${receiverEmail}">xxx.xxx@xxx.xx</span>
+        <span th:text="${emailIntendedForMessageText}">and intended for</span>
+        <span th:text="${receiverUsername}">xsxsxsxxsx</span>.
+        <span th:text="${notYourAccountText}">Not your account?</span>
+        <span th:text="${contactUsMessageText}">contact us</span>.
+    </span>
+</p>
+</body>
+</html>

@@ -358,7 +358,7 @@
                                     <span th:text="${emailIntendedForMessageText}">and intended for</span>
                                     <span th:text="${receiverUsername}">xsxsxsxxsx</span>.
                                     <span th:text="${notYourAccountText}">Not your account?</span>
-                                    <span th:text="${contactUsMessageText}">contact us</span>.
+                                    <a th:href="'mailto:' + ${contactUsLink}" th:text="${contactUsMessageText}">contact us</a>.
                                 </span>
                             </p>
                         </td>

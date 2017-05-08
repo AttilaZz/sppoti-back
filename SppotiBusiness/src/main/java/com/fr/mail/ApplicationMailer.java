@@ -61,7 +61,7 @@ abstract class ApplicationMailer
 	
 	/** name resources to use inside templates. */
 	static final String logoResourceName = "sppoti_logo.png";
-	static final String teamAvatarResourceName = "team_avatar.png";
+	static final String teamDefaultAvatarResourceName = "team_avatar.png";
 	static final String sppotiCoverResourceName = "sppoti_bg.png";
 	
 	/** Global email texts - for translation. */
@@ -75,6 +75,16 @@ abstract class ApplicationMailer
 	String contactUsMessage;
 	@Value("${spring.app.mail.sent.to}")
 	String sentToTextMessage;
+	@Value("${spring.app.mail.learn.more}")
+	String learnMoreMessage;
+	@Value("${spring.app.mail.join}")
+	String joinMessage;
+	@Value("${spring.app.mail.invited.by}")
+	String invitedByMessage;
+	@Value("${spring.app.mail.and.preposition}")
+	String andPrepositionMessage;
+	@Value("${spring.app.mail.other.preposition}")
+	String otherPrepositionMessage;
 	
 	/** Init dependencies. */
 	@Autowired

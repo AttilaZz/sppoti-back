@@ -93,7 +93,8 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 		
 		sppotiDTO.setId(model.getUuid());
 		
-		sppotiDTO.setConnectedUserId(this.userRepository.findOne(model.getConnectedUserId()).getUuid());
+		if (model.getConnectedUserId() != null)
+			sppotiDTO.setConnectedUserId(this.userRepository.findOne(model.getConnectedUserId()).getUuid());
 		
 		if (model.getSport() != null) {
 			sppotiDTO.setRelatedSport(this.sportTransformer.modelToDto(model.getSport()));

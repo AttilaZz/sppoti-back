@@ -130,8 +130,10 @@ public class AccountMailer extends ApplicationMailer
 		context.setVariable("receiverEmail", to.getEmail());
 		context.setVariable("receiverUsername", to.getUsername());
 		context.setVariable("imageResourceName", resourceContent.getResourceName());
+		
 		context.setVariable("recoverAccountConcatUsMessage", this.recoverAccountConcatUsMessage);
 		
+		//Template footer.
 		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
 		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
 		context.setVariable("contactUsMessageText", this.contactUsMessage);

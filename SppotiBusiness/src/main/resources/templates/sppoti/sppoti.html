@@ -496,11 +496,16 @@
                                    style="padding: 10px 16px;color: #FFF;cursor: pointer;text-decoration: none;background-color: #30d3c2;font-weight: bold;margin: 0 10px 0 0;text-align: center;display: inline-block;width: 92%;">Join!</a>
                             </div>
                             <br/>
-                            <p class="ftr">
+                            <p class=" ftr">
                                 <span>© sppoti, 2017</span>
-                                <span>This message was sent to <span
-                                        th:text="${sentToEmail}">wail.djenane@gmail.com</span> and intended for <span
-                                        th:text="${sentToUsername}">piratusse</span>. Not your account? Remove your email from this account.</span>
+                                <span class="remove-your-email">
+                                    <span th:text="${sentToText}">This message was sent to </span>
+                                    <span th:text="${receiverEmail}">xxx.xxx@xxx.xx</span>
+                                    <span th:text="${emailIntendedForMessageText}">and intended for</span>
+                                    <span th:text="${receiverUsername}">xsxsxsxxsx</span>.
+                                    <span th:text="${notYourAccountText}">Not your account?</span>
+                                    <span th:text="${contactUsMessageText}">contact us</span>.
+                                </span>
                             </p>
 
                         </td>

@@ -19,32 +19,30 @@ import org.thymeleaf.context.Context;
 public class SppotiMailer extends ApplicationMailer
 {
 	
+	/** Notify sppoti admin about his ne sppoti. */
 	@Value("${spring.app.mail.sppoti.add.message}")
 	private String addSppotiMessage;
-	@Value("${spring.app.mail.sppoti.join.message}")
-	private String joinSppotiMessage;
-	@Value("${spring.app.mail.sppoti.confirm.message}")
-	private String confirmJoinSppotiMessage;
-	
 	@Value("${spring.app.mail.sppoti.add.subject}")
 	private String addSppotiSubject;
+	
+	/** Notify a sppoter about sppoti invitation. */
+	@Value("${spring.app.mail.sppoti.join.message}")
+	private String joinSppotiMessage;
 	@Value("${spring.app.mail.sppoti.join.subject}")
 	private String joinSppotiSubject;
+	
+	/** Notify sppoti admin when an invitation is accepted or refused. */
+	@Value("${spring.app.mail.sppoti.confirm.message}")
+	private String confirmJoinSppotiMessage;
 	@Value("${spring.app.mail.sppoti.confirm.subject}")
 	private String confirmJoinSppotiSubject;
 	
+	/** Redirection link to the front app. */
 	@Value("${spring.app.mail.sppoti.join.link}")
 	private String joinSppotiLink;
 	
 	/**
 	 * Init mail configuration.
-	 *
-	 * @param sender
-	 * 		java mail sender.
-	 * @param mailProperties
-	 * 		email config properties.
-	 * @param templateEngine
-	 * 		thymelief template engine.
 	 */
 	@Autowired
 	public SppotiMailer(final JavaMailSender sender, final MailProperties mailProperties,
@@ -117,6 +115,13 @@ public class SppotiMailer extends ApplicationMailer
 		context.setVariable("sentToFirstName", to.getFirstName());
 		context.setVariable("sentToEmail", to.getEmail());
 		context.setVariable("sentToUsername", to.getUsername());
+		
+		//Template Footer.
+		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
+		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
+		context.setVariable("contactUsMessageText", this.contactUsMessage);
+		context.setVariable("contactUsLink", this.contactUsLink);
+		context.setVariable("sentToText", this.sentToTextMessage);
 		
 		final String text = this.templateEngine.process(PATH_TO_SPPOTI_TEMPLATE, context);
 		

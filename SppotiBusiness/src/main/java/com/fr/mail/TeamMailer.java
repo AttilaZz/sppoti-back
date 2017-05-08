@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Created by djenanewail on 3/23/17.
  * <p>
@@ -20,23 +23,36 @@ import org.thymeleaf.context.Context;
 public class TeamMailer extends ApplicationMailer
 {
 	
+	/** Notify team admin about his new team. */
 	@Value("${spring.app.mail.team.add.message}")
 	private String addTeamMessage;
-	@Value("${spring.app.mail.team.join.message}")
-	private String joinTeamMessage;
-	@Value("${spring.app.mail.team.confirm.message}")
-	private String confirmJoinTeamMessage;
-	
 	@Value("${spring.app.mail.team.add.subject}")
 	private String addTeamSubject;
+	
+	/** Notify team member about team invitation. */
+	@Value("${spring.app.mail.team.join.message}")
+	private String joinTeamMessage;
 	@Value("${spring.app.mail.team.join.subject}")
 	private String joinTeamSubject;
+	
+	/** Notify team admin if a member accept or refuse to join his team. */
+	@Value("${spring.app.mail.team.confirm.message}")
+	private String confirmJoinTeamMessage;
 	@Value("${spring.app.mail.team.confirm.subject}")
 	private String confirmJoinTeamSubject;
 	
+	/** Redirection link to the front app. */
 	@Value("${spring.app.mail.team.join.link}")
 	private String joinTeamLink;
 	
+	/** Explain team utility. */
+	@Value("${spring.app.mail.team.explanation}")
+	private String sppotiTeamConcept;
+	
+	@Value("${spring.app.mail.team.invited.by.join.team}")
+	private String toJoinTeamMessage;
+	
+	/** Init team mailer. */
 	public TeamMailer(final JavaMailSender sender, final MailProperties mailProperties,
 					  final TemplateEngine templateEngine)
 	{
@@ -66,8 +82,14 @@ public class TeamMailer extends ApplicationMailer
 	 */
 	public void sendJoinTeamEmail(final TeamDTO team, final UserDTO to, final UserDTO from)
 	{
-		this.joinTeamLink = this.frontRootPath + this.joinTeamLink.replaceAll("(.*)%teamId%(.*)", team.getId() + "");
-		prepareAndSendEmail(to, from, team, this.joinTeamSubject, this.joinTeamMessage, this.joinTeamLink, null);
+		
+		final ResourceContent resourceContent = new ResourceContent();
+		resourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
+		resourceContent.setResourceName(teamDefaultAvatarResourceName);
+		
+		final String joinTeamLinkParsed = this.frontRootPath + this.joinTeamLink.replace("%teamId%", team.getId() + "");
+		prepareAndSendEmail(to, from, team, this.joinTeamSubject, this.joinTeamMessage, joinTeamLinkParsed,
+				resourceContent);
 	}
 	
 	/**
@@ -91,6 +113,10 @@ public class TeamMailer extends ApplicationMailer
 									 final ResourceContent resourceContent)
 	{
 		
+		final int memberCount = team.getMembers().size();
+		final List<UserDTO> teamMembers = team.getMembers().stream().limit(2).collect(Collectors.toList());
+		final int memberCountToDisplay = memberCount - teamMembers.size();
+		
 		final Context context = new Context();
 		context.setVariable("title", to.getFirstName());
 		
@@ -103,10 +129,30 @@ public class TeamMailer extends ApplicationMailer
 		
 		context.setVariable("body", content);
 		context.setVariable("sentToTeamName", team.getName());
-		context.setVariable("sentToTeamMembersCount", team.getMembers().size());
 		context.setVariable("sentToFirstName", to.getFirstName());
-		context.setVariable("sentToEmail", to.getEmail());
-		context.setVariable("sentToUsername", to.getUsername());
+		context.setVariable("receiverEmail", to.getEmail());
+		context.setVariable("receiverUsername", to.getUsername());
+		
+		context.setVariable("teamMembersCount", memberCountToDisplay);
+		context.setVariable("teamMembers", teamMembers);
+		
+		//Team avatar
+		context.setVariable("imageResourceName", resourceContent.getResourceName());
+		
+		context.setVariable("globalInformationAboutTeams", this.sppotiTeamConcept);
+		context.setVariable("learnMoreMessage", this.learnMoreMessage);
+		context.setVariable("joinMessage", this.joinMessage);
+		context.setVariable("invitedByMessage", this.invitedByMessage);
+		context.setVariable("toJoinTeamMessage", this.toJoinTeamMessage);
+		context.setVariable("andPrepositionMessage", this.andPrepositionMessage);
+		context.setVariable("otherPrepositionMessage", this.otherPrepositionMessage);
+		
+		//Template footer.
+		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
+		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
+		context.setVariable("contactUsMessageText", this.contactUsMessage);
+		context.setVariable("contactUsLink", this.contactUsLink);
+		context.setVariable("sentToText", this.sentToTextMessage);
 		
 		final String text = this.templateEngine.process(PATH_TO_TEAM_TEMPLATE, context);
 		
