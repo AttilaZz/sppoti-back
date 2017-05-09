@@ -75,9 +75,15 @@ public class SppotiMailer extends ApplicationMailer
 	 */
 	public void sendJoinSppotiEmail(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
-		this.joinSppotiLink = this.frontRootPath + this.joinSppotiLink.replace("%SppotiId%", sppoti.getId() + "");
-		prepareAndSendEmail(to, from, sppoti, this.joinSppotiSubject, this.joinSppotiMessage, this.joinSppotiLink,
-				null);
+		
+		final ResourceContent resourceContent = new ResourceContent();
+		resourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
+		resourceContent.setResourceName(teamDefaultAvatarResourceName);
+		
+		final String joinSppotiLinkParsed = this.frontRootPath +
+				this.joinSppotiLink.replace("%SppotiId%", sppoti.getId() + "");
+		prepareAndSendEmail(to, from, sppoti, this.joinSppotiSubject, this.joinSppotiMessage, joinSppotiLinkParsed,
+				resourceContent);
 	}
 	
 	/**

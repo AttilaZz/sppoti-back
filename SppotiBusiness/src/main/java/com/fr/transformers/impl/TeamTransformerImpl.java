@@ -43,8 +43,10 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 	 * Init dependencies.
 	 */
 	@Autowired
-	public TeamTransformerImpl(SportTransformer sportTransformer,TeamMemberTransformer teamMemberTransformer,
-							   TeamMembersRepository teamMembersRepository,SppotiRepository sppotiRepository)
+	public TeamTransformerImpl(final SportTransformer sportTransformer,
+							   final TeamMemberTransformer teamMemberTransformer,
+							   final TeamMembersRepository teamMembersRepository,
+							   final SppotiRepository sppotiRepository)
 	{
 		this.sportTransformer = sportTransformer;
 		this.teamMemberTransformer = teamMemberTransformer;
@@ -56,30 +58,30 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TeamDTO modelToDto(TeamEntity model)
+	public TeamDTO modelToDto(final TeamEntity model)
 	{
-		TeamDTO teamDTO = new TeamDTO();
+		final TeamDTO teamDTO = new TeamDTO();
 		
 		teamDTO.setId(model.getUuid());
 		teamDTO.setVersion(model.getVersion());
 		teamDTO.setName(model.getName());
 		teamDTO.setCoverPath(model.getCoverPath());
 		teamDTO.setLogoPath(model.getLogoPath());
-		teamDTO.setSport(sportTransformer.modelToDto(model.getSport()));
+		teamDTO.setSport(this.sportTransformer.modelToDto(model.getSport()));
 		teamDTO.setCreationDate(model.getCreationDate());
 		teamDTO.setColor(model.getColor());
 		
 		SppotiEntity sppotiEntity = null;
 		if (model.getRelatedSppotiId() != null) {
-			sppotiEntity = sppotiRepository.findOne(model.getRelatedSppotiId());
+			sppotiEntity = this.sppotiRepository.findOne(model.getRelatedSppotiId());
 		}
 		
-		teamDTO.setTeamAdmin(teamMemberTransformer
-				.modelToDto(teamMembersRepository.findByTeamUuidAndAdminTrue(model.getUuid()),sppotiEntity));
+		teamDTO.setTeamAdmin(this.teamMemberTransformer
+				.modelToDto(this.teamMembersRepository.findByTeamUuidAndAdminTrue(model.getUuid()), sppotiEntity));
 		
-		SppotiEntity finalSppotiEntity = sppotiEntity;
+		final SppotiEntity finalSppotiEntity = sppotiEntity;
 		teamDTO.setMembers(
-				model.getTeamMembers().stream().map(m -> teamMemberTransformer.modelToDto(m,finalSppotiEntity))
+				model.getTeamMembers().stream().map(m -> this.teamMemberTransformer.modelToDto(m, finalSppotiEntity))
 						.collect(Collectors.toList()));
 		
 		return teamDTO;
@@ -89,9 +91,9 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TeamEntity dtoToModel(TeamDTO dto)
+	public TeamEntity dtoToModel(final TeamDTO dto)
 	{
-		TeamEntity entity = new TeamEntity();
+		final TeamEntity entity = new TeamEntity();
 		
 		entity.setUuid(dto.getId());
 		entity.setVersion(dto.getVersion());
