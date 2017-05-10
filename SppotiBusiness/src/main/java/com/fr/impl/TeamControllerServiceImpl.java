@@ -134,7 +134,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public TeamDTO getTeamById(final int teamId)
 	{
 		
-		final List<TeamEntity> team = this.teamRepository.findByUuid(teamId);
+		final List<TeamEntity> team = this.teamRepository.findByUuidAndDeletedFalse(teamId);
 		
 		if (team == null || team.isEmpty()) {
 			throw new EntityNotFoundException("TeamEntity id not found");
@@ -248,7 +248,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public void deleteTeam(final int id)
 	{
 		
-		final List<TeamEntity> team = this.teamRepository.findByUuid(id);
+		final List<TeamEntity> team = this.teamRepository.findByUuidAndDeletedFalse(id);
 		
 		if (team == null || team.isEmpty()) {
 			throw new EntityNotFoundException("TeamEntity not found");
@@ -273,7 +273,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			throw new EntityNotFoundException("UserDTO with id (" + userParam.getId() + ") Not found");
 		}
 		
-		final List<TeamEntity> teamList = this.teamRepository.findByUuid(teamId);
+		final List<TeamEntity> teamList = this.teamRepository.findByUuidAndDeletedFalse(teamId);
 		
 		//Check if team id exist
 		if (StringUtils.isEmpty(teamList)) {
@@ -511,7 +511,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	private TeamEntity getTeamEntityIfExist(final int teamId)
 	{
 		//Check if team exists.
-		final List<TeamEntity> teamEntityList = this.teamRepository.findByUuid(teamId);
+		final List<TeamEntity> teamEntityList = this.teamRepository.findByUuidAndDeletedFalse(teamId);
 		if (teamEntityList.isEmpty()) {
 			throw new EntityNotFoundException("Team id (" + teamId + ") not found");
 		}
@@ -642,7 +642,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	{
 		final Pageable pageable = new PageRequest(page, this.teamPageSize);
 		
-		final List<TeamEntity> myTeams = this.teamRepository.findByNameContaining(team, pageable);
+		final List<TeamEntity> myTeams = this.teamRepository.findByNameContainingAndDeletedFalse(team, pageable);
 		
 		return myTeams.stream().map(t -> fillTeamResponse(t, null)).collect(Collectors.toList());
 	}
@@ -669,9 +669,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	{
 		final Pageable pageable = new PageRequest(page, this.teamPageSize);
 		
-		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
-				.findByTeamSportIdAndTeamNameContaining(sport, team, pageable);
+		final List<TeamEntity> myTeams = this.teamRepository
+				.findBySportIdAndNameContaining(sport, team, pageable);
 		
-		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null)).collect(Collectors.toList());
+		return myTeams.stream().map(t -> fillTeamResponse(t, null)).collect(Collectors.toList());
 	}
 }

@@ -120,7 +120,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			
 		} else if (newSppoti.getMyTeamId() != 0) {
 			
-			final List<TeamEntity> tempTeams = this.teamRepository.findByUuid(newSppoti.getMyTeamId());
+			final List<TeamEntity> tempTeams = this.teamRepository.findByUuidAndDeletedFalse(newSppoti.getMyTeamId());
 			
 			if (tempTeams == null || tempTeams.isEmpty()) {
 				throw new EntityNotFoundException("Host team not found in the request");
@@ -250,7 +250,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		}
 		
 		if (sppotiRequest.getVsTeam() != null && sppotiRequest.getVsTeam() != 0) {
-			final List<TeamEntity> adverseTeam = this.teamRepository.findByUuid(sppotiRequest.getVsTeam());
+			final List<TeamEntity> adverseTeam = this.teamRepository.findByUuidAndDeletedFalse(sppotiRequest.getVsTeam());
 			
 			//check if adverse team exist
 			if (adverseTeam.isEmpty()) {
@@ -385,7 +385,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	public SppotiDTO sendChallenge(final int sppotiId, final int teamId, final Long connectedUserId)
 	{
 		//Check if team exist.
-		final List<TeamEntity> teamEntities = this.teamRepository.findByUuid(teamId);
+		final List<TeamEntity> teamEntities = this.teamRepository.findByUuidAndDeletedFalse(teamId);
 		if (teamEntities.isEmpty()) {
 			throw new EntityNotFoundException("Team not found (" + teamId + ")");
 		}
@@ -459,7 +459,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			}
 			
 			//check if team exist, and it's already pending id sppoti adverse teams.
-			final List<TeamEntity> teamEntities = this.teamRepository.findByUuid(teamDTO.getId());
+			final List<TeamEntity> teamEntities = this.teamRepository.findByUuidAndDeletedFalse(teamDTO.getId());
 			if (teamEntities.isEmpty()) {
 				throw new EntityNotFoundException("Team (" + teamDTO.getId() + ") not found");
 			}
