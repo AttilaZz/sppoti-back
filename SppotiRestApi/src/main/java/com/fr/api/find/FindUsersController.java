@@ -1,4 +1,4 @@
-package com.fr.api.search;
+package com.fr.api.find;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.UserEntity;

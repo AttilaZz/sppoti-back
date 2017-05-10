@@ -1,4 +1,4 @@
-package com.fr.api.search;
+package com.fr.api.find;
 
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.service.TeamControllerService;
@@ -20,7 +20,7 @@ import java.util.List;
 class FindTeamController
 {
 	
-	/** Team search types. */
+	/** Team find types. */
 	private static final int MY_TEAM_SEARCH = 1;
 	private static final int ALL_TEAM_SEARCH = 0;
 	private static final int ALL_ADVERSE_TEAMS_SEARCH = 2;

@@ -1,4 +1,4 @@
-package com.fr.api.search;
+package com.fr.api.find;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
@@ -48,7 +48,7 @@ class FindFriendController
 	
 	/**
 	 * @param userPrefix
-	 * 		user prefix to search.
+	 * 		user prefix to find.
 	 * @param page
 	 * 		page number.
 	 *

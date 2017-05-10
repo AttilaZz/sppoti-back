@@ -54,9 +54,9 @@ class WebSocketController
 		return "start";
 	}
 	
-	@MessageMapping("/search")
+	@MessageMapping("/find")
 	@SendToUser
-		// <- maps to "/user/queue/search"
+		// <- maps to "/user/queue/find"
 	String search(@Payload final String xxx)
 	{
 		return "TEST1234";

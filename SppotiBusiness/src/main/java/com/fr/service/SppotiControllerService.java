@@ -198,4 +198,16 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @return list of sppoties.
 	 */
 	List<SppotiDTO> getAllPendingChallengeRequestSppoties(int userId, int page);
+	
+	/**
+	 * Find all sppoter who can join sppoti in order to add them to the team host or the adverse.
+	 *
+	 * @param prefix
+	 * 		sppoter prefix name.
+	 * @param page
+	 * 		page number.
+	 *
+	 * @return list of {@link UserDTO}
+	 */
+	List<UserDTO> findAllSppoterAllowedToJoinSppoti(String prefix, int sppotiId, int page);
 }

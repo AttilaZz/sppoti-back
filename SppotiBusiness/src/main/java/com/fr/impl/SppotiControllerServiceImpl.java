@@ -681,6 +681,27 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
+	public List<UserDTO> findAllSppoterAllowedToJoinSppoti(final String prefix, final int sppotiId, final int page)
+	{
+		final Optional<SppotiEntity> optional = Optional.ofNullable(this.sppotiRepository.findByUuid(sppotiId));
+		
+		//sppoti exists.
+		if (optional.isPresent()) {
+			final SppotiEntity sp = optional.get();
+			final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
+			
+			return this.sppotiMembersRepository.findAllAllowedSppoter(prefix, pageable).stream()
+					.map(s -> this.teamMemberTransformer.modelToDto(s.getTeamMember(), s.getSppoti()))
+					.collect(Collectors.toList());
+		}
+		
+		throw new EntityNotFoundException("Sppoti not found");
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Transactional
 	@Override
 	public UserDTO addSppoter(final int sppotiId, final UserDTO user)
