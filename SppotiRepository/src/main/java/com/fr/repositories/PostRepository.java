@@ -36,7 +36,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 	List<PostEntity> getByVideoIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(int userId,
 																							 Pageable pageable);
 	
-	@Query("SELECT p FROM PostEntity p WHERE (p.user.id = :userId OR p.targetUserProfileUuid = :userUuid) AND p.visibility IN (:visibility) AND p.deleted = false ")
+	@Query("SELECT p FROM PostEntity p WHERE (p.user.id = :userId OR p.targetUserProfileUuid = :userUuid) " +
+			"AND p.visibility IN (:visibility) AND p.deleted = false")
 	List<PostEntity> getAllPosts(@Param("userUuid") int userIntId, @Param("userId") Long userLongId,
 								 @Param("visibility") List visibility, Pageable pageable);
 	

@@ -250,7 +250,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		}
 		
 		if (sppotiRequest.getVsTeam() != null && sppotiRequest.getVsTeam() != 0) {
-			final List<TeamEntity> adverseTeam = this.teamRepository.findByUuidAndDeletedFalse(sppotiRequest.getVsTeam());
+			final List<TeamEntity> adverseTeam = this.teamRepository
+					.findByUuidAndDeletedFalse(sppotiRequest.getVsTeam());
 			
 			//check if adverse team exist
 			if (adverseTeam.isEmpty()) {
@@ -691,8 +692,13 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			final SppotiEntity sp = optional.get();
 			final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 			
-			return this.sppotiMembersRepository.findAllAllowedSppoter(prefix, pageable).stream()
-					.map(s -> this.teamMemberTransformer.modelToDto(s.getTeamMember(), s.getSppoti()))
+			final List<Long> existingSppoter = sp.getAdverseTeams().stream().map(t -> t.getTeam().getId())
+					.collect(Collectors.toList());
+			
+			existingSppoter.add(sp.getTeamHostEntity().getId());
+			
+			return this.sppotiMembersRepository.findAllAllowedSppoter(prefix, sp.getId(), existingSppoter, pageable)
+					.stream().map(s -> this.teamMemberTransformer.modelToDto(s.getTeamMember(), s.getSppoti()))
 					.collect(Collectors.toList());
 		}
 		

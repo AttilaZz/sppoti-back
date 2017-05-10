@@ -4,6 +4,7 @@ import com.fr.entities.SppoterEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -63,8 +64,10 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 *
 	 * @return list of {@link SppoterEntity}
 	 */
-	@Query("SELECT u from SppoterEntity s WHERE s.teamMember.users.username LIKE CONCAT('%',:prefix,'%') " +
-			"OR s.teamMember.users.firstName LIKE CONCAT('%',:prefix,'%') OR s.teamMember.users.lastName " +
-			"LIKE CONCAT('%',:prefix,'%')")
-	List<SppoterEntity> findAllAllowedSppoter(String prefix, Pageable pageable);
+	@Query("SELECT s FROM SppoterEntity s WHERE (s.teamMember.users.username LIKE CONCAT('%',:prefix,'%') AND s.sppoti.id = :sppotiId)" +
+			"OR (s.teamMember.users.firstName LIKE CONCAT('%',:prefix,'%') AND s.sppoti.id = :sppotiId)" +
+			"OR (s.teamMember.users.lastName LIKE CONCAT('%',:prefix,'%') AND s.sppoti.id = :sppotiId)" +
+			"AND s.teamMember.users.id NOT IN (:existingSppoter)")
+	List<SppoterEntity> findAllAllowedSppoter(@Param("prefix") String prefix, @Param("sppotiId") Long sppotiId,
+											  @Param("existingSppoter") List existingSppoter, Pageable pageable);
 }
