@@ -20,15 +20,15 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 	List<PostEntity> getByUuid(int postId);
 	
 	@PostFilter(
-			"(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend())) && !filterObject.isDeleted() ")
+			"(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend()))")
 	List<PostEntity> findAll();
 	
 	@PostFilter("filterObject.user.id == authentication.getPrincipal().getId()")
 	List<PostEntity> getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(int id, Pageable pageable);
 	
 	@PostFilter(
-			"(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend())) && !filterObject.isDeleted() ")
-	List<PostEntity> getByUserUuidOrderByDatetimeCreatedDesc(int uuid, Pageable pageable);
+			"(filterObject.user.id == authentication.getPrincipal().getId() || filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend()))")
+	List<PostEntity> getByUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(int uuid, Pageable pageable);
 	
 	List<PostEntity> getByAlbumIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(int userdId,
 																							 Pageable pageable);

@@ -690,16 +690,19 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		//sppoti exists.
 		if (optional.isPresent()) {
 			final SppotiEntity sp = optional.get();
-			final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
+			final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "username");
 			
-			final List<Long> existingSppoter = sp.getAdverseTeams().stream().map(t -> t.getTeam().getId())
-					.collect(Collectors.toList());
+			final List<Long> existingSppoter = new ArrayList<>();
 			
-			existingSppoter.add(sp.getTeamHostEntity().getId());
+			sp.getAdverseTeams().forEach(m -> existingSppoter
+					.addAll(m.getTeam().getTeamMembers().stream().map(a -> a.getUsers().getId())
+							.collect(Collectors.toList())));
 			
-			return this.sppotiMembersRepository.findAllAllowedSppoter(prefix, sp.getId(), existingSppoter, pageable)
-					.stream().map(s -> this.teamMemberTransformer.modelToDto(s.getTeamMember(), s.getSppoti()))
-					.collect(Collectors.toList());
+			existingSppoter.addAll(sp.getTeamHostEntity().getTeamMembers().stream().map(m -> m.getUsers().getId())
+					.collect(Collectors.toList()));
+			
+			return this.userRepository.findAllAllowedSppoter(prefix, existingSppoter, pageable).stream()
+					.map(this.userTransformer::modelToDto).collect(Collectors.toList());
 		}
 		
 		throw new EntityNotFoundException("Sppoti not found");

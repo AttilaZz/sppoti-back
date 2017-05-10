@@ -1,5 +1,6 @@
 package com.fr.repositories;
 
+import com.fr.entities.SppoterEntity;
 import com.fr.entities.UserEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,4 +41,20 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>
 															Pageable pageable);
 	
 	UserEntity getByRecoverCodeAndDeletedFalse(String code);
+	
+	/**
+	 * Find all sppoter allowed to join sppoti.
+	 *
+	 * @param prefix
+	 * 		sppoter prefix name.
+	 * @param pageable
+	 * 		page number.
+	 *
+	 * @return list of {@link SppoterEntity}
+	 */
+	@Query("SELECT s FROM UserEntity s WHERE (s.username LIKE CONCAT('%', :prefix ,'%')" +
+			"OR s.firstName LIKE CONCAT('%', :prefix, '%')" + "OR s.lastName LIKE CONCAT('%', :prefix, '%'))" +
+			"AND s.id NOT IN (:existingSppoter)")
+	List<UserEntity> findAllAllowedSppoter(@Param("prefix") String prefix,
+										   @Param("existingSppoter") List existingSppoter, Pageable pageable);
 }

@@ -27,18 +27,24 @@ public interface FriendShipRepository extends CrudRepository<FriendShipEntity, L
 																			   GlobalAppStatusEnum status);
 	
 	//    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
-	@Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.firstName LIKE CONCAT('%',:part1,'%') AND f.friend.lastName LIKE CONCAT('%',:part2,'%')) OR (f.friend.firstName LIKE CONCAT('%',:part2,'%') AND f.friend.lastName LIKE CONCAT('%',:part1,'%')) AND f.status = :status AND f.deleted = false")
+	@Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.firstName LIKE CONCAT('%',:part1,'%') " +
+			"AND f.friend.lastName LIKE CONCAT('%',:part2,'%')) OR (f.friend.firstName LIKE CONCAT('%',:part2,'%') " +
+			"AND f.friend.lastName LIKE CONCAT('%',:part1,'%')) AND f.status = :status AND f.deleted = false")
 	List<FriendShipEntity> findFriendsByFirstNameAndLastNameAndStatus(@Param("part1") String part1,
 																	  @Param("part2") String part2,
 																	  @Param("status") String status,
 																	  Pageable pageable);
 	
-	@Query("SELECT f FROM FriendShipEntity f WHERE f.friend.username LIKE CONCAT('%',:prefix,'%') AND f.status = :status AND f.deleted = false")
+	@Query("SELECT f FROM FriendShipEntity f WHERE f.friend.username LIKE CONCAT('%',:prefix,'%') " +
+			"AND f.status = :status AND f.deleted = false")
 	List<FriendShipEntity> findFriendByUsernameAndStatus(@Param("prefix") String part, @Param("status") String status,
 														 Pageable pageable);
 	
-	@Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.uuid = :user1 AND f.user.uuid =:user2) OR (f.friend.uuid = :user2 AND f.user.uuid =:user1) AND f.deleted = false")
+	@Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.uuid = :user1 AND f.user.uuid =:user2) " +
+			"OR (f.friend.uuid = :user2 AND f.user.uuid =:user1) AND f.deleted = false")
 	FriendShipEntity findFriendShip(@Param("user1") int user1, @Param("user2") int user2);
 	
-	List<FriendShipEntity> findByUserUuidOrFriendUuidAndDeletedFalse(int asUserId, int asFriendId, Pageable pageable);
+	List<FriendShipEntity> findByUserUuidOrFriendUuidAndStatusAndDeletedFalse(int asUserId, int asFriendId,
+																			  GlobalAppStatusEnum status,
+																			  Pageable pageable);
 }

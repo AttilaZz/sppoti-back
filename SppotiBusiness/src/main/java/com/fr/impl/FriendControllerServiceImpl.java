@@ -185,7 +185,8 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.friendListSize);
 		
 		final List<FriendShipEntity> friendShips = this.friendShipRepository
-				.findByUserUuidOrFriendUuidAndDeletedFalse(userId, userId, pageable);
+				.findByUserUuidOrFriendUuidAndStatusAndDeletedFalse(userId, userId, GlobalAppStatusEnum.CONFIRMED,
+						pageable);
 		
 		return friendShips.stream().filter(f -> f.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name()))
 				.map(f -> {
