@@ -520,6 +520,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 			
 			//transform posts from entities to dto, with sorting by creation date.
 			return postEntities.stream().map(p -> this.fillPostToSend(p.getUuid(), accountUserId))
+					.sorted((u1, u2) -> u2.getDatetimeCreated().compareTo(u1.getDatetimeCreated()))
 					.collect(Collectors.toList());
 			
 		}
