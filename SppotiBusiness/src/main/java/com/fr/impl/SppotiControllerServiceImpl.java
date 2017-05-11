@@ -585,7 +585,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<SppoterEntity> sppotiMembers = this.sppotiMembersRepository
-				.findByTeamMemberUsersUuidAndStatus(userId, GlobalAppStatusEnum.REFUSED, pageable);
+				.findByTeamMemberUsersUuid(userId, pageable);
 		
 		return sppotiMembers.stream().filter(s -> s.getSppoti().getUserSppoti().getUuid() != userId)
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
@@ -603,8 +603,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
-		return this.sppotiMembersRepository
-				.findByTeamMemberUsersUuidAndStatus(userId, GlobalAppStatusEnum.REFUSED, pageable).stream()
+		return this.sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable).stream()
 				.filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
@@ -621,8 +620,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
-		return this.sppotiMembersRepository
-				.findByTeamMemberUsersUuidAndStatus(userId, GlobalAppStatusEnum.REFUSED, pageable).stream()
+		return this.sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable).stream()
+				.filter(m -> m.getStatus().equals(GlobalAppStatusEnum.REFUSED))
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
 	
@@ -636,10 +635,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		CheckConnectedUserAccessPrivileges(userId);
 		
 		final Pageable pageable = new PageRequest(page, this.sppotiSize);
-
+		
 		return this.sppotiMembersRepository.findAllUpcomingSppoties(userId, GlobalAppStatusEnum.CONFIRMED, pageable)
-				.stream().map(SppoterEntity::getSppoti)
-				.map(this.sppotiTransformer::modelToDto)
+				.stream().map(SppoterEntity::getSppoti).map(this.sppotiTransformer::modelToDto)
 				.collect(Collectors.toList());
 	}
 	
