@@ -585,7 +585,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<SppoterEntity> sppotiMembers = this.sppotiMembersRepository
-				.findByTeamMemberUsersUuid(userId, pageable);
+				.findByTeamMemberUsersUuidAndStatus(userId, GlobalAppStatusEnum.REFUSED, pageable);
 		
 		return sppotiMembers.stream().filter(s -> s.getSppoti().getUserSppoti().getUuid() != userId)
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
@@ -603,7 +603,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
-		return this.sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable).stream()
+		return this.sppotiMembersRepository
+				.findByTeamMemberUsersUuidAndStatus(userId, GlobalAppStatusEnum.REFUSED, pageable).stream()
 				.filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
@@ -620,8 +621,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
-		return this.sppotiMembersRepository.findByTeamMemberUsersUuid(userId, pageable).stream()
-				.filter(m -> m.getStatus().equals(GlobalAppStatusEnum.REFUSED))
+		return this.sppotiMembersRepository
+				.findByTeamMemberUsersUuidAndStatus(userId, GlobalAppStatusEnum.REFUSED, pageable).stream()
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
 	
@@ -664,8 +665,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 				.forEach(k -> k.forEach(a -> {
 					if (GlobalAppStatusEnum.PENDING.equals(a.getStatus())) {
 						final SppotiEntity sp = a.getSppoti();
-						final UserEntity connecteUser = getConnectedUser();
-						sp.setConnectedUserId(connecteUser.getId());
+						final UserEntity connectedUser = getConnectedUser();
+						sp.setConnectedUserId(connectedUser.getId());
 						
 						final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sp);
 						

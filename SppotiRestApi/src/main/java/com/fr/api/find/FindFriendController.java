@@ -59,7 +59,6 @@ class FindFriendController
 													   @PathVariable("page") final int page)
 	{
 		
-		
 		if (userPrefix.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

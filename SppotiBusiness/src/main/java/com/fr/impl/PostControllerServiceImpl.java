@@ -416,7 +416,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public void editPostVisibility(final int id, final int visibility)
 	{
 		
-		final List<PostEntity> posts = this.postRepository.getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(id, null);
+		final List<PostEntity> posts = this.postRepository.getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(id);
 		
 		if (posts.isEmpty()) {
 			throw new EntityNotFoundException("Post Not found");
@@ -499,27 +499,29 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		final Optional<UserEntity> optional = this.userRepository.getByUuidAndDeletedFalse(userId);
 		
 		if (optional.isPresent()) {
-			final List<PostEntity> postEntities = new ArrayList<>();
+			final List<PostEntity> returnedPostEntities = new ArrayList<>();
 			
 			//get recent posts from each friend
 			this.friendShipRepository
 					.findByUserUuidOrFriendUuidAndStatusAndDeletedFalse(userId, userId, GlobalAppStatusEnum.CONFIRMED,
 							pageable).forEach(f -> {
+				
 				if (f.getFriend().getUuid() != userId) {
-					postEntities.addAll(this.postRepository
+					returnedPostEntities.addAll(this.postRepository
 							.getByUserUuidAndDeletedFalse(f.getFriend().getUuid(), pageable));
 				} else if (f.getUser().getUuid() != userId) {
-					postEntities
+					returnedPostEntities
 							.addAll(this.postRepository.getByUserUuidAndDeletedFalse(f.getUser().getUuid(), pageable));
 				}
+				
 			});
 			
 			//add connected user posts
-			postEntities
+			returnedPostEntities
 					.addAll(this.postRepository.getByUserUuidAndDeletedFalse(getConnectedUser().getUuid(), pageable));
 			
 			//transform posts from entities to dto, with sorting by creation date.
-			return postEntities.stream().map(p -> this.fillPostToSend(p.getUuid(), accountUserId))
+			return returnedPostEntities.stream().map(p -> this.fillPostToSend(p.getUuid(), accountUserId))
 					.sorted((u1, u2) -> u2.getDatetimeCreated().compareTo(u1.getDatetimeCreated()))
 					.collect(Collectors.toList());
 			

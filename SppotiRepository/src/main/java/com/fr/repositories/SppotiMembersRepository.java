@@ -1,5 +1,6 @@
 package com.fr.repositories;
 
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.SppoterEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -45,11 +46,12 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 *
 	 * @param userId
 	 * 		user id.
+	 * @param status
 	 * @param pageable
 	 * 		page number.
 	 *
 	 * @return return all joined sppoties, unless refused ones.
 	 */
-	List<SppoterEntity> findByTeamMemberUsersUuid(int userId, Pageable pageable);
+	List<SppoterEntity> findByTeamMemberUsersUuidAndStatus(int userId, GlobalAppStatusEnum status, Pageable pageable);
 	
 }
