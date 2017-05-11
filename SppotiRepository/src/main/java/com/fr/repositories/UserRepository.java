@@ -31,12 +31,17 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>
 	
 	Optional<UserEntity> getByUuidAndDeletedFalse(int id);
 	
-	@PostFilter("filterObject.isConfirmed()")
-	@Query("SELECT u from UserEntity u WHERE u.username LIKE CONCAT('%',:prefix,'%') OR u.firstName LIKE CONCAT('%',:prefix,'%') OR u.lastName LIKE CONCAT('%',:prefix,'%') AND u.deleted = false ")
+	@Query("SELECT u from UserEntity u WHERE u.username LIKE CONCAT('%',:prefix,'%') " +
+			"OR u.firstName LIKE CONCAT('%',:prefix,'%') " +
+			"OR u.lastName LIKE CONCAT('%',:prefix,'%') " +
+			"AND u.deleted = false AND u.confirmed = true")
 	List<UserEntity> getSearchedUsers(@Param("prefix") String userPrefix, Pageable pageable);
 	
-	@PostFilter("filterObject.isConfirmed()")
-	@Query("SELECT u from UserEntity u WHERE (u.firstName LIKE CONCAT('%',:part1,'%') AND u.lastName LIKE CONCAT('%',:part2,'%')) OR (u.firstName LIKE CONCAT('%',:part2,'%') AND u.lastName LIKE CONCAT('%',:part1,'%')) AND u.deleted = false")
+	@Query("SELECT u from UserEntity u WHERE (u.firstName LIKE CONCAT('%',:part1,'%') " +
+			"AND u.lastName LIKE CONCAT('%',:part2,'%')) " +
+			"OR (u.firstName LIKE CONCAT('%',:part2,'%') " +
+			"AND u.lastName LIKE CONCAT('%',:part1,'%')) " +
+			"AND u.deleted = false AND u.confirmed = true")
 	List<UserEntity> getSearchedUsersByFirstNameAndLastName(@Param("part1") String part1, @Param("part2") String part2,
 															Pageable pageable);
 	
