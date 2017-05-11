@@ -637,8 +637,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.sppotiSize);
 		
 		return this.sppotiMembersRepository.findAllUpcomingSppoties(userId, GlobalAppStatusEnum.CONFIRMED, pageable)
-				.stream().map(SppoterEntity::getSppoti).map(this.sppotiTransformer::modelToDto)
-				.collect(Collectors.toList());
+				.stream().map(SppoterEntity::getSppoti).map(s -> {
+					s.setConnectedUserId(getConnectedUser().getId());
+					return this.sppotiTransformer.modelToDto(s);
+					
+				}).collect(Collectors.toList());
 	}
 	
 	/**
