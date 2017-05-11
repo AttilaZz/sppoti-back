@@ -634,16 +634,12 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		CheckConnectedUserAccessPrivileges(userId);
 		
-		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
-		
-		return this.sppotiRepository.findByUserSppotiUuid(userId, pageable).stream().filter(s ->
-				s.getAdverseTeams().stream().anyMatch(
-						t -> t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name()) ||
-								(t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name()) &&
-										t.getTeam().getTeamMembers().stream().anyMatch(
-												am -> Integer.compare(am.getUsers().getUuid(), userId) == 0))) ||
-						s.getTeamHostEntity().getTeamMembers().stream().anyMatch(t -> t.getUsers().getUuid() == userId))
-				.map(this.sppotiTransformer::modelToDto).collect(Collectors.toList());
+		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
+
+		return this.sppotiMembersRepository.findAllUpcomingSppoties(userId, GlobalAppStatusEnum.CONFIRMED, pageable)
+				.stream().map(SppoterEntity::getSppoti)
+				.map(this.sppotiTransformer::modelToDto)
+				.collect(Collectors.toList());
 	}
 	
 	/**

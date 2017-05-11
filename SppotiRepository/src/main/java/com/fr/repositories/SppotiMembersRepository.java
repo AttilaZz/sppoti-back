@@ -1,8 +1,11 @@
 package com.fr.repositories;
 
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.SppoterEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -51,5 +54,9 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 * @return return all joined sppoties, unless refused ones.
 	 */
 	List<SppoterEntity> findByTeamMemberUsersUuid(int userId, Pageable pageable);
-	
+
+	@Query("SELECT s from SppoterEntity s WHERE s.teamMember.users.uuid= :userId " +
+			"AND s.sppoti.dateTimeStart > current_date() AND s.status = :status")
+	List<SppoterEntity> findAllUpcomingSppoties(@Param("userId") int userId,
+												@Param("status") GlobalAppStatusEnum status, Pageable pageable);
 }
