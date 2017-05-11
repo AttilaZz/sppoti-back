@@ -55,8 +55,20 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 */
 	List<SppoterEntity> findByTeamMemberUsersUuid(int userId, Pageable pageable);
 
+	/**
+	 * Find all upcomming sppoties:
+	 *  - My sppoties.
+	 *  - Joined sppoties.
+	 *  - Date in the future.
+	 *
+	 * @param userId connected user id.
+	 * @param status sppoter status.
+	 * @param pageable page number.
+	 * @return list of {@link SppoterEntity}
+	 */
 	@Query("SELECT s from SppoterEntity s WHERE s.teamMember.users.uuid= :userId " +
-			"AND s.sppoti.dateTimeStart > current_date() AND s.status = :status")
+			"AND s.sppoti.dateTimeStart > current_date() AND s.status = :status " +
+			"ORDER BY s.sppoti.dateTimeStart ASC")
 	List<SppoterEntity> findAllUpcomingSppoties(@Param("userId") int userId,
 												@Param("status") GlobalAppStatusEnum status, Pageable pageable);
 }

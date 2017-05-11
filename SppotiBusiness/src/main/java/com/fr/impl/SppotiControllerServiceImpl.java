@@ -634,7 +634,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		CheckConnectedUserAccessPrivileges(userId);
 		
-		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
+		final Pageable pageable = new PageRequest(page, this.sppotiSize);
 
 		return this.sppotiMembersRepository.findAllUpcomingSppoties(userId, GlobalAppStatusEnum.CONFIRMED, pageable)
 				.stream().map(SppoterEntity::getSppoti)
