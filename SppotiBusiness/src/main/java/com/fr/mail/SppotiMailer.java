@@ -12,7 +12,7 @@ import org.thymeleaf.context.Context;
 
 /**
  * Created by djenanewail on 3/23/17.
- * <p>
+ *
  * Send emails about sppoti activities.
  */
 @Component
@@ -20,20 +20,14 @@ public class SppotiMailer extends ApplicationMailer
 {
 	
 	/** Notify sppoti admin about his ne sppoti. */
-	@Value("${spring.app.mail.sppoti.add.message}")
-	private String addSppotiMessage;
 	@Value("${spring.app.mail.sppoti.add.subject}")
 	private String addSppotiSubject;
 	
 	/** Notify a sppoter about sppoti invitation. */
-	@Value("${spring.app.mail.sppoti.join.message}")
-	private String joinSppotiMessage;
 	@Value("${spring.app.mail.sppoti.join.subject}")
 	private String joinSppotiSubject;
 	
 	/** Notify sppoti admin when an invitation is accepted or refused. */
-	@Value("${spring.app.mail.sppoti.confirm.message}")
-	private String confirmJoinSppotiMessage;
 	@Value("${spring.app.mail.sppoti.confirm.subject}")
 	private String confirmJoinSppotiSubject;
 	
@@ -41,9 +35,7 @@ public class SppotiMailer extends ApplicationMailer
 	@Value("${spring.app.mail.sppoti.join.link}")
 	private String joinSppotiLink;
 	
-	/**
-	 * Init mail configuration.
-	 */
+	/** Init mail configuration. */
 	@Autowired
 	public SppotiMailer(final JavaMailSender sender, final MailProperties mailProperties,
 						final TemplateEngine templateEngine)
@@ -76,14 +68,18 @@ public class SppotiMailer extends ApplicationMailer
 	public void sendJoinSppotiEmail(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
 		
-		final ResourceContent resourceContent = new ResourceContent();
-		resourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
-		resourceContent.setResourceName(teamDefaultAvatarResourceName);
+		final ResourceContent avatarResourceContent = new ResourceContent(), coverResourceContent
+				= new ResourceContent();
+		avatarResourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
+		avatarResourceContent.setResourceName(teamDefaultAvatarResourceName);
+		
+		coverResourceContent.setPath(IMAGES_DIRECTORY + sppotiCoverResourceName);
+		coverResourceContent.setResourceName(sppotiCoverResourceName);
 		
 		final String joinSppotiLinkParsed = this.frontRootPath +
 				this.joinSppotiLink.replace("%SppotiId%", sppoti.getId() + "");
-		prepareAndSendEmail(to, from, sppoti, this.joinSppotiSubject, this.joinSppotiMessage, joinSppotiLinkParsed,
-				resourceContent);
+		prepareAndSendEmail(to, from, sppoti, this.joinSppotiSubject, joinSppotiLinkParsed, coverResourceContent,
+				avatarResourceContent);
 	}
 	
 	/**
@@ -103,8 +99,7 @@ public class SppotiMailer extends ApplicationMailer
 	 * Send email.
 	 */
 	private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final SppotiDTO Sppoti, final String subject,
-									 final String content, final String joinSppotiLink,
-									 final ResourceContent resourceContent)
+									 final String joinSppotiLink, final ResourceContent... resourceContent)
 	{
 		
 		final Context context = new Context();
@@ -116,11 +111,19 @@ public class SppotiMailer extends ApplicationMailer
 			context.setVariable("sentToValidationLink", joinSppotiLink);
 		}
 		
-		context.setVariable("body", content);
 		context.setVariable("sentToSppotiName", Sppoti.getName());
 		context.setVariable("sentToFirstName", to.getFirstName());
 		context.setVariable("sentToEmail", to.getEmail());
 		context.setVariable("sentToUsername", to.getUsername());
+		
+		context.setVariable("coverResourceName", resourceContent[0].getResourceName());
+		context.setVariable("avatarResourceName", resourceContent[1].getResourceName());
+		
+		context.setVariable("learnMoreMessage", this.learnMoreMessage);
+		context.setVariable("joinMessage", this.joinMessage);
+		context.setVariable("invitedByMessage", this.invitedByMessage);
+		context.setVariable("andPrepositionMessage", this.andPrepositionMessage);
+		context.setVariable("otherPrepositionMessage", this.otherPrepositionMessage);
 		
 		//Template Footer.
 		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);

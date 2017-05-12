@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by djenanewail on 3/23/17.
- * <p>
+ *
  * Team mailer.
  */
 
@@ -24,20 +24,14 @@ public class TeamMailer extends ApplicationMailer
 {
 	
 	/** Notify team admin about his new team. */
-	@Value("${spring.app.mail.team.add.message}")
-	private String addTeamMessage;
 	@Value("${spring.app.mail.team.add.subject}")
 	private String addTeamSubject;
 	
 	/** Notify team member about team invitation. */
-	@Value("${spring.app.mail.team.join.message}")
-	private String joinTeamMessage;
 	@Value("${spring.app.mail.team.join.subject}")
 	private String joinTeamSubject;
 	
 	/** Notify team admin if a member accept or refuse to join his team. */
-	@Value("${spring.app.mail.team.confirm.message}")
-	private String confirmJoinTeamMessage;
 	@Value("${spring.app.mail.team.confirm.subject}")
 	private String confirmJoinTeamSubject;
 	
@@ -88,8 +82,7 @@ public class TeamMailer extends ApplicationMailer
 		resourceContent.setResourceName(teamDefaultAvatarResourceName);
 		
 		final String joinTeamLinkParsed = this.frontRootPath + this.joinTeamLink.replace("%teamId%", team.getId() + "");
-		prepareAndSendEmail(to, from, team, this.joinTeamSubject, this.joinTeamMessage, joinTeamLinkParsed,
-				resourceContent);
+		prepareAndSendEmail(to, from, team, this.joinTeamSubject, joinTeamLinkParsed, resourceContent);
 	}
 	
 	/**
@@ -109,8 +102,7 @@ public class TeamMailer extends ApplicationMailer
 	 * Send email.
 	 */
 	private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final TeamDTO team, final String subject,
-									 final String content, final String joinTeamLink,
-									 final ResourceContent resourceContent)
+									 final String joinTeamLink, final ResourceContent resourceContent)
 	{
 		
 		final int memberCount = team.getMembers().size();
@@ -127,7 +119,6 @@ public class TeamMailer extends ApplicationMailer
 		}
 		context.setVariable("sentToDiscoverLink", "");
 		
-		context.setVariable("body", content);
 		context.setVariable("sentToTeamName", team.getName());
 		context.setVariable("sentToFirstName", to.getFirstName());
 		context.setVariable("receiverEmail", to.getEmail());

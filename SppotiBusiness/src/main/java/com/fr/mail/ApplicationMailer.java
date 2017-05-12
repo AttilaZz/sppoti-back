@@ -105,7 +105,7 @@ abstract class ApplicationMailer
 	 * 		email content.
 	 */
 	protected void prepareAndSendEmail(final String to, final String subject, final String content,
-									   final ResourceContent resourceContent)
+									   final ResourceContent... resourceContent)
 	{
 		
 		final MimeMessage mail = this.sender.createMimeMessage();
@@ -120,10 +120,10 @@ abstract class ApplicationMailer
 			helper.setText(content, true);
 			
 			//add image resource
-			if (resourceContent != null) {
+			for (final ResourceContent r : resourceContent) {
 				// Add the inline image, referenced from the HTML code as "cid:${imageResourceName}"
-				final InputStreamSource imageSource = getImageResource(resourceContent);
-				helper.addInline(resourceContent.getResourceName(), imageSource, IMAGE_PNG);
+				final InputStreamSource imageSource = getImageResource(r);
+				helper.addInline(r.getResourceName(), imageSource, IMAGE_PNG);
 			}
 			
 			this.sender.send(mail);

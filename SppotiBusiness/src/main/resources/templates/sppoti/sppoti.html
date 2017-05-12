@@ -466,11 +466,11 @@
                             <div class="h"
                                  style="margin: 0;padding: 0;font-family: &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, Helvetica, Arial, sans-serif;position: relative;">
                                 <!-- A Real Hero (and a real human being) -->
-                                <p><img src="../images/sppoti_bg.png"
+                                <p><img src="../images/sppoti_bg.png" th:src="|cid:${coverResourceName}|"
                                         style="margin: 0;padding: 0; max-width: 100%; width: 100%; height: 200px;"/>
                                 </p><!-- /hero -->
 
-                                <p class="pp"><img src="../images/team_avatar.png"
+                                <p class="pp"><img src="../images/team_avatar.png" th:src="|cid:${avatarResourceName}|"
                                                    style="margin: 0;padding: 0;max-width:100%;width: 94px;"/>
                                 </p>
                             </div>
@@ -479,9 +479,10 @@
                             <h3 class="tn"><a style="color: #000;margin: 0;padding: 0;cursor: pointer;"
                                               th:text="${sentToSppotiName}">Sppoti Name, </a>
                             </h3>
-                            <p class="lead">Hi <span th:text="${sentToFirstName}">wail</span>, you have been invited by
+                            <p class="lead">Hi <span th:text="${sentToFirstName}">wail</span>, <span
+                                    th:text="${invitedByMessage}">you have been invited by</span>
                                 <a style="margin: 0;padding: 0;color: #30d3c2;cursor: pointer;"
-                                   th:text="${sentFromName}">Amar AttilaZz</a> to join this SPPOTI.
+                                   th:text="${sentFromName}">Amar AttilaZz</a> to join his SPPOTI.
                             </p>
 
 

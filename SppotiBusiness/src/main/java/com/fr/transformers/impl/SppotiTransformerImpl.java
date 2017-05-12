@@ -111,7 +111,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 			sppotiDTO.setTeamHost(this.teamTransformer.modelToDto(model.getTeamHostEntity()));
 		}
 		
-		if (model.getAdverseTeams() != null) {
+		if (model.getAdverseTeams() != null && model.getConnectedUserId() != null) {
 			//Connected user is sppoti admin.
 			//connected user is one of the adverse teams.
 			//connected user is member of one of the adverse teams.
