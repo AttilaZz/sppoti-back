@@ -632,7 +632,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	public List<SppotiDTO> getAllUpcomingSppoties(final int userId, final int page)
 	{
 		
-		CheckConnectedUserAccessPrivileges(userId);
+		//		CheckConnectedUserAccessPrivileges(userId);
 		
 		final Pageable pageable = new PageRequest(page, this.sppotiSize);
 		
