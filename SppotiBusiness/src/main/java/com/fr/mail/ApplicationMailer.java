@@ -32,8 +32,6 @@ abstract class ApplicationMailer
 	/** Templates. */
 	static final String PATH_TO_ACCOUNT_TEMPLATE = "account/account";
 	static final String PATH_TO_CONTACT_TEMPLATE = "contact/contact";
-	static final String PATH_TO_TEAM_TEMPLATE = "team/team";
-	static final String PATH_TO_SPPOTI_TEMPLATE = "sppoti/sppoti";
 	
 	/** Email charset. */
 	private static final String CHARSET_NAME = "UTF-8";

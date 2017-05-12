@@ -40,11 +40,18 @@ public class TeamMailer extends ApplicationMailer
 	private String joinTeamLink;
 	
 	/** Explain team utility. */
-	@Value("${spring.app.mail.team.explanation}")
+	@Value("${spring.app.mail.team.description}")
 	private String sppotiTeamConcept;
 	
+	/** translate to join team message. */
 	@Value("${spring.app.mail.team.invited.by.join.team}")
 	private String toJoinTeamMessage;
+	
+	/** Sppoti mail templates */
+	private final static String PATH_TO_JOIN_TEAM_TEMPLATE = "team/join_team";
+	private final static String PATH_TO_CREATE_TEAM_TEMPLATE = "team/create_sppoti";
+	private final static String PATH_TO_RESPOND_TO_TEAM_TEMPLATE = "team/respond_sppoti";
+	
 	
 	/** Init team mailer. */
 	public TeamMailer(final JavaMailSender sender, final MailProperties mailProperties,
@@ -145,7 +152,7 @@ public class TeamMailer extends ApplicationMailer
 		context.setVariable("contactUsLink", this.contactUsLink);
 		context.setVariable("sentToText", this.sentToTextMessage);
 		
-		final String text = this.templateEngine.process(PATH_TO_TEAM_TEMPLATE, context);
+		final String text = this.templateEngine.process(PATH_TO_JOIN_TEAM_TEMPLATE, context);
 		
 		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContent);
 	}

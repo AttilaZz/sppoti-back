@@ -35,6 +35,19 @@ public class SppotiMailer extends ApplicationMailer
 	@Value("${spring.app.mail.sppoti.join.link}")
 	private String joinSppotiLink;
 	
+	/** Explain sppoti concept. */
+	@Value("${spring.app.mail.sppoti.description}")
+	private String sppotiConcept;
+	
+	/** translate to join sppoti message. */
+	@Value("${spring.app.mail.sppoti.invited.by.join.sppoti}")
+	private String toJoinSppotiMessage;
+	
+	/** Sppoti mail templates */
+	private final static String PATH_TO_JOIN_SPPOTI_TEMPLATE = "sppoti/join_sppoti";
+	private final static String PATH_TO_CREATE_SPPOTI_TEMPLATE = "sppoti/create_sppoti";
+	private final static String PATH_TO_RESPOND_TO_SPPOTI_TEMPLATE = "sppoti/respond_sppoti";
+	
 	/** Init mail configuration. */
 	@Autowired
 	public SppotiMailer(final JavaMailSender sender, final MailProperties mailProperties,
@@ -119,6 +132,9 @@ public class SppotiMailer extends ApplicationMailer
 		context.setVariable("coverResourceName", resourceContent[0].getResourceName());
 		context.setVariable("avatarResourceName", resourceContent[1].getResourceName());
 		
+		context.setVariable("toJoinSppotiMessage", this.toJoinSppotiMessage);
+		context.setVariable("globalInformationAboutSppoti", this.sppotiConcept);
+		
 		context.setVariable("learnMoreMessage", this.learnMoreMessage);
 		context.setVariable("joinMessage", this.joinMessage);
 		context.setVariable("invitedByMessage", this.invitedByMessage);
@@ -132,7 +148,7 @@ public class SppotiMailer extends ApplicationMailer
 		context.setVariable("contactUsLink", this.contactUsLink);
 		context.setVariable("sentToText", this.sentToTextMessage);
 		
-		final String text = this.templateEngine.process(PATH_TO_SPPOTI_TEMPLATE, context);
+		final String text = this.templateEngine.process(PATH_TO_JOIN_SPPOTI_TEMPLATE, context);
 		
 		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContent);
 	}

@@ -482,14 +482,16 @@
                             <p class="lead">Hi <span th:text="${sentToFirstName}">wail</span>, <span
                                     th:text="${invitedByMessage}">you have been invited by</span>
                                 <a style="margin: 0;padding: 0;color: #30d3c2;cursor: pointer;"
-                                   th:text="${sentFromName}">Amar AttilaZz</a> to join his SPPOTI.
+                                   th:text="${sentFromName}">Amar AttilaZz</a> <span th:text="${toJoinSppotiMessage}">to join his SPPOTI</span>.
                             </p>
 
 
                             <!-- Callout Panel -->
-                            <p class="callout">
-                                SPPOTI is a sport event, where two teams will be challenged around a sport. <a href="#">Learn
-                                more!</a>
+                            <p class="callout" th:text="${globalInformationAboutSppoti}">
+                                SPPOTI is a sport event, where two teams will be challenged around a sport.
+                                <a href="#" th:text="learnMoreMessage"
+                                   style="margin: 0;padding: 0;color: #30d3c2;cursor: pointer;font-weight: bold;">Learn
+                                    more!</a>
                             </p><!-- /Callout Panel -->
 
                             <div style="margin: 0;padding: 0;">
