@@ -500,6 +500,15 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 								}
 							}
 						});
+				
+				//Set other challenge status to REFUSED
+				sp.getAdverseTeams().forEach(a -> {
+					if (!a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+						a.setStatus(GlobalAppStatusEnum.REFUSED);
+						this.sppotiAdverseRepository.save(a);
+					}
+				});
+				
 			});
 		});
 	}
@@ -651,13 +660,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	@Override
 	public List<SppotiDTO> getAllPendingChallengeRequestSppoties(final int userId, final int page)
 	{
-		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
+		final Pageable pageable = new PageRequest(page, this.sppotiSize);
+		final List<SppotiDTO> result = new ArrayList<>();
 		
+		//Get all user teams.
 		final List<TeamMemberEntity> teamMemberEntities = this.teamMembersRepository
 				.findByUsersUuidAndAdminTrue(userId, pageable);
 		
-		final List<SppotiDTO> result = new ArrayList<>();
-		
+		//Check if one of this teams has received a challenge request.
 		teamMemberEntities.stream().map(t -> this.sppotiAdverseRepository.findByTeamUuid(t.getTeam().getUuid()))
 				.forEach(k -> k.forEach(a -> {
 					if (GlobalAppStatusEnum.PENDING.equals(a.getStatus())) {
@@ -673,6 +683,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 						result.add(sppotiDTO);
 					}
 				}));
+		
+		//Add other teams challenge requests - (requests sent from other admin teams)
+		final Pageable pageable1 = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "creationDate");
+		
+		final Optional<SppotiAdverseEntity> adverseEntityOptional = this.sppotiAdverseRepository
+				.findBySppotiUserSppotiUuidAndStatusAndFromSppotiAdminFalse(userId, GlobalAppStatusEnum.PENDING,
+						pageable1).stream().findFirst();
+		adverseEntityOptional.ifPresent(a -> result.add(this.sppotiTransformer.modelToDto(a.getSppoti())));
 		
 		return result;
 	}
