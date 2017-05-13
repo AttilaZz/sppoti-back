@@ -477,6 +477,14 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 						//Team exist in adverse team list in PENDING mode.
 						if (dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.CONFIRMED.name())) {
 							t.setStatus(GlobalAppStatusEnum.valueOf(dto.getTeamAdverseStatus()));
+							
+							//Convert team members to sppoters if status equals to confirmed
+							final Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(t.getTeam(),
+									sp);
+							sp.setSppotiMembers(sppotiMembers);
+							this.sppotiRepository.save(sp);
+							
+							//save changes and return team.
 							return this.teamTransformer.modelToDto(this.sppotiAdverseRepository.save(t).getTeam());
 						} else {
 							//Challenge refused -> Delete row from database.
@@ -669,8 +677,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	{
 		final Pageable pageable = new PageRequest(page, this.teamPageSize);
 		
-		final List<TeamEntity> myTeams = this.teamRepository
-				.findBySportIdAndNameContaining(sport, team, pageable);
+		final List<TeamEntity> myTeams = this.teamRepository.findBySportIdAndNameContaining(sport, team, pageable);
 		
 		return myTeams.stream().map(t -> fillTeamResponse(t, null)).collect(Collectors.toList());
 	}

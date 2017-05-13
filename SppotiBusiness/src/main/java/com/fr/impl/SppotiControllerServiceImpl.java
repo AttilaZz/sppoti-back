@@ -494,7 +494,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 								if (GlobalAppStatusEnum.valueOf(teamDTO.getTeamAdverseStatus())
 										.equals(GlobalAppStatusEnum.CONFIRMED)) {
 									final Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(
-											teamAdverse.getTeam(), sp, true);
+											teamAdverse.getTeam(), sp);
 									sp.setSppotiMembers(sppotiMembers);
 									this.sppotiRepository.save(sp);
 								}
@@ -821,33 +821,5 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		}
 		
 		return sppotiDTO;
-	}
-	
-	/**
-	 * @param challengeTeam
-	 * 		adverse team.
-	 * @param sppoti
-	 * 		sppoti id.
-	 *
-	 * @return all adverse team as sppoters.
-	 */
-	private Set<SppoterEntity> convertAdverseTeamMembersToSppoters(final TeamEntity challengeTeam,
-																   final SppotiEntity sppoti,
-																   final boolean fromAdverseTeam)
-	{
-		return challengeTeam.getTeamMembers().stream().map(sm -> {
-					SppoterEntity sppotiMember = new SppoterEntity();
-					sppotiMember.setTeamMember(sm);
-					sppotiMember.setSppoti(sppoti);
-					if (fromAdverseTeam) {
-						if (sm.getAdmin())
-							sppotiMember.setStatus(GlobalAppStatusEnum.CONFIRMED);
-					} else {
-						sppotiMember.setStatus(GlobalAppStatusEnum.PENDING);
-					}
-					return sppotiMember;
-				}
-		
-		).collect(Collectors.toSet());
 	}
 }

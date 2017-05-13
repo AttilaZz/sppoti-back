@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Component("abstractService")
@@ -93,7 +94,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	@Autowired
 	private TeamTransformer teamTransformer;
 	
-	private Logger LOGGER = Logger.getLogger(AbstractControllerServiceImpl.class);
+	private final Logger LOGGER = Logger.getLogger(AbstractControllerServiceImpl.class);
 	
 	/**
 	 * {@inheritDoc}
@@ -103,14 +104,14 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	public List<String> getUserRole()
 	{
 		
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		ArrayList<GrantedAuthority> roles;
+		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		final ArrayList<GrantedAuthority> roles;
 		
-		List<String> userRoles = new ArrayList<String>();
+		final List<String> userRoles = new ArrayList<String>();
 		
 		if (principal instanceof UserDetails) {
 			roles = (ArrayList<GrantedAuthority>) ((UserDetails) principal).getAuthorities();
-			for (GrantedAuthority role : roles) {
+			for (final GrantedAuthority role : roles) {
 				userRoles.add(role.getAuthority());
 			}
 		}
@@ -123,8 +124,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	@Override
 	public String getAuthenticationUsername()
 	{
-		String userName;
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		final String userName;
+		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		if (principal instanceof UserDetails) {
 			userName = ((UserDetails) principal).getUsername();
@@ -138,10 +139,10 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getUserLoginType(String username)
+	public int getUserLoginType(final String username)
 	{
-		String numberRegex = "[0-9]+";
-		int loginType;
+		final String numberRegex = "[0-9]+";
+		final int loginType;
 		
 		if (username.contains("@")) {
 			loginType = 2;
@@ -158,19 +159,19 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity getUserById(Long id)
+	public UserEntity getUserById(final Long id)
 	{
-		return userRepository.getByIdAndDeletedFalse(id);
+		return this.userRepository.getByIdAndDeletedFalse(id);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity getUserByUuId(int id)
+	public UserEntity getUserByUuId(final int id)
 	{
 		
-		Optional<UserEntity> usersList = userRepository.getByUuidAndDeletedFalse(id);
+		final Optional<UserEntity> usersList = this.userRepository.getByUuidAndDeletedFalse(id);
 		
 		return usersList.orElse(null);
 		
@@ -178,8 +179,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	
 	protected Properties globalAddressConfigProperties()
 	{
-		Properties properties = new Properties();
-		properties.put("rootAddress", environment.getRequiredProperty("rootAddress"));
+		final Properties properties = new Properties();
+		properties.put("rootAddress", this.environment.getRequiredProperty("rootAddress"));
 		
 		return properties;
 	}
@@ -190,13 +191,13 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 *
 	 * @return list of ContentEditedResponseDTO.
 	 */
-	protected List<ContentEditedResponseDTO> fillEditContentResponse(List<EditHistoryEntity> dsHistoryList)
+	protected List<ContentEditedResponseDTO> fillEditContentResponse(final List<EditHistoryEntity> dsHistoryList)
 	{
-		List<ContentEditedResponseDTO> editHistoryResponse = new ArrayList<ContentEditedResponseDTO>();
+		final List<ContentEditedResponseDTO> editHistoryResponse = new ArrayList<ContentEditedResponseDTO>();
 		editHistoryResponse.clear();
-		for (EditHistoryEntity editContent : dsHistoryList) {
+		for (final EditHistoryEntity editContent : dsHistoryList) {
 			
-			ContentEditedResponseDTO cer = new ContentEditedResponseDTO();
+			final ContentEditedResponseDTO cer = new ContentEditedResponseDTO();
 			cer.setDateTime(editContent.getDatetimeEdited());
 			cer.setId(editContent.getId());
 			cer.setText(editContent.getText());
@@ -212,7 +213,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 */
 	protected UserEntity getConnectedUser()
 	{
-		UserDetails accountUserDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+		final UserDetails accountUserDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
 		return this.getUserByLogin(accountUserDetails.getUsername());
 	}
@@ -221,9 +222,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity getUserByLogin(String username)
+	public UserEntity getUserByLogin(final String username)
 	{
-		String numberRegex = "[0-9]+";
+		final String numberRegex = "[0-9]+";
 		
 		if (username.contains("@")) {
 			return this.userRepository.getByEmailAndDeletedFalse(username);
@@ -242,18 +243,18 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 *
 	 * @return list of Comment DTO
 	 */
-	protected List<CommentDTO> fillCommentModelList(List<CommentEntity> dbCommentEntityList, Long userId)
+	protected List<CommentDTO> fillCommentModelList(final List<CommentEntity> dbCommentEntityList, final Long userId)
 	{
-		List<CommentDTO> myList = new ArrayList<CommentDTO>();
+		final List<CommentDTO> myList = new ArrayList<CommentDTO>();
 		
-		for (CommentEntity commentEntity : dbCommentEntityList) {
-			int commentId = commentEntity.getUuid();
-			CommentDTO cm = new CommentDTO();
+		for (final CommentEntity commentEntity : dbCommentEntityList) {
+			final int commentId = commentEntity.getUuid();
+			final CommentDTO cm = new CommentDTO();
 			
 			//            if (!userDaoService.getLastAvatar(userId).isEmpty())
 			//                cm.setAuthorAvatar(userDaoService.getLastAvatar(userId).get(0).getUrl());
 			
-			UserDTO userCoverAndAvatar = userTransformer.getUserCoverAndAvatar(commentEntity.getUser());
+			final UserDTO userCoverAndAvatar = this.userTransformer.getUserCoverAndAvatar(commentEntity.getUser());
 			cm.setAuthorAvatar(userCoverAndAvatar.getAvatar());
 			cm.setAuthorFirstName(commentEntity.getUser().getFirstName());
 			cm.setAuthorLastName(commentEntity.getUser().getLastName());
@@ -262,17 +263,17 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 			cm.setImageLink(commentEntity.getImageLink());
 			cm.setMyComment(commentEntity.getUser().getId().equals(userId));
 			
-			boolean isCommentLikedByMe = isContentLikedByUser(commentEntity, userId);
+			final boolean isCommentLikedByMe = isContentLikedByUser(commentEntity, userId);
 			cm.setLikedByUser(isCommentLikedByMe);
 			cm.setLikeCount(commentEntity.getLikes().size());
 			
-			List<EditHistoryEntity> editHistory = editHistoryRepository
+			final List<EditHistoryEntity> editHistory = this.editHistoryRepository
 					.getByCommentUuidOrderByDatetimeEditedDesc(commentId);
 			
 			if (!editHistory.isEmpty()) {
 				cm.setEdited(true);
 				
-				EditHistoryEntity ec = editHistory.get(0);
+				final EditHistoryEntity ec = editHistory.get(0);
 				
 				cm.setCreationDate(ec.getDatetimeEdited());
 				cm.setText(ec.getText());
@@ -298,12 +299,12 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * @return true if content has been liked by me, false otherwise
 	 */
 	// detect if post or like has already been liked by user
-	protected boolean isContentLikedByUser(Object o, Long userId)
+	protected boolean isContentLikedByUser(final Object o, final Long userId)
 	{
 		
-		List<LikeContentEntity> lp = new ArrayList<LikeContentEntity>();
-		PostEntity p;
-		CommentEntity c;
+		final List<LikeContentEntity> lp = new ArrayList<LikeContentEntity>();
+		final PostEntity p;
+		final CommentEntity c;
 		
 		if (o instanceof PostEntity) {
 			p = (PostEntity) o;
@@ -313,7 +314,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 			lp.addAll(c.getLikes());
 		}
 		
-		for (LikeContentEntity likePost : lp) {
+		for (final LikeContentEntity likePost : lp) {
 			if (likePost.getUser().getId().equals(userId)) {
 				return true;
 			}
@@ -326,20 +327,21 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 */
 	@Transactional
 	@Override
-	public Set<TeamMemberEntity> getTeamMembersEntityFromDto(List<UserDTO> users, TeamEntity team, SppotiEntity sppoti)
+	public Set<TeamMemberEntity> getTeamMembersEntityFromDto(final List<UserDTO> users, final TeamEntity team,
+															 final SppotiEntity sppoti)
 	{
 		
-		Set<TeamMemberEntity> teamUsers = new HashSet<>();
-		Set<NotificationEntity> notificationEntities = new HashSet<>();
+		final Set<TeamMemberEntity> teamUsers = new HashSet<>();
+		final Set<NotificationEntity> notificationEntities = new HashSet<>();
 		
-		Long connectedUserId = getConnectedUser().getId();
+		final Long connectedUserId = getConnectedUser().getId();
 		
 		users.forEach(userDTO -> {
 			
-			Optional<UserEntity> userEntity = Optional.ofNullable(getUserByUuId(userDTO.getId()));
+			final Optional<UserEntity> userEntity = Optional.ofNullable(getUserByUuId(userDTO.getId()));
 			
-			TeamMemberEntity teamMember = new TeamMemberEntity();
-			SppoterEntity sppoter = new SppoterEntity();
+			final TeamMemberEntity teamMember = new TeamMemberEntity();
+			final SppoterEntity sppoter = new SppoterEntity();
 			
 			userEntity.ifPresent(user -> {
 				if (user.getId().equals(connectedUserId)) {
@@ -352,7 +354,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				teamMember.setUsers(user);
 				
 				if (sppoti != null) {
-					TeamMemberEntity sppoterMember = teamMembersRepository
+					final TeamMemberEntity sppoterMember = this.teamMembersRepository
 							.findByUsersUuidAndTeamUuid(userDTO.getId(), team.getUuid());
 
                     /* if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter. */
@@ -381,7 +383,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 					}
 
                     /* Convert team members to sppoters. */
-					Set<SppoterEntity> sppotiMembers = new HashSet<>();
+					final Set<SppoterEntity> sppotiMembers = new HashSet<>();
 					sppoter.setTeamMember(teamMember);
 					sppoter.setSppoti(sppoti);
 					sppotiMembers.add(sppoter);
@@ -428,8 +430,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	/**
 	 * Send team member notification and Email.
 	 */
-	private void teamNotificationAndEmail(TeamEntity team, Set<NotificationEntity> notificationEntities,
-										  Long connectedUserId, UserEntity userEntity)
+	private void teamNotificationAndEmail(final TeamEntity team, final Set<NotificationEntity> notificationEntities,
+										  final Long connectedUserId, final UserEntity userEntity)
 	{
 		this.sendTeamNotification(team, notificationEntities, connectedUserId, userEntity);
 		//this.sendJoinTeamEmail(team, userEntity, adminEntity);
@@ -441,15 +443,15 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 *
 	 * @return a teamResponse object from TeamEntity entity.
 	 */
-	protected TeamDTO fillTeamResponse(TeamEntity team, SppotiEntity sppoti)
+	protected TeamDTO fillTeamResponse(final TeamEntity team, final SppotiEntity sppoti)
 	{
 		
-		List<UserDTO> teamUsers = new ArrayList<>();
+		final List<UserDTO> teamUsers = new ArrayList<>();
 		
-		for (TeamMemberEntity memberEntity : team.getTeamMembers()) {
-			teamUsers.add(teamMemberTransformer.modelToDto(memberEntity, sppoti));
+		for (final TeamMemberEntity memberEntity : team.getTeamMembers()) {
+			teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, sppoti));
 		}
-		TeamDTO teamDTO = teamTransformer.modelToDto(team);
+		final TeamDTO teamDTO = this.teamTransformer.modelToDto(team);
 		teamDTO.setMembers(teamUsers);
 		
 		return teamDTO;
@@ -466,8 +468,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * @param u
 	 * 		user to notify.
 	 */
-	private void sendTeamNotification(TeamEntity team, Set<NotificationEntity> notificationEntities, Long adminId,
-									  UserEntity u)
+	private void sendTeamNotification(final TeamEntity team, final Set<NotificationEntity> notificationEntities,
+									  final Long adminId, final UserEntity u)
 	{
 		
 		notificationEntities
@@ -496,22 +498,23 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * 		sppoti info.
 	 */
 	@Transactional
-	protected void addNotification(NotificationTypeEnum notificationType, UserEntity userFrom, UserEntity userTo,
-								   TeamEntity teamEntity, SppotiEntity sppoti)
+	protected void addNotification(final NotificationTypeEnum notificationType, final UserEntity userFrom,
+								   final UserEntity userTo, final TeamEntity teamEntity, final SppotiEntity sppoti)
 	{
-		NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity, sppoti);
+		final NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity,
+				sppoti);
 		
-		notificationRepository.save(notification);
+		this.notificationRepository.save(notification);
 	}
 	
 	/**
 	 * Init notif entity.
 	 */
-	private NotificationEntity getNotificationEntity(NotificationTypeEnum notificationType, UserEntity userFrom,
-													 UserEntity userTo, TeamEntity teamEntity,
-													 SppotiEntity sppotiEntity)
+	private NotificationEntity getNotificationEntity(final NotificationTypeEnum notificationType,
+													 final UserEntity userFrom, final UserEntity userTo,
+													 final TeamEntity teamEntity, final SppotiEntity sppotiEntity)
 	{
-		NotificationEntity notification = new NotificationEntity();
+		final NotificationEntity notification = new NotificationEntity();
 		notification.setNotificationType(notificationType);
 		notification.setFrom(userFrom);
 		notification.setTo(userTo);
@@ -529,7 +532,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * 		post entity.
 	 */
 	@Transactional
-	public void addTagNotification(PostEntity postEntity, CommentEntity commentEntity)
+	public void addTagNotification(final PostEntity postEntity, final CommentEntity commentEntity)
 	{
 		
 		String content = null;
@@ -543,17 +546,17 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		 * All words starting with @, followed by Letter or accented Letter.
 		 * and finishing with Letter, Number or Accented letter.
 		 */
-		String patternString1 = "(\\$+)([a-z|A-Z|\\p{javaLetter}][a-z\\d|A-Z\\d|\\p{javaLetter}]*)";
+		final String patternString1 = "(\\$+)([a-z|A-Z|\\p{javaLetter}][a-z\\d|A-Z\\d|\\p{javaLetter}]*)";
 		
-		Pattern pattern = Pattern.compile(patternString1);
-		Matcher matcher = pattern.matcher(content);
+		final Pattern pattern = Pattern.compile(patternString1);
+		final Matcher matcher = pattern.matcher(content);
 		
 		/**
 		 *  clean tags from @.
 		 */
-		List<String> tags = new ArrayList<>();
+		final List<String> tags = new ArrayList<>();
 		while (matcher.find()) {
-			LOGGER.debug(matcher.group());
+			this.LOGGER.debug(matcher.group());
 			String s = matcher.group().trim();
 			s = s.replaceAll("[$]", "");
 			tags.add(s);
@@ -562,10 +565,10 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		/**
 		 * Process each tag.
 		 */
-		for (String username : tags) {
-			UserEntity userToNotify;
+		for (final String username : tags) {
+			final UserEntity userToNotify;
 			
-			userToNotify = userRepository.getByUsernameAndDeletedFalse(username);
+			userToNotify = this.userRepository.getByUsernameAndDeletedFalse(username);
 			
 			if (userToNotify != null) {
 				if (commentEntity != null) {
@@ -587,7 +590,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * @param userId
 	 * 		user id resource.
 	 */
-	protected void CheckConnectedUserAccessPrivileges(int userId)
+	void CheckConnectedUserAccessPrivileges(final int userId)
 	{
 		if (getConnectedUser().getUuid() != userId) {
 			throw new NotAdminException("Unauthorized access");
@@ -605,17 +608,41 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * @param from
 	 * 		team admin.
 	 */
-	protected void sendJoinTeamEmail(TeamEntity team, UserEntity to, TeamMemberEntity from)
+	void sendJoinTeamEmail(final TeamEntity team, final UserEntity to, final TeamMemberEntity from)
 	{
 		
-		UserDTO member = userTransformer.modelToDto(to);
-		UserDTO admin = teamMemberTransformer.modelToDto(from, null);
-		TeamDTO teamDto = teamTransformer.modelToDto(team);
+		final UserDTO member = this.userTransformer.modelToDto(to);
+		final UserDTO admin = this.teamMemberTransformer.modelToDto(from, null);
+		final TeamDTO teamDto = this.teamTransformer.modelToDto(team);
 		
-		Thread thread = new Thread(() -> {
+		final Thread thread = new Thread(() -> {
 			this.teamMailer.sendJoinTeamEmail(teamDto, member, admin);
-			LOGGER.info("Join team email has been sent successfully !");
+			this.LOGGER.info("Join team email has been sent successfully !");
 		});
 		thread.start();
+	}
+	
+	/**
+	 * @param challengeTeam
+	 * 		adverse team.
+	 * @param sppoti
+	 * 		sppoti id.
+	 *
+	 * @return all adverse team as sppoters.
+	 */
+	Set<SppoterEntity> convertAdverseTeamMembersToSppoters(final TeamEntity challengeTeam, final SppotiEntity sppoti)
+	{
+		return challengeTeam.getTeamMembers().stream().map(teamMember -> {
+					SppoterEntity sppotiMember = new SppoterEntity();
+					sppotiMember.setTeamMember(teamMember);
+					sppotiMember.setSppoti(sppoti);
+					
+					if (teamMember.getAdmin())
+						sppotiMember.setStatus(GlobalAppStatusEnum.CONFIRMED);
+					
+					return sppotiMember;
+				}
+		
+		).collect(Collectors.toSet());
 	}
 }
