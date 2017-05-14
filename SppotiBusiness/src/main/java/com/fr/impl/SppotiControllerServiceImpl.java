@@ -772,7 +772,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 				}
 			}
 			
-			
 			if (!teamIsAllowed) {
 				throw new BusinessGlobalException("This team is not allowed in this sppoti");
 			}
@@ -781,8 +780,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			 */
 			
 			//check if the connected user is the admin of the sppoti or team adverse.
-			if (!sppoti.getUserSppoti().getId().equals(getConnectedUser().getId()) || sppoti.getAdverseTeams().stream()
-					.anyMatch(a -> a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED) &&
+			if (!sppoti.getUserSppoti().getId().equals(getConnectedUser().getId()) && sppoti.getAdverseTeams().stream()
+					.noneMatch(a -> a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED) &&
 							a.getTeam().getTeamMembers().stream().anyMatch(m -> m.getAdmin().equals(true)))) {
 				throw new NotAdminException("BIM BIM - You don't have access");
 			}
