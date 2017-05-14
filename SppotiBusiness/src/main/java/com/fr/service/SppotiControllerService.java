@@ -154,18 +154,6 @@ public interface SppotiControllerService extends AbstractControllerService
 	List<SppotiDTO> getAllRefusedSppoties(int userId, int page);
 	
 	/**
-	 * Add sppoter.
-	 *
-	 * @param sppotiId
-	 * 		sppoti id.
-	 * @param user
-	 * 		sppoter id.
-	 *
-	 * @return sppoter data.
-	 */
-	UserDTO addSppoter(int sppotiId, UserDTO user);
-	
-	/**
 	 * Accept / Refuse a sppoti challenge.
 	 *
 	 * @param sppotiId
@@ -210,4 +198,18 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @return list of {@link UserDTO}
 	 */
 	List<UserDTO> findAllSppoterAllowedToJoinSppoti(String prefix, int sppotiId, int page);
+	
+	/**
+	 * Add sppoter.
+	 *
+	 * @param sppotiId
+	 * 		sppoti id.
+	 * @param userId
+	 * 		sppoter id.
+	 * @param teamId
+	 * 		team id where to add sppoter.
+	 *
+	 * @return sppoter data.
+	 */
+	UserDTO addSppoter(int sppotiId, int userId, int teamId);
 }
