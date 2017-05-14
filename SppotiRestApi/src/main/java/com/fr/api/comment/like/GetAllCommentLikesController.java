@@ -1,6 +1,6 @@
 package com.fr.api.comment.like;
 
-import com.fr.commons.dto.HeaderDataDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.service.CommentControllerService;
@@ -56,11 +56,7 @@ class GetAllCommentLikesController
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		final List<HeaderDataDTO> likersList = this.likeControllerService.getCommentLikersList(id, page);
-		
-		if (likersList.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
+		final List<UserDTO> likersList = this.likeControllerService.getCommentLikersList(id, page);
 		
 		final PostDTO pr = new PostDTO();
 		pr.setLikers(likersList);

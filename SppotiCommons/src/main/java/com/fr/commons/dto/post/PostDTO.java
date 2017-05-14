@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.CommentDTO;
-import com.fr.commons.dto.HeaderDataDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.utils.JsonDateSerializer;
 
 import java.util.Date;
@@ -42,7 +42,7 @@ public class PostDTO extends AbstractCommonDTO
 	
 	private boolean edited;
 	
-	private List<HeaderDataDTO> likers;
+	private List<UserDTO> likers;
 	
 	private int visibility;
 	
@@ -85,9 +85,14 @@ public class PostDTO extends AbstractCommonDTO
 		this.username = username;
 	}
 	
-	public PostDTO()
+	public List<UserDTO> getLikers()
 	{
+		return this.likers;
+	}
 	
+	public void setLikers(final List<UserDTO> likers)
+	{
+		this.likers = likers;
 	}
 	
 	public int getVisibility()
@@ -100,15 +105,6 @@ public class PostDTO extends AbstractCommonDTO
 		this.visibility = visibility;
 	}
 	
-	public List<HeaderDataDTO> getLikers()
-	{
-		return this.likers;
-	}
-	
-	public void setLikers(final List<HeaderDataDTO> likers)
-	{
-		this.likers = likers;
-	}
 	
 	public String getContent()
 	{

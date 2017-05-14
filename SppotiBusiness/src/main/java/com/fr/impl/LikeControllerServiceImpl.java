@@ -1,20 +1,22 @@
 package com.fr.impl;
 
-import com.fr.commons.dto.HeaderDataDTO;
+import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.LikeContentEntity;
 import com.fr.entities.PostEntity;
-import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.entities.UserEntity;
 import com.fr.service.LikeControllerService;
-import org.apache.log4j.Logger;
+import com.fr.transformers.UserTransformer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by djenanewail on 12/24/16.
@@ -22,6 +24,9 @@ import java.util.List;
 @Component
 class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements LikeControllerService
 {
+	/** User transformer. */
+	@Autowired
+	private UserTransformer userTransformer;
 	
 	/** post likers list size. */
 	@Value("${key.likesPerPage}")
@@ -29,7 +34,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	
 	@Transactional
 	@Override
-	public LikeContentEntity likePost(LikeContentEntity likeToSave)
+	public LikeContentEntity likePost(final LikeContentEntity likeToSave)
 	{
 		return likeContent(likeToSave);
 	}
@@ -39,11 +44,11 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void unLikePost(PostEntity post)
+	public void unLikePost(final PostEntity post)
 	{
 		
-		LikeContentEntity likeContent = likeRepository.getByPostId(post.getId());
-		likeRepository.delete(likeContent);
+		final LikeContentEntity likeContent = this.likeRepository.getByPostId(post.getId());
+		this.likeRepository.delete(likeContent);
 		
 	}
 	
@@ -51,10 +56,10 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isPostAlreadyLikedByUser(int postId,Long userId)
+	public boolean isPostAlreadyLikedByUser(final int postId, final Long userId)
 	{
 		
-		return likeRepository.getByUserIdAndPostUuid(userId,postId) != null;
+		return this.likeRepository.getByUserIdAndPostUuid(userId, postId) != null;
 		
 	}
 	
@@ -62,13 +67,13 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<HeaderDataDTO> getPostLikersList(int id,int page)
+	public List<UserDTO> getPostLikersList(final int id, final int page)
 	{
 		
+		final Pageable pageable1 = new PageRequest(page, this.likeSize);
 		
-		Pageable pageable1 = new PageRequest(page,likeSize);
-		
-		List<LikeContentEntity> likersData = likeRepository.getByPostUuidOrderByDatetimeCreated(id,pageable1);
+		final List<LikeContentEntity> likersData = this.likeRepository
+				.getByPostUuidOrderByDatetimeCreatedDesc(id, pageable1);
 		
 		return likersList(likersData);
 		
@@ -78,12 +83,13 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<HeaderDataDTO> getCommentLikersList(int id,int page)
+	public List<UserDTO> getCommentLikersList(final int id, final int page)
 	{
 		
-		Pageable pageable1 = new PageRequest(page,likeSize);
+		final Pageable pageable1 = new PageRequest(page, this.likeSize);
 		
-		List<LikeContentEntity> likersData = likeRepository.getByCommentUuidOrderByDatetimeCreated(id,pageable1);
+		final List<LikeContentEntity> likersData = this.likeRepository
+				.getByCommentUuidOrderByDatetimeCreatedDesc(id, pageable1);
 		
 		return likersList(likersData);
 		
@@ -94,11 +100,11 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void unLikeComment(CommentEntity commentEntityToUnlike)
+	public void unLikeComment(final CommentEntity commentEntityToUnlike)
 	{
 		
-		LikeContentEntity likeContent = likeRepository.getByCommentId(commentEntityToUnlike.getId());
-		likeRepository.delete(likeContent);
+		final LikeContentEntity likeContent = this.likeRepository.getByCommentId(commentEntityToUnlike.getId());
+		this.likeRepository.delete(likeContent);
 		
 	}
 	
@@ -106,9 +112,9 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isCommentAlreadyLikedByUser(int commentId,Long userId)
+	public boolean isCommentAlreadyLikedByUser(final int commentId, final Long userId)
 	{
-		return likeRepository.getByUserIdAndCommentUuid(userId,commentId) != null;
+		return this.likeRepository.getByUserIdAndCommentUuid(userId, commentId) != null;
 		
 	}
 	
@@ -117,7 +123,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void likeComment(LikeContentEntity likeToSave)
+	public void likeComment(final LikeContentEntity likeToSave)
 	{
 		
 		likeContent(likeToSave);
@@ -133,7 +139,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * @return liked content.
 	 */
 	@Transactional
-	private LikeContentEntity likeContent(LikeContentEntity likeContent)
+	private LikeContentEntity likeContent(final LikeContentEntity likeContent)
 	{
 		
 		if (likeContent != null) {
@@ -141,49 +147,34 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 			if (likeContent.getComment() != null &&
 					!likeContent.getComment().getUser().getId().equals(getConnectedUser().getId())) {
 				//Comment like
-				addNotification(NotificationTypeEnum.X_LIKED_YOUR_COMMENT,likeContent.getUser(),
-						likeContent.getComment().getUser(),null,null);
+				addNotification(NotificationTypeEnum.X_LIKED_YOUR_COMMENT, likeContent.getUser(),
+						likeContent.getComment().getUser(), null, null);
 				
 			} else if (likeContent.getPost() != null &&
 					!likeContent.getPost().getUser().getId().equals(getConnectedUser().getId())) {
 				//like post
-				addNotification(NotificationTypeEnum.X_LIKED_YOUR_POST,likeContent.getUser(),
-						likeContent.getPost().getUser(),null,null);
+				addNotification(NotificationTypeEnum.X_LIKED_YOUR_POST, likeContent.getUser(),
+						likeContent.getPost().getUser(), null, null);
 			}
 			
 		}
 		
-		return likeRepository.save(likeContent);
+		return this.likeRepository.save(likeContent);
 		
 	}
 	
 	/**
-	 * get likers list
+	 * Transform {@link LikeContentEntity} to {@link UserEntity}.
 	 *
-	 * @param likersData
+	 * @param likeContentEntityList
+	 * 		list of post or comment likers.
 	 *
-	 * @return list of HeaderDataDTO
+	 * @return list of {@link UserEntity}.
 	 */
-	private List<HeaderDataDTO> likersList(List<LikeContentEntity> likersData)
+	private List<UserDTO> likersList(final List<LikeContentEntity> likeContentEntityList)
 	{
 		
-		List<HeaderDataDTO> likers = new ArrayList<HeaderDataDTO>();
-		
-		if (!likersData.isEmpty()) {
-			for (LikeContentEntity row : likersData) {
-				// get liker data
-				HeaderDataDTO u = new HeaderDataDTO();
-				//                u.setAvatar(userDaoService.getLastAvatar(row.getUser().getId()).get(0).getUrl());
-				u.setFirstName(row.getUser().getFirstName());
-				u.setLastName(row.getUser().getLastName());
-				// u.setCover(userDao.getLastCover(row.getUser().getId(),
-				// coverType));
-				u.setUsername(row.getUser().getUsername());
-				
-				likers.add(u);
-			}
-		}
-		
-		return likers;
+		return likeContentEntityList.stream().map(u -> this.userTransformer.modelToDto(u.getUser()))
+				.collect(Collectors.toList());
 	}
 }

@@ -1,6 +1,6 @@
 package com.fr.service;
 
-import com.fr.commons.dto.HeaderDataDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.LikeContentEntity;
 import com.fr.entities.PostEntity;
@@ -36,7 +36,7 @@ public interface LikeControllerService extends AbstractControllerService
 	 *
 	 * @return true if post already liked, false otherwise
 	 */
-	boolean isPostAlreadyLikedByUser(int postId,Long userId);
+	boolean isPostAlreadyLikedByUser(int postId, Long userId);
 	
 	/**
 	 * Unlike content, post or like
@@ -51,7 +51,7 @@ public interface LikeControllerService extends AbstractControllerService
 	 *
 	 * @return true if like already liked, false otherwise
 	 */
-	boolean isCommentAlreadyLikedByUser(int id,Long userId);
+	boolean isCommentAlreadyLikedByUser(int id, Long userId);
 	
 	/**
 	 * Like like
@@ -66,7 +66,7 @@ public interface LikeControllerService extends AbstractControllerService
 	 *
 	 * @return All persons who likes the post
 	 */
-	List<HeaderDataDTO> getPostLikersList(int id,int page);
+	List<UserDTO> getPostLikersList(int id, int page);
 	
 	/**
 	 * @param id
@@ -74,5 +74,5 @@ public interface LikeControllerService extends AbstractControllerService
 	 *
 	 * @return All persons who likes the like
 	 */
-	List<HeaderDataDTO> getCommentLikersList(int id,int page);
+	List<UserDTO> getCommentLikersList(int id, int page);
 }

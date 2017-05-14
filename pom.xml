@@ -19,8 +19,8 @@
     </properties>
 
     <modules>
-        <module>SppotiRepository</module>
         <module>SppotiCommons</module>
+        <module>SppotiRepository</module>
         <module>SppotiBusiness</module>
         <module>SppotiRestApi</module>
         <module>SppotiRunApp</module>
@@ -29,7 +29,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.2.RELEASE</version>
+        <version>1.5.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -103,27 +103,27 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <id>developpement</id>
-            <properties>
-                <environment>dev</environment>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>qualification</id>
-            <properties>
-                <environment>qualif</environment>
-            </properties>
-        </profile>
-        <profile>
-            <id>production</id>
-            <properties>
-                <environment>prod</environment>
-            </properties>
-        </profile>
-    </profiles>
+    <!--<profiles>-->
+    <!--<profile>-->
+    <!--<id>developpement</id>-->
+    <!--<properties>-->
+    <!--<environment>dev</environment>-->
+    <!--</properties>-->
+    <!--<activation>-->
+    <!--<activeByDefault>true</activeByDefault>-->
+    <!--</activation>-->
+    <!--</profile>-->
+    <!--<profile>-->
+    <!--<id>qualification</id>-->
+    <!--<properties>-->
+    <!--<environment>qualif</environment>-->
+    <!--</properties>-->
+    <!--</profile>-->
+    <!--<profile>-->
+    <!--<id>production</id>-->
+    <!--<properties>-->
+    <!--<environment>prod</environment>-->
+    <!--</properties>-->
+    <!--</profile>-->
+    <!--</profiles>-->
 </project>
