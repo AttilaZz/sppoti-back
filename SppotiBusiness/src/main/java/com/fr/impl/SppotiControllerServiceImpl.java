@@ -759,17 +759,19 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			boolean teamIsAllowed = false;
 			if (userTeam.getId().equals(sppoti.getTeamHostEntity().getId())) {
 				teamIsAllowed = true;
-			}
-			
-			//if sppoti has a confirmed adverse team
-			final Optional<SppotiAdverseEntity> sppotiAdverseEntityOptional = sppoti.getAdverseTeams().stream()
-					.filter(a -> a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED) &&
-							a.getTeam().getTeamMembers().stream().anyMatch(m -> m.getAdmin().equals(true))).findFirst();
-			if (sppotiAdverseEntityOptional.isPresent()) {
-				if (userTeam.getId().equals(sppotiAdverseEntityOptional.get().getTeam().getId())) {
-					teamIsAllowed = true;
+			} else {
+				//if sppoti has a confirmed adverse team
+				final Optional<SppotiAdverseEntity> sppotiAdverseEntityOptional = sppoti.getAdverseTeams().stream()
+						.filter(a -> a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED) &&
+								a.getTeam().getTeamMembers().stream().anyMatch(m -> m.getAdmin().equals(true)))
+						.findFirst();
+				if (sppotiAdverseEntityOptional.isPresent()) {
+					if (userTeam.getId().equals(sppotiAdverseEntityOptional.get().getTeam().getId())) {
+						teamIsAllowed = true;
+					}
 				}
 			}
+			
 			
 			if (!teamIsAllowed) {
 				throw new BusinessGlobalException("This team is not allowed in this sppoti");
