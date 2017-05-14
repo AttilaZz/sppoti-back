@@ -484,6 +484,14 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 							sp.setSppotiMembers(sppotiMembers);
 							this.sppotiRepository.save(sp);
 							
+							//Set other challenge status to REFUSED
+							sp.getAdverseTeams().forEach(a -> {
+								if (!a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+									a.setStatus(GlobalAppStatusEnum.REFUSED);
+									this.sppotiAdverseRepository.save(a);
+								}
+							});
+							
 							//save changes and return team.
 							return this.teamTransformer.modelToDto(this.sppotiAdverseRepository.save(t).getTeam());
 						} else {
@@ -596,7 +604,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			
 			//all user teams.
 			final List<TeamDTO> teamDTOList = this.teamMembersRepository
-					.findByTeamSportIdAndUsersId(sppoti.getSport().getId(), userId, pageable).stream()
+					.findByTeamSportIdAndUsersIdAndAdminTrue(sppoti.getSport().getId(), userId, pageable).stream()
 					.map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
 			
 			//Do not return teams that are already in sppoti adverse team list.

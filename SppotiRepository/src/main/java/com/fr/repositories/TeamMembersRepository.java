@@ -121,13 +121,15 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 * @param team
 	 * 		team name prefix.
 	 * @param pageable
-	 * 		page number.
-	 *sppoti_adverse
+	 * 		page number. sppoti_adverse
+	 *
 	 * @return list of team members.
 	 */
 	List<TeamMemberEntity> findDistinctByTeamSportIdAndTeamNameContaining(Long sport, String team, Pageable pageable);
 	
 	/**
+	 * Find all user's teams by sport.
+	 *
 	 * @param sportId
 	 * 		sppoti sport id.
 	 * @param userId
@@ -135,7 +137,21 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 * @param pageable
 	 * 		page number.
 	 *
-	 * @return list of team members.
+	 * @return list of {@link TeamMemberEntity}
 	 */
 	List<TeamMemberEntity> findByTeamSportIdAndUsersId(Long sportId, Long userId, Pageable pageable);
+	
+	/**
+	 * Find all user's teams by sport and admin true.
+	 *
+	 * @param sportId
+	 * 		sppoti sport id.
+	 * @param userId
+	 * 		connected user id.
+	 * @param pageable
+	 * 		page number.
+	 *
+	 * @return list of {@link TeamMemberEntity}
+	 */
+	List<TeamMemberEntity> findByTeamSportIdAndUsersIdAndAdminTrue(Long sportId, Long userId, Pageable pageable);
 }

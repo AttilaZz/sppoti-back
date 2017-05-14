@@ -1,4 +1,4 @@
-package com.fr.api.team;
+package com.fr.api.team.member;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamDTO;

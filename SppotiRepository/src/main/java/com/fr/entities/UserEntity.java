@@ -118,7 +118,7 @@ public class UserEntity extends AbstractCommonEntity
 	private Map<Date, String> ipHistory = new LinkedHashMap<>();
 	
 	@Column(name = "time_zone")
-	private String timeZone = "+00";
+	private String timeZone = "02";
 	
 	public boolean isDeleted()
 	{

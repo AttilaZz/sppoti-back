@@ -498,16 +498,16 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 									sp.setSppotiMembers(sppotiMembers);
 									this.sppotiRepository.save(sp);
 								}
+								
+								//Set other challenge status to REFUSED
+								sp.getAdverseTeams().forEach(a -> {
+									if (!a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+										a.setStatus(GlobalAppStatusEnum.REFUSED);
+										this.sppotiAdverseRepository.save(a);
+									}
+								});
 							}
 						});
-				
-				//Set other challenge status to REFUSED
-				sp.getAdverseTeams().forEach(a -> {
-					if (!a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
-						a.setStatus(GlobalAppStatusEnum.REFUSED);
-						this.sppotiAdverseRepository.save(a);
-					}
-				});
 				
 			});
 		});

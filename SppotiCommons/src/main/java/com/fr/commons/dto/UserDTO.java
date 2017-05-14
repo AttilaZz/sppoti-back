@@ -63,6 +63,8 @@ public class UserDTO extends AbstractCommonDTO
 	
 	private String language;
 	
+	private String timeZone;
+	
 	public String getFirstName()
 	{
 		return this.firstName;
@@ -351,5 +353,15 @@ public class UserDTO extends AbstractCommonDTO
 	public void setLanguage(final String language)
 	{
 		this.language = language;
+	}
+	
+	public String getTimeZone()
+	{
+		return this.timeZone;
+	}
+	
+	public void setTimeZone(final String timeZone)
+	{
+		this.timeZone = timeZone;
 	}
 }
