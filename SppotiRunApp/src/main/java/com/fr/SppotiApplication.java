@@ -24,27 +24,42 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 })
 public class SppotiApplication extends SpringBootServletInitializer
 {
-	@Override
-	protected SpringApplicationBuilder configure(final SpringApplicationBuilder application)
-	{
-		return application.sources(SppotiApplication.class);
-	}
-	
-	/**
-	 * Main method to launch app.
-	 */
+	/** Main method to launch app. */
 	public static void main(final String[] args) throws Exception
 	{
 		SpringApplication.run(SppotiApplication.class, args);
 	}
 	
-	/**
-	 * Spring security password encoder init.
-	 */
+	/** Init Spring security password encoder. */
 	@Bean
 	public PasswordEncoder passwordEncoder()
 	{
 		return new BCryptPasswordEncoder();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected SpringApplicationBuilder configure(final SpringApplicationBuilder application)
+	{
+		return application.sources(SppotiApplication.class);
+	}
+	
+	//	/**
+	//	 * CROSS origin configuration
+	//	 */
+	//	@Bean
+	//	public WebMvcConfigurer corsConfigurer()
+	//	{
+	//		return new WebMvcConfigurerAdapter()
+	//		{
+	//			@Override
+	//			public void addCorsMappings(final CorsRegistry registry)
+	//			{
+	//				registry.addMapping("/**").allowedOrigins(Origins.getValue()).allowCredentials(true)
+	//						.allowedHeaders(Allowed_Headers.getValue()).allowedMethods(AllMethods.getValue());
+	//			}
+	//		};
+	//	}
 }

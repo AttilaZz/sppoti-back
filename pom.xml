@@ -8,6 +8,9 @@
     <artifactId>sppoti</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <description>Sppoti server web application</description>
+    <url>https://sppoti.com</url>
+
     <packaging>pom</packaging>
 
     <name>Sppoti Web Application</name>
@@ -104,27 +107,21 @@
         </plugins>
     </build>
 
-    <!--<profiles>-->
-    <!--<profile>-->
-    <!--<id>developpement</id>-->
-    <!--<properties>-->
-    <!--<environment>dev</environment>-->
-    <!--</properties>-->
-    <!--<activation>-->
-    <!--<activeByDefault>true</activeByDefault>-->
-    <!--</activation>-->
-    <!--</profile>-->
-    <!--<profile>-->
-    <!--<id>qualification</id>-->
-    <!--<properties>-->
-    <!--<environment>qualif</environment>-->
-    <!--</properties>-->
-    <!--</profile>-->
-    <!--<profile>-->
-    <!--<id>production</id>-->
-    <!--<properties>-->
-    <!--<environment>prod</environment>-->
-    <!--</properties>-->
-    <!--</profile>-->
-    <!--</profiles>-->
+    <profiles>
+        <profile>
+            <id>developpement</id>
+            <properties>
+                <environment>dev</environment>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>production</id>
+            <properties>
+                <environment>prod</environment>
+            </properties>
+        </profile>
+    </profiles>
 </project>

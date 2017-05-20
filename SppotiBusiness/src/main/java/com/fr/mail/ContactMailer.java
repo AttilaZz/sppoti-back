@@ -45,7 +45,7 @@ public class ContactMailer extends ApplicationMailer
 	 */
 	public void sendContactEmail(final ContactDTO contactDTO)
 	{
-		this.prepareAndSendEmail(contactDTO, this.emailContactSubject, this.emailContact, null);
+		this.prepareAndSendEmail(contactDTO, this.emailContactSubject, this.emailContact);
 	}
 	
 	/**
@@ -56,15 +56,18 @@ public class ContactMailer extends ApplicationMailer
 	 * @param subject
 	 * 		email subject.
 	 */
-	public void prepareAndSendEmail(final ContactDTO contactDTO, final String subject, final String emailContact,
-									final ResourceContent resourceContent)
+	public void prepareAndSendEmail(final ContactDTO contactDTO, final String subject, final String emailContact)
 	{
+		final ResourceContent resourceContent = new ResourceContent();
+		resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
+		resourceContent.setResourceName(logoResourceName);
 		
 		final Context context = new Context();
 		context.setVariable("name", contactDTO.getName());
 		context.setVariable("email", contactDTO.getEmail());
 		context.setVariable("object", contactDTO.getObject());
 		context.setVariable("body", contactDTO.getMessage());
+		context.setVariable("imageResourceName", resourceContent.getResourceName());
 		
 		final String text = this.templateEngine.process(PATH_TO_CONTACT_TEMPLATE, context);
 		

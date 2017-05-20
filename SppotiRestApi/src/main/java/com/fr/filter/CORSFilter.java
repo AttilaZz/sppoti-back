@@ -8,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 import static com.fr.filter.HeadersAttributes.*;
 import static com.fr.filter.HeadersValues.*;
@@ -33,9 +34,8 @@ public class CORSFilter implements Filter
 		response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
 		response.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
 		
-		if (request.getMethod() != "OPTIONS") {
+		if (!Objects.equals(request.getMethod(), "OPTIONS")) {
 			chain.doFilter(req, res);
-		} else {
 		}
 		
 	}

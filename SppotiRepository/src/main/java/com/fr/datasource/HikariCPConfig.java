@@ -14,30 +14,23 @@ import org.springframework.context.annotation.Configuration;
 public class HikariCPConfig
 {
 	
-	/**
-	 * Driver class name.
-	 */
+	/** Driver class name. */
 	private String driverClassName;
 	
-	/**
-	 * Datasource url
-	 */
+	/** Databse poolsize. */
+	private int poolSize;
+	
+	/** Datasource url. */
 	private String url;
 	
-	/**
-	 * Database username
-	 */
+	/** Database username. */
 	private String username;
 	
-	/**
-	 * Databse password.
-	 */
+	/** Database password. */
 	private String password;
 	
-	/**
-	 * Databse poolsize.
-	 */
-	private int poolSize;
+	/** is datasource for production or developpement. */
+	private Boolean production;
 	
 	/**
 	 * @return Hikary datasource.
@@ -46,11 +39,29 @@ public class HikariCPConfig
 	public HikariDataSource dataSource()
 	{
 		final HikariDataSource ds = new HikariDataSource();
+		
+		final String dbName, userName, password, hostname, port, jdbcUrl;
+		if (this.production) {
+			//Get Configuration From System in prod environment
+			dbName = System.getProperty("RDS_DB_NAME");
+			userName = System.getProperty("RDS_USERNAME");
+			password = System.getProperty("RDS_PASSWORD");
+			hostname = System.getProperty("RDS_HOSTNAME");
+			port = System.getProperty("RDS_PORT");
+			jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" +
+					password;
+		} else {
+			userName = this.username;
+			password = this.password;
+			jdbcUrl = this.url;
+		}
+		
 		ds.setMaximumPoolSize(this.poolSize);
 		ds.setDriverClassName(this.driverClassName);
-		ds.setJdbcUrl(this.url);
-		ds.setUsername(this.username);
-		ds.setPassword(this.password);
+		
+		ds.setJdbcUrl(jdbcUrl);
+		ds.setUsername(userName);
+		ds.setPassword(password);
 		return ds;
 	}
 	
@@ -62,6 +73,16 @@ public class HikariCPConfig
 	public void setDriverClassName(final String driverClassName)
 	{
 		this.driverClassName = driverClassName;
+	}
+	
+	public int getPoolSize()
+	{
+		return this.poolSize;
+	}
+	
+	public void setPoolSize(final int poolSize)
+	{
+		this.poolSize = poolSize;
 	}
 	
 	public String getUrl()
@@ -94,13 +115,13 @@ public class HikariCPConfig
 		this.password = password;
 	}
 	
-	public int getPoolSize()
+	public Boolean getProduction()
 	{
-		return this.poolSize;
+		return this.production;
 	}
 	
-	public void setPoolSize(final int poolSize)
+	public void setProduction(final Boolean production)
 	{
-		this.poolSize = poolSize;
+		this.production = production;
 	}
 }

@@ -3,10 +3,8 @@ package com.fr.security;
 import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.filter.CsrfHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
@@ -40,7 +38,6 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 {
 	
@@ -67,6 +64,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	/** Remember me token repository. */
 	@Autowired
 	private PersistentTokenRepository tokenRepository;
+	
+	/** Entry point filter. */
+	@Autowired
+	private EntryPointUnAthorisedHandler pointUnAthorisedHandler;
 	
 	/** Configure authentication provider. */
 	@Autowired
@@ -108,7 +109,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 				.hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(), UserRoleTypeEnum.ADMIN.getUserProfileType())
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and().logout()
 				.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessHandler(this.logoutSuccessHandler);
+				.logoutSuccessHandler(this.logoutSuccessHandler).and().
+				exceptionHandling().authenticationEntryPoint(this.pointUnAthorisedHandler);
+		
 	}
 	
 	/**

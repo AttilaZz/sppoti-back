@@ -365,13 +365,15 @@
                 <table>
                     <tr>
                         <td>
-                            <p class="logo"><img src="http://sppoti.com/images/loglog.png"/></p>
+                            <p class="logo"><img src="../images/sppoti_logo.png" th:src="|cid:${imageResourceName}|"/>
+                            </p>
 
                             <h3 class="tn"><a th:text="${name}" style="color: #000;">Nom et Prénom,</a></h3>
-                            <h4 class="email-title" th:text="${email}">Email</h4>
+                            <h4 class="email-title" th:text="${email}" style="text-decoration: none; color: #000">
+                                Email</h4>
                             <h5 class="object" th:text="${object}">Contact object</h5>
 
-                            <p class="lead account-message" th:text="${body}">
+                            <p class="lead account-message callout" style="padding: 5px;" th:text="${body}">
                                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
                                 incididunt, Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
                                 tempor incididunt, Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
