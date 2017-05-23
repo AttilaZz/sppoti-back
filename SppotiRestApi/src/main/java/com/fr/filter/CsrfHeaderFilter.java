@@ -19,6 +19,19 @@ import java.io.IOException;
  */
 public class CsrfHeaderFilter extends OncePerRequestFilter
 {
+	
+	/** CSRF properties. */
+	private final CsrfProperties filterProperties;
+	
+	/** init csrf properties. */
+	public CsrfHeaderFilter(final CsrfProperties filterProperties)
+	{
+		this.filterProperties = filterProperties;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
 									final FilterChain filterChain) throws ServletException, IOException
@@ -29,10 +42,15 @@ public class CsrfHeaderFilter extends OncePerRequestFilter
 			final String token = csrf.getToken();
 			if (cookie == null || token != null && !token.equals(cookie.getValue())) {
 				cookie = new Cookie("X-XSRF-TOKEN", token);
-				cookie.setPath("/");
+				cookie.setPath(this.filterProperties.getPath());
+				cookie.setDomain(this.filterProperties.getDomain());
+				cookie.setSecure(this.filterProperties.isSecureConnexion());
+				cookie.setMaxAge(this.filterProperties.getMaxAge());
+				cookie.setComment(this.filterProperties.getComment());
 				response.addCookie(cookie);
 			}
 		}
 		filterChain.doFilter(request, response);
 	}
+	
 }

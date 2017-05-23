@@ -11,7 +11,7 @@
 
     <artifactId>SppotiRunApp</artifactId>
 
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,7 +36,7 @@
     </dependencies>
 
     <build>
-        <finalName>sppoti-application</finalName>
+        <finalName>sppoti-application-${environment}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

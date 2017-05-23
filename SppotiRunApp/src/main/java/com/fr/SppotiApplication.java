@@ -2,8 +2,6 @@ package com.fr;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
@@ -22,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 		@PropertySource(value = "classpath:email/email_en.properties", ignoreResourceNotFound = true,
 				encoding = "UTF-8")
 })
-public class SppotiApplication extends SpringBootServletInitializer
+public class SppotiApplication
 {
 	/** Main method to launch app. */
 	public static void main(final String[] args) throws Exception
@@ -36,15 +34,15 @@ public class SppotiApplication extends SpringBootServletInitializer
 	{
 		return new BCryptPasswordEncoder();
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected SpringApplicationBuilder configure(final SpringApplicationBuilder application)
-	{
-		return application.sources(SppotiApplication.class);
-	}
+	//
+	//	/**
+	//	 * {@inheritDoc}
+	//	 */
+	//	@Override
+	//	protected SpringApplicationBuilder configure(final SpringApplicationBuilder application)
+	//	{
+	//		return application.sources(SppotiApplication.class);
+	//	}
 	
 	//	/**
 	//	 * CROSS origin configuration

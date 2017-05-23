@@ -2,6 +2,7 @@ package com.fr.security;
 
 import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.filter.CsrfHeaderFilter;
+import com.fr.filter.CsrfProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -89,6 +90,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		return source;
 	}
 	
+	/** CSRf token properties. */
+	@Autowired
+	private CsrfProperties filterProperties;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -97,14 +102,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	{
 		
 		http.
-				cors().and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class).csrf()
+				cors().and().addFilterAfter(new CsrfHeaderFilter(this.filterProperties), CsrfFilter.class).csrf()
 				.csrfTokenRepository(csrfTokenRepository()).and().formLogin()
 				.successHandler(savedRequestAwareAuthenticationSuccessHandler())
 				//                .loginPage("/login")
 				.usernameParameter("username").passwordParameter("password").successHandler(this.authSuccess)
 				.failureHandler(this.authFailure).permitAll().and().rememberMe().rememberMeParameter("remember-me")
 				.tokenRepository(this.tokenRepository).tokenValiditySeconds(86400).and().authorizeRequests()
-				.antMatchers("/account/**", "/sport/**", "/contact").permitAll().antMatchers("/admin/**")
+				.antMatchers("/account/**", "/sport/**", "/contact/**").permitAll().antMatchers("/admin/**")
 				.hasRole(UserRoleTypeEnum.ADMIN.getUserProfileType()).antMatchers("/api/profile/**")
 				.hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(), UserRoleTypeEnum.ADMIN.getUserProfileType())
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and().logout()

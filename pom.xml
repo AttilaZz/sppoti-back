@@ -123,5 +123,11 @@
                 <environment>prod</environment>
             </properties>
         </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <environment>test</environment>
+            </properties>
+        </profile>
     </profiles>
 </project>

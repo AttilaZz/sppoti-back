@@ -20,7 +20,9 @@ import static com.fr.filter.HeadersValues.*;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CORSFilter implements Filter
 {
-	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain)
 			throws IOException, ServletException
