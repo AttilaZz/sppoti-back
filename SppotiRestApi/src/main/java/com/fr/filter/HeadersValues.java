@@ -1,6 +1,8 @@
 package com.fr.filter;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
 
@@ -15,7 +17,7 @@ public enum HeadersValues
 	
 	private static final String PATH = "/headerConfig.properties";
 	
-	private static final Logger LOGGER = Logger.getLogger(HeadersValues.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HeadersValues.class);
 	
 	private static Properties properties;
 	

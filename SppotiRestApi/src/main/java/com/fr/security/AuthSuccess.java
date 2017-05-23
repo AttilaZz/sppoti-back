@@ -5,7 +5,8 @@ import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
 import com.fr.transformers.UserTransformer;
 import com.google.gson.Gson;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -28,7 +29,7 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 {
 	
 	/** Class logger. */
-	private static final Logger LOGGER = Logger.getLogger(AuthSuccess.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthSuccess.class);
 	
 	/** USer repository. */
 	private final UserRepository userRepository;

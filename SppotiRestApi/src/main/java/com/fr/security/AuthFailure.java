@@ -1,7 +1,8 @@
 package com.fr.security;
 
 import com.fr.aop.TraceAuthentification;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class AuthFailure extends SimpleUrlAuthenticationFailureHandler
 	/**
 	 * Class logger.
 	 */
-	private final Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(TraceAuthentification.class);
 	
 	/**
 	 * {@inheritDoc}

@@ -2,13 +2,14 @@ package com.fr.impl;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
-import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.service.CommentControllerService;
 import com.fr.transformers.impl.CommentTransformerImpl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +29,7 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 {
 	
 	/** Class logger. */
-	private Logger LOGGER = Logger.getLogger(CommentControllerServiceImpl.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(CommentControllerServiceImpl.class);
 	
 	/** Comment list size. */
 	@Value("${key.commentsPerPage}")
@@ -43,38 +44,39 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Transactional
 	@Override
-	public CommentDTO saveComment(CommentEntity newCommentEntity,Long userId,int postId)
+	public CommentDTO saveComment(final CommentEntity newCommentEntity, final Long userId, final int postId)
 	{
 		
 		
 		// get post postId to link the like
-		List<PostEntity> postEntity = postRepository.getByUuid(postId);
+		final List<PostEntity> postEntity = this.postRepository.getByUuid(postId);
 		if (!postEntity.isEmpty()) {
 			newCommentEntity.setPost(postEntity.get(0));
 		} else {
 			throw new EntityNotFoundException("Post not found (" + postId + ")");
 		}
 		
-		newCommentEntity.setUser(userRepository.findOne(getConnectedUser().getId()));
-		Optional<CommentEntity> commentEntity = Optional.ofNullable(commentRepository.save(newCommentEntity));
+		newCommentEntity.setUser(this.userRepository.findOne(getConnectedUser().getId()));
+		final Optional<CommentEntity> commentEntity = Optional
+				.ofNullable(this.commentRepository.save(newCommentEntity));
 		
 		if (commentEntity.isPresent()) {
-			int targetUser = commentEntity.get().getPost().getTargetUserProfileUuid();
+			final int targetUser = commentEntity.get().getPost().getTargetUserProfileUuid();
 			if (targetUser != 0 && targetUser != getConnectedUser().getUuid()) {
 				
 				//like on other posts not mine
 				if (commentEntity.get().getUser().getUuid() !=
 						commentEntity.get().getPost().getTargetUserProfileUuid()) {
-					addNotification(NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST,commentEntity.get().getUser(),
-							getUserByUuId(commentEntity.get().getPost().getTargetUserProfileUuid()),null,null);
+					addNotification(NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getUser(),
+							getUserByUuId(commentEntity.get().getPost().getTargetUserProfileUuid()), null, null);
 					
 				}
 				
-				addTagNotification(null,commentEntity.get());
+				addTagNotification(null, commentEntity.get());
 				
 			}
 			
-			return commentTransformer.modelToDto(commentEntity.get());
+			return this.commentTransformer.modelToDto(commentEntity.get());
 		}
 		
 		return null;
@@ -85,14 +87,14 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Transactional
 	@Override
-	public boolean deleteComment(CommentEntity commentEntity)
+	public boolean deleteComment(final CommentEntity commentEntity)
 	{
 		commentEntity.setDeleted(true);
 		try {
-			commentRepository.save(commentEntity);
+			this.commentRepository.save(commentEntity);
 			return true;
-		} catch (Exception e) {
-			LOGGER.error("Error saving commentEntity: ",e);
+		} catch (final Exception e) {
+			this.LOGGER.error("Error saving commentEntity: ", e);
 			return false;
 		}
 	}
@@ -101,9 +103,9 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CommentEntity findComment(int id)
+	public CommentEntity findComment(final int id)
 	{
-		return commentRepository.getByUuid(id);
+		return this.commentRepository.getByUuid(id);
 	}
 	
 	/**
@@ -111,14 +113,14 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Transactional
 	@Override
-	public boolean updateComment(EditHistoryEntity commentToEdit)
+	public boolean updateComment(final EditHistoryEntity commentToEdit)
 	{
 		
 		try {
-			editHistoryRepository.save(commentToEdit);
+			this.editHistoryRepository.save(commentToEdit);
 			return true;
-		} catch (Exception e) {
-			LOGGER.error("Error saving edited like: ",e);
+		} catch (final Exception e) {
+			this.LOGGER.error("Error saving edited like: ", e);
 			return false;
 		}
 		
@@ -128,28 +130,29 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<CommentDTO> getPostCommentsFromLastId(int postId,int page,Long userId)
+	public List<CommentDTO> getPostCommentsFromLastId(final int postId, final int page, final Long userId)
 	{
 		
-		Pageable pageable = new PageRequest(page,commentSize);
+		final Pageable pageable = new PageRequest(page, this.commentSize);
 		
-		List<CommentEntity> lCommentEntity = commentRepository.getByPostUuidOrderByDatetimeCreatedDesc(postId,pageable);
+		final List<CommentEntity> lCommentEntity = this.commentRepository
+				.getByPostUuidOrderByDatetimeCreatedDesc(postId, pageable);
 		
 		//userId used to distinguich connected user comments
-		return fillCommentModelList(lCommentEntity,userId);
+		return fillCommentModelList(lCommentEntity, userId);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ContentEditedResponseDTO> getAllCommentHistory(int id,int page)
+	public List<ContentEditedResponseDTO> getAllCommentHistory(final int id, final int page)
 	{
 		
-		Pageable pageable = new PageRequest(page,commentSize);
+		final Pageable pageable = new PageRequest(page, this.commentSize);
 		
-		List<EditHistoryEntity> dsHistoryList = editHistoryRepository
-				.getByCommentUuidOrderByDatetimeEditedDesc(id,pageable);
+		final List<EditHistoryEntity> dsHistoryList = this.editHistoryRepository
+				.getByCommentUuidOrderByDatetimeEditedDesc(id, pageable);
 		return fillEditContentResponse(dsHistoryList);
 	}
 	

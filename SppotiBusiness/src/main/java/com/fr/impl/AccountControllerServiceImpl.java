@@ -18,7 +18,8 @@ import com.fr.service.AccountControllerService;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.SportTransformer;
 import com.fr.transformers.impl.UserTransformerImpl;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,7 +42,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	/**
 	 * Class logger.
 	 */
-	private final Logger LOGGER = Logger.getLogger(AccountControllerServiceImpl.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(AccountControllerServiceImpl.class);
 	
 	/**
 	 * Spring security Password encoder.

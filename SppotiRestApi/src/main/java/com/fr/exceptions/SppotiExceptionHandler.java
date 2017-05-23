@@ -1,7 +1,8 @@
 package com.fr.exceptions;
 
 import com.fr.commons.exception.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class SppotiExceptionHandler
 {
 	
 	/** Class logger. */
-	private final Logger LOGGER = Logger.getLogger(SppotiExceptionHandler.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(SppotiExceptionHandler.class);
 	
 	/**
 	 * Catch All {@link NotAdminException} exceptions.

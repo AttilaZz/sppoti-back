@@ -5,7 +5,8 @@ import com.fr.entities.UserEntity;
 import com.fr.security.AccountUserDetails;
 import com.fr.service.LikeControllerService;
 import com.fr.service.PostControllerService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +41,7 @@ class UnlikePostController
 	}
 	
 	/** Init services. */
-	private final Logger LOGGER = Logger.getLogger(UnlikePostController.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(UnlikePostController.class);
 	
 	/**
 	 * @param id

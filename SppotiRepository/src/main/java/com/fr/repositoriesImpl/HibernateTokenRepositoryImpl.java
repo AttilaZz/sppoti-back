@@ -2,7 +2,8 @@ package com.fr.repositoriesImpl;
 
 import com.fr.entities.PersistentLogin;
 import com.fr.repositories.HibernateTokenRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -22,7 +23,7 @@ public class HibernateTokenRepositoryImpl implements PersistentTokenRepository
 	private HibernateTokenRepository hibernateTokenRepository;
 	
 	/** Class logger. */
-	private static final Logger LOGGER = Logger.getLogger(HibernateTokenRepositoryImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HibernateTokenRepositoryImpl.class);
 	
 	/**
 	 * {@inheritDoc}

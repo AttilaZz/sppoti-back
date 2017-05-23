@@ -1,13 +1,12 @@
 package com.fr;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fr.entities.SportEntity;
 import com.fr.commons.enumeration.SportListEnum;
 import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.entities.RoleEntity;
+import com.fr.entities.SportEntity;
 import com.fr.repositories.RoleRepository;
 import com.fr.repositories.SportRepository;
-import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,172 +23,127 @@ import java.util.List;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class InitMainData {
-
-    @Autowired
-    private SportRepository sportRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    private static Logger logger = Logger.getLogger(InitMainData.class);
-
-    private static final int sportListSize = SportListEnum.values().length;
-    private static final int roleListSize = UserRoleTypeEnum.values().length;
-
-    @Test
-    public void insertSports() throws JsonProcessingException {
-
-        List<SportEntity> databaseSportList = sportRepository.findAll();
-        if (!databaseSportList.isEmpty() || databaseSportList.size() != sportListSize) {
-            // clear list
-
-            List<SportEntity> newSports = new ArrayList<>();
-            SportListEnum[] spList = SportListEnum.values().clone();
-
-			/*
-             * loop the database to detect the new sports if no sports has been
-			 * found in db, insert all
-			 */
-            if (databaseSportList.size() > 0) {
-                /*
-                 * check new one
-				 */
-                for (int i = 0; i < sportListSize; i++) {
-                    boolean exist = false;
-                    String definedSport = spList[i].getSportType();
-
-                    for (SportEntity sportEntity : databaseSportList) {
-
-                        if (sportEntity.getName().equals(definedSport)) {
-                            exist = true;
-
-                        }
-
-                    }
-                    if (!exist) {
-                        SportEntity s = new SportEntity(definedSport);
-                        newSports.add(s);
-                    }
-                }
-
-            } else {
-                /*
-                 * insert all
-				 */
-                for (int i = 0; i < sportListSize; i++) {
-                    String definedSport = spList[i].getSportType();
-                    SportEntity s = new SportEntity(definedSport);
-                    newSports.add(s);
-                }
-            }
-
-            boolean isSaved = false;
-
-            logger.info("New sports size " + newSports.size());
-
-            for (int i = 0; i < newSports.size(); i++) {
-                /*
-                 * Save all new sports
-				 */
-                try {
-                    sportRepository.save(newSports.get(i));
-
-                    isSaved = true;
-
-                } catch (Exception e) {
-                    isSaved = false;
-
-                }
-
-            }
-
-            if (isSaved)
-                logger.info("All sports have been saved !!");
-            else
-                logger.error("At least one SportDTO is not saved !!");
-        } else
-
-        {
-            logger.info("SportEntity list in database is up to date !!");
-        }
-
-    }
-
-    @Test
-    public void insertRoles() throws JsonProcessingException {
-
-        List<RoleEntity> databaseProfileList = roleRepository.findAll();
-        if (!databaseProfileList.isEmpty() || databaseProfileList.size() != roleListSize) {
-            // clear list
-
-            List<RoleEntity> newRoles = new ArrayList<>();
-            UserRoleTypeEnum[] uroleList = UserRoleTypeEnum.values().clone();
+public class InitMainData
+{
+	
+	@Autowired
+	private SportRepository sportRepository;
+	
+	@Autowired
+	private RoleRepository roleRepository;
+	
+	private static final int sportListSize = SportListEnum.values().length;
+	private static final int roleListSize = UserRoleTypeEnum.values().length;
+	
+	@Test
+	public void insertSports() throws JsonProcessingException
+	{
+		
+		final List<SportEntity> databaseSportList = this.sportRepository.findAll();
+		if (!databaseSportList.isEmpty() || databaseSportList.size() != sportListSize) {
+			// clear list
+			
+			final List<SportEntity> newSports = new ArrayList<>();
+			final SportListEnum[] spList = SportListEnum.values().clone();
 
 			/*
-             * loop the database to detect the new sports if no sports has been
+			 * loop the database to detect the new sports if no sports has been
 			 * found in db, insert all
 			 */
-            if (databaseProfileList.size() > 0) {
-                /*
+			if (databaseSportList.size() > 0) {
+				/*
 				 * check new one
 				 */
-                for (int i = 0; i < roleListSize; i++) {
-                    boolean exist = false;
-                    UserRoleTypeEnum definedRole = uroleList[i];
-
-                    for (RoleEntity sport : databaseProfileList) {
-
-                        if (sport.getName().equals(definedRole)) {
-                            exist = true;
-
-                        }
-
-                    }
-                    if (!exist) {
-                        RoleEntity s = new RoleEntity(definedRole);
-                        newRoles.add(s);
-                    }
-                }
-
-            } else {
+				for (int i = 0; i < sportListSize; i++) {
+					boolean exist = false;
+					final String definedSport = spList[i].getSportType();
+					
+					for (final SportEntity sportEntity : databaseSportList) {
+						
+						if (sportEntity.getName().equals(definedSport)) {
+							exist = true;
+							
+						}
+						
+					}
+					if (!exist) {
+						final SportEntity s = new SportEntity(definedSport);
+						newSports.add(s);
+					}
+				}
+				
+			} else {
 				/*
 				 * insert all
 				 */
-                for (int i = 0; i < roleListSize; i++) {
-                    UserRoleTypeEnum definedUserRole = uroleList[i];
-                    RoleEntity ur = new RoleEntity(definedUserRole);
-                    newRoles.add(ur);
-                }
-            }
-
-            boolean isSaved = false;
-
-            logger.info("New role size " + newRoles.size());
-            for (int i = 0; i < newRoles.size(); i++) {
-				/*
+				for (int i = 0; i < sportListSize; i++) {
+					final String definedSport = spList[i].getSportType();
+					final SportEntity s = new SportEntity(definedSport);
+					newSports.add(s);
+				}
+			}
+			
+			/*
 				 * Save all new sports
 				 */
-                try {
-                    roleRepository.save(newRoles.get(i));
-                    isSaved = true;
+			this.sportRepository.save(newSports);
+		}
+		
+	}
+	
+	@Test
+	public void insertRoles() throws JsonProcessingException
+	{
+		
+		final List<RoleEntity> databaseProfileList = this.roleRepository.findAll();
+		if (!databaseProfileList.isEmpty() || databaseProfileList.size() != roleListSize) {
+			// clear list
+			
+			final List<RoleEntity> newRoles = new ArrayList<>();
+			final UserRoleTypeEnum[] uroleList = UserRoleTypeEnum.values().clone();
 
-                } catch (Exception e) {
-
-                    isSaved = false;
-
-                }
-            }
-
-            if (isSaved)
-                logger.info("All roles have been saved !!");
-            else
-                logger.error("At least one role is not saved !!");
-        } else
-
-        {
-            logger.info("Role list in database is up to date !!");
-        }
-    }
-
+			/*
+			 * loop the database to detect the new sports if no sports has been
+			 * found in db, insert all
+			 */
+			if (databaseProfileList.size() > 0) {
+				/*
+				 * check new one
+				 */
+				for (int i = 0; i < roleListSize; i++) {
+					boolean exist = false;
+					final UserRoleTypeEnum definedRole = uroleList[i];
+					
+					for (final RoleEntity sport : databaseProfileList) {
+						
+						if (sport.getName().equals(definedRole)) {
+							exist = true;
+							
+						}
+						
+					}
+					if (!exist) {
+						final RoleEntity s = new RoleEntity(definedRole);
+						newRoles.add(s);
+					}
+				}
+				
+			} else {
+				/*
+				 * insert all
+				 */
+				for (int i = 0; i < roleListSize; i++) {
+					final UserRoleTypeEnum definedUserRole = uroleList[i];
+					final RoleEntity ur = new RoleEntity(definedUserRole);
+					newRoles.add(ur);
+				}
+			}
+			
+			/*
+				 * Save all new sports
+				 */
+			this.roleRepository.save(newRoles);
+		}
+	}
+	
 }

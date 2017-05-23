@@ -3,7 +3,6 @@
  */
 package com.fr.aop;
 
-import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.JoinPoint.StaticPart;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Component;
  * @Around – Run around the method execution, combine all three advices above.
  */ public class TraceControllers
 {
-	private static final Logger LOGGER = Logger.getLogger(TraceControllers.class);
 	
 	// @Before( "traceInvocationPointcut()" )
 	public void afficherDebutTrace(final JoinPoint joinpoint) throws Throwable
@@ -49,8 +47,6 @@ import org.springframework.stereotype.Component;
 			}
 		}
 		sb.append(")");
-		
-		LOGGER.info("Debut methode : " + sb);
 	}
 	
 	// @After( "traceInvocationPointcut()" ) //for all situations
@@ -59,8 +55,6 @@ import org.springframework.stereotype.Component;
 	public void afficherFinTrace(final StaticPart staticPart, final Object result) throws Throwable
 	{
 		final String nomMethode = staticPart.getSignature().toLongString();
-		
-		LOGGER.info("Fin methode : " + nomMethode + " retour=" + result);
 	}
 	
 	@Around("traceInvocationPointcut()")
@@ -81,12 +75,10 @@ import org.springframework.stereotype.Component;
 		}
 		sb.append(")");
 		
-		LOGGER.info("Debut methode : " + sb);
 		Object obj = null;
 		try {
 			obj = joinpoint.proceed();
 		} finally {
-			LOGGER.info("Fin methode :  " + nomMethode + " retour=" + obj);
 		}
 		return obj;
 	}

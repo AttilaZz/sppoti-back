@@ -3,7 +3,8 @@ package com.fr.impl;
 import com.fr.commons.dto.ContactDTO;
 import com.fr.mail.ContactMailer;
 import com.fr.service.ContactControllerService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,13 +20,13 @@ public class ContactControllerServiceImpl extends AbstractControllerServiceImpl 
 	private final ContactMailer contactMailer;
 	
 	/** Class logger. */
-	private Logger LOGGER = Logger.getLogger(ContactControllerServiceImpl.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(ContactControllerServiceImpl.class);
 	
 	/**
 	 * Init class dependencies.
 	 */
 	@Autowired
-	public ContactControllerServiceImpl(ContactMailer contactMailer)
+	public ContactControllerServiceImpl(final ContactMailer contactMailer)
 	{
 		this.contactMailer = contactMailer;
 	}
@@ -34,7 +35,7 @@ public class ContactControllerServiceImpl extends AbstractControllerServiceImpl 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void sendGlobalContactEmail(ContactDTO contactDTO)
+	public void sendGlobalContactEmail(final ContactDTO contactDTO)
 	{
 		this.sendContactEmail(contactDTO);
 	}
@@ -45,11 +46,11 @@ public class ContactControllerServiceImpl extends AbstractControllerServiceImpl 
 	 * @param contact
 	 * 		contact data.
 	 */
-	private void sendContactEmail(ContactDTO contact)
+	private void sendContactEmail(final ContactDTO contact)
 	{
-		Thread thread = new Thread(() -> {
+		final Thread thread = new Thread(() -> {
 			this.contactMailer.sendContactEmail(contact);
-			LOGGER.info("Confirmation email has been sent successfully !");
+			this.LOGGER.info("Confirmation email has been sent successfully !");
 		});
 		thread.start();
 	}

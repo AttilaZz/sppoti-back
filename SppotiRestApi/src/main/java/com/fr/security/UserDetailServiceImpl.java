@@ -3,7 +3,8 @@ package com.fr.security;
 import com.fr.aop.TraceControllers;
 import com.fr.entities.UserEntity;
 import com.fr.service.LoginService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,7 +21,7 @@ import java.util.Date;
 public class UserDetailServiceImpl implements UserDetailsService
 {
 	/** Class logger. */
-	private static final Logger LOGGER = Logger.getLogger(TraceControllers.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TraceControllers.class);
 	
 	/** Login service. */
 	private LoginService loginService;

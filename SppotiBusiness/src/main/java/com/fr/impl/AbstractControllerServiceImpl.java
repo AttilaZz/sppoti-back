@@ -16,7 +16,6 @@ import com.fr.service.AbstractControllerService;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.GrantedAuthority;
@@ -93,8 +92,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	
 	@Autowired
 	private TeamTransformer teamTransformer;
-	
-	private final Logger LOGGER = Logger.getLogger(AbstractControllerServiceImpl.class);
 	
 	/**
 	 * {@inheritDoc}
@@ -556,7 +553,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		 */
 		final List<String> tags = new ArrayList<>();
 		while (matcher.find()) {
-			this.LOGGER.debug(matcher.group());
 			String s = matcher.group().trim();
 			s = s.replaceAll("[$]", "");
 			tags.add(s);
@@ -617,7 +613,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		
 		final Thread thread = new Thread(() -> {
 			this.teamMailer.sendJoinTeamEmail(teamDto, member, admin);
-			this.LOGGER.info("Join team email has been sent successfully !");
 		});
 		thread.start();
 	}

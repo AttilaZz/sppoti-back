@@ -3,7 +3,8 @@ package com.fr.security;
 import com.fr.aop.TraceAuthentification;
 import com.fr.entities.RoleEntity;
 import com.fr.entities.UserEntity;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -19,7 +20,7 @@ public class AccountUserDetails implements MyUserDetails
 	private final UserEntity account;
 	
 	/** Class logger. */
-	private static final Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TraceAuthentification.class);
 	
 	/** Init class. */
 	public AccountUserDetails(final UserEntity account)

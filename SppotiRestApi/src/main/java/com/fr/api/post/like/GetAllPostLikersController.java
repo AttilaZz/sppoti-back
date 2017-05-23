@@ -5,7 +5,8 @@ import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.PostEntity;
 import com.fr.service.LikeControllerService;
 import com.fr.service.PostControllerService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ class GetAllPostLikersController
 	/**
 	 * Class logger.
 	 */
-	private final Logger LOGGER = Logger.getLogger(GetAllPostLikersController.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(GetAllPostLikersController.class);
 	
 	/**
 	 * Init services.
