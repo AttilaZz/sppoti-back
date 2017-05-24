@@ -15,22 +15,16 @@ public class ContactMailer extends ApplicationMailer
 {
 	
 	
-	/**
-	 * Admins email.
-	 */
+	/** Admins email. */
 	@Value("${spring.app.contact.email}")
 	private String emailContact;
 	
-	/**
-	 * Email contact subject.
-	 */
+	/** Email contact subject. */
 	@Value("${spring.app.contact.subject}")
 	private String emailContactSubject;
 	
 	
-	/**
-	 * Init contact mailer.
-	 */
+	/** Init contact mailer. */
 	public ContactMailer(final JavaMailSender sender, final MailProperties mailProperties,
 						 final TemplateEngine templateEngine)
 	{

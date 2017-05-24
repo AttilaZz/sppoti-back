@@ -1,5 +1,6 @@
 package com.fr.mail;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,8 @@ import org.thymeleaf.TemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 
 /**
  * Created by wdjenane on 09/02/2017.
@@ -135,10 +135,13 @@ abstract class ApplicationMailer
 	
 	private InputStreamSource getImageResource(final ResourceContent resourceContent) throws IOException
 	{
-		final ClassLoader classLoader = getClass().getClassLoader();
-		final File file = new File(classLoader.getResource(resourceContent.getPath()).getFile());
+		//		final ClassLoader classLoader = getClass().getClassLoader();
+		//		final File file = new File(classLoader.getResource(resourceContent.getPath()).getFile());
 		
-		final byte[] imageBytes = Files.readAllBytes(file.toPath());
+		final InputStream file = getClass().getResourceAsStream("/" + resourceContent.getPath());
+		
+		//		final byte[] imageBytes = Files.readAllBytes();
+		final byte[] imageBytes = IOUtils.toByteArray(file);
 		return new ByteArrayResource(imageBytes);
 	}
 	
