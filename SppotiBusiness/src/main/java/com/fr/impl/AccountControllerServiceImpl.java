@@ -39,37 +39,26 @@ import java.util.stream.Collectors;
 class AccountControllerServiceImpl extends AbstractControllerServiceImpl implements AccountControllerService
 {
 	
-	/**
-	 * Class logger.
-	 */
+	/** Class logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(AccountControllerServiceImpl.class);
 	
-	/**
-	 * Spring security Password encoder.
-	 */
+	/** Spring security Password encoder. */
 	private final PasswordEncoder passwordEncoder;
 	
-	/**
-	 * {@link AccountMailer} to send emails.
-	 */
+	/** {@link AccountMailer} to send emails. */
 	private final AccountMailer accountMailer;
 	
-	/**
-	 * {@link UserEntity} transformer;
-	 */
+	/** {@link UserEntity} transformer. */
 	private final UserTransformer userTransformer;
 	
-	/**
-	 * {@link com.fr.entities.SportEntity} transformer.
-	 */
+	/** {@link com.fr.entities.SportEntity} transformer. */
 	private final SportTransformer sportTransformer;
 	
+	/** Days before expiration. */
 	@Value("${spring.app.account.recover.expiry.date}")
 	private int daysBeforeExpiration;
 	
-	/**
-	 * Init dependencies.
-	 */
+	/** Init dependencies. */
 	@Autowired
 	public AccountControllerServiceImpl(final AccountMailer accountMailer, final PasswordEncoder passwordEncoder,
 										final UserTransformerImpl userTransformer,
@@ -111,6 +100,8 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		});
 		
 		final UserEntity newUser = this.userTransformer.signUpDtoToEntity(user);
+		newUser.setFirstName(SppotiUtils.normaliser(newUser.getFirstName()));
+		newUser.setLastName(SppotiUtils.normaliser(newUser.getLastName()));
 		
 		newUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(this.daysBeforeExpiration));
 		
@@ -136,9 +127,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		
 	}
 	
-	/**
-	 * Send Email to activate new account.
-	 */
+	/** Send Email to activate new account. */
 	private void SendEmailToActivateAccount(final UserEntity user)
 	{
 		final UserDTO userDTO = this.userTransformer.modelToDto(user);
@@ -149,6 +138,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		thread.start();
 	}
 	
+	/** Test if account exists. */
 	private boolean accountExist(final UserEntity u)
 	{
 		if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate()) || u.isConfirmed()) {

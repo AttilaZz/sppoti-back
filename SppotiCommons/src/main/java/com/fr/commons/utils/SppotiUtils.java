@@ -6,8 +6,7 @@ import org.springframework.security.crypto.codec.Base64;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by wdjenane on 16/02/2017.
@@ -118,5 +117,70 @@ public class SppotiUtils
 		final LocalDateTime ldt = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault())
 				.plusDays(expiryDateNumber);
 		return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+	}
+	
+	/**
+	 * Normalisation des noms et prénoms.
+	 *
+	 * @param noms
+	 * 		liste des noms à normaliser
+	 *
+	 * @return tableau contenant dans l'ordre les noms et prénom normalisés.
+	 */
+	public static List<String> normaliserUnGroupeDeNom(final String... noms)
+	{
+		if (noms.length == 0) {
+			return null;
+		}
+		
+		final List<String> names = new ArrayList<>();
+		for (final String nom : noms) {
+			names.add(normaliser(nom));
+		}
+		return names;
+	}
+	
+	/**
+	 * Normaliser un prenom.
+	 *
+	 * @param prenom
+	 * 		prenom à normaliser.
+	 *
+	 * @return prenom normalisé.
+	 */
+	public static String normaliser(String prenom)
+	{
+		// Saisie de plusieurs prénoms séparés par des espaces possible
+		String[] prenoms = prenom.split(" ");
+		// Filtre les chaînes vides (donc filtre les espaces redondants)
+		prenoms = Arrays.stream(prenoms).filter(s -> !s.isEmpty()).toArray(String[]::new);
+		
+		// Pour chaque prénom saisi
+		for (int i = 0; i < prenoms.length; i++) {
+			// Prise en compte des cas de prénoms composés
+			String[] prenomTab = prenoms[i].split("-");
+			// Filtre les chaînes vides (donc filtre les traits d'union redondants)
+			prenomTab = Arrays.stream(prenomTab).filter(s -> !s.isEmpty()).toArray(String[]::new);
+			// Reconstitution du prénom composé avec la bonne casse
+			
+			if (prenomTab.length > 0) {
+				prenoms[i] = prenomTab[0].substring(0, 1).toUpperCase() + prenomTab[0].substring(1).toLowerCase();
+				for (int j = 1; j < prenomTab.length; j++) {
+					prenoms[i] = prenoms[i] + "-" + prenomTab[j].substring(0, 1).toUpperCase() +
+							prenomTab[j].substring(1).toLowerCase();
+					;
+				}
+			}
+		}
+		
+		// Reconstitution de la liste des prénoms
+		if (prenoms.length > 0) {
+			prenom = prenoms[0];
+			for (int i = 1; i < prenoms.length; i++) {
+				prenom = prenom + " " + prenoms[i];
+			}
+		}
+		
+		return prenom;
 	}
 }
