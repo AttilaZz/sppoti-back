@@ -39,10 +39,6 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	@Autowired
 	private CommentTransformerImpl commentTransformer;
 	
-	CommentControllerServiceImpl() {
-		super(this.messagingTemplate);
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */

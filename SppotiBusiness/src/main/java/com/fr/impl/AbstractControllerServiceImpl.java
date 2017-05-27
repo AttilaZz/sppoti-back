@@ -94,13 +94,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	private TeamTransformer teamTransformer;
 	
 	/** Socket messaging temples. */
-	private final SimpMessagingTemplate messagingTemplate;
-	
-	/** Init class. */
 	@Autowired
-	protected AbstractControllerServiceImpl(final SimpMessagingTemplate messagingTemplate) {
-		this.messagingTemplate = messagingTemplate;
-	}
+	private SimpMessagingTemplate messagingTemplate;
 	
 	/**
 	 * {@inheritDoc}

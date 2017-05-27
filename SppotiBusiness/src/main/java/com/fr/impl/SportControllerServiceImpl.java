@@ -14,10 +14,6 @@ import java.util.List;
 class SportControllerServiceImpl extends AbstractControllerServiceImpl implements SportControllerService
 {
 	
-	SportControllerServiceImpl() {
-		super(this.messagingTemplate);
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */

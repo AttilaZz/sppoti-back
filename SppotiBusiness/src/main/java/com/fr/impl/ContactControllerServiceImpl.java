@@ -28,7 +28,6 @@ public class ContactControllerServiceImpl extends AbstractControllerServiceImpl 
 	@Autowired
 	public ContactControllerServiceImpl(final ContactMailer contactMailer)
 	{
-		super(this.messagingTemplate);
 		this.contactMailer = contactMailer;
 	}
 	

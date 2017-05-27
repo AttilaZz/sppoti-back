@@ -57,7 +57,6 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 									 final TeamTransformerImpl teamTransformer,
 									 final SppotiTransformer sppotiTransformer)
 	{
-		super(this.messagingTemplate);
 		this.userTransformer = userTransformer;
 		this.teamTransformer = teamTransformer;
 		this.sppotiTransformer = sppotiTransformer;

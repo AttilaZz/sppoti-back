@@ -17,10 +17,6 @@ import java.util.List;
 class MessageControllerServiceImpl extends AbstractControllerServiceImpl implements MessageControllerService
 {
 	
-	MessageControllerServiceImpl() {
-		super(this.messagingTemplate);
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */

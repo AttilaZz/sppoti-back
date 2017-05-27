@@ -46,7 +46,6 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	@Autowired
 	public FriendControllerServiceImpl(final UserTransformer userTransformer)
 	{
-		super(this.messagingTemplate);
 		this.userTransformer = userTransformer;
 	}
 	

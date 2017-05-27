@@ -39,7 +39,6 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Autowired
 	public PostControllerServiceImpl(final CommentTransformer commentTransformer)
 	{
-		super(this.messagingTemplate);
 		this.commentTransformer = commentTransformer;
 	}
 	

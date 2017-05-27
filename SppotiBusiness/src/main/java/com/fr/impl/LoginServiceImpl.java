@@ -10,10 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 class LoginServiceImpl extends AbstractControllerServiceImpl implements LoginService
 {
-	LoginServiceImpl() {
-		super(this.messagingTemplate);
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
