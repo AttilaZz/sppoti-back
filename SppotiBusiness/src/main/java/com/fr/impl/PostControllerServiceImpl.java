@@ -502,8 +502,9 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 			final List<PostEntity> returnedPostEntities = new ArrayList<>();
 			
 			//get recent posts from each friend
-			this.friendShipRepository.findByUserUuidOrFriendUuidAndStatusAndDeletedFalse(userId, userId,
-					GlobalAppStatusEnum.CONFIRMED.name(), pageable).forEach(f -> {
+			this.friendShipRepository
+					.findByUserUuidOrFriendUuidAndStatusAndDeletedFalse(userId, userId, GlobalAppStatusEnum.CONFIRMED,
+							pageable).forEach(f -> {
 				
 				if (f.getFriend().getUuid() != userId) {
 					returnedPostEntities.addAll(this.postRepository

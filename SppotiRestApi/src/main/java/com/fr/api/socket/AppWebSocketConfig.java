@@ -26,6 +26,9 @@ public class AppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer
 	@Value("${spring.app.appName}")
 	private String applicationName;
 	
+	@Value("${spring.app.originFront}")
+	private String originFront;
+	
 	@Bean
 	public ServletServerContainerFactoryBean createWebSocketContainer()
 	{
@@ -49,6 +52,6 @@ public class AppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer
 		//		registry.addEndpoint("/add").setAllowedOrigins(Origins.getValue()).withSockJS()
 		//				.setClientLibraryUrl(this.backOrigin + this.applicationName + "/assets/js/sockjs-client.js");
 		//
-		registry.addEndpoint("/trade").withSockJS();
+		registry.addEndpoint("/trade").setAllowedOrigins(this.originFront).withSockJS();
 	}
 }
