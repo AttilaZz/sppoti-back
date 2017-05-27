@@ -44,6 +44,8 @@ public class SignUpDTO extends AbstractCommonDTO
 	@JsonProperty("old_password")
 	private String oldPassword;
 	
+	private String timeZone;
+	
 	public String getLastName()
 	{
 		return this.lastName;
@@ -142,5 +144,13 @@ public class SignUpDTO extends AbstractCommonDTO
 	public void setOldPassword(final String oldPassword)
 	{
 		this.oldPassword = oldPassword;
+	}
+	
+	public String getTimeZone() {
+		return this.timeZone;
+	}
+	
+	public void setTimeZone(final String timeZone) {
+		this.timeZone = timeZone;
 	}
 }
