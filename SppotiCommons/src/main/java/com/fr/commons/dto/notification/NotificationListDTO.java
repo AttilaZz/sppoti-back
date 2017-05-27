@@ -3,7 +3,6 @@ package com.fr.commons.dto.notification;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.commons.dto.AbstractCommonDTO;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ public class NotificationListDTO extends AbstractCommonDTO
 	
 	private List<NotificationDTO> notifications;
 	private Integer notifCounter;
-	private Date dateCreation;
+	private Integer UnreadCounter;
 	
 	public List<NotificationDTO> getNotifications()
 	{
@@ -37,13 +36,11 @@ public class NotificationListDTO extends AbstractCommonDTO
 		this.notifCounter = notifCounter;
 	}
 	
-	public Date getDateCreation()
-	{
-		return this.dateCreation;
+	public Integer getUnreadCounter() {
+		return this.UnreadCounter;
 	}
 	
-	public void setDateCreation(final Date dateCreation)
-	{
-		this.dateCreation = dateCreation;
+	public void setUnreadCounter(final Integer unreadCounter) {
+		this.UnreadCounter = unreadCounter;
 	}
 }
