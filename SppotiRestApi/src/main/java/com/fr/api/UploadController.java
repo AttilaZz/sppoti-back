@@ -2,7 +2,6 @@ package com.fr.api;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,18 +15,14 @@ import java.util.List;
 /**
  * Created by: Wail DJENANE On June 01, 2016
  */
-@Controller
-class IndexController
+//@Controller
+class UploadController
 {
 	
 	
 	//Save the uploaded file to this folder
 	private static final String UPLOADED_FOLDER = "./upload/";
 	
-	//    @GetMapping(value = {"/", "/login"})
-	//     String homePage() {
-	//        return "index";
-	//    }
 	
 	@PostMapping("/upload")
 	ResponseEntity handleFileUpload(@RequestParam("uploads") final MultipartFile[] files)

@@ -6,14 +6,12 @@ import com.fr.entities.UserEntity;
 import com.fr.transformers.CommentTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by djenanewail on 2/11/17.
  */
 
 @Component
-@Transactional(readOnly = true)
 public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, CommentEntity> implements
 		CommentTransformer
 {
@@ -23,7 +21,7 @@ public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, 
 	
 	/** Init user transformer. */
 	@Autowired
-	public CommentTransformerImpl(UserTransformerImpl userTransformer)
+	public CommentTransformerImpl(final UserTransformerImpl userTransformer)
 	{
 		this.userTransformer = userTransformer;
 	}
@@ -32,7 +30,7 @@ public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CommentEntity dtoToModel(CommentDTO dto)
+	public CommentEntity dtoToModel(final CommentDTO dto)
 	{
 		return super.dtoToModel(dto);
 	}
@@ -41,10 +39,10 @@ public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CommentDTO modelToDto(CommentEntity model)
+	public CommentDTO modelToDto(final CommentEntity model)
 	{
-		CommentDTO commentDTO = new CommentDTO();
-		UserEntity userEntity = model.getUser();
+		final CommentDTO commentDTO = new CommentDTO();
+		final UserEntity userEntity = model.getUser();
 		commentDTO.setAuthorFirstName(userEntity.getFirstName());
 		commentDTO.setAuthorLastName(userEntity.getLastName());
 		commentDTO.setAuthorUsername(userEntity.getUsername());
@@ -56,7 +54,7 @@ public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, 
 		commentDTO.setVideoLink(model.getVideoLink());
 		commentDTO.setCreationDate(model.getDatetimeCreated());
 		
-		commentDTO.setAuthorAvatar(userTransformer.getUserCoverAndAvatar(userEntity).getAvatar());
+		commentDTO.setAuthorAvatar(this.userTransformer.getUserCoverAndAvatar(userEntity).getAvatar());
 		
 		return commentDTO;
 	}

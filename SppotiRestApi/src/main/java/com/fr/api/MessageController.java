@@ -1,128 +1,139 @@
 package com.fr.api;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fr.commons.dto.message.MessageRequestDTO;
+import com.fr.entities.MessageEntity;
+import com.fr.entities.UserEntity;
+import com.fr.security.AccountUserDetails;
+import com.fr.service.MessageControllerService;
+import com.fr.transformers.MessageTranformer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Jun 25, 2016
  */
 @RestController
-@RequestMapping("/messages")
-class MessageController {
-
-   /* private final MessageControllerService messageControllerService;
-
-    private Logger LOGGER = Logger.getLogger(TraceAuthentification.class);
-
-    private static final String ATT_USER_ID = "USER_ID";
-
-    @Autowired
-     MessageController(MessageControllerService messageControllerService) {
-        this.messageControllerService = messageControllerService;
-    }
-
-    @RequestMapping(value = "/sent/{bottomMajId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-     ResponseEntity<MessageRequestDTO> getSentMessages(@PathVariable("bottomMajId") int bottomMajId,
-                                                             HttpServletRequest request) {
-
-        MessageRequestDTO response = new MessageRequestDTO();
-
-        // page number is not valid
-        if (bottomMajId < 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        List<MessageEntity> sentMessages = messageControllerService.getSentUserMessages(userId, bottomMajId);
-
-        if (sentMessages.isEmpty()) {
-            return new ResponseEntity<MessageRequestDTO>(HttpStatus.NO_CONTENT);
-        }
-
-        response.setSentMessages(sentMessages);
-
-        LOGGER.info("UserDTO DATA has been returned ");
-        return new ResponseEntity<MessageRequestDTO>(response, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/received/{bottomMajId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-     ResponseEntity<MessageRequestDTO> getReceivedMessages(@PathVariable("bottomMajId") int bottomMajId,
-                                                                 HttpServletRequest request) {
-
-        MessageRequestDTO response = new MessageRequestDTO();
-
-        // page number is not valid
-        if (bottomMajId < 0) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        List<MessageEntity> receivedMessages = messageControllerService.getReceivedUserMessages(userId, bottomMajId);
-
-        response.setReceivedMessages(receivedMessages);
-
-        if (receivedMessages.isEmpty()) {
-            return new ResponseEntity<MessageRequestDTO>(response, HttpStatus.NO_CONTENT);
-        }
-
-        LOGGER.info("UserDTO DATA has been returned ");
-        return new ResponseEntity<MessageRequestDTO>(response, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/send", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-     ResponseEntity<MessageEntity> addPost(@RequestBody MessageRequestDTO newMessage, UriComponentsBuilder ucBuilder,
-                                                 HttpServletRequest request) {
-
-        Long userId = (Long) request.getSession().getAttribute(ATT_USER_ID);
-        UserEntity user = messageControllerService.getUserById(userId);
-        LOGGER.info("LOGGED MessageEntity for UserDTO: => " + userId);
-
-        MessageEntity newMsg = null;
-
-        if (newMessage.getMsg() == null) {
-            LOGGER.info("ADD: MessageEntity content is empty");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        newMsg = new MessageEntity(newMessage.getMsg());
-        newMsg.setUserMessage(user);
-
-        if (newMessage.getReceivedId() == null) {
-            LOGGER.info("ADD: MessageEntity received id is empty");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        newMsg.setReceiver_id(newMessage.getReceivedId());
-
-        if (messageControllerService.saveMessage(newMsg)) {
-            LOGGER.info("ADD: MessageEntity has been saved: => " + newMsg);
-            return new ResponseEntity<MessageEntity>(newMsg, HttpStatus.CREATED);
-        }
-
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-     ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
-
-        // bad argument parameter
-        if (id < 1) {
-            LOGGER.info("DELETE: Bad message argument parameter ");
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        // nothing to delete
-        if (messageControllerService.findMessageById(id) == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        if (messageControllerService.deteleMessageById(id)) {
-            LOGGER.info("DELETE: MessageEntity with id (" + id + ") has been deleted: ");
-            return new ResponseEntity<>(HttpStatus.OK);
-
-        }
-        // database problem
-        LOGGER.info("DELETE: Database deleted problem !!");
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-    }*/
+@RequestMapping("/message")
+class MessageController
+{
+	/** message service. */
+	private final MessageControllerService messageControllerService;
+	
+	/** Message transformer. */
+	@Autowired
+	private MessageTranformer messageTranformer;
+	
+	/** Init class. */
+	@Autowired
+	MessageController(final MessageControllerService messageControllerService)
+	{
+		this.messageControllerService = messageControllerService;
+	}
+	
+	@GetMapping(value = "/sent/{bottomMajId}")
+	ResponseEntity<MessageRequestDTO> getSentMessages(@PathVariable("bottomMajId") final int bottomMajId,
+													  final Authentication authentication)
+	{
+		
+		final MessageRequestDTO response = new MessageRequestDTO();
+		
+		// page number is not valid
+		if (bottomMajId < 0) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		final List<MessageEntity> sentMessages = this.messageControllerService.getSentUserMessages(userId, bottomMajId);
+		
+		if (sentMessages.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		//		response.setSentMessages(sentMessages);
+		
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping(value = "/received/{bottomMajId}")
+	ResponseEntity<MessageRequestDTO> getReceivedMessages(@PathVariable("bottomMajId") final int bottomMajId,
+														  final Authentication authentication)
+	{
+		
+		final MessageRequestDTO response = new MessageRequestDTO();
+		
+		// page number is not valid
+		if (bottomMajId < 0) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		
+		final List<MessageEntity> receivedMessages = this.messageControllerService
+				.getReceivedUserMessages(userId, bottomMajId);
+		
+		//		response.setReceivedMessages(receivedMessages);
+		
+		if (receivedMessages.isEmpty()) {
+			return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+		}
+		
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "/send")
+	ResponseEntity<MessageEntity> addPost(@RequestBody final MessageRequestDTO newMessage,
+										  final Authentication authentication)
+	{
+		
+		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		final UserEntity user = this.messageControllerService.getUserById(userId);
+		
+		final MessageEntity newMsg;
+		
+		if (newMessage.getMsg() == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		newMsg = new MessageEntity(this.messageTranformer.dtoToModel(newMessage.getMsg()));
+		newMsg.setUserMessage(user);
+		
+		if (newMessage.getReceivedId() == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		newMsg.setReceiverId(newMessage.getReceivedId());
+		
+		if (this.messageControllerService.saveMessage(newMsg)) {
+			return new ResponseEntity<>(newMsg, HttpStatus.CREATED);
+		}
+		
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+	}
+	
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+	ResponseEntity<Void> deleteUser(@PathVariable("id") final Long id)
+	{
+		
+		// bad argument parameter
+		if (id < 1) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		// nothing to delete
+		if (this.messageControllerService.findMessageById(id) == null) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+		
+		if (this.messageControllerService.deteleMessageById(id)) {
+			return new ResponseEntity<>(HttpStatus.OK);
+			
+		}
+		// database problem
+		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+	}
 }

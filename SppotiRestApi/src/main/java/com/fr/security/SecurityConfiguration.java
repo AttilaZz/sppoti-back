@@ -13,6 +13,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,12 +27,6 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -78,21 +73,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		auth.authenticationProvider(authenticationProvider());
 	}
 	
-	/** Configure CROSS origin. */
-	@Bean
-	CorsConfigurationSource corsConfigurationSource()
-	{
-		final CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Collections.singletonList("https://localhost:8000"));
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
-		return source;
-	}
-	
 	/** CSRf token properties. */
 	@Autowired
 	private CsrfProperties filterProperties;
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void configure(final WebSecurity web) throws Exception
+	{
+		web.ignoring().antMatchers("/webjars/**");
+		web.ignoring().antMatchers("/app.js");
+		web.ignoring().antMatchers("/main.css");
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -114,9 +108,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 				.hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(), UserRoleTypeEnum.ADMIN.getUserProfileType())
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and().logout()
 				.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessHandler(this.logoutSuccessHandler).and().
-				exceptionHandling().authenticationEntryPoint(this.pointUnAthorisedHandler);
-		
+				.logoutSuccessHandler(this.logoutSuccessHandler).and().exceptionHandling()
+				.authenticationEntryPoint(this.pointUnAthorisedHandler);
 	}
 	
 	/**
