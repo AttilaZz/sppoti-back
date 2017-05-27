@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
@@ -40,14 +41,14 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 	public NotificationListDTO getAllReceivedNotifications(final int userId, final int page)
 	{
 		
-		final Pageable pageable = new PageRequest(page, this.notificationSize);
+		final Pageable pageable = new PageRequest(page, this.notificationSize, Sort.Direction.DESC, "creationDate");
 		
 		final List<NotificationEntity> notifications = this.notificationRepository.findByToUuid(userId, pageable);
 		
 		final NotificationListDTO notificationListDTO = new NotificationListDTO();
 		notificationListDTO.setNotifications(
 				notifications.stream().map(this.notificationTransformer::notificationEntityToDto)
-						.sorted((t2, t1) -> t1.getDatetime().compareTo(t2.getDatetime())).collect(Collectors.toList()));
+						.collect(Collectors.toList()));
 		notificationListDTO.setNotifCounter(this.notificationRepository.countByToUuid(userId));
 		
 		return notificationListDTO;

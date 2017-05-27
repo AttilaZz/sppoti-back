@@ -34,7 +34,7 @@ public class NotificationEntity extends AbstractCommonEntity
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private GlobalAppStatusEnum status = GlobalAppStatusEnum.OPENED;
+	private GlobalAppStatusEnum status = GlobalAppStatusEnum.READ;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "team_id")

@@ -67,8 +67,8 @@ class NotificationController
 			throw new BusinessGlobalException("Notification status missing");
 		}
 		
-		if (!notificationDTO.getStatus().equals(GlobalAppStatusEnum.CLOSED) &&
-				!notificationDTO.getStatus().equals(GlobalAppStatusEnum.OPENED)) {
+		if (!notificationDTO.getStatus().equals(GlobalAppStatusEnum.UNREAD) &&
+				!notificationDTO.getStatus().equals(GlobalAppStatusEnum.READ)) {
 			throw new BusinessGlobalException("Status not accepted.");
 		}
 		
