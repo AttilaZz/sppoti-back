@@ -200,7 +200,6 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 					userDTO.setPassword(null);
 					return userDTO;
 				}).collect(Collectors.toList());
-		
 	}
 	
 	/**
