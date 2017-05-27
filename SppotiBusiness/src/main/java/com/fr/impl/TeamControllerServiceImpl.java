@@ -85,11 +85,17 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		final TeamEntity addedTeam = this.teamRepository.save(teamToSave);
 		
-		//Send email to the invited members.
+		//Send email and notify the invited members.
 		addedTeam.getTeamMembers().forEach(m -> {
 			if (!m.getUsers().getId().equals(getConnectedUser().getId())) {
+				//Email
 				sendJoinTeamEmail(addedTeam, getUserById(m.getUsers().getId()),
 						this.teamMembersRepository.findByTeamUuidAndAdminTrue(addedTeam.getUuid()));
+				//Notification
+				final TeamMemberEntity admin = this.teamMembersRepository
+						.findByTeamUuidAndAdminTrue(addedTeam.getUuid());
+				addNotification(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_TEAM, admin.getUsers(), m.getUsers(),
+						admin.getTeam(), null);
 			}
 		});
 		

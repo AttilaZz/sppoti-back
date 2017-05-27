@@ -6,6 +6,7 @@ import com.fr.entities.NotificationEntity;
 import com.fr.entities.SppotiEntity;
 import com.fr.entities.TeamEntity;
 import com.fr.entities.UserEntity;
+import com.fr.transformers.NotificationTransformer;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
@@ -20,7 +21,8 @@ import java.util.Optional;
  */
 @Transactional(readOnly = true)
 @Component
-public class NotificationTransformer
+public class NotificationTransformerImpl extends AbstractTransformerImpl<NotificationDTO, NotificationEntity> implements
+		NotificationTransformer
 {
 	/** Team transformer. */
 	private final TeamTransformer teamTransformer;
@@ -33,8 +35,9 @@ public class NotificationTransformer
 	 * Init class transformers.
 	 */
 	@Autowired
-	public NotificationTransformer(final TeamTransformerImpl teamTransformer, final UserTransformerImpl userTransformer,
-								   final SppotiTransformerImpl sppotiTransformer)
+	public NotificationTransformerImpl(final TeamTransformerImpl teamTransformer,
+									   final UserTransformerImpl userTransformer,
+									   final SppotiTransformerImpl sppotiTransformer)
 	{
 		this.teamTransformer = teamTransformer;
 		this.userTransformer = userTransformer;
@@ -47,7 +50,8 @@ public class NotificationTransformer
 	 *
 	 * @return NotificationEntity DTO.
 	 */
-	public NotificationDTO notificationEntityToDto(final NotificationEntity notification)
+	@Override
+	public NotificationDTO modelToDto(final NotificationEntity notification)
 	{
 		final NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(notification.getUuid());

@@ -3,6 +3,7 @@ package com.fr.impl;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
@@ -13,6 +14,7 @@ import com.fr.mail.SppotiMailer;
 import com.fr.mail.TeamMailer;
 import com.fr.repositories.*;
 import com.fr.service.AbstractControllerService;
+import com.fr.transformers.NotificationTransformer;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
@@ -96,6 +98,10 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	/** Socket messaging temples. */
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
+	
+	/** Notification Transformer. */
+	@Autowired
+	private NotificationTransformer notificationTransformer;
 	
 	/**
 	 * {@inheritDoc}
@@ -505,7 +511,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		final NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity,
 				sppoti);
 		
-		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notification);
+		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
+		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
 		this.notificationRepository.save(notification);
 	}
 	

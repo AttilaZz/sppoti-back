@@ -6,7 +6,7 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.NotificationEntity;
 import com.fr.service.NotificationControllerService;
-import com.fr.transformers.impl.NotificationTransformer;
+import com.fr.transformers.impl.NotificationTransformerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +33,7 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 	
 	/** Notification transformer. */
 	@Autowired
-	private NotificationTransformer notificationTransformer;
+	private NotificationTransformerImpl notificationTransformer;
 	
 	/**
 	 * {@inheritDoc}
@@ -48,8 +48,7 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 		
 		final NotificationListDTO notificationListDTO = new NotificationListDTO();
 		notificationListDTO.setNotifications(
-				notifications.stream().map(this.notificationTransformer::notificationEntityToDto)
-						.collect(Collectors.toList()));
+				notifications.stream().map(this.notificationTransformer::modelToDto).collect(Collectors.toList()));
 		notificationListDTO.setNotifCounter(this.notificationRepository.countByToUuid(userId));
 		notificationListDTO.setUnreadCounter(
 				this.notificationRepository.countByToUuidAndStatus(userId, GlobalAppStatusEnum.UNREAD));

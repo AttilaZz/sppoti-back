@@ -52,6 +52,7 @@
         </Root>
         <Root level="error">
             <AppenderRef ref="FileAllErrors"/>
+            <AppenderRef ref="Console-Appender"/>
         </Root>
     </Loggers>
 </Configuration>
