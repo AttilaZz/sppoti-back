@@ -18,6 +18,7 @@ import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -69,29 +70,37 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	@Autowired
 	SppotiAdverseRepository sppotiAdverseRepository;
 	
-	/**
-	 * Team mailer.
-	 */
+	/** Team mailer. */
 	@Autowired
 	TeamMailer teamMailer;
 	
-	/**
-	 * Sppoti mailer.
-	 */
+	/** Sppoti mailer. */
 	@Autowired
 	SppotiMailer sppotiMailer;
 	
 	@Autowired
 	private Environment environment;
 	
+	/** Team member controller. */
 	@Autowired
 	private TeamMemberTransformer teamMemberTransformer;
 	
+	/** User transformer. */
 	@Autowired
 	private UserTransformer userTransformer;
 	
+	/** Team transformer. */
 	@Autowired
 	private TeamTransformer teamTransformer;
+	
+	/** Socket messaging temples. */
+	private final SimpMessagingTemplate messagingTemplate;
+	
+	/** Init class. */
+	@Autowired
+	protected AbstractControllerServiceImpl(final SimpMessagingTemplate messagingTemplate) {
+		this.messagingTemplate = messagingTemplate;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -501,6 +510,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		final NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity,
 				sppoti);
 		
+		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notification);
 		this.notificationRepository.save(notification);
 	}
 	

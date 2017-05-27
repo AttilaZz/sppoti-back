@@ -14,12 +14,16 @@ import java.util.List;
 class SportControllerServiceImpl extends AbstractControllerServiceImpl implements SportControllerService
 {
 	
+	SportControllerServiceImpl() {
+		super(this.messagingTemplate);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public List<SportEntity> getAllSports()
 	{
-		return sportRepository.findAll();
+		return this.sportRepository.findAll();
 	}
 }

@@ -3,12 +3,11 @@
  */
 package com.fr.impl;
 
-import java.util.List;
-
 import com.fr.entities.MessageEntity;
+import com.fr.service.MessageControllerService;
 import org.springframework.stereotype.Component;
 
-import com.fr.service.MessageControllerService;
+import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Jun 25, 2016
@@ -18,11 +17,15 @@ import com.fr.service.MessageControllerService;
 class MessageControllerServiceImpl extends AbstractControllerServiceImpl implements MessageControllerService
 {
 	
+	MessageControllerServiceImpl() {
+		super(this.messagingTemplate);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<MessageEntity> getSentUserMessages(Long userId,int page)
+	public List<MessageEntity> getSentUserMessages(final Long userId, final int page)
 	{
 		return null;
 	}
@@ -31,7 +34,7 @@ class MessageControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<MessageEntity> getReceivedUserMessages(Long userId,int page)
+	public List<MessageEntity> getReceivedUserMessages(final Long userId, final int page)
 	{
 		return null;
 	}
@@ -40,7 +43,7 @@ class MessageControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean saveMessage(MessageEntity msg)
+	public Boolean saveMessage(final MessageEntity msg)
 	{
 		return null;
 	}
@@ -49,7 +52,7 @@ class MessageControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean updateMessage(MessageEntity msg)
+	public Boolean updateMessage(final MessageEntity msg)
 	{
 		return null;
 	}
@@ -58,7 +61,7 @@ class MessageControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean deteleMessageById(Long msgId)
+	public Boolean deteleMessageById(final Long msgId)
 	{
 		return null;
 	}
@@ -67,7 +70,7 @@ class MessageControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public MessageEntity findMessageById(Long msgId)
+	public MessageEntity findMessageById(final Long msgId)
 	{
 		return null;
 	}

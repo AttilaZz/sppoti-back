@@ -35,6 +35,7 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 	@Autowired
 	public ScoreControllerServiceImpl(final ScoreTransformer scoreTransformer, final ScoreRepository scoreRepository)
 	{
+		super(this.messagingTemplate);
 		this.scoreTransformer = scoreTransformer;
 		this.scoreRepository = scoreRepository;
 	}

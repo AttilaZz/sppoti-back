@@ -32,6 +32,10 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Value("${key.likesPerPage}")
 	private int likeSize;
 	
+	LikeControllerServiceImpl() {
+		super(this.messagingTemplate);
+	}
+	
 	@Transactional
 	@Override
 	public LikeContentEntity likePost(final LikeContentEntity likeToSave)

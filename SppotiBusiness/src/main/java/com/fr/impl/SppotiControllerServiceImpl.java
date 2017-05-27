@@ -77,6 +77,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 									   final TeamMemberTransformer teamMemberTransformer,
 									   final UserTransformer userTransformer, final SppotiMailer sppotiMailer)
 	{
+		super(this.messagingTemplate);
 		this.sportTransformer = sportTransformer;
 		this.sppotiTransformer = sppotiTransformer;
 		this.teamMemberTransformer = teamMemberTransformer;

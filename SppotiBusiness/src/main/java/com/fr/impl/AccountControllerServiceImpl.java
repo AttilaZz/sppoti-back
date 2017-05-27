@@ -64,6 +64,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 										final UserTransformerImpl userTransformer,
 										final SportTransformer sportTransformer)
 	{
+		super(this.messagingTemplate);
 		this.accountMailer = accountMailer;
 		this.passwordEncoder = passwordEncoder;
 		this.userTransformer = userTransformer;

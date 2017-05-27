@@ -35,6 +35,10 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 	@Autowired
 	private NotificationTransformer notificationTransformer;
 	
+	NotificationControllerServiceImpl() {
+		super(this.messagingTemplate);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

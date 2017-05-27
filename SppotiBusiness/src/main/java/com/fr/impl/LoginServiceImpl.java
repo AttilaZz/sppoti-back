@@ -10,30 +10,34 @@ import org.springframework.stereotype.Component;
 @Component
 class LoginServiceImpl extends AbstractControllerServiceImpl implements LoginService
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public UserEntity getByEmail(String username)
-	{
-		return userRepository.getByEmailAndDeletedFalse(username);
+	LoginServiceImpl() {
+		super(this.messagingTemplate);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity getByTelephone(String username)
+	public UserEntity getByEmail(final String username)
 	{
-		return userRepository.getByTelephoneAndDeletedFalse(username);
+		return this.userRepository.getByEmailAndDeletedFalse(username);
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity getByUsername(String username)
+	public UserEntity getByTelephone(final String username)
 	{
-		return userRepository.getByUsernameAndDeletedFalse(username);
+		return this.userRepository.getByTelephoneAndDeletedFalse(username);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public UserEntity getByUsername(final String username)
+	{
+		return this.userRepository.getByUsernameAndDeletedFalse(username);
 	}
 }
