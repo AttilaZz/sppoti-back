@@ -358,11 +358,11 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 					teamMember.setStatus(GlobalAppStatusEnum.CONFIRMED);
 				}
 				teamMember.setTeam(team);
-				teamMember.setUsers(user);
+				teamMember.setUser(user);
 				
 				if (sppoti != null) {
 					final TeamMemberEntity sppoterMember = this.teamMembersRepository
-							.findByUsersUuidAndTeamUuid(userDTO.getId(), team.getUuid());
+							.findByUserUuidAndTeamUuid(userDTO.getId(), team.getUuid());
 
                     /* if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter. */
 					if (userDTO.getxPosition() != null && !userDTO.getxPosition().equals(0)) {

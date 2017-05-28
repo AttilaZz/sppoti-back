@@ -105,7 +105,8 @@ class FindTeamController
 													  @PathVariable final int page)
 	{
 		
-		return new ResponseEntity<>(this.teamControllerService.findAllAdverseTeams(sppotiId, team, page),
+		return new ResponseEntity<>(
+				this.teamControllerService.findAllAdverseTeamsAllowedToBeChallengedBySppotiAdmin(sppotiId, team, page),
 				HttpStatus.OK);
 	}
 	

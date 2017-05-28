@@ -118,7 +118,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 			//					model.getConnectedUserId().equals(model.getUserSppoti().getId()) ||
 			//					(!model.getConnectedUserId().equals(model.getUserSppoti().getId()) &&
 			//							t.getTeam().getTeamMembers().stream()
-			//									.anyMatch(m -> m.getUsers().getId().equals(model.getConnectedUserId())));
+			//									.anyMatch(m -> m.getUser().getId().equals(model.getConnectedUserId())));
 			
 			sppotiDTO.setTeamAdverse(model.getAdverseTeams().stream().map(t -> {
 				t.getTeam().setRelatedSppotiId(model.getId());

@@ -22,8 +22,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 	 *
 	 * @return posts data.
 	 */
-	@PostFilter("!filterObject.isDeleted() ")
-	List<PostEntity> getByUuid(int postId);
+	List<PostEntity> getByUuidAndDeletedFalse(int postId);
 	
 	/**
 	 * Find all users's and user friends posts.

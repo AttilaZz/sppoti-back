@@ -49,7 +49,7 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		
 		
 		// get post postId to link the like
-		final List<PostEntity> postEntity = this.postRepository.getByUuid(postId);
+		final List<PostEntity> postEntity = this.postRepository.getByUuidAndDeletedFalse(postId);
 		if (!postEntity.isEmpty()) {
 			newCommentEntity.setPost(postEntity.get(0));
 		} else {

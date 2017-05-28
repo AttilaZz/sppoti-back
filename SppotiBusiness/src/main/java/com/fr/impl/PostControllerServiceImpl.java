@@ -28,12 +28,11 @@ import java.util.stream.Collectors;
 class PostControllerServiceImpl extends AbstractControllerServiceImpl implements PostControllerService
 {
 	
+	/** Comment transformer. */
+	private final CommentTransformer commentTransformer;
 	/** Post list size. */
 	@Value("${key.postsPerPage}")
 	private int postSize;
-	
-	/** Comment transformer. */
-	private final CommentTransformer commentTransformer;
 	
 	/** Init dependencies. */
 	@Autowired
@@ -85,7 +84,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		if (postEditAddress != null) {
 			
 			try {
-				final List<PostEntity> post = this.postRepository.getByUuid(postId);
+				final List<PostEntity> post = this.postRepository.getByUuidAndDeletedFalse(postId);
 				if (post == null) {
 					throw new IllegalArgumentException("Trying to update non existing post");
 				} else {
@@ -117,7 +116,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public void deletePost(final int postId)
 	{
 		
-		final List<PostEntity> postEntity = this.postRepository.getByUuid(postId);
+		final List<PostEntity> postEntity = this.postRepository.getByUuidAndDeletedFalse(postId);
 		
 		if (postEntity.isEmpty()) {
 			throw new EntityNotFoundException("Post (" + postId + ") not found");
@@ -135,7 +134,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public PostEntity findPost(final int id)
 	{
 		
-		final List<PostEntity> posts = this.postRepository.getByUuid(id);
+		final List<PostEntity> posts = this.postRepository.getByUuidAndDeletedFalse(id);
 		
 		if (posts == null || posts.isEmpty()) {
 			return null;
@@ -212,7 +211,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	{
 		
 		
-		final List<PostEntity> posts = this.postRepository.getByUuid(postId);
+		final List<PostEntity> posts = this.postRepository.getByUuidAndDeletedFalse(postId);
 		if (posts.isEmpty()) {
 			throw new EntityNotFoundException("Post id (" + postId + ") introuvable.");
 		}

@@ -11,157 +11,166 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "TEAM_MEMBER")
-public class TeamMemberEntity
-        extends AbstractCommonEntity {
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private GlobalAppStatusEnum status = GlobalAppStatusEnum.PENDING;
-
-    @Column
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date joinDate;
-
-    @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date invitationDate = new Date();
-
-    private Integer xPosition;
-    private Integer yPosition;
-
-    @Column(nullable = false)
-    private Boolean admin = false;
-
-    @Column(nullable = false)
-    private Boolean teamCaptain = false;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "team_id")
-    private TeamEntity team;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private UserEntity users;
-
-    @OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<SppoterEntity> sppotiMembers;
-
-    public GlobalAppStatusEnum getStatus() {
-        return status;
-    }
-
-    public void setStatus(GlobalAppStatusEnum status) {
-        this.status = status;
-    }
-
-    public Date getJoinDate() {
-        return joinDate;
-    }
-
-    public void setJoinDate(Date joinDate) {
-        this.joinDate = joinDate;
-    }
-
-    public Date getInvitationDate() {
-        return invitationDate;
-    }
-
-    public void setInvitationDate(Date invitationDate) {
-        this.invitationDate = invitationDate;
-    }
-
-    public TeamEntity getTeam() {
-        return team;
-    }
-
-    public void setTeam(TeamEntity team) {
-        this.team = team;
-    }
-
-    public UserEntity getUsers() {
-        return users;
-    }
-
-    public void setUsers(UserEntity users) {
-        this.users = users;
-    }
-
-    public Integer getxPosition() {
-        return xPosition;
-    }
-
-    public void setxPosition(Integer xPosition) {
-        this.xPosition = xPosition;
-    }
-
-    public Integer getyPosition() {
-        return yPosition;
-    }
-
-    public void setyPosition(Integer yPosition) {
-        this.yPosition = yPosition;
-    }
-
-    public Set<SppoterEntity> getSppotiMembers() {
-        return sppotiMembers;
-    }
-
-    public Boolean getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        this.admin = admin;
-    }
-
-    public void setSppotiMembers(Set<SppoterEntity> sppotiMembers) {
-        this.sppotiMembers = sppotiMembers;
-    }
-
-    public Boolean getTeamCaptain() {
-        return teamCaptain;
-    }
-
-    public void setTeamCaptain(Boolean teamCaptain) {
-        this.teamCaptain = teamCaptain;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TeamMemberEntity)) return false;
-        if (!super.equals(o)) return false;
-
-        TeamMemberEntity that = (TeamMemberEntity) o;
-
-        if (status != null ? !status.equals(that.status) : that.status != null) return false;
-        if (joinDate != null ? !joinDate.equals(that.joinDate) : that.joinDate != null) return false;
-        if (invitationDate != null ? !invitationDate.equals(that.invitationDate) : that.invitationDate != null)
-            return false;
-        if (xPosition != null ? !xPosition.equals(that.xPosition) : that.xPosition != null) return false;
-        if (yPosition != null ? !yPosition.equals(that.yPosition) : that.yPosition != null) return false;
-        if (admin != null ? !admin.equals(that.admin) : that.admin != null) return false;
-        return teamCaptain != null ? teamCaptain.equals(that.teamCaptain) : that.teamCaptain == null;
-
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (status != null ? status.hashCode() : 0);
-        result = 31 * result + (joinDate != null ? joinDate.hashCode() : 0);
-        result = 31 * result + (invitationDate != null ? invitationDate.hashCode() : 0);
-        result = 31 * result + (xPosition != null ? xPosition.hashCode() : 0);
-        result = 31 * result + (yPosition != null ? yPosition.hashCode() : 0);
-        result = 31 * result + (admin != null ? admin.hashCode() : 0);
-        result = 31 * result + (teamCaptain != null ? teamCaptain.hashCode() : 0);
-        return result;
-    }
+public class TeamMemberEntity extends AbstractCommonEntity
+{
+	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private GlobalAppStatusEnum status = GlobalAppStatusEnum.PENDING;
+	
+	@Column
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date joinDate;
+	
+	@Column(nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date invitationDate = new Date();
+	
+	private Integer xPosition;
+	private Integer yPosition;
+	
+	@Column(nullable = false)
+	private Boolean admin = false;
+	
+	@Column(nullable = false)
+	private Boolean teamCaptain = false;
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "team_id")
+	private TeamEntity team;
+	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
+	private UserEntity user;
+	
+	@OneToMany(mappedBy = "teamMember", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<SppoterEntity> sppotiMembers;
+	
+	public GlobalAppStatusEnum getStatus() {
+		return this.status;
+	}
+	
+	public void setStatus(final GlobalAppStatusEnum status) {
+		this.status = status;
+	}
+	
+	public Date getJoinDate() {
+		return this.joinDate;
+	}
+	
+	public void setJoinDate(final Date joinDate) {
+		this.joinDate = joinDate;
+	}
+	
+	public Date getInvitationDate() {
+		return this.invitationDate;
+	}
+	
+	public void setInvitationDate(final Date invitationDate) {
+		this.invitationDate = invitationDate;
+	}
+	
+	public TeamEntity getTeam() {
+		return this.team;
+	}
+	
+	public void setTeam(final TeamEntity team) {
+		this.team = team;
+	}
+	
+	public UserEntity getUser() {
+		return this.user;
+	}
+	
+	public void setUser(final UserEntity user) {
+		this.user = user;
+	}
+	
+	public Integer getxPosition() {
+		return this.xPosition;
+	}
+	
+	public void setxPosition(final Integer xPosition) {
+		this.xPosition = xPosition;
+	}
+	
+	public Integer getyPosition() {
+		return this.yPosition;
+	}
+	
+	public void setyPosition(final Integer yPosition) {
+		this.yPosition = yPosition;
+	}
+	
+	public Set<SppoterEntity> getSppotiMembers() {
+		return this.sppotiMembers;
+	}
+	
+	public void setSppotiMembers(final Set<SppoterEntity> sppotiMembers) {
+		this.sppotiMembers = sppotiMembers;
+	}
+	
+	public Boolean getAdmin() {
+		return this.admin;
+	}
+	
+	public void setAdmin(final Boolean admin) {
+		this.admin = admin;
+	}
+	
+	public Boolean getTeamCaptain() {
+		return this.teamCaptain;
+	}
+	
+	public void setTeamCaptain(final Boolean teamCaptain) {
+		this.teamCaptain = teamCaptain;
+	}
+	
+	/**
+	 * {@inheritDoc}.
+	 */
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof TeamMemberEntity))
+			return false;
+		if (!super.equals(o))
+			return false;
+		
+		final TeamMemberEntity that = (TeamMemberEntity) o;
+		
+		if (this.status != null ? !this.status.equals(that.status) : that.status != null)
+			return false;
+		if (this.joinDate != null ? !this.joinDate.equals(that.joinDate) : that.joinDate != null)
+			return false;
+		if (this.invitationDate != null ? !this.invitationDate.equals(that.invitationDate) :
+				that.invitationDate != null)
+			return false;
+		if (this.xPosition != null ? !this.xPosition.equals(that.xPosition) : that.xPosition != null)
+			return false;
+		if (this.yPosition != null ? !this.yPosition.equals(that.yPosition) : that.yPosition != null)
+			return false;
+		if (this.admin != null ? !this.admin.equals(that.admin) : that.admin != null)
+			return false;
+		return this.teamCaptain != null ? this.teamCaptain.equals(that.teamCaptain) : that.teamCaptain == null;
+		
+	}
+	
+	/**
+	 * {@inheritDoc}.
+	 */
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (this.status != null ? this.status.hashCode() : 0);
+		result = 31 * result + (this.joinDate != null ? this.joinDate.hashCode() : 0);
+		result = 31 * result + (this.invitationDate != null ? this.invitationDate.hashCode() : 0);
+		result = 31 * result + (this.xPosition != null ? this.xPosition.hashCode() : 0);
+		result = 31 * result + (this.yPosition != null ? this.yPosition.hashCode() : 0);
+		result = 31 * result + (this.admin != null ? this.admin.hashCode() : 0);
+		result = 31 * result + (this.teamCaptain != null ? this.teamCaptain.hashCode() : 0);
+		return result;
+	}
 }
 

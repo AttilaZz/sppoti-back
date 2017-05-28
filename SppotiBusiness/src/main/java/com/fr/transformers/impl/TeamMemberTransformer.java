@@ -1,8 +1,8 @@
 package com.fr.transformers.impl;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.entities.SppotiEntity;
 import com.fr.entities.SppoterEntity;
+import com.fr.entities.SppotiEntity;
 import com.fr.entities.SppotiRatingEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.repositories.RatingRepository;
@@ -36,8 +36,9 @@ public class TeamMemberTransformer
 	
 	/** Init dependencies. */
 	@Autowired
-	public TeamMemberTransformer(RatingRepository ratingRepository, SppotiMembersRepository sppotiMembersRepository,
-								 UserTransformerImpl userTransformer)
+	public TeamMemberTransformer(final RatingRepository ratingRepository,
+								 final SppotiMembersRepository sppotiMembersRepository,
+								 final UserTransformerImpl userTransformer)
 	{
 		this.ratingRepository = ratingRepository;
 		this.sppotiMembersRepository = sppotiMembersRepository;
@@ -51,18 +52,18 @@ public class TeamMemberTransformer
 	 *
 	 * @return all team member information inside a DTO.
 	 */
-	public UserDTO modelToDto(TeamMemberEntity memberEntity, SppotiEntity sppoti)
+	public UserDTO modelToDto(final TeamMemberEntity memberEntity, final SppotiEntity sppoti)
 	{
 		
-		UserDTO userCoverAndAvatar = userTransformer.getUserCoverAndAvatar(memberEntity.getUsers());
+		final UserDTO userCoverAndAvatar = this.userTransformer.getUserCoverAndAvatar(memberEntity.getUser());
 		
-		Integer sppotiId = sppoti != null ? sppoti.getUuid() : 0;
+		final Integer sppotiId = sppoti != null ? sppoti.getUuid() : 0;
 		
-		UserDTO userDTO = new UserDTO();
-		userDTO.setUserId(memberEntity.getUsers().getUuid());
-		userDTO.setFirstName(memberEntity.getUsers().getFirstName());
-		userDTO.setLastName(memberEntity.getUsers().getLastName());
-		userDTO.setUsername(memberEntity.getUsers().getUsername());
+		final UserDTO userDTO = new UserDTO();
+		userDTO.setUserId(memberEntity.getUser().getUuid());
+		userDTO.setFirstName(memberEntity.getUser().getFirstName());
+		userDTO.setLastName(memberEntity.getUser().getLastName());
+		userDTO.setUsername(memberEntity.getUser().getUsername());
 		userDTO.setAvatar(userCoverAndAvatar.getAvatar());
 		userDTO.setCover(userCoverAndAvatar.getCover());
 		userDTO.setCoverType(userCoverAndAvatar.getCoverType());
@@ -77,7 +78,7 @@ public class TeamMemberTransformer
 		if (sppoti != null) {
 			//get status for the selected sppoti
 			if (!StringUtils.isEmpty(memberEntity.getSppotiMembers())) {
-				for (SppoterEntity sppoter : memberEntity.getSppotiMembers()) {
+				for (final SppoterEntity sppoter : memberEntity.getSppotiMembers()) {
 					if (sppoter.getTeamMember().getId().equals(memberEntity.getId()) &&
 							sppoter.getSppoti().getId().equals(sppoti.getId())) {
 						userDTO.setSppotiStatus(sppoter.getStatus().getValue());
@@ -86,16 +87,16 @@ public class TeamMemberTransformer
 			}
 			
 			//Is sppoti admin.
-			if (memberEntity.getUsers().getId().equals(sppoti.getUserSppoti().getId())) {
+			if (memberEntity.getUser().getId().equals(sppoti.getUserSppoti().getId())) {
 				userDTO.setSppotiAdmin(Boolean.TRUE);
 			} else {
 				userDTO.setSppotiAdmin(Boolean.FALSE);
 			}
 			
-			userDTO.setRating(getRatingStars(memberEntity.getUsers().getUuid(), sppotiId));
+			userDTO.setRating(getRatingStars(memberEntity.getUser().getUuid(), sppotiId));
 			
-			Optional<SppoterEntity> optional = Optional.ofNullable(sppotiMembersRepository
-					.findByTeamMemberUsersUuidAndSppotiUuid(memberEntity.getUsers().getUuid(), sppotiId));
+			final Optional<SppoterEntity> optional = Optional.ofNullable(this.sppotiMembersRepository
+					.findByTeamMemberUserUuidAndSppotiUuid(memberEntity.getUser().getUuid(), sppotiId));
 			optional.ifPresent(sm -> userDTO.setHasRateOtherSppoters(sm.getHasRateOtherSppoter()));
 			
 		}
@@ -112,17 +113,17 @@ public class TeamMemberTransformer
 	 * @return rating stars.
 	 */
 	@Transactional
-	private Double getRatingStars(int userId, int sppotiId)
+	private Double getRatingStars(final int userId, final int sppotiId)
 	{
 		
-		Optional<Set<SppotiRatingEntity>> sppotiRatingEntity = ratingRepository
+		final Optional<Set<SppotiRatingEntity>> sppotiRatingEntity = this.ratingRepository
 				.findByRatedSppoterUuidAndSppotiEntityUuid(userId, sppotiId);
 		
 		if (sppotiRatingEntity.isPresent()) {
-			Set<SppotiRatingEntity> sppotiRatingEntities = new HashSet<>();
+			final Set<SppotiRatingEntity> sppotiRatingEntities = new HashSet<>();
 			sppotiRatingEntities.addAll(sppotiRatingEntity.get());
-			OptionalDouble averageRating = sppotiRatingEntities.stream().mapToDouble(SppotiRatingEntity::getStarsCount)
-					.average();
+			final OptionalDouble averageRating = sppotiRatingEntities.stream()
+					.mapToDouble(SppotiRatingEntity::getStarsCount).average();
 			
 			if (averageRating.isPresent()) {
 				return averageRating.getAsDouble();

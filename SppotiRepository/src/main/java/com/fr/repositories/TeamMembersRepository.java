@@ -20,7 +20,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByUsersUuidAndTeamUuid(int memberId, int teamId);
+	TeamMemberEntity findByUserUuidAndTeamUuid(int memberId, int teamId);
 	
 	/**
 	 * @param userId
@@ -30,7 +30,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of found team.
 	 */
-	List<TeamMemberEntity> findByUsersUuidAndAdminTrue(int userId, Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndAdminTrue(int userId, Pageable pageable);
 	
 	/**
 	 * @param memberId
@@ -40,7 +40,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByUsersUuidAndTeamUuidAndAdminTrue(int memberId, int teamId);
+	TeamMemberEntity findByUserUuidAndTeamUuidAndAdminTrue(int memberId, int teamId);
 	
 	/**
 	 * @param id
@@ -52,7 +52,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of teams.
 	 */
-	List<TeamMemberEntity> findByUsersUuidAndTeamNameContaining(int id, String team, Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndTeamNameContaining(int id, String team, Pageable pageable);
 	
 	/**
 	 * @param teamId
@@ -74,8 +74,8 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of teams.
 	 */
-	List<TeamMemberEntity> findByTeamSportIdAndUsersUuidAndTeamNameContaining(Long sport, int user, String team,
-																			  Pageable pageable);
+	List<TeamMemberEntity> findByTeamSportIdAndUserUuidAndTeamNameContaining(Long sport, int user, String team,
+																			 Pageable pageable);
 	
 	/**
 	 * @param teamId
@@ -103,7 +103,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return all confirmed teams.
 	 */
-	List<TeamMemberEntity> findByUsersUuidAndAdminFalse(int userId, Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndAdminFalse(int userId, Pageable pageable);
 	
 	/**
 	 * @param uuid
@@ -113,7 +113,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return all deleted teams.
 	 */
-	List<TeamMemberEntity> findByUsersUuidAndTeamDeletedFalse(int uuid, Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndTeamDeletedFalse(int uuid, Pageable pageable);
 	
 	/**
 	 * @param sport
@@ -139,7 +139,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of {@link TeamMemberEntity}
 	 */
-	List<TeamMemberEntity> findByTeamSportIdAndUsersId(Long sportId, Long userId, Pageable pageable);
+	List<TeamMemberEntity> findByTeamSportIdAndUserId(Long sportId, Long userId, Pageable pageable);
 	
 	/**
 	 * Find all user's teams by sport and admin true.
@@ -153,5 +153,5 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of {@link TeamMemberEntity}
 	 */
-	List<TeamMemberEntity> findByTeamSportIdAndUsersIdAndAdminTrue(Long sportId, Long userId, Pageable pageable);
+	List<TeamMemberEntity> findByTeamSportIdAndUserIdAndAdminTrue(Long sportId, Long userId, Pageable pageable);
 }
