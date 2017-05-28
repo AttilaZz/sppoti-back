@@ -806,8 +806,10 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			//save new member and sppoter.
 			final TeamMemberEntity savedMember = this.teamMembersRepository.save(teamMembers);
 			
-			//Send email to the new team member.
-			//sendJoinTeamEmail(team, sppoter, teamAdmin);
+			//Email sppoter
+			new Thread(() -> this.sppotiMailer.sendJoinSppotiEmail(this.sppotiTransformer.modelToDto(sppoti),
+					this.userTransformer.modelToDto(userSppoter),
+					this.userTransformer.modelToDto(sppoti.getUserSppoti()))).start();
 			
 			//Notify new sppoter
 			super.addNotification(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, sppoti.getUserSppoti(),

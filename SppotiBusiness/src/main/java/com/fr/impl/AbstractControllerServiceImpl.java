@@ -634,9 +634,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		final UserDTO admin = this.teamMemberTransformer.modelToDto(from, null);
 		final TeamDTO teamDto = this.teamTransformer.modelToDto(team);
 		
-		final Thread thread = new Thread(() -> {
-			this.teamMailer.sendJoinTeamEmail(teamDto, member, admin);
-		});
+		final Thread thread = new Thread(() -> this.teamMailer.sendJoinTeamEmail(teamDto, member, admin));
 		thread.start();
 	}
 	
