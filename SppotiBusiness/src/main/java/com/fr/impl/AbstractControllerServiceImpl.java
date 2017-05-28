@@ -403,7 +403,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 						notificationEntities
 								.add(getNotificationEntity(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI,
 										getUserById(connectedUserId), user, null, sppoti));
-						teamNotificationAndEmail(team, notificationEntities, connectedUserId, user);
+						teamNotification(team, notificationEntities, connectedUserId, user);
 					}
 					
 				} else {
@@ -418,7 +418,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 
                     /* send TEAM notification And TEAM Email to the invited user. */
 					if (!user.getId().equals(connectedUserId)) {
-						teamNotificationAndEmail(team, notificationEntities, connectedUserId, user);
+						teamNotification(team, notificationEntities, connectedUserId, user);
 					}
 				}
 				
@@ -437,11 +437,10 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	/**
 	 * Send team member notification and Email.
 	 */
-	private void teamNotificationAndEmail(final TeamEntity team, final Set<NotificationEntity> notificationEntities,
-										  final Long connectedUserId, final UserEntity userEntity)
+	private void teamNotification(final TeamEntity team, final Set<NotificationEntity> notificationEntities,
+								  final Long connectedUserId, final UserEntity userEntity)
 	{
 		this.sendTeamNotification(team, notificationEntities, connectedUserId, userEntity);
-		//this.sendJoinTeamEmail(team, userEntity, adminEntity);
 	}
 	
 	/**
