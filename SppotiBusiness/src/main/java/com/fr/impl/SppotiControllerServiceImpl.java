@@ -809,6 +809,10 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			//Send email to the new team member.
 			//sendJoinTeamEmail(team, sppoter, teamAdmin);
 			
+			//Notify new sppoter
+			super.addNotification(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, sppoti.getUserSppoti(),
+					userSppoter, null, sppoti);
+			
 			//return new member.
 			return this.teamMemberTransformer.modelToDto(savedMember, sppoti);
 		}
