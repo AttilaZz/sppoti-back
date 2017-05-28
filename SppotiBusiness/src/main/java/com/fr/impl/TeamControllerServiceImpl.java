@@ -632,8 +632,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	{
 		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
 		
-		return this.teamMembersRepository.findByTeamSportIdAndUserId(sportId, getConnectedUser().getId(), pageable)
-				.stream().map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
+		return this.teamMembersRepository
+				.findByTeamSportIdAndUserIdAndAdminTrue(sportId, getConnectedUser().getId(), pageable).stream()
+				.map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
 		
 	}
 	
