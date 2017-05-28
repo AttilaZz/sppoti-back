@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <!-- If you delete this tag, the sky will fall on your head -->
     <meta name="viewport" content="width=device-width"/>
@@ -495,7 +495,7 @@
                             </p><!-- /Callout Panel -->
 
                             <div style="margin: 0;padding: 0;">
-                                <a class="btn" th:href="${sentToValidationLink}"
+                                <a class="btn" th:href="${sentToValidationLink}" th:text="${joinMessage}"
                                    style="padding: 10px 16px;color: #FFF;cursor: pointer;text-decoration: none;background-color: #30d3c2;font-weight: bold;margin: 0 10px 0 0;text-align: center;display: inline-block;width: 92%;">Join!</a>
                             </div>
                             <br/>
