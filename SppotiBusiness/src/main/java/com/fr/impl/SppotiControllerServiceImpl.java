@@ -159,13 +159,18 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			});
 		}
 		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(savedSppoti);
-		//send email to sppoters.
+		//send email and notification to sppoters.
 		sppoti.getTeamHostEntity().getTeamMembers().forEach(m -> {
 			//exclude sppoti admin from the email.
 			if (!m.getUser().getId().equals(sppoti.getUserSppoti().getId())) {
+				//Email
 				new Thread(() -> this.sppotiMailer
 						.sendJoinSppotiEmail(sppotiDTO, this.userTransformer.modelToDto(m.getUser()),
 								this.userTransformer.modelToDto(sppoti.getUserSppoti()))).start();
+				//Notification
+				addNotification(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, savedSppoti.getUserSppoti(),
+						m.getUser(), null, savedSppoti);
+				
 			}
 		});
 		return sppotiDTO;

@@ -399,12 +399,12 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 					sppoti.setSppotiMembers(sppotiMembers);
 
                     /* send TEAM && Sppoti notification And TEAM Email to the invited user. */
-					if (!user.getId().equals(connectedUserId)) {
-						notificationEntities
-								.add(getNotificationEntity(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI,
-										getUserById(connectedUserId), user, null, sppoti));
-						teamNotification(team, notificationEntities, connectedUserId, user);
-					}
+					//					if (!user.getId().equals(connectedUserId)) {
+					//						notificationEntities
+					//								.add(getNotificationEntity(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI,
+					//										getUserById(connectedUserId), user, null, sppoti));
+					//						teamNotification(team, notificationEntities, connectedUserId, user);
+					//					}
 					
 				} else {
 					/* if request coming from add team - add members only in (users_team). */
@@ -417,9 +417,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 					}
 
                     /* send TEAM notification And TEAM Email to the invited user. */
-					if (!user.getId().equals(connectedUserId)) {
-						teamNotification(team, notificationEntities, connectedUserId, user);
-					}
+					//					if (!user.getId().equals(connectedUserId)) {
+					//						teamNotification(team, notificationEntities, connectedUserId, user);
+					//					}
 				}
 				
 				teamUsers.add(teamMember);
@@ -437,11 +437,11 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	/**
 	 * Send team member notification and Email.
 	 */
-	private void teamNotification(final TeamEntity team, final Set<NotificationEntity> notificationEntities,
-								  final Long connectedUserId, final UserEntity userEntity)
-	{
-		this.sendTeamNotification(team, notificationEntities, connectedUserId, userEntity);
-	}
+	//	private void teamNotification(final TeamEntity team, final Set<NotificationEntity> notificationEntities,
+	//								  final Long connectedUserId, final UserEntity userEntity)
+	//	{
+	//		this.sendTeamNotification(team, notificationEntities, connectedUserId, userEntity);
+	//	}
 	
 	/**
 	 * @param team
@@ -474,20 +474,20 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * @param u
 	 * 		user to notify.
 	 */
-	private void sendTeamNotification(final TeamEntity team, final Set<NotificationEntity> notificationEntities,
-									  final Long adminId, final UserEntity u)
-	{
-		
-		notificationEntities
-				.add(getNotificationEntity(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u,
-						team, null));
-		if (team.getNotificationEntities() != null) {
-			team.getNotificationEntities().addAll(notificationEntities);
-		} else {
-			team.setNotificationEntities(notificationEntities);
-		}
-		
-	}
+	//	private void sendTeamNotification(final TeamEntity team, final Set<NotificationEntity> notificationEntities,
+	//									  final Long adminId, final UserEntity u)
+	//	{
+	//
+	//		notificationEntities
+	//				.add(getNotificationEntity(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u,
+	//						team, null));
+	//		if (team.getNotificationEntities() != null) {
+	//			team.getNotificationEntities().addAll(notificationEntities);
+	//		} else {
+	//			team.setNotificationEntities(notificationEntities);
+	//		}
+	//
+	//	}
 	
 	/**
 	 * Add notification.
@@ -511,8 +511,20 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				sppoti);
 		
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
-		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
+		sendNotificationViaWebSocket(userTo, notificationDTO);
 		this.notificationRepository.save(notification);
+	}
+	
+	/**
+	 * Send notification via socket.
+	 *
+	 * @param userTo
+	 * 		notif receiver.
+	 * @param notificationDTO
+	 * 		notif content.
+	 */
+	private void sendNotificationViaWebSocket(final UserEntity userTo, final NotificationDTO notificationDTO) {
+		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
 	}
 	
 	/**
