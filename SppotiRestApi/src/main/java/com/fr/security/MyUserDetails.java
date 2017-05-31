@@ -11,10 +11,31 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 public interface MyUserDetails extends UserDetails
 {
-	
+	/**
+	 * Get user technical id.
+	 *
+	 * @return user id.
+	 */
 	Long getId();
 	
+	/**
+	 * Get user unique id.
+	 *
+	 * @return user unique id.
+	 */
 	int getUuid();
 	
+	/**
+	 * Get user account details.
+	 *
+	 * @return user details.
+	 */
 	UserEntity getConnectedUserDetails();
+	
+	/**
+	 * Get user timezone.
+	 *
+	 * @return timezone.
+	 */
+	String getTimeZone();
 }

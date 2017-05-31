@@ -64,6 +64,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	/** Entry point filter. */
 	@Autowired
 	private EntryPointUnAthorisedHandler pointUnAthorisedHandler;
+	/** CSRf token properties. */
+	@Autowired
+	private CsrfProperties filterProperties;
 	
 	/** Configure authentication provider. */
 	@Autowired
@@ -72,10 +75,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		auth.userDetailsService(this.userDetailService);
 		auth.authenticationProvider(authenticationProvider());
 	}
-	
-	/** CSRf token properties. */
-	@Autowired
-	private CsrfProperties filterProperties;
 	
 	/**
 	 * {@inheritDoc}
@@ -97,7 +96,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		
 		http.
 				cors().and().addFilterAfter(new CsrfHeaderFilter(this.filterProperties), CsrfFilter.class).csrf()
-				.csrfTokenRepository(csrfTokenRepository()).and().formLogin()
+				.ignoringAntMatchers("/trade/**").csrfTokenRepository(csrfTokenRepository()).and().formLogin()
 				.successHandler(savedRequestAwareAuthenticationSuccessHandler())
 				//                .loginPage("/login")
 				.usernameParameter("username").passwordParameter("password").successHandler(this.authSuccess)

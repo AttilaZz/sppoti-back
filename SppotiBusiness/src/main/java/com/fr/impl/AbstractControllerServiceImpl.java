@@ -511,7 +511,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				sppoti);
 		
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
-		sendNotificationViaWebSocket(userTo, notificationDTO);
+		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
 		this.notificationRepository.save(notification);
 	}
 	
@@ -524,7 +524,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * 		notif content.
 	 */
 	private void sendNotificationViaWebSocket(final UserEntity userTo, final NotificationDTO notificationDTO) {
-		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
 	}
 	
 	/**

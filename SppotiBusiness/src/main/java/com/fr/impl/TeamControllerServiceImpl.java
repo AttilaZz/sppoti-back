@@ -177,9 +177,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		teamMembers.setStatus(GlobalAppStatusEnum.CONFIRMED);
 		
 		if (this.teamMembersRepository.save(teamMembers) != null) {
-			addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_TEAM_INVITATION,
-					this.teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUser(), teamMembers.getUser(),
-					null, null);
+			addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_TEAM_INVITATION, teamMembers.getUser(),
+					this.teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUser(), teamMembers.getTeam(),
+					null);
 		}
 		
 	}

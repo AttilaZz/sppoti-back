@@ -16,11 +16,10 @@ import java.util.Collection;
  */
 public class AccountUserDetails implements MyUserDetails
 {
-	/** account entity. */
-	private final UserEntity account;
-	
 	/** Class logger. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(TraceAuthentification.class);
+	/** account entity. */
+	private final UserEntity account;
 	
 	/** Init class. */
 	public AccountUserDetails(final UserEntity account)
@@ -140,5 +139,13 @@ public class AccountUserDetails implements MyUserDetails
 	public UserEntity getConnectedUserDetails()
 	{
 		return this.account;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getTimeZone() {
+		return this.account.getTimeZone();
 	}
 }
