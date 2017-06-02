@@ -43,17 +43,7 @@ public interface AccountControllerService extends AbstractControllerService
 	 * @param i
 	 * 		resoirce index.
 	 */
-	void unSelectOldResource(Long userId,int i);
-	
-	/**
-	 * find user by username.
-	 *
-	 * @param username
-	 * 		username.
-	 *
-	 * @return found user.
-	 */
-	UserEntity getUserByUsername(String username);
+	void unSelectOldResource(Long userId, int i);
 	
 	/**
 	 * @param targetUser
@@ -87,7 +77,7 @@ public interface AccountControllerService extends AbstractControllerService
 	 * @param code
 	 * 		account recover code.
 	 */
-	void recoverAccount(UserDTO userDTO,String code);
+	void recoverAccount(UserDTO userDTO, String code);
 	
 	/**
 	 * Generate new account confirmation email.
@@ -105,5 +95,5 @@ public interface AccountControllerService extends AbstractControllerService
 	 *
 	 * @return user DTO.
 	 */
-	UserDTO handleFriendShip(String username,Long connectedUserId);
+	UserDTO handleFriendShip(String username, Long connectedUserId);
 }

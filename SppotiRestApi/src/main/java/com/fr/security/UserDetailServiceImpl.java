@@ -1,7 +1,8 @@
 package com.fr.security;
 
 import com.fr.aop.TraceControllers;
-import com.fr.entities.UserEntity;
+import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class UserDetailServiceImpl implements UserDetailsService
 	{
 		
 		// database request
-		final UserEntity account = this.loginService.getUserByLogin(loginUser);
+		final UserDTO account = this.loginService.getUserByUsername(loginUser);
 		
 		if (account == null) {
 			LOGGER.info("The given login (" + loginUser + " was not found: " + ")");

@@ -1,6 +1,7 @@
 package com.fr.security;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
 import com.fr.transformers.UserTransformer;

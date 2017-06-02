@@ -280,15 +280,6 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity getUserByUsername(final String username)
-	{
-		return this.userRepository.getByUsernameAndDeletedFalse(username);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	@Transactional
 	public void updateAvatarAndCover(final UserDTO user)
 	{
@@ -422,7 +413,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	public UserDTO handleFriendShip(final String username, final Long connectedUserId)
 	{
 		
-		final UserEntity targetUser = this.getUserByUsername(username);
+		final UserEntity targetUser = this.getUserByLogin(username);
 		if (targetUser == null) {
 			throw new EntityNotFoundException("Target user id not found");
 		}

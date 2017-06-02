@@ -1,8 +1,8 @@
 package com.fr.api.account;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.UserEntity;
-import com.fr.security.AccountUserDetails;
 import com.fr.service.AccountControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

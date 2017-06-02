@@ -2,7 +2,7 @@ package com.fr.api.post;
 
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.post.PostDTO;
-import com.fr.security.AccountUserDetails;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.service.PostControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

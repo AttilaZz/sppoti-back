@@ -226,9 +226,13 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Get user entity from use login.
+	 *
+	 * @param username
+	 * 		user login.
+	 *
+	 * @return Connected user data.
 	 */
-	@Override
 	public UserEntity getUserByLogin(final String username)
 	{
 		final String numberRegex = "[0-9]+";
@@ -240,6 +244,14 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		} else {
 			return this.userRepository.getByUsernameAndDeletedFalse(username);
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public UserDTO getUserByUsername(final String username) {
+		return this.userTransformer.modelToDto(getUserByLogin(username));
 	}
 	
 	/**

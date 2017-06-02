@@ -2,9 +2,9 @@ package com.fr.api.post;
 
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.post.PostRequestDTO;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.exception.PostContentMissingException;
 import com.fr.entities.*;
-import com.fr.security.AccountUserDetails;
 import com.fr.service.PostControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

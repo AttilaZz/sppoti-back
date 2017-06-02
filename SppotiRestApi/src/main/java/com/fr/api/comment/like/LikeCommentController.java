@@ -1,9 +1,9 @@
 package com.fr.api.comment.like;
 
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.LikeContentEntity;
 import com.fr.entities.UserEntity;
-import com.fr.security.AccountUserDetails;
 import com.fr.service.CommentControllerService;
 import com.fr.service.LikeControllerService;
 import org.springframework.http.HttpStatus;

@@ -2,9 +2,9 @@ package com.fr.api.notifications;
 
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationListDTO;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.security.AccountUserDetails;
 import com.fr.service.NotificationControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,7 +1,7 @@
 package com.fr.api.team;
 
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.team.TeamDTO;
-import com.fr.security.AccountUserDetails;
 import com.fr.service.TeamControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

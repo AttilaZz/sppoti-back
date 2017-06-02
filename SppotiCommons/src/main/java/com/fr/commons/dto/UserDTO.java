@@ -3,6 +3,7 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +32,10 @@ public class UserDTO extends AbstractCommonDTO
 	private String oldPassword;
 	private String phone;
 	private String email;
+	
+	private Long techId;
+	private boolean confirmed;
+	private List<RoleDTO> userRoles = new ArrayList<>();
 	
 	private String cover;
 	private String avatar;
@@ -363,5 +368,29 @@ public class UserDTO extends AbstractCommonDTO
 	public void setTimeZone(final String timeZone)
 	{
 		this.timeZone = timeZone;
+	}
+	
+	public boolean isConfirmed() {
+		return this.confirmed;
+	}
+	
+	public void setConfirmed(final boolean confirmed) {
+		this.confirmed = confirmed;
+	}
+	
+	public List<RoleDTO> getUserRoles() {
+		return this.userRoles;
+	}
+	
+	public void setUserRoles(final List<RoleDTO> userRoles) {
+		this.userRoles = userRoles;
+	}
+	
+	public Long getTechId() {
+		return this.techId;
+	}
+	
+	public void setTechId(final Long techId) {
+		this.techId = techId;
 	}
 }

@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,12 +45,25 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void unLikePost(final PostEntity post)
+	public void unLikePost(final int postId)
 	{
 		
-		final LikeContentEntity likeContent = this.likeRepository.getByPostId(post.getId());
-		this.likeRepository.delete(likeContent);
+		final List<PostEntity> postToUnlike = this.postRepository.getByUuidAndDeletedFalse(postId);
 		
+		final UserEntity connectedUser = getConnectedUser();
+		
+		if (postToUnlike == null) {
+			// post not fount
+			throw new EntityNotFoundException("Post not found");
+		}
+		
+		//post must be liked before unlike
+		if (this.isPostAlreadyLikedByUser(postId, connectedUser.getId())) {
+			
+			final LikeContentEntity likeContent = this.likeRepository.getByPostId(postToUnlike.get(0).getId());
+			this.likeRepository.delete(likeContent);
+			
+		}
 	}
 	
 	/**

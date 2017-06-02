@@ -1,9 +1,9 @@
 package com.fr.api.post.like;
 
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.LikeContentEntity;
 import com.fr.entities.PostEntity;
 import com.fr.entities.UserEntity;
-import com.fr.security.AccountUserDetails;
 import com.fr.service.LikeControllerService;
 import com.fr.service.PostControllerService;
 import org.slf4j.Logger;

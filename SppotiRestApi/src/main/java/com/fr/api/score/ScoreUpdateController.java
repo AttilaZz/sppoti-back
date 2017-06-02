@@ -1,7 +1,7 @@
 package com.fr.api.score;
 
 import com.fr.commons.dto.ScoreDTO;
-import com.fr.security.AccountUserDetails;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.service.ScoreControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

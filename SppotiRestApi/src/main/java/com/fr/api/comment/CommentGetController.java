@@ -1,7 +1,7 @@
 package com.fr.api.comment;
 
 import com.fr.commons.dto.CommentDTO;
-import com.fr.security.AccountUserDetails;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.service.CommentControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

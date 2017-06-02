@@ -1,21 +1,18 @@
 package com.fr.transformers.impl;
 
+import com.fr.commons.dto.RoleDTO;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GenderEnum;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
-import com.fr.commons.enumeration.LanguageEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.ResourcesEntity;
-import com.fr.entities.SportEntity;
 import com.fr.entities.UserEntity;
 import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +42,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity dtoToModel(UserDTO dto)
+	public UserEntity dtoToModel(final UserDTO dto)
 	{
 		return super.dtoToModel(dto);
 	}
@@ -54,11 +51,12 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserDTO modelToDto(UserEntity entity)
+	public UserDTO modelToDto(final UserEntity entity)
 	{
-		UserDTO dto = new UserDTO();
-		SppotiBeanUtils.copyProperties(dto,entity);
+		final UserDTO dto = new UserDTO();
+		SppotiBeanUtils.copyProperties(dto, entity);
 		dto.setId(entity.getUuid());
+		dto.setTechId(entity.getId());
 		dto.setLanguage(entity.getLanguageEnum().name());
 		
 		dto.setLastName(entity.getLastName());
@@ -71,15 +69,21 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		dto.setBirthDate(entity.getDateBorn());
 		dto.setGender(entity.getGender().name());
 		
+		dto.getUserRoles().addAll(entity.getRoles().stream().map(r -> {
+			RoleDTO roleDTO = new RoleDTO();
+			roleDTO.setName(r.getName());
+			return roleDTO;
+		}).collect(Collectors.toList()));
+		
 		if (entity.getResources() != null) {
-			UserDTO userResources = getUserCoverAndAvatar(entity);
+			final UserDTO userResources = getUserCoverAndAvatar(entity);
 			dto.setAvatar(userResources.getAvatar());
 			dto.setCover(userResources.getCover());
 			dto.setCoverType(userResources.getCoverType());
 		}
 		
 		if (entity.getRelatedSports() != null && !entity.getRelatedSports().isEmpty()) {
-			List<SportDTO> sportDTOs = entity.getRelatedSports().stream().map(sportTransformer::modelToDto)
+			final List<SportDTO> sportDTOs = entity.getRelatedSports().stream().map(this.sportTransformer::modelToDto)
 					.collect(Collectors.toList());
 			dto.setSportDTOs(sportDTOs);
 		}
@@ -91,20 +95,20 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserDTO getUserCoverAndAvatar(UserEntity targetUser)
+	public UserDTO getUserCoverAndAvatar(final UserEntity targetUser)
 	{
 		
-		UserDTO user = new UserDTO();
-		Set<ResourcesEntity> resources = targetUser.getResources();
+		final UserDTO user = new UserDTO();
+		final Set<ResourcesEntity> resources = targetUser.getResources();
 		
-		List<ResourcesEntity> resourcesEntityTemp = new ArrayList<>();
+		final List<ResourcesEntity> resourcesEntityTemp = new ArrayList<>();
 		resourcesEntityTemp.addAll(resources);
 		
 		if (!resourcesEntityTemp.isEmpty()) {
 			if (resourcesEntityTemp.size() == 2) {
 				//cover and avatar found
-				ResourcesEntity resource1 = resourcesEntityTemp.get(0);
-				ResourcesEntity resource2 = resourcesEntityTemp.get(1);
+				final ResourcesEntity resource1 = resourcesEntityTemp.get(0);
+				final ResourcesEntity resource2 = resourcesEntityTemp.get(1);
 				
 				if (resource1.getType() == 1 && resource2.getType() == 2) {
 					user.setAvatar(resource1.getUrl());
@@ -120,7 +124,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 				
 			} else {
 				// size is = 1 -> cover or avatar
-				ResourcesEntity resource = resourcesEntityTemp.get(0);
+				final ResourcesEntity resource = resourcesEntityTemp.get(0);
 				if (resource.getType() == 1) {//acatar
 					user.setAvatar(resource.getUrl());
 				} else {
@@ -137,16 +141,16 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity signUpDtoToEntity(SignUpDTO dto)
+	public UserEntity signUpDtoToEntity(final SignUpDTO dto)
 	{
-		UserEntity entity = new UserEntity();
-		SppotiBeanUtils.copyProperties(entity,dto);
+		final UserEntity entity = new UserEntity();
+		SppotiBeanUtils.copyProperties(entity, dto);
 		entity.setGender(GenderEnum.valueOf(dto.getGenderType()));
 		
-		String confirmationCode = SppotiUtils.generateConfirmationKey();
+		final String confirmationCode = SppotiUtils.generateConfirmationKey();
 		entity.setConfirmationCode(confirmationCode);
 		
-		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+		entity.setPassword(this.passwordEncoder.encode(dto.getPassword()));
 		
 		entity.setUsername(dto.getUsername().trim());
 		return entity;

@@ -3,7 +3,6 @@ package com.fr.service;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.LikeContentEntity;
-import com.fr.entities.PostEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +25,16 @@ public interface LikeControllerService extends AbstractControllerService
 	/**
 	 * unlike post
 	 *
-	 * @param post
+	 * @param postId
+	 * 		post id.
 	 */
-	void unLikePost(PostEntity post);
+	void unLikePost(int postId);
 	
 	/**
 	 * @param postId
+	 * 		post id.
 	 * @param userId
+	 * 		user id.
 	 *
 	 * @return true if post already liked, false otherwise
 	 */

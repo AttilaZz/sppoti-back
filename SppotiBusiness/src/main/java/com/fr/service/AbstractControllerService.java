@@ -54,7 +54,7 @@ public interface AbstractControllerService
 	 *
 	 * @return User entity.
 	 */
-	UserEntity getUserByLogin(String username);
+	UserDTO getUserByUsername(String username);
 	
 	/**
 	 * @param users
@@ -66,5 +66,5 @@ public interface AbstractControllerService
 	 *
 	 * @return set of USERS_TEAM
 	 */
-	Set<TeamMemberEntity> getTeamMembersEntityFromDto(List<UserDTO> users,TeamEntity team,SppotiEntity sppoti);
+	Set<TeamMemberEntity> getTeamMembersEntityFromDto(List<UserDTO> users, TeamEntity team, SppotiEntity sppoti);
 }

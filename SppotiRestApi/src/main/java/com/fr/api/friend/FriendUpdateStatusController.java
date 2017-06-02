@@ -1,8 +1,8 @@
 package com.fr.api.friend;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.security.AccountUserDetails;
 import com.fr.service.FriendControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

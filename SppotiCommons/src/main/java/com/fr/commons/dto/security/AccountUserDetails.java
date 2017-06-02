@@ -1,8 +1,7 @@
-package com.fr.security;
+package com.fr.commons.dto.security;
 
-import com.fr.aop.TraceAuthentification;
-import com.fr.entities.RoleEntity;
-import com.fr.entities.UserEntity;
+import com.fr.commons.dto.RoleDTO;
+import com.fr.commons.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,12 +16,12 @@ import java.util.Collection;
 public class AccountUserDetails implements MyUserDetails
 {
 	/** Class logger. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(TraceAuthentification.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AccountUserDetails.class);
 	/** account entity. */
-	private final UserEntity account;
+	private final UserDTO account;
 	
 	/** Init class. */
-	public AccountUserDetails(final UserEntity account)
+	public AccountUserDetails(final UserDTO account)
 	{
 		this.account = account;
 	}
@@ -36,7 +35,7 @@ public class AccountUserDetails implements MyUserDetails
 		
 		final ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		
-		for (final RoleEntity userRole : this.account.getRoles()) {
+		for (final RoleDTO userRole : this.account.getUserRoles()) {
 			
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getName()));
 		}
@@ -55,7 +54,7 @@ public class AccountUserDetails implements MyUserDetails
 	@Override
 	public Long getId()
 	{
-		return this.account.getId();
+		return this.account.getTechId();
 	}
 	
 	/**
@@ -64,7 +63,7 @@ public class AccountUserDetails implements MyUserDetails
 	@Override
 	public int getUuid()
 	{
-		return this.account.getUuid();
+		return this.account.getId();
 	}
 	
 	/**
@@ -85,8 +84,8 @@ public class AccountUserDetails implements MyUserDetails
 		
 		if (!this.account.getEmail().isEmpty()) {
 			return this.account.getEmail();
-		} else if (!this.account.getTelephone().isEmpty()) {
-			return this.account.getTelephone();
+		} else if (!this.account.getPhone().isEmpty()) {
+			return this.account.getPhone();
 		}
 		
 		return this.account.getUsername();
@@ -136,7 +135,7 @@ public class AccountUserDetails implements MyUserDetails
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity getConnectedUserDetails()
+	public UserDTO getConnectedUserDetails()
 	{
 		return this.account;
 	}

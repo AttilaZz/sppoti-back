@@ -1,9 +1,9 @@
 package com.fr.api;
 
 import com.fr.commons.dto.message.MessageRequestDTO;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.MessageEntity;
 import com.fr.entities.UserEntity;
-import com.fr.security.AccountUserDetails;
 import com.fr.service.MessageControllerService;
 import com.fr.transformers.MessageTranformer;
 import org.springframework.beans.factory.annotation.Autowired;
