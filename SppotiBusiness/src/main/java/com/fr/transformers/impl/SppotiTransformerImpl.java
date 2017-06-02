@@ -3,6 +3,7 @@ package com.fr.transformers.impl;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.utils.SppotiBeanUtils;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.SportEntity;
 import com.fr.entities.SppotiEntity;
 import com.fr.repositories.SportRepository;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
@@ -70,7 +70,6 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 		}
 		entity.setSport(sportEntity);
 		
-		entity.setDatetimeCreated(new Date());
 		if (StringUtils.hasText(dto.getTags())) {
 			entity.setTags(dto.getTags());
 		}
@@ -93,6 +92,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 		SppotiBeanUtils.copyProperties(sppotiDTO, model);
 		
 		sppotiDTO.setId(model.getUuid());
+		sppotiDTO.setDatetimeCreated(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), getTimeZone()));
 		
 		if (model.getConnectedUserId() != null)
 			sppotiDTO.setConnectedUserId(this.userRepository.findOne(model.getConnectedUserId()).getUuid());

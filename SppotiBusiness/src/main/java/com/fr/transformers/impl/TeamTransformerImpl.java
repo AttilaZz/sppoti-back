@@ -1,6 +1,7 @@
 package com.fr.transformers.impl;
 
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.SportEntity;
 import com.fr.entities.SppotiEntity;
 import com.fr.entities.TeamEntity;
@@ -68,7 +69,7 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 		teamDTO.setCoverPath(model.getCoverPath());
 		teamDTO.setLogoPath(model.getLogoPath());
 		teamDTO.setSport(this.sportTransformer.modelToDto(model.getSport()));
-		teamDTO.setCreationDate(model.getCreationDate());
+		teamDTO.setCreationDate(SppotiUtils.dateWithTimeZone(model.getCreationDate(), getTimeZone()));
 		teamDTO.setColor(model.getColor());
 		
 		SppotiEntity sppotiEntity = null;
