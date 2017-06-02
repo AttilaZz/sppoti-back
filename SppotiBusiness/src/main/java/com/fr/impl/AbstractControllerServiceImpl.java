@@ -4,6 +4,7 @@ import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.notification.NotificationDTO;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
@@ -671,5 +672,14 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				}
 		
 		).collect(Collectors.toSet());
+	}
+	
+	/**
+	 * Get timeZone from security context.
+	 */
+	public String getTimeZone() {
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
+		return accountUserDetails.getTimeZone();
 	}
 }

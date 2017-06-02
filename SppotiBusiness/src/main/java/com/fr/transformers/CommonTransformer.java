@@ -15,7 +15,7 @@ import java.util.List;
  * @author $LastChangedBy${0xD}
  * @version $Revision$ $Date${0xD}
  */
-public interface CommonTransformer<T extends AbstractCommonDTO,E extends AbstractCommonEntity>
+public interface CommonTransformer<T extends AbstractCommonDTO, E extends AbstractCommonEntity>
 {
 	/**
 	 * Transformation d'un objet DTO en sont objet model.
@@ -59,4 +59,8 @@ public interface CommonTransformer<T extends AbstractCommonDTO,E extends Abstrac
 	 */
 	List<T> modelToDto(final List<E> models);
 	
+	/**
+	 * Get timeZone from security context.
+	 */
+	String getTimeZone();
 }

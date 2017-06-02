@@ -1,10 +1,12 @@
 package com.fr.transformers.impl;
 
 import com.fr.commons.dto.AbstractCommonDTO;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.entities.AbstractCommonEntity;
 import com.fr.transformers.CommonTransformer;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.ParameterizedType;
@@ -17,13 +19,14 @@ import java.util.List;
  * Created by wdjenane on 30/03/2017.
  */
 @Transactional(readOnly = true)
-public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO,E extends AbstractCommonEntity> implements
+public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO, E extends AbstractCommonEntity> implements
 		CommonTransformer<T, E>
 {
 	
 	/**
 	 * {@inheritDoc}.
 	 */
+	@Override
 	public List<E> dtoToModel(final List<T> dtos)
 	{
 		final List<E> models = new ArrayList<E>();
@@ -36,6 +39,7 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO,E exte
 	/**
 	 * {@inheritDoc}.
 	 */
+	@Override
 	public List<T> modelToDto(final List<E> models)
 	{
 		final List<T> dtos = new ArrayList<T>();
@@ -48,6 +52,7 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO,E exte
 	/**
 	 * {@inheritDoc}.
 	 */
+	@Override
 	public E dtoToModel(final T dto)
 	{
 		final ParameterizedType type = (ParameterizedType) this.getClass().getGenericSuperclass();
@@ -62,7 +67,7 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO,E exte
 			throw new BusinessGlobalException("Erreur lors de l'instantiation de l'entité Java par réflexion.");
 		}
 		if (dto != null) {
-			SppotiBeanUtils.copyProperties(dto,model);
+			SppotiBeanUtils.copyProperties(dto, model);
 		}
 		return model;
 	}
@@ -70,6 +75,7 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO,E exte
 	/**
 	 * {@inheritDoc}.
 	 */
+	@Override
 	public T modelToDto(final E model)
 	{
 		final ParameterizedType type = (ParameterizedType) this.getClass().getGenericSuperclass();
@@ -84,8 +90,17 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO,E exte
 		}
 		
 		if (model != null) {
-			SppotiBeanUtils.copyProperties(model,dto);
+			SppotiBeanUtils.copyProperties(model, dto);
 		}
 		return dto;
+	}
+	
+	/**
+	 * {@inheritDoc}.
+	 */
+	public String getTimeZone() {
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
+		return accountUserDetails.getTimeZone();
 	}
 }

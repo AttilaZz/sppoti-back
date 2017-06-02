@@ -16,5 +16,9 @@ public class BusinessGlobalException extends RuntimeException
 		super(message);
 	}
 	
-	
+	protected BusinessGlobalException(final String message, final Throwable cause, final boolean enableSuppression,
+									  final boolean writableStackTrace)
+	{
+		super(message, cause, enableSuppression, writableStackTrace);
+	}
 }

@@ -1,5 +1,6 @@
 package com.fr.commons.utils;
 
+import com.fr.commons.exception.BusinessGlobalException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.codec.Base64;
 
@@ -175,12 +176,49 @@ public class SppotiUtils
 		
 		// Reconstitution de la liste des prénoms
 		if (prenoms.length > 0) {
-			prenom = prenoms[0];
+			final StringBuilder prenomBuilder = new StringBuilder(prenoms[0]);
 			for (int i = 1; i < prenoms.length; i++) {
-				prenom = prenom + " " + prenoms[i];
+				prenomBuilder.append(" ").append(prenoms[i]);
 			}
+			prenom = prenomBuilder.toString();
 		}
 		
 		return prenom;
+	}
+	
+	/**
+	 * Add timeZone to a date.
+	 *
+	 * @param originDate
+	 * 		date to transform.
+	 * @param timeZone
+	 * 		timeZone to add to the date.
+	 *
+	 * @return date with correct timeZone.
+	 */
+	public static Date dateWithTimeZone(final Date originDate, final String timeZone) {
+		
+		String[] timeZoneString = timeZone.split("\\+");
+		boolean timeZonePlus = true;
+		LocalDateTime correctDate = originDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		
+		if (timeZoneString.length != 2) {
+			timeZoneString = timeZone.split("-");
+			timeZonePlus = false;
+		}
+		
+		try {
+			final int timeZoneNumber = Integer.parseInt(timeZoneString[1]);
+			if (timeZonePlus) {
+				correctDate = correctDate.plusHours(timeZoneNumber);
+			} else {
+				correctDate = correctDate.minusHours(timeZoneNumber);
+			}
+			
+		} catch (final NumberFormatException e) {
+			throw new BusinessGlobalException("Incorrect timeZone !!" + e.getMessage());
+		}
+		
+		return Date.from(correctDate.atZone(ZoneId.systemDefault()).toInstant());
 	}
 }

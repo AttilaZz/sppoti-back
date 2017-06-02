@@ -5,6 +5,7 @@ import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.service.PostControllerService;
 import com.fr.transformers.CommentTransformer;
@@ -250,8 +251,6 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 					if (p.getContent() != null)
 						pres.setContent(p.getContent());
 					
-					pres.setDatetimeCreated(p.getDatetimeCreated());
-					
 					pres.setMyPost(userPost.getId().equals(owner.getId()));
 					
 					if (p.getAlbum() != null)
@@ -274,7 +273,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 					if (!editHistory.isEmpty()) {
 						pres.setEdited(true);
 						final EditHistoryEntity ec = editHistory.get(0);
-						pres.setDatetimeCreated(ec.getDatetimeEdited());
+						pres.setDatetimeCreated(SppotiUtils.dateWithTimeZone(ec.getDatetimeEdited(), getTimeZone()));
 						if (ec.getText() != null) {
 							pres.setContent(ec.getText());
 						}
@@ -291,7 +290,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 						if (p.getSport() != null && p.getSport().getId() != null) {
 							pres.setSportId(p.getSport().getId());
 						}
-						pres.setDatetimeCreated(p.getDatetimeCreated());
+						pres.setDatetimeCreated(SppotiUtils.dateWithTimeZone(p.getDatetimeCreated(), getTimeZone()));
 					}
 
             /*
