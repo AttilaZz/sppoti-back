@@ -201,9 +201,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			t.setStatus(GlobalAppStatusEnum.REFUSED);
 			
 			if (this.teamMembersRepository.save(t) != null) {
-				addNotification(NotificationTypeEnum.X_REFUSED_YOUR_TEAM_INVITATION,
-						this.teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUser(), t.getUser(), null,
-						null);
+				addNotification(NotificationTypeEnum.X_REFUSED_YOUR_TEAM_INVITATION, t.getUser(),
+						this.teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUser(), t.getTeam(), null);
 			}
 			
 		});
