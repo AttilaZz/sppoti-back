@@ -19,34 +19,28 @@ import org.thymeleaf.context.Context;
 public class SppotiMailer extends ApplicationMailer
 {
 	
-	/** Notify sppoti admin about his ne sppoti. */
-	@Value("${spring.app.mail.sppoti.add.subject}")
-	private String addSppotiSubject;
-	
-	/** Notify a sppoter about sppoti invitation. */
-	@Value("${spring.app.mail.sppoti.join.subject}")
-	private String joinSppotiSubject;
-	
-	/** Notify sppoti admin when an invitation is accepted or refused. */
-	@Value("${spring.app.mail.sppoti.confirm.subject}")
-	private String confirmJoinSppotiSubject;
-	
-	/** Redirection link to the front app. */
-	@Value("${spring.app.mail.sppoti.join.link}")
-	private String joinSppotiLink;
-	
-	/** Explain sppoti concept. */
-	@Value("${spring.app.mail.sppoti.description}")
-	private String sppotiConcept;
-	
-	/** translate to join sppoti message. */
-	@Value("${spring.app.mail.sppoti.invited.by.join.sppoti}")
-	private String toJoinSppotiMessage;
-	
 	/** Sppoti mail templates */
 	private final static String PATH_TO_JOIN_SPPOTI_TEMPLATE = "sppoti/join_sppoti";
 	private final static String PATH_TO_CREATE_SPPOTI_TEMPLATE = "sppoti/create_sppoti";
 	private final static String PATH_TO_RESPOND_TO_SPPOTI_TEMPLATE = "sppoti/respond_sppoti";
+	/** Notify sppoti admin about his ne sppoti. */
+	@Value("${spring.app.mail.sppoti.add.subject}")
+	private String addSppotiSubject;
+	/** Notify a sppoter about sppoti invitation. */
+	@Value("${spring.app.mail.sppoti.join.subject}")
+	private String joinSppotiSubject;
+	/** Notify sppoti admin when an invitation is accepted or refused. */
+	@Value("${spring.app.mail.sppoti.confirm.subject}")
+	private String confirmJoinSppotiSubject;
+	/** Redirection link to the front app. */
+	@Value("${spring.app.mail.sppoti.join.link}")
+	private String joinSppotiLink;
+	/** Explain sppoti concept. */
+	@Value("${spring.app.mail.sppoti.description}")
+	private String sppotiConcept;
+	/** translate to join sppoti message. */
+	@Value("${spring.app.mail.sppoti.invited.by.join.sppoti}")
+	private String toJoinSppotiMessage;
 	
 	/** Init mail configuration. */
 	@Autowired
@@ -90,7 +84,7 @@ public class SppotiMailer extends ApplicationMailer
 		coverResourceContent.setResourceName(sppotiCoverResourceName);
 		
 		final String joinSppotiLinkParsed = this.frontRootPath +
-				this.joinSppotiLink.replace("%SppotiId%", sppoti.getId() + "");
+				this.joinSppotiLink.replace("%sppotiId%", sppoti.getId() + "");
 		prepareAndSendEmail(to, from, sppoti, this.joinSppotiSubject, joinSppotiLinkParsed, coverResourceContent,
 				avatarResourceContent);
 	}
