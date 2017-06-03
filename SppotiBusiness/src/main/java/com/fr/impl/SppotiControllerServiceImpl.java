@@ -310,7 +310,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			//Send notification to sppoti admin.
 			if (updatedSppoter != null) {
 				addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sm.getTeamMember().getUser(),
-						sm.getSppoti().getUserSppoti(), null, null);
+						sm.getSppoti().getUserSppoti(), null, updatedSppoter.getSppoti());
 			}
 			
 			//update team member status.
@@ -356,7 +356,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		//Send notification to sppoti admin.
 		if (updatedSppoter != null) {
 			addNotification(NotificationTypeEnum.X_REFUSED_YOUR_SPPOTI_INVITATION,
-					sppotiMembers.getTeamMember().getUser(), sppotiMembers.getSppoti().getUserSppoti(), null, null);
+					sppotiMembers.getTeamMember().getUser(), sppotiMembers.getSppoti().getUserSppoti(), null,
+					updatedSppoter.getSppoti());
 		}
 		
 	}
