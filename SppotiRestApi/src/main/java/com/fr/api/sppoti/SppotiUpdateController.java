@@ -124,7 +124,7 @@ class SppotiUpdateController
 			throw new BusinessGlobalException("Team id not found in the request.");
 		}
 		
-		this.sppotiControllerService.chooseOneAdverseTeamFromAllRequests(sppotiId, teamDTO);
+		this.sppotiControllerService.chooseOneAdverseTeamFromAllChallengeRequests(sppotiId, teamDTO);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}

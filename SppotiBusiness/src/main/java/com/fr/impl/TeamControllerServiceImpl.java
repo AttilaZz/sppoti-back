@@ -479,12 +479,21 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 								}
 							});
 							
+							//send notification to sppoti admin.
+							addNotification(NotificationTypeEnum.CHALLENGED_TEAM_ACCEPTED_YOUR_CHALLENGE, null,
+									sp.getUserSppoti(), t.getTeam(), sp);
+							
 							//save changes and return team.
 							return this.teamTransformer.modelToDto(this.sppotiAdverseRepository.save(t).getTeam());
 						} else {
 							//Challenge refused -> Delete row from database.
 							sp.getAdverseTeams().remove(t);
 							this.sppotiRepository.save(sp);
+							
+							//send notification to sppoti admin.
+							addNotification(NotificationTypeEnum.CHALLENGED_TEAM_REFUSED_YOUR_CHALLENGE, null,
+									sp.getUserSppoti(), t.getTeam(), sp);
+							
 							return new TeamDTO();
 						}
 					}

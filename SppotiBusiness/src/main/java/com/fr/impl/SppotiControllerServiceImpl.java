@@ -438,6 +438,26 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		//update sppoti.
 		final SppotiEntity savedSppoti = this.sppotiRepository.save(sppotiEntity);
 		
+		//send notification to team adverse admins.
+		if (isSppotiAdmin(sppotiId, connectedUserId)) {
+			//Sppoti admin who sent the challenge
+			challengeTeam.getTeamMembers().forEach(hostMember -> {
+				if (hostMember.getAdmin()) {
+					addNotification(NotificationTypeEnum.SPPOTI_ADMIN_CHELLENGED_YOU, sppotiEntity.getUserSppoti(),
+							hostMember.getUser(), challengeTeam, sppotiEntity);
+				}
+			});
+		} else {
+			//team adverse who sent the challenge
+			challengeTeam.getTeamMembers().forEach(hostMember -> {
+				if (hostMember.getAdmin()) {
+					addNotification(NotificationTypeEnum.ADVERSE_TEAM_CHALLENGED_YOU, null, hostMember.getUser(),
+							challengeTeam, sppotiEntity);
+				}
+			});
+		}
+		
+		
 		return getSppotiResponse(savedSppoti);
 	}
 	
@@ -446,7 +466,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	@Transactional
 	@Override
-	public void chooseOneAdverseTeamFromAllRequests(final int sppotiId, final TeamDTO teamDTO)
+	public void chooseOneAdverseTeamFromAllChallengeRequests(final int sppotiId, final TeamDTO teamDTO)
 	{
 		
 		//Check if sppoti exist and has no confirmed adverse team yet.
@@ -478,6 +498,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 							if (teamDTO.getTeamAdverseStatus().equals(GlobalAppStatusEnum.REFUSED.name())) {
 								sp.getAdverseTeams().remove(teamAdverse);
 								this.sppotiRepository.save(sp);
+								
+								//send notification to team adverse admins.
+								teamAdverse.getTeam().getTeamMembers().forEach(m -> {
+									if (m.getAdmin()) {
+										addNotification(NotificationTypeEnum.SPPOTI_ADMIN_REFUSED_YOUR_CHALLENGE,
+												sp.getUserSppoti(), m.getUser(), teamAdverse.getTeam(), sp);
+									}
+								});
 							} else {
 								teamAdverse.setStatus(GlobalAppStatusEnum.valueOf(teamDTO.getTeamAdverseStatus()));
 								this.sppotiRepository.save(sp);
@@ -505,6 +533,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 									if (!a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
 										a.setStatus(GlobalAppStatusEnum.REFUSED);
 										this.sppotiAdverseRepository.save(a);
+									}
+								});
+								
+								//send notification to team adverse admins.
+								teamAdverse.getTeam().getTeamMembers().forEach(m -> {
+									if (m.getAdmin()) {
+										addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_YOUR_CHALLENGE,
+												sp.getUserSppoti(), m.getUser(), teamAdverse.getTeam(), sp);
 									}
 								});
 							}
@@ -571,7 +607,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void isSppotiAdmin(final int sppotiId, final Long userId)
+	public boolean isSppotiAdmin(final int sppotiId, final Long userId)
 	{
 		final SppotiEntity sppotiEntity = this.sppotiRepository.findByUuid(sppotiId);
 		if (sppotiEntity == null) {
@@ -581,6 +617,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		if (!sppotiEntity.getUserSppoti().getId().equals(userId)) {
 			throw new NotAdminException("You must be the sppoti admin to continue");
 		}
+		
+		return true;
 	}
 	
 	/**

@@ -107,7 +107,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @param sppotiId
 	 * 		id of the sppoti.
 	 */
-	void isSppotiAdmin(int sppotiId, Long userId);
+	boolean isSppotiAdmin(int sppotiId, Long userId);
 	
 	/**
 	 * This method allow to challenge a team in a sppoti.
@@ -161,7 +161,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @param teamDTO
 	 * 		team DTO containing the id of the accepted team.
 	 */
-	void chooseOneAdverseTeamFromAllRequests(int sppotiId, TeamDTO teamDTO);
+	void chooseOneAdverseTeamFromAllChallengeRequests(int sppotiId, TeamDTO teamDTO);
 	
 	/**
 	 * Get all upcoming sppoties with pagination.
