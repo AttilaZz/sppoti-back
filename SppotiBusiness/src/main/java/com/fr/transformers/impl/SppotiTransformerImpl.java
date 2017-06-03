@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
@@ -70,6 +71,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 		}
 		entity.setSport(sportEntity);
 		
+		entity.setDatetimeCreated(new Date());
 		if (StringUtils.hasText(dto.getTags())) {
 			entity.setTags(dto.getTags());
 		}
