@@ -189,4 +189,11 @@ public interface PostControllerService extends AbstractControllerService
 	 * @return list of posts.
 	 */
 	List<PostDTO> getAllUserPosts(Long connectedUserId, int connectedUserUuid, int targetUserPost, int page);
+	
+	/**
+	 * Get user timezone.
+	 *
+	 * @return timezone.
+	 */
+	String getTimeZone();
 }

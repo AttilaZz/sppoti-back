@@ -4,6 +4,7 @@ import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.post.PostRequestDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.exception.PostContentMissingException;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.service.PostControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -210,7 +211,8 @@ class PostAddController
 			
 			//Fill the id in the response object
 			postRep.setId(insertedPostId);
-			postRep.setDatetimeCreated(newPostToSave.getDatetimeCreated());
+			postRep.setDatetimeCreated(SppotiUtils
+					.dateWithTimeZone(newPostToSave.getDatetimeCreated(), this.postDataService.getTimeZone()));
 			
 			postRep.setMyPost(true);
 			return new ResponseEntity<>(postRep, HttpStatus.CREATED);
