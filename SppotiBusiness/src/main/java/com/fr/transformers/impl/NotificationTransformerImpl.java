@@ -2,6 +2,7 @@ package com.fr.transformers.impl;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.notification.NotificationDTO;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.NotificationEntity;
 import com.fr.entities.SppotiEntity;
 import com.fr.entities.TeamEntity;
@@ -55,7 +56,7 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 	{
 		final NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(notification.getUuid());
-		notificationDTO.setDatetime(notification.getCreationDate());
+		notificationDTO.setDatetime(SppotiUtils.dateWithTimeZone(notification.getCreationDate(), getTimeZone()));
 		notificationDTO.setFrom(notificationUserEntityToDto(notification.getFrom()));
 		notificationDTO.setTo(notificationUserEntityToDto(notification.getTo()));
 		notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
