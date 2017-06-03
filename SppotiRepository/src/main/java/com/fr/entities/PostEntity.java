@@ -31,7 +31,7 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	@SerializedName("text")
 	private String content;
 	
-	@Column(nullable = false, columnDefinition = "DATETIME(3)")
+	@Column(nullable = false, columnDefinition = "DATETIME(6)", updatable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date datetimeCreated = new Date();
 	
@@ -49,6 +49,22 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
 	@OrderBy("dateTime DESC")
 	private SortedSet<AddressEntity> addresses = new TreeSet<AddressEntity>();
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	@JsonIgnore
+	private UserEntity user;
+	@ManyToOne
+	@JoinColumn(name = "sport_id")
+	private SportEntity sport;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
+	@OrderBy("datetimeCreated DESC")
+	private SortedSet<CommentEntity> commentEntities = new TreeSet<CommentEntity>();
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
+	private Set<LikeContentEntity> likes;
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
+	private Set<EditHistoryEntity> editList;
+	@Column(name = "target_user")
+	private int targetUserProfileUuid;
 	
 	public PostEntity()
 	{
@@ -61,28 +77,6 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 		this.album = post.getAlbum();
 		this.video = post.getVideo();
 	}
-	
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	@JsonIgnore
-	private UserEntity user;
-	
-	@ManyToOne
-	@JoinColumn(name = "sport_id")
-	private SportEntity sport;
-	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-	@OrderBy("datetimeCreated DESC")
-	private SortedSet<CommentEntity> commentEntities = new TreeSet<CommentEntity>();
-	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-	private Set<LikeContentEntity> likes;
-	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-	private Set<EditHistoryEntity> editList;
-	
-	@Column(name = "target_user")
-	private int targetUserProfileUuid;
 	
 	public String getContent()
 	{

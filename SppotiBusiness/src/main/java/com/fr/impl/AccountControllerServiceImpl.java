@@ -429,11 +429,13 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 				FriendShipEntity friendShip;
 				
 				friendShip = this.friendShipRepository
-						.findByFriendUuidAndUserUuidAndDeletedFalse(connectedUser.getUuid(), targetUser.getUuid());
+						.findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(
+								connectedUser.getUuid(), targetUser.getUuid());
 				
 				if (friendShip == null) {
 					friendShip = this.friendShipRepository
-							.findByFriendUuidAndUserUuidAndDeletedFalse(targetUser.getUuid(), connectedUser.getUuid());
+							.findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(
+									targetUser.getUuid(), connectedUser.getUuid());
 				}
 				
 				if (friendShip == null) {

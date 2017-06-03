@@ -84,7 +84,8 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		Check if friendship exist
          */
 		final FriendShipEntity tempFriendShip = this.friendShipRepository
-				.findByFriendUuidAndUserUuidAndDeletedFalse(friend.getUuid(), connectedUser.getUuid());
+				.findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(friend.getUuid(),
+						connectedUser.getUuid());
 		if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
 			throw new EntityExistsException("FriendShip already exists !");
 		}
@@ -125,7 +126,8 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		Check if i received a friend request from the USER in the request
          */
 		final FriendShipEntity tempFriendShip = this.friendShipRepository
-				.findByFriendUuidAndUserUuidAndDeletedFalse(connectedUser.getUuid(), friendUuid);
+				.findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
+						friendUuid);
 		if (tempFriendShip == null) {
 			this.LOGGER.error("UPDATE-FRIEND: FriendShipEntity not found !");
 			throw new EntityNotFoundException(
@@ -162,16 +164,17 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	@Override
 	public void deleteFriendShip(final int friendId)
 	{
-		
+		final Pageable pageable = new PageRequest(0, 1);
 		final UserEntity connectedUser = getConnectedUser();
 		
 		//Check if friendship exist
-		final FriendShipEntity friendShip = this.friendShipRepository.findFriendShip(friendId, connectedUser.getUuid());
-		if (friendShip == null) {
+		final List<FriendShipEntity> friendShip = this.friendShipRepository
+				.findLastFriendShipOrderByDatetimeCreatedDesc(friendId, connectedUser.getUuid());
+		if (friendShip.isEmpty()) {
 			throw new EntityNotFoundException("Friendship not found");
 		}
 		
-		friendShip.setDeleted(true);
+		friendShip.get(0).setDeleted(true);
 		this.friendShipRepository.save(friendShip);
 		
 	}

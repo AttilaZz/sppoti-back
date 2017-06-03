@@ -26,7 +26,7 @@ public class NotificationEntity extends AbstractCommonEntity
 	private UserEntity to;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false, updatable = false)
+	@Column(nullable = false, columnDefinition = "DATETIME(6)", updatable = false)
 	private Date creationDate = new Date();
 	
 	@Enumerated(EnumType.STRING)

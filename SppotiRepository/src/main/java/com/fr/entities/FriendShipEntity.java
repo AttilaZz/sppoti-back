@@ -13,7 +13,7 @@ import java.util.Date;
 @Table(name = "friend_ship")
 public class FriendShipEntity extends AbstractCommonEntity
 {
-	@Column(nullable = false, name = "datetime")
+	@Column(nullable = false, name = "datetime", columnDefinition = "DATETIME(6)")
 	private Date datetimeCreated = new Date();
 	
 	@Column(nullable = false)

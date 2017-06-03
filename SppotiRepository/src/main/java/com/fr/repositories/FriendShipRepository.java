@@ -15,7 +15,8 @@ import java.util.List;
 public interface FriendShipRepository extends CrudRepository<FriendShipEntity, Long>
 {
 	
-	FriendShipEntity findByFriendUuidAndUserUuidAndDeletedFalse(int friend_uuid, int connected_user);
+	FriendShipEntity findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(int friend_uuid,
+																							  int connected_user);
 	
 	List<FriendShipEntity> findByUserUuidAndStatusAndDeletedFalse(int uuid, GlobalAppStatusEnum name,
 																  Pageable pageable);
@@ -41,8 +42,10 @@ public interface FriendShipRepository extends CrudRepository<FriendShipEntity, L
 														 Pageable pageable);
 	
 	@Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.uuid = :user1 AND f.user.uuid =:user2) " +
-			"OR (f.friend.uuid = :user2 AND f.user.uuid =:user1) AND f.deleted = false")
-	FriendShipEntity findFriendShip(@Param("user1") int user1, @Param("user2") int user2);
+			"OR (f.friend.uuid = :user2 AND f.user.uuid =:user1) AND f.deleted = false " +
+			"ORDER BY f.datetimeCreated DESC")
+	List<FriendShipEntity> findLastFriendShipOrderByDatetimeCreatedDesc(@Param("user1") int user1,
+																		@Param("user2") int user2);
 	
 	@Query("SELECT f FROM FriendShipEntity f WHERE (f.user.uuid = :asUserId OR f.friend.uuid = :asFriendId) " +
 			"AND status = :status AND f.deleted = FALSE")
