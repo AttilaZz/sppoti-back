@@ -4,6 +4,7 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
 import com.fr.service.AccountControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -25,17 +26,17 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/find/users")
+@ApiVersion("1")
 class FindUsersController
 {
-	
-	/** Firiend list size. */
-	@Value("${key.friendShipPerPage}")
-	private int friend_size;
 	
 	/** USer repository. */
 	private final UserRepository userRepository;
 	/** Account service. */
 	private final AccountControllerService accountControllerService;
+	/** Firiend list size. */
+	@Value("${key.friendShipPerPage}")
+	private int friend_size;
 	
 	/** Init service. */
 	@Autowired

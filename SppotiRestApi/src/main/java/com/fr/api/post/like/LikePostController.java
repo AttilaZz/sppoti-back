@@ -6,6 +6,7 @@ import com.fr.entities.PostEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.LikeControllerService;
 import com.fr.service.PostControllerService;
+import com.fr.versionning.ApiVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/like")
+@ApiVersion("1")
 class LikePostController
 {
 	
@@ -31,6 +33,9 @@ class LikePostController
 	
 	/** like service. */
 	private final LikeControllerService likeControllerService;
+	/** Init service. */
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(LikePostController.class);
 	
 	/** Init services. */
 	@Autowired
@@ -40,10 +45,6 @@ class LikePostController
 		this.postDataService = postDataService;
 		this.likeControllerService = likeControllerService;
 	}
-	
-	/** Init service. */
-	
-	private final Logger LOGGER = LoggerFactory.getLogger(LikePostController.class);
 	
 	/**
 	 * @param id

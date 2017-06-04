@@ -6,6 +6,7 @@ import com.fr.entities.LikeContentEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.CommentControllerService;
 import com.fr.service.LikeControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/like")
+@ApiVersion("1")
 class LikeCommentController
 {
 	/** Comment servcie. */

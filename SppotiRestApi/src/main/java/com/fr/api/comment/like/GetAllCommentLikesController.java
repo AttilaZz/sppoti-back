@@ -5,6 +5,7 @@ import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.service.CommentControllerService;
 import com.fr.service.LikeControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/like")
+@ApiVersion("1")
 class GetAllCommentLikesController
 {
 	

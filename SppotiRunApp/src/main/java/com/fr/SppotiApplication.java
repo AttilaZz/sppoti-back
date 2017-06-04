@@ -1,6 +1,7 @@
 package com.fr;
 
 import com.fr.filter.CsrfProperties;
+import com.fr.versionning.ApiVersionRequestMappingHandlerMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +11,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -26,7 +29,7 @@ import javax.servlet.ServletException;
 		@PropertySource(value = "classpath:email/email_en.properties", ignoreResourceNotFound = true,
 				encoding = "UTF-8")
 })
-public class SppotiApplication implements ServletContextInitializer
+public class SppotiApplication extends WebMvcConfigurationSupport implements ServletContextInitializer
 {
 	
 	/** CSRF properties. */
@@ -52,6 +55,15 @@ public class SppotiApplication implements ServletContextInitializer
 		servletContext.getSessionCookieConfig().setDomain(this.filterProperties.getDomain());
 		servletContext.getSessionCookieConfig().setSecure(this.filterProperties.isSecureConnexion());
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+		return new ApiVersionRequestMappingHandlerMapping("v");
+	}
+	
 	//
 	//	/**
 	//	 * {@inheritDoc}

@@ -42,8 +42,7 @@
             <AppenderRef ref="SpringBoot-Appender"/>
             <AppenderRef ref="Console-Appender"/>
         </Logger>
-        <Logger name="com.javasampleapproach.log4j2.controller" level="info"
-                additivity="false">
+        <Logger name="com.javasampleapproach.log4j2.controller" level="info" additivity="false">
             <AppenderRef ref="App-Appender"/>
             <AppenderRef ref="Console-Appender"/>
         </Logger>
@@ -54,5 +53,9 @@
             <AppenderRef ref="FileAllErrors"/>
             <AppenderRef ref="Console-Appender"/>
         </Root>
+        <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter">
+            <level value="INFO"/>
+            <AppenderRef ref="Console-Appender"/>
+        </logger>
     </Loggers>
 </Configuration>

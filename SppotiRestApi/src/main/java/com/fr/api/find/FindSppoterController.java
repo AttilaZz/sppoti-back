@@ -2,6 +2,7 @@ package com.fr.api.find;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.service.SppotiControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/find/sppoter")
+@ApiVersion("1")
 public class FindSppoterController
 {
 	/** Sppoti controller service. */

@@ -2,6 +2,7 @@ package com.fr.api.gallery;
 
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.service.PostControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/gallery/photo/{userId}")
+@ApiVersion("1")
 class GalleryPhotoController
 {
 	

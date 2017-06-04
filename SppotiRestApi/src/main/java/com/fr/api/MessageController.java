@@ -6,6 +6,7 @@ import com.fr.entities.MessageEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.MessageControllerService;
 import com.fr.transformers.MessageTranformer;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/message")
+@ApiVersion("1")
 class MessageController
 {
 	/** message service. */

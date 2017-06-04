@@ -1,6 +1,7 @@
 package com.fr.api.post.like;
 
 import com.fr.service.LikeControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/like")
+@ApiVersion("1")
 class UnlikePostController
 {
 	

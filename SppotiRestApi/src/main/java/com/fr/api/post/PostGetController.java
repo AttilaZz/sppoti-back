@@ -4,6 +4,7 @@ import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.service.PostControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/post")
+@ApiVersion("1")
 class PostGetController
 {
 	

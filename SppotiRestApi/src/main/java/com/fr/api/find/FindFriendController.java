@@ -5,6 +5,7 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.FriendShipEntity;
 import com.fr.repositories.FriendShipRepository;
 import com.fr.service.AccountControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -25,17 +26,16 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/find/friends")
+@ApiVersion("1")
 class FindFriendController
 {
+	/** Friend repository. */
+	private final FriendShipRepository friendShipRepository;
+	/** Account controller service. */
+	private final AccountControllerService accountControllerService;
 	/** Friend list size. */
 	@Value("${key.friendShipPerPage}")
 	private int friend_size;
-	
-	/** Friend repository. */
-	private final FriendShipRepository friendShipRepository;
-	
-	/** Account controller service. */
-	private final AccountControllerService accountControllerService;
 	
 	/** Init services. */
 	@Autowired

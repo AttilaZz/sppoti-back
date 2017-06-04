@@ -5,6 +5,7 @@ import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.service.CommentControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/comment")
+@ApiVersion("1")
 class CommentUpdateController
 {
 	/** Comment service. */

@@ -2,6 +2,7 @@ package com.fr.api.sppoti;
 
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.service.SppotiControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/sppoti")
+@ApiVersion("1")
 class SppotiAddController
 {
 	

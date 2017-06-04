@@ -4,6 +4,7 @@ import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.CommentEntity;
 import com.fr.service.CommentControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/comment")
+@ApiVersion("1")
 class CommentAddController
 {
 	

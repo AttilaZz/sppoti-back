@@ -5,6 +5,7 @@ import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.PostEntity;
 import com.fr.service.LikeControllerService;
 import com.fr.service.PostControllerService;
+import com.fr.versionning.ApiVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/like")
+@ApiVersion("1")
 class GetAllPostLikersController
 {
 	

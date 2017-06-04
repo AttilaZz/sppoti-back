@@ -7,6 +7,7 @@ import com.fr.commons.exception.PostContentMissingException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.service.PostControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/post")
+@ApiVersion("1")
 class PostAddController
 {
 	

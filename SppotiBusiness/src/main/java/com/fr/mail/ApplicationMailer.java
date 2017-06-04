@@ -26,42 +26,33 @@ import java.io.InputStream;
 abstract class ApplicationMailer
 {
 	
-	/** Class logger. */
-	protected static Logger LOGGER = LoggerFactory.getLogger(ApplicationMailer.class);
-	
 	/** Templates. */
 	static final String PATH_TO_ACCOUNT_TEMPLATE = "account/account";
 	static final String PATH_TO_CONTACT_TEMPLATE = "contact/contact";
-	
-	/** Email charset. */
-	private static final String CHARSET_NAME = "UTF-8";
-	
-	/** Error message. */
-	private static final String ERROR_SENDING_MAIL = "Error sending email";
-	private static final String ERROR_OPENING_RESOURCE_FILE = "Resource file not found";
-	
-	/** Java mail sender. */
-	protected final JavaMailSender sender;
-	/** Mail properties. */
-	final MailProperties mailProperties;
-	/** Template engine. */
-	protected final TemplateEngine templateEngine;
-	
-	/** Front app path. */
-	@Value("${spring.app.originFront}")
-	protected String frontRootPath;
-	
-	/** resource content type. */
-	private static final String IMAGE_PNG = "image/png";
-	
 	/** Email images directory. */
 	static final String IMAGES_DIRECTORY = "templates/images/";
-	
 	/** name resources to use inside templates. */
 	static final String logoResourceName = "sppoti_logo.png";
 	static final String teamDefaultAvatarResourceName = "team_avatar.png";
 	static final String sppotiCoverResourceName = "sppoti_bg.png";
-	
+	/** Email charset. */
+	private static final String CHARSET_NAME = "UTF-8";
+	/** Error message. */
+	private static final String ERROR_SENDING_MAIL = "Error sending email";
+	private static final String ERROR_OPENING_RESOURCE_FILE = "Resource file not found";
+	/** resource content type. */
+	private static final String IMAGE_PNG = "image/png";
+	/** Class logger. */
+	protected static Logger LOGGER = LoggerFactory.getLogger(ApplicationMailer.class);
+	/** Java mail sender. */
+	protected final JavaMailSender sender;
+	/** Template engine. */
+	protected final TemplateEngine templateEngine;
+	/** Mail properties. */
+	final MailProperties mailProperties;
+	/** Front app path. */
+	@Value("${spring.app.originFront}")
+	protected String frontRootPath;
 	/** Global email texts - for translation. */
 	@Value("${spring.app.mail.intended.for}")
 	String emailIntendedForMessage;
@@ -111,7 +102,7 @@ abstract class ApplicationMailer
 		try {
 			final MimeMessageHelper helper = new MimeMessageHelper(mail, true, CHARSET_NAME);
 			
-			helper.setFrom(this.mailProperties.getUsername());
+			helper.setFrom(this.mailProperties.getFrom());
 			helper.setTo(to);
 			helper.setSubject(subject);
 			

@@ -26,7 +26,7 @@ public class AbstractCommonEntity
 	private Long id;
 	
 	/**
-	 * version.
+	 * versionning.
 	 */
 	@Version
 	@Column(name = "version", nullable = false)

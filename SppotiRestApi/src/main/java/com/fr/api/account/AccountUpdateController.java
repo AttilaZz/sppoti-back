@@ -2,6 +2,7 @@ package com.fr.api.account;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.service.AccountControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/account")
+@ApiVersion("1")
 class AccountUpdateController
 {
 	

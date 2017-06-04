@@ -3,6 +3,7 @@ package com.fr.api.score;
 import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.service.ScoreControllerService;
+import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/score")
+@ApiVersion("1")
 public class ScoreUpdateController
 {
 	
