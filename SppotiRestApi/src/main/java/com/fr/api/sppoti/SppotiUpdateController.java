@@ -4,6 +4,7 @@ import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.exception.BusinessGlobalException;
+import com.fr.commons.exception.NotAdminException;
 import com.fr.service.SppotiControllerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,7 +48,9 @@ class SppotiUpdateController
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
 		//throws exception if user is not the sppoti admin
-		this.sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId());
+		if (this.sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId())) {
+			throw new NotAdminException("You must be the sppoti admin to continue");
+		}
 		
 		boolean canUpdate = false;
 		
