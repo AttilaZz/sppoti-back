@@ -283,6 +283,16 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			adverse.setTeam(team);
 			adverse.setFromSppotiAdmin(Boolean.TRUE);
 			sppoti.getAdverseTeams().add(adverse);
+			
+			//Notify adverse team admins.
+			//Sppoti admin who sent the challenge
+			adverse.getTeam().getTeamMembers().forEach(hostMember -> {
+				if (hostMember.getAdmin()) {
+					addNotification(NotificationTypeEnum.SPPOTI_ADMIN_CHELLENGED_YOU, sppoti.getUserSppoti(),
+							hostMember.getUser(), adverse.getTeam(), sppoti);
+				}
+			});
+			
 		}
 		
 		final SppotiEntity updatedSppoti = this.sppotiRepository.save(sppoti);
@@ -384,7 +394,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	@Transactional
 	@Override
-	public SppotiDTO sendChallenge(final int sppotiId, final int teamId, final Long connectedUserId)
+	public SppotiDTO sendChallengeToSppotiHostTeam(final int sppotiId, final int teamId, final Long connectedUserId)
 	{
 		//Check if team exist.
 		final List<TeamEntity> teamEntities = this.teamRepository.findByUuidAndDeletedFalse(teamId);
@@ -437,25 +447,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		//update sppoti.
 		final SppotiEntity savedSppoti = this.sppotiRepository.save(sppotiEntity);
-		
-		//send notification to team adverse admins.
-		if (isSppotiAdmin(sppotiId, connectedUserId)) {
-			//Sppoti admin who sent the challenge
-			challengeTeam.getTeamMembers().forEach(hostMember -> {
-				if (hostMember.getAdmin()) {
-					addNotification(NotificationTypeEnum.SPPOTI_ADMIN_CHELLENGED_YOU, sppotiEntity.getUserSppoti(),
-							hostMember.getUser(), challengeTeam, sppotiEntity);
-				}
-			});
-		} else {
-			//team adverse who sent the challenge
-			challengeTeam.getTeamMembers().forEach(hostMember -> {
-				if (hostMember.getAdmin()) {
-					addNotification(NotificationTypeEnum.TEAM_ADMIN_SENT_YOU_A_CHALLENGE, null, hostMember.getUser(),
-							challengeTeam, sppotiEntity);
-				}
-			});
-		}
 		
 		
 		return getSppotiResponse(savedSppoti);

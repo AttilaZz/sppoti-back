@@ -104,7 +104,7 @@ class SppotiUpdateController
 		
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		this.sppotiControllerService.sendChallenge(sppotiId, teamId, accountUserDetails.getId());
+		this.sppotiControllerService.sendChallengeToSppotiHostTeam(sppotiId, teamId, accountUserDetails.getId());
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}

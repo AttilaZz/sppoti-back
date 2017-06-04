@@ -117,7 +117,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @param teamId
 	 * 		team id.
 	 */
-	SppotiDTO sendChallenge(int sppotiId, int teamId, Long connectedUserId);
+	SppotiDTO sendChallengeToSppotiHostTeam(int sppotiId, int teamId, Long connectedUserId);
 	
 	/**
 	 * rating many sppoters at a time.
