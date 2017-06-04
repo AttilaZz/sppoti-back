@@ -504,6 +504,11 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 					if (dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.REFUSED.name())) {
 						sp.getAdverseTeams().remove(t);
 						this.sppotiRepository.save(sp);
+						
+						//send notification to sppoti admin.
+						addNotification(NotificationTypeEnum.TEAM_ADMIN_CANCELED_HIS_CHALLENGE, null,
+								sp.getUserSppoti(), t.getTeam(), sp);
+						
 						return new TeamDTO();
 					} else {
 						throw new BusinessGlobalException("Status unauthorized in the request");
