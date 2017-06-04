@@ -57,8 +57,12 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 		final NotificationDTO notificationDTO = new NotificationDTO();
 		notificationDTO.setId(notification.getUuid());
 		notificationDTO.setDatetime(SppotiUtils.dateWithTimeZone(notification.getCreationDate(), getTimeZone()));
-		notificationDTO.setFrom(notificationUserEntityToDto(notification.getFrom()));
-		notificationDTO.setTo(notificationUserEntityToDto(notification.getTo()));
+		if (notification.getFrom() != null) {
+			notificationDTO.setFrom(notificationUserEntityToDto(notification.getFrom()));
+		}
+		if (notification.getTo() != null) {
+			notificationDTO.setTo(notificationUserEntityToDto(notification.getTo()));
+		}
 		notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
 		notificationDTO.setStatus(notification.getStatus());
 		
