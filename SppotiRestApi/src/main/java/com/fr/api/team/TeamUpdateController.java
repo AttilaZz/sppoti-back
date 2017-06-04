@@ -148,7 +148,7 @@ class TeamUpdateController
 			throw new BusinessGlobalException("Status must be (CONFIRMED) or (REFUSED)");
 		}
 		
-		final TeamDTO adverseTeam = this.teamControllerService.requestToSppotiAdminChallenge(dto, teamId);
+		final TeamDTO adverseTeam = this.teamControllerService.responseToSppotiAdminChallenge(dto, teamId);
 		
 		return new ResponseEntity<>(adverseTeam, HttpStatus.ACCEPTED);
 		

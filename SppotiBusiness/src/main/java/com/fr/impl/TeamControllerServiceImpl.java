@@ -422,7 +422,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public TeamDTO requestToSppotiAdminChallenge(final SppotiDTO dto, final int teamId)
+	public TeamDTO responseToSppotiAdminChallenge(final SppotiDTO dto, final int teamId)
 	{
 		
 		checkTeamAdminAccess(teamId, getConnectedUser().getUuid());

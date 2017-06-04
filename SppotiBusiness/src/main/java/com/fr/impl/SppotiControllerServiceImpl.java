@@ -448,6 +448,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		//update sppoti.
 		final SppotiEntity savedSppoti = this.sppotiRepository.save(sppotiEntity);
 		
+		//Send notif to sppoti admin
+		addNotification(NotificationTypeEnum.TEAM_ADMIN_SENT_YOU_A_CHALLENGE, null, sppotiEntity.getUserSppoti(),
+				adverse.getTeam(), sppotiEntity);
 		
 		return getSppotiResponse(savedSppoti);
 	}

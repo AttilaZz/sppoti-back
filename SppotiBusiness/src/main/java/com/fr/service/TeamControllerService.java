@@ -192,7 +192,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @param teamId
 	 * 		team id.
 	 */
-	TeamDTO requestToSppotiAdminChallenge(SppotiDTO dto, int teamId);
+	TeamDTO responseToSppotiAdminChallenge(SppotiDTO dto, int teamId);
 	
 	/**
 	 * Get all pending challe,nge sppoti requests, sent from sppoti admin.
