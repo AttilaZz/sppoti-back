@@ -358,7 +358,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 				throw new BusinessGlobalException("Your token has been expired");
 			}
 			
-			u.setPassword(userDTO.getPassword());
+			u.setPassword(this.passwordEncoder.encode(userDTO.getPassword()));
 			this.userRepository.save(u);
 		});
 		
