@@ -48,7 +48,7 @@ class SppotiUpdateController
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
 		//throws exception if user is not the sppoti admin
-		if (this.sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId())) {
+		if (!this.sppotiControllerService.isSppotiAdmin(sppotiId, accountUserDetails.getId())) {
 			throw new NotAdminException("You must be the sppoti admin to continue");
 		}
 		
