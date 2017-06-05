@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
-
 /**
  * Created by djenanewail on 2/12/17.
  */
@@ -42,7 +40,7 @@ class AccountValidateController
 	 */
 	@PutMapping(value = "/validate/{code}")
 	ResponseEntity<Void> confirmUserEmail(@PathVariable("code") final String code,
-										  @PathParam("type") final TypeAccountValidation type)
+										  @RequestParam("type") final TypeAccountValidation type)
 	{
 		
 		if (StringUtils.isEmpty(code) || type == null) {

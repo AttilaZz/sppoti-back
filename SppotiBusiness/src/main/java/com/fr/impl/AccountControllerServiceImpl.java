@@ -145,8 +145,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate()) || u.isConfirmed()) {
 			return true;
 		} else if (!u.isConfirmed()) {
-			throw new AccountConfirmationLinkExpiredException(
-					"Account exist, but not confirmed yet ! Ask for another confirmation code.");
+			throw new AccountConfirmationLinkExpiredException("Account exist! Ask for another confirmation code.");
 		}
 		return false;
 	}
@@ -166,15 +165,14 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			
 			//Attempt to activate account after a signup.
 			if (type.name().equals(TypeAccountValidation.signup.name())) {
-				if (SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
-					throw new BusinessGlobalException(
-							"Your token has been expired or deleted, try creating new account " +
-									"and confirm before 24h");
-				}
 			}
 			//Attempt to activate account after edit email.
 			else if (type.name().equals(TypeAccountValidation.preference_edit_email.name())) {
+			}
 			
+			//Check if validation link still active.
+			if (SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
+				throw new AccountConfirmationLinkExpiredException("Account exist! Ask for another confirmation code.");
 			}
 			
 			u.setConfirmed(true);
