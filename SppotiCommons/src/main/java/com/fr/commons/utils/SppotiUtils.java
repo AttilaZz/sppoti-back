@@ -133,6 +133,20 @@ public class SppotiUtils
 	}
 	
 	/**
+	 * @param old
+	 * 		days to minus from actrudal date.
+	 *
+	 * @return generated date.
+	 */
+	public static Date generateOldDate(final int old)
+	{
+		
+		final LocalDateTime ldt = LocalDateTime.ofInstant(new Date().toInstant(), ZoneId.systemDefault())
+				.minusDays(old);
+		return Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+	}
+	
+	/**
 	 * Normalisation des noms et prénoms.
 	 *
 	 * @param noms

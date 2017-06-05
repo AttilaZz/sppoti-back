@@ -172,15 +172,16 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			
 			//Check if validation link still active.
 			if (SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
-				throw new AccountConfirmationLinkExpiredException("Account exist! Ask for another confirmation code.");
+				throw new AccountConfirmationLinkExpiredException(
+						"Token has been expired! Ask for another confirmation code.");
 			}
 			
 			u.setConfirmed(true);
+			u.setAccountMaxActivationDate(SppotiUtils.generateOldDate(2));
 			this.userRepository.save(u);
 		});
 		
-		optional.orElseThrow(() -> new EntityNotFoundException("Token not found, " +
-				"This account may not being confirmed for more than 24h or it has been already confirmed"));
+		optional.orElseThrow(() -> new EntityNotFoundException("Token not valid"));
 		
 	}
 	
@@ -259,6 +260,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			
 			connectedUser.setEmail(userDTO.getEmail());
 			connectedUser.setConfirmed(false);
+			connectedUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(1));
 			final String confirmationCode = SppotiUtils.generateConfirmationKey();
 			connectedUser.setConfirmationCode(confirmationCode);
 			
