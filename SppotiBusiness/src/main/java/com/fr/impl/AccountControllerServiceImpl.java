@@ -226,9 +226,12 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		if (StringUtils.hasText(userDTO.getPhone())) {
 			connectedUser.setTelephone(userDTO.getPhone());
 		}
+		//timeZone
+		if (StringUtils.hasText(userDTO.getTimeZone())) {
+			connectedUser.setTimeZone(userDTO.getTimeZone());
+		}
 		//password
-		else if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
-				StringUtils.hasText(userDTO.getOldPassword())) {
+		else if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) && StringUtils.hasText(userDTO.getOldPassword())) {
 			
 			//Check that old password is correct
 			if (!this.passwordEncoder.matches(userDTO.getOldPassword(), connectedUser.getPassword())) {

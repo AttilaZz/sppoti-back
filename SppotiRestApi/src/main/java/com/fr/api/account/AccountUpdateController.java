@@ -82,6 +82,10 @@ class AccountUpdateController
 			if (StringUtils.hasText(user.getLanguage())) {
 				update = true;
 			}
+			//language
+			if (StringUtils.hasText(user.getTimeZone())) {
+				update = true;
+			}
 			
 			//TODO: Update sports
 			
