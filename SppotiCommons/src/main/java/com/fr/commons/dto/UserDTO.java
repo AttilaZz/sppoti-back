@@ -36,6 +36,7 @@ public class UserDTO extends AbstractCommonDTO
 	private Long techId;
 	private boolean confirmed;
 	private List<RoleDTO> userRoles = new ArrayList<>();
+	//	private Date deactivationDate;
 	
 	private String cover;
 	private String avatar;
@@ -393,4 +394,5 @@ public class UserDTO extends AbstractCommonDTO
 	public void setTechId(final Long techId) {
 		this.techId = techId;
 	}
+	
 }

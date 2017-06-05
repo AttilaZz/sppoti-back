@@ -59,7 +59,12 @@ public class UserEntity extends AbstractCommonEntity
 	@Column(nullable = false)
 	private String password;
 	
-	private boolean deleted = false;
+	private boolean deleted;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deactivate_date")
+	private Date deactivationDate;
+	
 	private boolean confirmed = false;
 	
 	private String job;
@@ -414,6 +419,14 @@ public class UserEntity extends AbstractCommonEntity
 		this.timeZone = timeZone;
 	}
 	
+	public Date getDeactivationDate() {
+		return this.deactivationDate;
+	}
+	
+	public void setDeactivationDate(final Date deactivationDate) {
+		this.deactivationDate = deactivationDate;
+	}
+	
 	/**
 	 * {@inheritDoc}.
 	 */
@@ -452,7 +465,9 @@ public class UserEntity extends AbstractCommonEntity
 			return false;
 		if (this.accountCreationDate != null ? !this.accountCreationDate.equals(entity.accountCreationDate) :
 				entity.accountCreationDate != null)
-			return false;
+			if (this.deactivationDate != null ? !this.deactivationDate.equals(entity.deactivationDate) :
+					entity.deactivationDate != null)
+				return false;
 		if (this.accountMaxActivationDate != null ?
 				!this.accountMaxActivationDate.equals(entity.accountMaxActivationDate) :
 				entity.accountMaxActivationDate != null)
@@ -503,6 +518,7 @@ public class UserEntity extends AbstractCommonEntity
 		result = 31 * result + (this.languageEnum != null ? this.languageEnum.hashCode() : 0);
 		result = 31 * result + (this.ipHistory != null ? this.ipHistory.hashCode() : 0);
 		result = 31 * result + (this.timeZone != null ? this.timeZone.hashCode() : 0);
+		result = 31 * result + (this.deactivationDate != null ? this.deactivationDate.hashCode() : 0);
 		return result;
 	}
 }

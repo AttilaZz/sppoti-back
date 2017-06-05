@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by djenanewail on 2/12/17.
@@ -40,7 +37,7 @@ class AccountUpdateController
 	 *
 	 * @return updated data with http status 202 if update success, 400 otherwise.
 	 */
-	@PutMapping
+	@PutMapping("/")
 	ResponseEntity<UserDTO> editUserInfo(@RequestBody final UserDTO user)
 	{
 		
@@ -96,6 +93,22 @@ class AccountUpdateController
 		}
 		
 		return new ResponseEntity<>(user, HttpStatus.BAD_REQUEST);
+	}
+	
+	/**
+	 * Deactivate account.
+	 *
+	 * @param userId
+	 * 		user id.
+	 *
+	 * @return 202 status if account has been deactivated.
+	 */
+	@PutMapping("/deactivate/{userId}")
+	ResponseEntity<Void> deactivateAccount(@PathVariable final int userId)
+	{
+		this.accountControllerService.deactivateAccount(userId);
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		
 	}
 	
 }

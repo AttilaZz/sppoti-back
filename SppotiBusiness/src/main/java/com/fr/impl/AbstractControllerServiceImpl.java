@@ -10,6 +10,7 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.exception.TeamMemberNotFoundException;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.mail.SppotiMailer;
 import com.fr.mail.TeamMailer;
@@ -223,7 +224,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	{
 		final UserDetails accountUserDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
-		return this.getUserByLogin(accountUserDetails.getUsername());
+		return this.getUserByLogin(accountUserDetails.getUsername(), true);
 	}
 	
 	/**
@@ -234,25 +235,45 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 *
 	 * @return Connected user data.
 	 */
-	public UserEntity getUserByLogin(final String username)
+	public UserEntity getUserByLogin(final String username, final boolean filterDeleted)
 	{
 		final String numberRegex = "[0-9]+";
 		
-		if (username.contains("@")) {
-			return this.userRepository.getByEmailAndDeletedFalse(username);
-		} else if (username.matches(numberRegex)) {
-			return this.userRepository.getByTelephoneAndDeletedFalse(username);
+		if (filterDeleted) {
+			if (username.contains("@")) {
+				return this.userRepository.getByEmailAndDeletedFalse(username);
+			} else if (username.matches(numberRegex)) {
+				return this.userRepository.getByTelephoneAndDeletedFalse(username);
+			} else {
+				return this.userRepository.getByUsernameAndDeletedFalse(username);
+			}
 		} else {
-			return this.userRepository.getByUsernameAndDeletedFalse(username);
+			if (username.contains("@")) {
+				return this.userRepository.findByEmail(username);
+			} else if (username.matches(numberRegex)) {
+				return this.userRepository.findByTelephone(username);
+			} else {
+				return this.userRepository.findByUsername(username);
+			}
 		}
+		
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserDTO getUserByUsername(final String username) {
-		return this.userTransformer.modelToDto(getUserByLogin(username));
+	public UserDTO getUserByUsernameForLogin(final String username) {
+		UserEntity entity = getUserByLogin(username, false);
+		//if account is deactivated and suppress date in less than 90 days reactivate account.
+		
+		if (entity.getDeactivationDate() != null &&
+				!SppotiUtils.isAccountReadyToBeCompletlyDeleted(entity.getDeactivationDate(), 90)) {
+			entity.setDeleted(false);
+			entity = this.userRepository.save(entity);
+		}
+		
+		return this.userTransformer.modelToDto(entity);
 	}
 	
 	/**
@@ -265,7 +286,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 */
 	protected List<CommentDTO> fillCommentModelList(final List<CommentEntity> dbCommentEntityList, final Long userId)
 	{
-		final List<CommentDTO> myList = new ArrayList<CommentDTO>();
+		final List<CommentDTO> myList = new ArrayList<>();
 		
 		for (final CommentEntity commentEntity : dbCommentEntityList) {
 			final int commentId = commentEntity.getUuid();

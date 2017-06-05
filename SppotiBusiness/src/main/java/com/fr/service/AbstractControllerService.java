@@ -54,7 +54,7 @@ public interface AbstractControllerService
 	 *
 	 * @return User entity.
 	 */
-	UserDTO getUserByUsername(String username);
+	UserDTO getUserByUsernameForLogin(String username);
 	
 	/**
 	 * @param users

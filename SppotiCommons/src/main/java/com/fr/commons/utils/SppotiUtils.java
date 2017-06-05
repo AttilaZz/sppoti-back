@@ -98,8 +98,20 @@ public class SppotiUtils
 	 */
 	public static boolean isDateExpired(final Date dateToCheck)
 	{
-		
 		final LocalDate dateToVerify = dateToCheck.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		
+		return !dateToVerify.isAfter(LocalDate.now());
+	}
+	
+	/**
+	 * Check if account has been deactivated more than 90 days.
+	 *
+	 * @return true if account must be completly deleted.
+	 */
+	public static boolean isAccountReadyToBeCompletlyDeleted(final Date date, final int daysBeforeCompleteDelete) {
+		
+		final LocalDate dateToVerify = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+				.plusDays(daysBeforeCompleteDelete);
 		
 		return !dateToVerify.isAfter(LocalDate.now());
 	}

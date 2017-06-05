@@ -413,7 +413,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	public UserDTO handleFriendShip(final String username, final Long connectedUserId)
 	{
 		
-		final UserEntity targetUser = this.getUserByLogin(username);
+		final UserEntity targetUser = this.getUserByLogin(username, true);
 		if (targetUser == null) {
 			throw new EntityNotFoundException("Target user id not found");
 		}
@@ -477,5 +477,22 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		}
 		
 		return user;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional
+	public void deactivateAccount(final int userId) {
+		final Optional<UserEntity> optional = this.userRepository.getByUuidAndConfirmedTrueAndDeletedFalse(userId);
+		
+		optional.ifPresent(u -> {
+			u.setDeleted(true);
+			u.setDeactivationDate(new Date());
+			this.userRepository.save(u);
+		});
+		
+		optional.orElseThrow(() -> new EntityNotFoundException("Account not found"));
 	}
 }

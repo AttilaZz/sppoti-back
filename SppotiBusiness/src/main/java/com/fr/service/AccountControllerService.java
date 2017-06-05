@@ -96,4 +96,12 @@ public interface AccountControllerService extends AbstractControllerService
 	 * @return user DTO.
 	 */
 	UserDTO handleFriendShip(String username, Long connectedUserId);
+	
+	/**
+	 * Deactivate account.
+	 *
+	 * @param userId
+	 * 		user id.
+	 */
+	void deactivateAccount(int userId);
 }
