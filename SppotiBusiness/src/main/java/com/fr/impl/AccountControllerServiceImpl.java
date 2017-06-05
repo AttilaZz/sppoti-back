@@ -5,6 +5,7 @@ import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.LanguageEnum;
+import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
 import com.fr.commons.exception.BusinessGlobalException;
@@ -155,28 +156,33 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Transactional
 	@Override
-	public void tryActivateAccount(final String code)
+	public void tryActivateAccount(final String code, final TypeAccountValidation type)
 	{
 		
 		final Optional<UserEntity> optional = Optional
-				.ofNullable(this.userRepository.getByConfirmationCodeAndDeletedFalse(code));
+				.ofNullable(this.userRepository.getByConfirmationCodeAndDeletedFalseAndConfirmedFalse(code));
 		
 		optional.ifPresent(u -> {
 			
-			if (SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
-				this.userRepository.delete(u);
-				this.LOGGER.info("Token expired for user: " + u.getEmail());
-				throw new BusinessGlobalException("Your token has been expired and deleted, try creating new account " +
-						"and confirm before 24h");
+			//Attempt to activate account after a signup.
+			if (type.name().equals(TypeAccountValidation.signup.name())) {
+				if (SppotiUtils.isDateExpired(u.getAccountMaxActivationDate())) {
+					throw new BusinessGlobalException(
+							"Your token has been expired or deleted, try creating new account " +
+									"and confirm before 24h");
+				}
+			}
+			//Attempt to activate account after edit email.
+			else if (type.name().equals(TypeAccountValidation.preference_edit_email.name())) {
+			
 			}
 			
 			u.setConfirmed(true);
 			this.userRepository.save(u);
 		});
 		
-		optional.orElseThrow(() -> new EntityNotFoundException("Account not found, " +
-				"This account may not being confirmed for more than 24h and same information was set in another " +
-				"account"));
+		optional.orElseThrow(() -> new EntityNotFoundException("Token not found, " +
+				"This account may not being confirmed for more than 24h or it has been already confirmed"));
 		
 	}
 	
@@ -231,7 +237,8 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			connectedUser.setTimeZone(userDTO.getTimeZone());
 		}
 		//password
-		else if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) && StringUtils.hasText(userDTO.getOldPassword())) {
+		else if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
+				StringUtils.hasText(userDTO.getOldPassword())) {
 			
 			//Check that old password is correct
 			if (!this.passwordEncoder.matches(userDTO.getOldPassword(), connectedUser.getPassword())) {

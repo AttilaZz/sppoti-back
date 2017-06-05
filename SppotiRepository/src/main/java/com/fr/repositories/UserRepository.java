@@ -24,7 +24,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>
 	
 	UserEntity getByUsernameAndDeletedFalse(String username);
 	
-	UserEntity getByConfirmationCodeAndDeletedFalse(String code);
+	UserEntity getByConfirmationCodeAndDeletedFalseAndConfirmedFalse(String code);
 	
 	UserEntity getByIdAndDeletedFalse(Long id);
 	

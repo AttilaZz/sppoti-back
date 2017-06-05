@@ -1,6 +1,7 @@
 package com.fr.api.account;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.AccountControllerService;
 import com.fr.versionning.ApiVersion;
@@ -9,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
 
 /**
  * Created by djenanewail on 2/12/17.
@@ -38,15 +41,16 @@ class AccountValidateController
 	 * @return 202 status if account enabled.
 	 */
 	@PutMapping(value = "/validate/{code}")
-	ResponseEntity<Void> confirmUserEmail(@PathVariable("code") final String code)
+	ResponseEntity<Void> confirmUserEmail(@PathVariable("code") final String code,
+										  @PathParam("type") final TypeAccountValidation type)
 	{
 		
-		if (StringUtils.isEmpty(code)) {
+		if (StringUtils.isEmpty(code) || type == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
 		// if given code exist in database confirm registration
-		this.accountControllerService.tryActivateAccount(code);
+		this.accountControllerService.tryActivateAccount(code, type);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		
 	}

@@ -37,7 +37,7 @@ class AccountUpdateController
 	 *
 	 * @return updated data with http status 202 if update success, 400 otherwise.
 	 */
-	@PutMapping("/")
+	@PutMapping
 	ResponseEntity<UserDTO> editUserInfo(@RequestBody final UserDTO user)
 	{
 		

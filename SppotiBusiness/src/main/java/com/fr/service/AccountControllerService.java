@@ -2,6 +2,7 @@ package com.fr.service;
 
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,7 @@ public interface AccountControllerService extends AbstractControllerService
 	 *
 	 * @return activation state.
 	 */
-	void tryActivateAccount(String code);
+	void tryActivateAccount(String code, TypeAccountValidation type);
 	
 	/**
 	 * UPDATE ACCOUNT DATA.
