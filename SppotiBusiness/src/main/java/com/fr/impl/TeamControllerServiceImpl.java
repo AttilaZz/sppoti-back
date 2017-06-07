@@ -214,31 +214,40 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void deleteMemberFromTeam(final int teamId, final int memberId, final int adminId)
+	public void deleteMemberFromTeam(final int teamId, final int memberId)
 	{
+		final UserEntity admin = getConnectedUser();
 		
-		//UserDTO deleting the member is admin of the team
+		//Check if connected user is team admin
 		final TeamMemberEntity adminTeamMembers = this.teamMembersRepository
-				.findByUserUuidAndTeamUuidAndAdminTrue(adminId, teamId);
+				.findByUserUuidAndTeamUuidAndAdminTrue(admin.getUuid(), teamId);
 		
 		if (adminTeamMembers == null) {
-			throw new EntityNotFoundException("Delete not permitted - UserDTO is not an admin");
+			throw new NotAdminException("Only team admin can delete members");
 		}
 		
+		//find target member to delete.
 		final TeamMemberEntity targetTeamMember = this.teamMembersRepository
 				.findByUserUuidAndTeamUuid(memberId, teamId);
 		
 		if (targetTeamMember == null) {
-			throw new EntityNotFoundException("Member to delete not foundn");
+			throw new EntityNotFoundException("Member to delete not found");
+		}
+		
+		//If member is admin - deny delete
+		if (targetTeamMember.getAdmin()) {
+			throw new BusinessGlobalException("Delete admin is forbidden");
 		}
 		
 		//Admin and member to delete are in the same team
 		if (adminTeamMembers.getTeam().getId().equals(targetTeamMember.getTeam().getId())) {
+			
 			this.teamMembersRepository.delete(targetTeamMember);
+			
 		} else {
 			throw new MemberNotInAdminTeamException(
-					"permission denied for admin with id(" + adminId + ") to delete the memeber with id (" + memberId +
-							")");
+					"permission denied for admin with id(" + admin.getUuid() + ") to delete the memeber with id (" +
+							memberId + ")");
 		}
 	}
 	

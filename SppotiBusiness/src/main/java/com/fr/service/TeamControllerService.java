@@ -84,10 +84,8 @@ public interface TeamControllerService extends AbstractControllerService
 	 * 		team id.
 	 * @param memberId
 	 * 		member team id.
-	 * @param adminId
-	 * 		team admin id.
 	 */
-	void deleteMemberFromTeam(int teamId, int memberId, int adminId);
+	void deleteMemberFromTeam(int teamId, int memberId);
 	
 	/**
 	 * Delete a team.

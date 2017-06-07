@@ -91,23 +91,6 @@ class TeamUpdateMembersController
 	}
 	
 	/**
-	 * Delete memeber for a given team - only team admin can delete a member
-	 *
-	 * @return 200 status if memeber has been added
-	 */
-	@DeleteMapping("/{memberId}")
-	ResponseEntity<Void> deleteMember(@PathVariable final int teamId, @PathVariable final int memberId,
-									  final Authentication authentication)
-	{
-		
-		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-		
-		this.teamControllerService.deleteMemberFromTeam(teamId, memberId, accountUserDetails.getUuid());
-		
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-	
-	/**
 	 * Add member for a given team - only admin can add a member to his team.
 	 *
 	 * @return 201 status if memeber has been added.
