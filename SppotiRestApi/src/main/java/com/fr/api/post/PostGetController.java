@@ -51,15 +51,15 @@ class PostGetController
 	/**
 	 * Get al posts for a given user id.
 	 */
-	@GetMapping(value = "/all/{userUniqueId}/{page}")
-	ResponseEntity<List<PostDTO>> getAllPosts(@PathVariable("userUniqueId") final int targetUserPost,
-											  @PathVariable    final int page, final Authentication authentication)
+	@GetMapping(value = "/all/{userId}/{page}")
+	ResponseEntity<List<PostDTO>> getAllPosts(@PathVariable final int userId, @PathVariable final int page,
+											  final Authentication authentication)
 	{
 		
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
 		return new ResponseEntity<>(this.postDataService
-				.getAllUserPosts(accountUserDetails.getId(), accountUserDetails.getUuid(), targetUserPost, page),
+				.getAllUserPosts(accountUserDetails.getId(), accountUserDetails.getUuid(), userId, page),
 				HttpStatus.OK);
 		
 	}

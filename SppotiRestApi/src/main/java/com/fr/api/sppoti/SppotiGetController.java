@@ -98,9 +98,7 @@ class SppotiGetController
 	ResponseEntity<List<SppotiDTO>> getAllConfirmedSppoties(@PathVariable final int userId,
 															@PathVariable final int page)
 	{
-		
 		return new ResponseEntity<>(this.sppotiControllerService.getAllConfirmedSppoties(userId, page), HttpStatus.OK);
-		
 	}
 	
 	/**
