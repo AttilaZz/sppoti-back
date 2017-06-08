@@ -36,7 +36,7 @@ public class SppoterDeleteController
 		
 		this.sppotiControllerService.deleteSppoter(sppotiId, userId);
 		
-		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(HttpStatus.OK);
 		
 	}
 }
