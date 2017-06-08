@@ -217,7 +217,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public void deleteMemberFromTeam(final int teamId, final int memberId)
 	{
 		final UserEntity admin = getConnectedUser();
-		
+
 		//Check if connected user is team admin
 		final TeamMemberEntity adminTeamMembers = this.teamMembersRepository
 				.findByUserUuidAndTeamUuidAndAdminTrue(admin.getUuid(), teamId);
@@ -233,7 +233,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		if (targetTeamMember == null) {
 			throw new EntityNotFoundException("Member to delete not found");
 		}
-		
+
 		//If member is admin - deny delete
 		if (targetTeamMember.getAdmin()) {
 			throw new BusinessGlobalException("Delete admin is forbidden");
@@ -241,9 +241,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		//Admin and member to delete are in the same team
 		if (adminTeamMembers.getTeam().getId().equals(targetTeamMember.getTeam().getId())) {
-			
+
 			this.teamMembersRepository.delete(targetTeamMember);
-			
+
 		} else {
 			throw new MemberNotInAdminTeamException(
 					"permission denied for admin with id(" + admin.getUuid() + ") to delete the memeber with id (" +
@@ -491,33 +491,33 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 							//send notification to sppoti admin.
 							addNotification(NotificationTypeEnum.TEAM_ADMIN_ACCEPTED_YOUR_CHALLENGE, null,
 									sp.getUserSppoti(), t.getTeam(), sp);
-							
+
 							//save changes and return team.
 							return this.teamTransformer.modelToDto(this.sppotiAdverseRepository.save(t).getTeam());
 						} else {
 							//Challenge refused -> Delete row from database.
 							sp.getAdverseTeams().remove(t);
 							this.sppotiRepository.save(sp);
-							
+
 							//send notification to sppoti admin.
 							addNotification(NotificationTypeEnum.TEAM_ADMIN_REFUSED_YOUR_CHALLENGE, null,
 									sp.getUserSppoti(), t.getTeam(), sp);
-							
+
 							return new TeamDTO();
 						}
 					}
 				}
-				
+
 				//Cancel my challenge request.
 				else {
 					if (dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.REFUSED.name())) {
 						sp.getAdverseTeams().remove(t);
 						this.sppotiRepository.save(sp);
-						
+
 						//send notification to sppoti admin.
 						addNotification(NotificationTypeEnum.TEAM_ADMIN_CANCELED_HIS_CHALLENGE, null,
 								sp.getUserSppoti(), t.getTeam(), sp);
-						
+
 						return new TeamDTO();
 					} else {
 						throw new BusinessGlobalException("Status unauthorized in the request");

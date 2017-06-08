@@ -33,7 +33,6 @@ class TeamUpdateMembersController
 	}
 	
 	/**
-	 * Accept/Refuse team information.
 	 * Update coordinate in the stadium (X, Y).
 	 *
 	 * @param memberId

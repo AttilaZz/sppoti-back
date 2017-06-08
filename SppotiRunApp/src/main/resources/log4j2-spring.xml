@@ -5,7 +5,7 @@
     </Properties>
     <Appenders>
         <!-- 1. Console Appender -->
-        <Console name="Console-Appender" target="SYSTEM_OUT">
+        <Console name="console" target="SYSTEM_OUT">
             <PatternLayout>
                 <pattern>
                     [%-5level] %d{dd-MM-yyyy HH:mm:ss.SSS} [%t] %c{1} - %msg%n
@@ -38,24 +38,11 @@
         </File>
     </Appenders>
     <Loggers>
-        <Logger name="org.springframework.web" level="info" additivity="false">
-            <AppenderRef ref="SpringBoot-Appender"/>
-            <AppenderRef ref="Console-Appender"/>
-        </Logger>
-        <Logger name="com.javasampleapproach.log4j2.controller" level="info" additivity="false">
-            <AppenderRef ref="App-Appender"/>
-            <AppenderRef ref="Console-Appender"/>
-        </Logger>
-        <Root>
-            <AppenderRef ref="Console-Appender"/>
+        <Root level="trace">
+            <AppenderRef ref="SpringBoot-Appender" level="INFO"/>
+            <AppenderRef ref="App-Appender" level="INFO" />
+            <AppenderRef ref="FileAllErrors" level="ERROR" />
+            <AppenderRef ref="console" level="INFO" />
         </Root>
-        <Root level="error">
-            <AppenderRef ref="FileAllErrors"/>
-            <AppenderRef ref="Console-Appender"/>
-        </Root>
-        <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter">
-            <level value="INFO"/>
-            <AppenderRef ref="Console-Appender"/>
-        </logger>
     </Loggers>
 </Configuration>
