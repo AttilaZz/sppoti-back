@@ -14,8 +14,6 @@ import java.lang.reflect.Method;
  */
 public class ApiVersionRequestMappingHandlerMapping extends RequestMappingHandlerMapping
 {
-	/** Class logger. */
-	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
 	/** version prefix. */
 	private final String prefix;
@@ -47,8 +45,7 @@ public class ApiVersionRequestMappingHandlerMapping extends RequestMappingHandle
 				info = createApiVersionInfo(typeAnnotation, typeCondition).combine(info);
 			}
 		}
-		
-		this.LOGGER.info(info.toString());
+
 		return info;
 	}
 	
