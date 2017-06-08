@@ -35,11 +35,11 @@ public class TeamMemberEntity extends AbstractCommonEntity
 	@Column(nullable = false)
 	private Boolean teamCaptain = false;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "team_id")
 	private TeamEntity team;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
 	
