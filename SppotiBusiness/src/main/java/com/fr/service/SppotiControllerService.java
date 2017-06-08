@@ -212,4 +212,14 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @return sppoter data.
 	 */
 	UserDTO addSppoter(int sppotiId, int userId, int teamId);
+	
+	/**
+	 * Delete user from a sppoti.
+	 *
+	 * @param sppotiId
+	 * 		sppoti id.
+	 * @param userId
+	 * 		user id.
+	 */
+	void deleteSppoter(int sppotiId, int userId);
 }

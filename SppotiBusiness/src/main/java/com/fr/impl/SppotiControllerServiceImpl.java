@@ -867,6 +867,38 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional
+	@Override
+	public void deleteSppoter(final int sppotiId, final int userId) {
+		
+		final UserEntity connectedUSer = getConnectedUser();
+		
+		//User must be the admin of the sppoti.
+		isSppotiAdmin(sppotiId, connectedUSer.getId());
+		
+		//Find sppoter and delete it.
+		final Optional<SppoterEntity> sppoter = Optional
+				.ofNullable(this.sppotiMembersRepository.findByTeamMemberUserUuidAndSppotiUuid(userId, sppotiId));
+		
+		sppoter.ifPresent(s -> {
+			if (!s.getTeamMember().getAdmin()) {
+				this.sppotiMembersRepository.delete(s);
+			} else {
+				throw new BusinessGlobalException("You can't delete an admin");
+			}
+		});
+		
+		//sppoter not found.
+		sppoter.orElseThrow(() -> new EntityNotFoundException("Sppoter not found"));
+		
+		//Notify him.
+		//TODO: notification (Remove sppoter)
+		
+	}
+	
+	/**
 	 * Map sppoti entity to DTO.
 	 *
 	 * @param sppoti

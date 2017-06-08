@@ -77,6 +77,7 @@ public interface TeamControllerService extends AbstractControllerService
 	
 	/**
 	 * Delete a memeber from a team.
+	 * This will delete all presence of this member in all teams and sppoties
 	 * <p>
 	 * UserDTO must be admin of team to delete members.
 	 *
