@@ -44,6 +44,14 @@ public class NotificationEntity extends AbstractCommonEntity
 	@JoinColumn(name = "sppoti_id")
 	private SppotiEntity sppoti;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "post_id")
+	private PostEntity post;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "comment_id")
+	private CommentEntity comment;
+	
 	public UserEntity getFrom()
 	{
 		return this.from;
@@ -112,6 +120,22 @@ public class NotificationEntity extends AbstractCommonEntity
 	public void setStatus(final GlobalAppStatusEnum status)
 	{
 		this.status = status;
+	}
+	
+	public PostEntity getPost() {
+		return this.post;
+	}
+	
+	public void setPost(final PostEntity post) {
+		this.post = post;
+	}
+	
+	public CommentEntity getComment() {
+		return this.comment;
+	}
+	
+	public void setComment(final CommentEntity comment) {
+		this.comment = comment;
 	}
 	
 	/**

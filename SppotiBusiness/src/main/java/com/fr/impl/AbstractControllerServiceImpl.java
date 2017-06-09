@@ -539,14 +539,16 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * @param teamEntity
 	 * 		team information.
 	 * @param sppoti
-	 * 		sppoti info.
+	 * @param post
+	 * @param comment
 	 */
 	@Transactional
 	protected void addNotification(final NotificationTypeEnum notificationType, final UserEntity userFrom,
-								   final UserEntity userTo, final TeamEntity teamEntity, final SppotiEntity sppoti)
+								   final UserEntity userTo, final TeamEntity teamEntity, final SppotiEntity sppoti,
+								   final PostEntity post, final CommentEntity comment)
 	{
 		final NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity,
-				sppoti);
+				sppoti, post, comment);
 		
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
 		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
@@ -569,14 +571,17 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 */
 	private NotificationEntity getNotificationEntity(final NotificationTypeEnum notificationType,
 													 final UserEntity userFrom, final UserEntity userTo,
-													 final TeamEntity teamEntity, final SppotiEntity sppotiEntity)
+													 final TeamEntity team, final SppotiEntity sppoti,
+													 final PostEntity post, final CommentEntity comment)
 	{
 		final NotificationEntity notification = new NotificationEntity();
 		notification.setNotificationType(notificationType);
 		notification.setFrom(userFrom);
 		notification.setTo(userTo);
-		notification.setTeam(teamEntity);
-		notification.setSppoti(sppotiEntity);
+		notification.setTeam(team);
+		notification.setSppoti(sppoti);
+		notification.setPost(post);
+		notification.setComment(comment);
 		return notification;
 	}
 	
@@ -599,42 +604,44 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 			content = commentEntity.getContent();
 		}
 		
-		/**
-		 * All words starting with @, followed by Letter or accented Letter.
-		 * and finishing with Letter, Number or Accented letter.
-		 */
-		final String patternString1 = "(\\$+)([a-z|A-Z|\\p{javaLetter}][a-z\\d|A-Z\\d|\\p{javaLetter}]*)";
-		
-		final Pattern pattern = Pattern.compile(patternString1);
-		final Matcher matcher = pattern.matcher(content);
-		
-		/**
-		 *  clean tags from @.
-		 */
-		final List<String> tags = new ArrayList<>();
-		while (matcher.find()) {
-			String s = matcher.group().trim();
-			s = s.replaceAll("[$]", "");
-			tags.add(s);
-		}
-		
-		/**
-		 * Process each tag.
-		 */
-		for (final String username : tags) {
-			final UserEntity userToNotify;
+		if (content != null) {
+			/**
+			 * All words starting with @, followed by Letter or accented Letter.
+			 * and finishing with Letter, Number or Accented letter.
+			 */
+			final String patternString1 = "(\\$+)([a-z|A-Z|\\p{javaLetter}][a-z\\d|A-Z\\d|\\p{javaLetter}]*)";
 			
-			userToNotify = this.userRepository.getByUsernameAndDeletedFalse(username);
+			final Pattern pattern = Pattern.compile(patternString1);
+			final Matcher matcher = pattern.matcher(content);
 			
-			if (userToNotify != null) {
-				if (commentEntity != null) {
-					addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(),
-							userToNotify, null, null);
-				} else if (postEntity != null) {
-					addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify,
-							null, null);
-				}
+			/**
+			 *  clean tags from @.
+			 */
+			final List<String> tags = new ArrayList<>();
+			while (matcher.find()) {
+				String s = matcher.group().trim();
+				s = s.replaceAll("[$]", "");
+				tags.add(s);
+			}
+			
+			/**
+			 * Process each tag.
+			 */
+			for (final String username : tags) {
+				final UserEntity userToNotify;
 				
+				userToNotify = this.userRepository.getByUsernameAndDeletedFalse(username);
+				
+				if (userToNotify != null) {
+					if (commentEntity != null) {
+						addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(),
+								userToNotify, null, null, commentEntity.getPost(), commentEntity);
+					} else if (postEntity != null) {
+						addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify,
+								null, null, postEntity, null);
+					}
+					
+				}
 			}
 		}
 		

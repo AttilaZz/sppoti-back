@@ -104,7 +104,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		if (this.friendShipRepository.save(friendShip) != null) {
 			addNotification(NotificationTypeEnum.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend(),
-					null, null);
+					null, null, null, null);
 		}
 		
 	}
@@ -148,10 +148,10 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		if (friendShip != null) {
 			if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
 				addNotification(NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED, friendShip.getFriend(),
-						friendShip.getUser(), null, null);
+						friendShip.getUser(), null, null, null, null);
 			} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
 				addNotification(NotificationTypeEnum.FRIEND_REQUEST_REFUSED, friendShip.getFriend(),
-						friendShip.getUser(), null, null);
+						friendShip.getUser(), null, null, null, null);
 			}
 		}
 		
