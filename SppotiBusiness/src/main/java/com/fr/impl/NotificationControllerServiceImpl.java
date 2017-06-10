@@ -46,9 +46,15 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 		
 		List<NotificationEntity> notifications = this.notificationRepository.findByToUuid(userId, pageable);
 		
-		notifications = notifications.stream()
-				.map(n -> getNotificationEntity(n.getNotificationType(), n.getFrom(), n.getTo(), n.getTeam(),
-						n.getSppoti(), n.getPost(), n.getComment())).collect(Collectors.toList());
+		notifications = notifications.stream().map(n -> {
+			NotificationEntity notif = getNotificationEntity(n.getNotificationType(), n.getFrom(), n.getTo(),
+					n.getTeam(), n.getSppoti(), n.getPost(), n.getComment());
+			
+			notif.setId(n.getId());
+			notif.setUuid(n.getUuid());
+			notif.setVersion(n.getVersion());
+			return notif;
+		}).collect(Collectors.toList());
 		
 		final NotificationListDTO notificationListDTO = new NotificationListDTO();
 		
