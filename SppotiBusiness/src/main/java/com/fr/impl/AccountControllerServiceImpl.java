@@ -124,7 +124,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         /*
 		 * Send email to confirm account
          */
-		SendEmailToActivateAccount(newUser, TypeAccountValidation.preference_edit_email);
+		SendEmailToActivateAccount(newUser, TypeAccountValidation.signup);
 		
 	}
 	
@@ -265,7 +265,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			final String confirmationCode = SppotiUtils.generateConfirmationKey();
 			connectedUser.setConfirmationCode(confirmationCode);
 			
-			sendConfirmationEmail(userDTO, confirmationCode, TypeAccountValidation.signup);
+			sendConfirmationEmail(userDTO, confirmationCode, TypeAccountValidation.preference_edit_email);
 		} else if (StringUtils.hasText(userDTO.getLanguage())) {
 			connectedUser.setLanguageEnum(LanguageEnum.valueOf(userDTO.getLanguage()));
 		}
