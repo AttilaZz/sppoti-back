@@ -15,19 +15,13 @@ public class PostRequestDTO extends AbstractCommonDTO
 {
 	
 	private Long sportId;
-	
 	private Long gameId;
+	private int visibility;
 	
 	private Data content;
 	
-	private String avatar;
-	
-	private String cover;
-	
-	private int visibility;
-	
 	@JsonProperty("targetUser")
-	private int targetUserUuid;
+	private Integer targetUserUuid;
 	
 	public int getVisibility()
 	{
@@ -37,16 +31,6 @@ public class PostRequestDTO extends AbstractCommonDTO
 	public void setVisibility(final int visibility)
 	{
 		this.visibility = visibility;
-	}
-	
-	public String getAvatar()
-	{
-		return this.avatar;
-	}
-	
-	public void setAvatar(final String avatar)
-	{
-		this.avatar = avatar;
 	}
 	
 	public Long getGameId()
@@ -79,32 +63,12 @@ public class PostRequestDTO extends AbstractCommonDTO
 		this.content = content;
 	}
 	
-	public String getNewAvatar()
-	{
-		return this.avatar;
-	}
-	
-	public void setNewAvatar(final String newAvatar)
-	{
-		this.avatar = newAvatar;
-	}
-	
-	public String getCover()
-	{
-		return this.cover;
-	}
-	
-	public void setCover(final String cover)
-	{
-		this.cover = cover;
-	}
-	
-	public int getTargetUserUuid()
+	public Integer getTargetUserUuid()
 	{
 		return this.targetUserUuid;
 	}
 	
-	public void setTargetUserUuid(final int targetUserUuid)
+	public void setTargetUserUuid(final Integer targetUserUuid)
 	{
 		this.targetUserUuid = targetUserUuid;
 	}

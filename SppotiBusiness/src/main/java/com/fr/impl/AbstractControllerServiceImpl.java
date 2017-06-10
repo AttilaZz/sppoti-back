@@ -23,7 +23,6 @@ import com.fr.transformers.impl.TeamMemberTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -104,65 +103,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	/** Notification Transformer. */
 	@Autowired
 	private NotificationTransformer notificationTransformer;
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<String> getUserRole()
-	{
-		
-		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		final ArrayList<GrantedAuthority> roles;
-		
-		final List<String> userRoles = new ArrayList<String>();
-		
-		if (principal instanceof UserDetails) {
-			roles = (ArrayList<GrantedAuthority>) ((UserDetails) principal).getAuthorities();
-			for (final GrantedAuthority role : roles) {
-				userRoles.add(role.getAuthority());
-			}
-		}
-		return userRoles;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getAuthenticationUsername()
-	{
-		final String userName;
-		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		
-		if (principal instanceof UserDetails) {
-			userName = ((UserDetails) principal).getUsername();
-		} else {
-			userName = principal.toString();
-		}
-		return userName;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int getUserLoginType(final String username)
-	{
-		final String numberRegex = "[0-9]+";
-		final int loginType;
-		
-		if (username.contains("@")) {
-			loginType = 2;
-		} else if (username.matches(numberRegex)) {
-			loginType = 3;
-		} else {
-			loginType = 1;
-		}
-		
-		return loginType;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -266,7 +206,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	@Override
 	public UserDTO getUserByUsernameForLogin(final String username) {
 		final UserEntity entity = getUserByLogin(username, false);
-		//if account is deactivated and suppress date in less than 90 days reactivate account.
+		//if account is deactivated and suppress date is less than 90 days reactivate account.
 		UserEntity temp = null;
 		if (entity.getDeactivationDate() != null &&
 				!SppotiUtils.isAccountReadyToBeCompletlyDeleted(entity.getDeactivationDate(), 90)) {
@@ -308,7 +248,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 			cm.setImageLink(commentEntity.getImageLink());
 			cm.setMyComment(commentEntity.getUser().getId().equals(userId));
 			
-			final boolean isCommentLikedByMe = isContentLikedByUser(commentEntity, userId);
+			final boolean isCommentLikedByMe = commentEntity.getLikes().stream()
+					.anyMatch(l -> l.getUser().getId().equals(userId));
 			cm.setLikedByUser(isCommentLikedByMe);
 			cm.setLikeCount(commentEntity.getLikes().size());
 			
@@ -336,38 +277,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	}
 	
 	/**
-	 * @param o
-	 * 		post or like entity.
-	 * @param userId
-	 * 		liker id.
-	 *
-	 * @return true if content has been liked by me, false otherwise
-	 */
-	// detect if post or like has already been liked by user
-	protected boolean isContentLikedByUser(final Object o, final Long userId)
-	{
-		
-		final List<LikeContentEntity> lp = new ArrayList<LikeContentEntity>();
-		final PostEntity p;
-		final CommentEntity c;
-		
-		if (o instanceof PostEntity) {
-			p = (PostEntity) o;
-			lp.addAll(p.getLikes());
-		} else if (o instanceof CommentEntity) {
-			c = (CommentEntity) o;
-			lp.addAll(c.getLikes());
-		}
-		
-		for (final LikeContentEntity likePost : lp) {
-			if (likePost.getUser().getId().equals(userId)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
 	 * {@inheritDoc}
 	 */
 	@Transactional
@@ -377,7 +286,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	{
 		
 		final Set<TeamMemberEntity> teamUsers = new HashSet<>();
-		final Set<NotificationEntity> notificationEntities = new HashSet<>();
 		
 		final Long connectedUserId = getConnectedUser().getId();
 		
@@ -435,14 +343,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 					
 					teamMember.setSppotiMembers(sppotiMembers);
 					sppoti.setSppotiMembers(sppotiMembers);
-
-                    /* send TEAM && Sppoti notification And TEAM Email to the invited user. */
-					//					if (!user.getId().equals(connectedUserId)) {
-					//						notificationEntities
-					//								.add(getNotificationEntity(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI,
-					//										getUserById(connectedUserId), user, null, sppoti));
-					//						teamNotification(team, notificationEntities, connectedUserId, user);
-					//					}
+					
 					
 				} else {
 					/* if request coming from add team - add members only in (users_team). */
@@ -453,11 +354,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 					if (userDTO.getyPosition() != null && !userDTO.getyPosition().equals(0)) {
 						teamMember.setyPosition(userDTO.getyPosition());
 					}
-
-                    /* send TEAM notification And TEAM Email to the invited user. */
-					//					if (!user.getId().equals(connectedUserId)) {
-					//						teamNotification(team, notificationEntities, connectedUserId, user);
-					//					}
+					
 				}
 				
 				teamUsers.add(teamMember);
@@ -471,15 +368,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		return teamUsers;
 		
 	}
-	
-	/**
-	 * Send team member notification and Email.
-	 */
-	//	private void teamNotification(final TeamEntity team, final Set<NotificationEntity> notificationEntities,
-	//								  final Long connectedUserId, final UserEntity userEntity)
-	//	{
-	//		this.sendTeamNotification(team, notificationEntities, connectedUserId, userEntity);
-	//	}
 	
 	/**
 	 * @param team
@@ -503,44 +391,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	}
 	
 	/**
-	 * @param team
-	 * 		team info.
-	 * @param notificationEntities
-	 * 		list of notif to send.
-	 * @param adminId
-	 * 		connected user id
-	 * @param u
-	 * 		user to notify.
-	 */
-	//	private void sendTeamNotification(final TeamEntity team, final Set<NotificationEntity> notificationEntities,
-	//									  final Long adminId, final UserEntity u)
-	//	{
-	//
-	//		notificationEntities
-	//				.add(getNotificationEntity(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_TEAM, getUserById(adminId), u,
-	//						team, null));
-	//		if (team.getNotificationEntities() != null) {
-	//			team.getNotificationEntities().addAll(notificationEntities);
-	//		} else {
-	//			team.setNotificationEntities(notificationEntities);
-	//		}
-	//
-	//	}
-	
-	/**
-	 * Add notification.
-	 *
-	 * @param notificationType
-	 * 		notif type.
-	 * @param userFrom
-	 * 		notif sender.
-	 * @param userTo
-	 * 		notif receiver.
-	 * @param teamEntity
-	 * 		team information.
-	 * @param sppoti
-	 * @param post
-	 * @param comment
+	 * Prepare and send notification to users..
 	 */
 	@Transactional
 	protected void addNotification(final NotificationTypeEnum notificationType, final UserEntity userFrom,
@@ -553,17 +404,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
 		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
 		this.notificationRepository.save(notification);
-	}
-	
-	/**
-	 * Send notification via socket.
-	 *
-	 * @param userTo
-	 * 		notif receiver.
-	 * @param notificationDTO
-	 * 		notif content.
-	 */
-	private void sendNotificationViaWebSocket(final UserEntity userTo, final NotificationDTO notificationDTO) {
 	}
 	
 	/**

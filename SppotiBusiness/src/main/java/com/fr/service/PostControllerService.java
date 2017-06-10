@@ -2,6 +2,7 @@ package com.fr.service;
 
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.post.PostDTO;
+import com.fr.commons.dto.post.PostRequestDTO;
 import com.fr.entities.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface PostControllerService extends AbstractControllerService
 	 *
 	 * @return saved post.
 	 */
-	PostEntity savePost(PostEntity post);
+	PostDTO savePost(PostRequestDTO post);
 
     /*
 	 * The post update method is used to update the location (address) of the

@@ -3,14 +3,8 @@ package com.fr.transformers.impl;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.utils.SppotiUtils;
-import com.fr.entities.NotificationEntity;
-import com.fr.entities.SppotiEntity;
-import com.fr.entities.TeamEntity;
-import com.fr.entities.UserEntity;
-import com.fr.transformers.NotificationTransformer;
-import com.fr.transformers.SppotiTransformer;
-import com.fr.transformers.TeamTransformer;
-import com.fr.transformers.UserTransformer;
+import com.fr.entities.*;
+import com.fr.transformers.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,17 +26,26 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 	/** Sppoti transformer. */
 	private final SppotiTransformer sppotiTransformer;
 	
+	/** Post transformer. */
+	private final PostTransformer postTransformer;
+	/** Comment transformer. */
+	private final CommentTransformer commentTransformer;
+	
 	/**
 	 * Init class transformers.
 	 */
 	@Autowired
 	public NotificationTransformerImpl(final TeamTransformerImpl teamTransformer,
 									   final UserTransformerImpl userTransformer,
-									   final SppotiTransformerImpl sppotiTransformer)
+									   final SppotiTransformerImpl sppotiTransformer,
+									   final PostTransformer postTransformer,
+									   final CommentTransformer commentTransformer)
 	{
 		this.teamTransformer = teamTransformer;
 		this.userTransformer = userTransformer;
 		this.sppotiTransformer = sppotiTransformer;
+		this.postTransformer = postTransformer;
+		this.commentTransformer = commentTransformer;
 	}
 	
 	/**
@@ -66,12 +69,24 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 		notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
 		notificationDTO.setStatus(notification.getStatus());
 		
+		//POST
+		final Optional<PostEntity> optionalPost = Optional.ofNullable(notification.getPost());
+		optionalPost.ifPresent(t -> notificationDTO.setPost(this.postTransformer.modelToDto(notification.getPost())));
+		
+		//COMMENT
+		final Optional<CommentEntity> optionalComment = Optional.ofNullable(notification.getComment());
+		optionalComment.ifPresent(
+				t -> notificationDTO.setComment(this.commentTransformer.modelToDto(notification.getComment())));
+		
+		//TEAM
 		final Optional<TeamEntity> optionalTeam = Optional.ofNullable(notification.getTeam());
 		optionalTeam.ifPresent(t -> notificationDTO.setTeam(this.teamTransformer.modelToDto(notification.getTeam())));
 		
+		//SPPOTI
 		final Optional<SppotiEntity> optionalSppoti = Optional.ofNullable(notification.getSppoti());
 		optionalSppoti
 				.ifPresent(t -> notificationDTO.setSppoti(this.sppotiTransformer.modelToDto(notification.getSppoti())));
+		
 		
 		return notificationDTO;
 	}

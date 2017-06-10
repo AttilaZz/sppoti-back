@@ -1,14 +1,14 @@
 package com.fr.impl;
 
-import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.post.PostDTO;
+import com.fr.commons.dto.post.PostRequestDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
-import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.service.PostControllerService;
 import com.fr.transformers.CommentTransformer;
+import com.fr.transformers.PostTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -31,15 +31,20 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	
 	/** Comment transformer. */
 	private final CommentTransformer commentTransformer;
+	
+	/** Post transformer. */
+	private final PostTransformer postTransformer;
+	
 	/** Post list size. */
 	@Value("${key.postsPerPage}")
 	private int postSize;
 	
 	/** Init dependencies. */
 	@Autowired
-	public PostControllerServiceImpl(final CommentTransformer commentTransformer)
+	public PostControllerServiceImpl(final CommentTransformer commentTransformer, final PostTransformer postTransformer)
 	{
 		this.commentTransformer = commentTransformer;
+		this.postTransformer = postTransformer;
 	}
 	
 	/**
@@ -47,23 +52,48 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public PostEntity savePost(final PostEntity post)
+	public PostDTO savePost(final PostRequestDTO postRequestDTO)
 	{
-		final PostEntity postEntity = this.postRepository.save(post);
+		final UserEntity connectedUSer = getConnectedUser();
 		
-		if (postEntity != null && post.getTargetUserProfileUuid() != 0 &&
-				post.getTargetUserProfileUuid() != getConnectedUser().getUuid()) {
+		final PostEntity entity = new PostEntity();
+		entity.setAlbum(postRequestDTO.getContent().getImageLink());
+		entity.setContent(postRequestDTO.getContent().getContent());
+		entity.setVideo(postRequestDTO.getContent().getVideoLink());
+		entity.setVisibility(postRequestDTO.getVisibility());
+		
+		//Post sport.
+		final SportEntity sportEntity = this.sportRepository.findOne(postRequestDTO.getSportId());
+		if (sportEntity == null) {
+			throw new EntityNotFoundException("Sport not found");
+		}
+		entity.setSport(sportEntity);
+		
+		//Post in friend profile.
+		final Optional<UserEntity> targetProfile = this.userRepository
+				.getByUuidAndDeletedFalse(postRequestDTO.getTargetUserUuid());
+		targetProfile.ifPresent(entity::setTargetUserProfile);
+		targetProfile.orElseThrow(() -> new EntityNotFoundException("Target profile not found !!"));
+		
+		//Saved post final
+		final PostEntity savedPost = this.postRepository.save(entity);
+		savedPost.setConnectedUserId(connectedUSer.getId());
+		
+		//Send notification
+		if (savedPost.getTargetUserProfile() != null &&
+				savedPost.getTargetUserProfile().getId().equals(connectedUSer.getId())) {
 			
 			addNotification(NotificationTypeEnum.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(),
-					getUserByUuId(postEntity.getTargetUserProfileUuid()), null, null, postEntity, null);
+					savedPost.getTargetUserProfile(), null, null, savedPost, null);
 			
-			if (post.getContent() != null) {
-				addTagNotification(postEntity, null);
+			//Tag notification
+			if (savedPost.getContent() != null) {
+				addTagNotification(savedPost, null);
 			}
 			
 		}
 		
-		return postEntity;
+		return this.postTransformer.modelToDto(savedPost);
 	}
 
     /*
@@ -182,7 +212,9 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		final List<PostEntity> postEntities = this.postRepository
 				.getByAlbumIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(userId, pageable);
 		
-		return postEntityToDto(postEntities, userEntity);
+		postEntities.forEach(p -> p.setConnectedUserId(userEntity.getId()));
+		
+		return this.postTransformer.modelToDto(postEntities);
 	}
 	
 	/**
@@ -201,7 +233,9 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		final List<PostEntity> postEntities = this.postRepository
 				.getByVideoIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(userId, pageable);
 		
-		return postEntityToDto(postEntities, userEntity);
+		postEntities.forEach(p -> p.setConnectedUserId(userEntity.getId()));
+		
+		return this.postTransformer.modelToDto(postEntities);
 	}
 	
 	/**
@@ -212,8 +246,8 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	{
 		
 		
-		final List<PostEntity> posts = this.postRepository.getByUuidAndDeletedFalse(postId);
-		if (posts.isEmpty()) {
+		final List<PostEntity> postEntities = this.postRepository.getByUuidAndDeletedFalse(postId);
+		if (postEntities.isEmpty()) {
 			throw new EntityNotFoundException("Post id (" + postId + ") introuvable.");
 		}
 		
@@ -222,154 +256,9 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 			throw new EntityNotFoundException("User id (" + userId + ") not found !!");
 		}
 		
-		return postEntityToDto(posts, userEntity).get(0);
+		postEntities.forEach(p -> p.setConnectedUserId(userEntity.getId()));
 		
-	}
-	
-	/**
-	 * @param postEntities
-	 * 		list of post entities.
-	 * @param userPost
-	 * 		post creator.
-	 *
-	 * @return list of all posts.
-	 */
-	public List<PostDTO> postEntityToDto(final List<PostEntity> postEntities, final UserEntity userPost)
-	{
-		
-		final List<PostDTO> postDTOS = new ArrayList<PostDTO>();
-		
-		postEntities.forEach(
-				
-				p -> {
-					final PostDTO pres = new PostDTO();
-					
-					final UserEntity owner = p.getUser();
-					
-					pres.setId(p.getUuid());
-					
-					if (p.getContent() != null)
-						pres.setContent(p.getContent());
-					
-					pres.setMyPost(userPost.getId().equals(owner.getId()));
-					
-					if (p.getAlbum() != null)
-						pres.setImageLink(p.getAlbum());
-					
-					if (p.getVideo() != null)
-						pres.setVideoLink(p.getVideo());
-					
-					pres.setSportId(p.getSport().getId());
-					
-					//Add address
-					if (!p.getAddresses().isEmpty()) {
-						//                        pres.setAddresses(p.getAddresses());
-					}
-					
-					// check if content has been modified or not
-					final List<EditHistoryEntity> editHistory = this.editHistoryRepository
-							.getByPostUuidOrderByDatetimeEditedDesc(p.getUuid());
-					
-					if (!editHistory.isEmpty()) {
-						pres.setEdited(true);
-						final EditHistoryEntity ec = editHistory.get(0);
-						pres.setDatetimeCreated(SppotiUtils.dateWithTimeZone(ec.getDatetimeEdited(), getTimeZone()));
-						if (ec.getText() != null) {
-							pres.setContent(ec.getText());
-						}
-						
-						if (ec.getSport() != null) {
-							final Long spId = ec.getSport().getId();
-							pres.setSportId(spId);
-						}
-					} else {
-						// post has not been edited - set initial params
-						if (p.getContent() != null) {
-							pres.setContent(p.getContent());
-						}
-						if (p.getSport() != null && p.getSport().getId() != null) {
-							pres.setSportId(p.getSport().getId());
-						}
-						pres.setDatetimeCreated(SppotiUtils.dateWithTimeZone(p.getDatetimeCreated(), getTimeZone()));
-					}
-
-            /*
-			Manage commentEntities count + last like
-             */
-					final Set<CommentEntity> commentEntities = new TreeSet<>();
-					commentEntities.addAll(p.getCommentEntities());
-					pres.setCommentsCount(commentEntities.size());
-					
-					final List<CommentEntity> commentsListTemp = new ArrayList<CommentEntity>();
-					commentsListTemp.addAll(commentEntities);
-					
-					final List<CommentDTO> commentList = new ArrayList<CommentDTO>();
-					if (!commentsListTemp.isEmpty()) {
-						final CommentEntity commentEntity = commentsListTemp.get(commentEntities.size() - 1);
-						
-						final CommentDTO commentModelDTO = this.commentTransformer.modelToDto(commentEntity);
-						commentModelDTO.setMyComment(commentEntity.getUser().getId().equals(userPost.getId()));
-						commentModelDTO.setLikedByUser(isContentLikedByUser(commentEntity, userPost.getId()));
-						commentModelDTO.setLikeCount(commentEntity.getLikes().size());
-						
-						commentList.add(commentModelDTO);
-					}
-					
-					pres.setComment(commentList);
-
-            /*
-			End managing commentEntities
-             */
-
-            /*
-			manage post like + count like
-             */
-					pres.setLikeCount(p.getLikes().size());
-					
-					final boolean isPostLikedByMe = isContentLikedByUser(p, userPost.getId());
-					pres.setLikedByUser(isPostLikedByMe);
-
-            /*
-			set post owner info
-             */
-					pres.setFirstName(owner.getFirstName());
-					pres.setLastName(owner.getLastName());
-					pres.setUsername(owner.getUsername());
-					
-					final List<ResourcesEntity> resources = new ArrayList<ResourcesEntity>();
-					resources.addAll(owner.getResources());
-					
-					if (!resources.isEmpty()) {
-						if (resources.get(0) != null && resources.get(0).getType() == 1) {
-							pres.setAvatar(resources.get(0).getUrl());
-						} else if (resources.get(1) != null && resources.get(1).getType() == 1) {
-							pres.setAvatar(resources.get(1).getUrl());
-						}
-					}
-
-            /*
-			Check if post has been posted on a friend profile -- default value for integer is ZERO (UUID can never be a zero)
-             */
-					if (p.getTargetUserProfileUuid() != 0) {
-						
-						final UserEntity target = getUserByUuId(p.getTargetUserProfileUuid());
-						
-						pres.setTargetUser(target.getFirstName(), target.getLastName(), target.getUsername(),
-								target.getUuid(), userPost.getId().equals(target.getId()));
-						
-					}
-					
-					//set visibility
-					pres.setVisibility(p.getVisibility());
-					
-					//return all formated posts
-					postDTOS.add(pres);
-					
-				}
-		
-		);
-		
-		return postDTOS;
+		return this.postTransformer.modelToDto(postEntities.get(0));
 	}
 	
 	

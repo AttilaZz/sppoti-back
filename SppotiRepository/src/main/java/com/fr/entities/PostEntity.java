@@ -38,6 +38,8 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	private String video;
 	
 	@ElementCollection
+	@CollectionTable(name = "post_album", joinColumns = @JoinColumn(name = "post_id"))
+	@Column(name = "post_album", nullable = false)
 	private Set<String> album;
 	
 	@Column(nullable = false)
@@ -49,22 +51,34 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
 	@OrderBy("dateTime DESC")
 	private SortedSet<AddressEntity> addresses = new TreeSet<AddressEntity>();
+	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	@JsonIgnore
 	private UserEntity user;
+	
 	@ManyToOne
 	@JoinColumn(name = "sport_id")
 	private SportEntity sport;
+	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
 	@OrderBy("datetimeCreated DESC")
 	private SortedSet<CommentEntity> commentEntities = new TreeSet<CommentEntity>();
+	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
 	private Set<LikeContentEntity> likes;
+	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
 	private Set<EditHistoryEntity> editList;
-	@Column(name = "target_user")
-	private int targetUserProfileUuid;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "target_user")
+	private UserEntity targetUserProfile;
+	
+	/**
+	 * to get trace of the connected user when using transformers.
+	 */
+	private transient Long connectedUserId;
 	
 	public PostEntity()
 	{
@@ -198,14 +212,20 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 		this.addresses = addresses;
 	}
 	
-	public int getTargetUserProfileUuid()
-	{
-		return this.targetUserProfileUuid;
+	public UserEntity getTargetUserProfile() {
+		return this.targetUserProfile;
 	}
 	
-	public void setTargetUserProfileUuid(final int targetUserProfileUuid)
-	{
-		this.targetUserProfileUuid = targetUserProfileUuid;
+	public void setTargetUserProfile(final UserEntity targetUserProfile) {
+		this.targetUserProfile = targetUserProfile;
+	}
+	
+	public Long getConnectedUserId() {
+		return this.connectedUserId;
+	}
+	
+	public void setConnectedUserId(final Long connectedUserId) {
+		this.connectedUserId = connectedUserId;
 	}
 	
 	/**
@@ -249,7 +269,7 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 			return false;
 		if (this.deleted != that.deleted)
 			return false;
-		if (this.targetUserProfileUuid != that.targetUserProfileUuid)
+		if (this.targetUserProfile != that.targetUserProfile)
 			return false;
 		if (this.content != null ? !this.content.equals(that.content) : that.content != null)
 			return false;
@@ -275,7 +295,6 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 		result = 31 * result + (this.album != null ? this.album.hashCode() : 0);
 		result = 31 * result + this.visibility;
 		result = 31 * result + (this.deleted ? 1 : 0);
-		result = 31 * result + this.targetUserProfileUuid;
 		return result;
 	}
 }

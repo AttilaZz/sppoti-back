@@ -61,14 +61,14 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 				.ofNullable(this.commentRepository.save(newCommentEntity));
 		
 		if (commentEntity.isPresent()) {
-			final int targetUser = commentEntity.get().getPost().getTargetUserProfileUuid();
+			final int targetUser = commentEntity.get().getPost().getTargetUserProfile().getUuid();
 			if (targetUser != 0 && targetUser != getConnectedUser().getUuid()) {
 				
 				//like on other posts not mine
 				if (commentEntity.get().getUser().getUuid() !=
-						commentEntity.get().getPost().getTargetUserProfileUuid()) {
+						commentEntity.get().getPost().getTargetUserProfile().getId()) {
 					addNotification(NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getUser(),
-							getUserByUuId(commentEntity.get().getPost().getTargetUserProfileUuid()), null, null,
+							commentEntity.get().getPost().getTargetUserProfile(), null, null,
 							commentEntity.get().getPost(), commentEntity.get());
 					
 				}

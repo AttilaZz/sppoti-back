@@ -15,24 +15,6 @@ public interface AbstractControllerService
 {
 	
 	/**
-	 * @return role of the connected user.
-	 */
-	List<String> getUserRole();
-	
-	/**
-	 * @return current authentication username
-	 */
-	String getAuthenticationUsername();
-	
-	/**
-	 * @param username
-	 * 		username.
-	 *
-	 * @return login type.
-	 */
-	int getUserLoginType(String username);
-	
-	/**
 	 * @param id
 	 * 		user id.
 	 *

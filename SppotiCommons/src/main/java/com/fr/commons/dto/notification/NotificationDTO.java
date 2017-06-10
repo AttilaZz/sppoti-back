@@ -3,7 +3,9 @@ package com.fr.commons.dto.notification;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fr.commons.dto.AbstractCommonDTO;
+import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
@@ -30,6 +32,8 @@ public class NotificationDTO extends AbstractCommonDTO
 	
 	private TeamDTO team;
 	private SppotiDTO sppoti;
+	private PostDTO post;
+	private CommentDTO comment;
 	
 	@JsonSerialize(using = JsonDateSerializer.class)
 	private Date datetime;
@@ -132,6 +136,22 @@ public class NotificationDTO extends AbstractCommonDTO
 	public void setSppoti(final SppotiDTO sppoti)
 	{
 		this.sppoti = sppoti;
+	}
+	
+	public PostDTO getPost() {
+		return this.post;
+	}
+	
+	public void setPost(final PostDTO post) {
+		this.post = post;
+	}
+	
+	public CommentDTO getComment() {
+		return this.comment;
+	}
+	
+	public void setComment(final CommentDTO comment) {
+		this.comment = comment;
 	}
 }
 
