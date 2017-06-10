@@ -46,6 +46,11 @@ public class CommentEntity extends AbstractCommonEntity implements Comparable<Co
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
 	private Set<EditHistoryEntity> editList;
 	
+	/**
+	 * to get trace of the connected user when using transformers.
+	 */
+	private transient Long connectedUserId;
+	
 	public String getContent() {
 		return this.content;
 	}
@@ -116,6 +121,14 @@ public class CommentEntity extends AbstractCommonEntity implements Comparable<Co
 	
 	public void setDeleted(final boolean deleted) {
 		this.deleted = deleted;
+	}
+	
+	public Long getConnectedUserId() {
+		return this.connectedUserId;
+	}
+	
+	public void setConnectedUserId(final Long connectedUserId) {
+		this.connectedUserId = connectedUserId;
 	}
 	
 	/**

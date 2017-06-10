@@ -134,14 +134,13 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		 * Has connected user liked this post or not.
 		 */
 		pres.setLikeCount(model.getLikes().size());
-		pres.setLikedByUser(model.getLikes().stream().allMatch(l -> l.getUser().getId().equals(connectedUser)));
-		
-		final List<ResourcesEntity> resources = new ArrayList<ResourcesEntity>();
-		resources.addAll(postEditor.getResources());
+		pres.setLikedByUser(model.getLikes().stream().anyMatch(l -> l.getUser().getId().equals(connectedUser)));
 		
 		/*
 		 * Set post editor avatar and cover.
 		 */
+		final List<ResourcesEntity> resources = new ArrayList<>();
+		resources.addAll(postEditor.getResources());
 		if (!resources.isEmpty()) {
 			if (resources.get(0) != null && resources.get(0).getType() == 1) {
 				pres.setAvatar(resources.get(0).getUrl());

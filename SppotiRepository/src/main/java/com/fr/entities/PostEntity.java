@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.gson.annotations.SerializedName;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by: Wail DJENANE on May 22, 2016
@@ -66,10 +63,10 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	private SortedSet<CommentEntity> commentEntities = new TreeSet<CommentEntity>();
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-	private Set<LikeContentEntity> likes;
+	private List<LikeContentEntity> likes = new ArrayList<>();
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
-	private Set<EditHistoryEntity> editList;
+	private List<EditHistoryEntity> editList = new ArrayList<>();
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "target_user")
@@ -79,18 +76,6 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	 * to get trace of the connected user when using transformers.
 	 */
 	private transient Long connectedUserId;
-	
-	public PostEntity()
-	{
-		super();
-	}
-	
-	public PostEntity(final PostEntity post)
-	{
-		this.content = post.getContent();
-		this.album = post.getAlbum();
-		this.video = post.getVideo();
-	}
 	
 	public String getContent()
 	{
@@ -152,34 +137,20 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 		this.commentEntities = commentEntities;
 	}
 	
-	public Set<LikeContentEntity> getLikes()
-	{
+	public List<LikeContentEntity> getLikes() {
 		return this.likes;
 	}
 	
-	public void setLikes(final Set<LikeContentEntity> likes)
-	{
+	public void setLikes(final List<LikeContentEntity> likes) {
 		this.likes = likes;
 	}
 	
-	public Set<EditHistoryEntity> getEditList()
-	{
+	public List<EditHistoryEntity> getEditList() {
 		return this.editList;
 	}
 	
-	public void setEditList(final Set<EditHistoryEntity> editList)
-	{
+	public void setEditList(final List<EditHistoryEntity> editList) {
 		this.editList = editList;
-	}
-	
-	public Set<String> getAlbum()
-	{
-		return this.album;
-	}
-	
-	public void setAlbum(final Set<String> album)
-	{
-		this.album = album;
 	}
 	
 	public int getVisibility()
@@ -228,6 +199,14 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 		this.connectedUserId = connectedUserId;
 	}
 	
+	public Set<String> getAlbum() {
+		return this.album;
+	}
+	
+	public void setAlbum(final Set<String> album) {
+		this.album = album;
+	}
+	
 	/**
 	 * {@inheritDoc}.
 	 */
@@ -235,19 +214,7 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	@Override
 	public int compareTo(final PostEntity o)
 	{
-		
-		if (this != null) {
-			if (o != null) {
-				return this.datetimeCreated.compareTo(o.datetimeCreated);
-			} else {
-				return 1;
-			}
-		}
-		
-		if (o != null)
-			return -1;
-		
-		return 0;
+		return this.getDatetimeCreated().compareTo(o.getDatetimeCreated());
 	}
 	
 	/**

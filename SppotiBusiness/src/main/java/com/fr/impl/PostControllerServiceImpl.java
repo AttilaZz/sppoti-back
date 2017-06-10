@@ -61,6 +61,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		entity.setContent(postRequestDTO.getContent().getContent());
 		entity.setVideo(postRequestDTO.getContent().getVideoLink());
 		entity.setVisibility(postRequestDTO.getVisibility());
+		entity.setUser(connectedUSer);
 		
 		//Post sport.
 		final SportEntity sportEntity = this.sportRepository.findOne(postRequestDTO.getSportId());
@@ -81,7 +82,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		//Send notification
 		if (savedPost.getTargetUserProfile() != null &&
-				savedPost.getTargetUserProfile().getId().equals(connectedUSer.getId())) {
+				!savedPost.getTargetUserProfile().getId().equals(connectedUSer.getId())) {
 			
 			addNotification(NotificationTypeEnum.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(),
 					savedPost.getTargetUserProfile(), null, null, savedPost, null);
@@ -244,7 +245,6 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public PostDTO fillPostToSend(final int postId, final Long userId)
 	{
-		
 		
 		final List<PostEntity> postEntities = this.postRepository.getByUuidAndDeletedFalse(postId);
 		if (postEntities.isEmpty()) {

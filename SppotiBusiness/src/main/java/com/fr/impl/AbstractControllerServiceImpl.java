@@ -419,9 +419,21 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		notification.setFrom(userFrom);
 		notification.setTo(userTo);
 		notification.setTeam(team);
-		notification.setSppoti(sppoti);
-		notification.setPost(post);
-		notification.setComment(comment);
+		
+		if (sppoti != null) {
+			sppoti.setConnectedUserId(userTo.getId());
+			notification.setSppoti(sppoti);
+		}
+		
+		if (post != null) {
+			post.setConnectedUserId(userTo.getId());
+			notification.setPost(post);
+		}
+		
+		if (comment != null) {
+			comment.setConnectedUserId(userTo.getId());
+			notification.setComment(comment);
+		}
 		return notification;
 	}
 	
