@@ -53,6 +53,8 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 			notif.setId(n.getId());
 			notif.setUuid(n.getUuid());
 			notif.setVersion(n.getVersion());
+			notif.setNotificationType(n.getNotificationType());
+			notif.setStatus(n.getStatus());
 			return notif;
 		}).collect(Collectors.toList());
 		
