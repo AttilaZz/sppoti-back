@@ -288,7 +288,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			//Sppoti admin who sent the challenge
 			adverse.getTeam().getTeamMembers().forEach(hostMember -> {
 				if (hostMember.getAdmin()) {
-					addNotification(NotificationTypeEnum.SPPOTI_ADMIN_CHELLENGED_YOU, sppoti.getUserSppoti(),
+					addNotification(NotificationTypeEnum.SPPOTI_ADMIN_CHALLENGED_YOU, sppoti.getUserSppoti(),
 							hostMember.getUser(), adverse.getTeam(), sppoti, null, null);
 				}
 			});

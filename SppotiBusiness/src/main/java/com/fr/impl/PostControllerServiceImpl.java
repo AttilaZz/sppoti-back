@@ -55,7 +55,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 				post.getTargetUserProfileUuid() != getConnectedUser().getUuid()) {
 			
 			addNotification(NotificationTypeEnum.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(),
-					getUserByUuId(postEntity.getTargetUserProfileUuid()), null, null, post, null);
+					getUserByUuId(postEntity.getTargetUserProfileUuid()), null, null, postEntity, null);
 			
 			if (post.getContent() != null) {
 				addTagNotification(postEntity, null);
