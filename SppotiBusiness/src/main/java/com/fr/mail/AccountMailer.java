@@ -1,6 +1,7 @@
 package com.fr.mail;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.commons.utils.SppotiUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -58,12 +59,15 @@ public class AccountMailer extends ApplicationMailer
 	 * @param to
 	 * 		receiver.
 	 * @param confirmationCode
-	 * 		Send email to user to confirm account
+	 * 		confirmation code.
+	 * @param type
+	 * 		activation type.
 	 */
-	public void sendCreateAccountConfirmationEmail(final UserDTO to, final String confirmationCode)
+	public void sendCreateAccountConfirmationEmail(final UserDTO to, final String confirmationCode,
+												   final TypeAccountValidation type)
 	{
 		
-		final String activateLink = this.frontRootPath + this.pathToValidateAccount + confirmationCode;
+		final String activateLink = this.frontRootPath + this.pathToValidateAccount + confirmationCode + "/" + type;
 		
 		this.prepareAndSendEmail(to, this.confirmationAccountSubject, this.confirmationAccountMessage,
 				this.confirmationAccountButtonText, activateLink, 1);

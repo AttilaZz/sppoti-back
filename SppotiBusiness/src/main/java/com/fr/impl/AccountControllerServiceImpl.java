@@ -124,16 +124,16 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
         /*
 		 * Send email to confirm account
          */
-		SendEmailToActivateAccount(newUser);
+		SendEmailToActivateAccount(newUser, TypeAccountValidation.preference_edit_email);
 		
 	}
 	
 	/** Send Email to activate new account. */
-	private void SendEmailToActivateAccount(final UserEntity user)
+	private void SendEmailToActivateAccount(final UserEntity user, final TypeAccountValidation type)
 	{
 		final UserDTO userDTO = this.userTransformer.modelToDto(user);
 		final Thread thread = new Thread(() -> {
-			this.sendConfirmationEmail(userDTO, user.getConfirmationCode());
+			this.sendConfirmationEmail(userDTO, user.getConfirmationCode(), type);
 			this.LOGGER.info("Confirmation email has been sent successfully !");
 		});
 		thread.start();
@@ -191,14 +191,15 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * @param userDTO
 	 * 		user to reach.
 	 * @param code
-	 * 		account confirmation code.
+	 * 		activation code.
+	 * @param type
+	 * 		activation type.
 	 */
-	private void sendConfirmationEmail(final UserDTO userDTO, final String code)
+	private void sendConfirmationEmail(final UserDTO userDTO, final String code, final TypeAccountValidation type)
 	{
 		
-		final Thread thread = new Thread(() -> {
-			this.accountMailer.sendCreateAccountConfirmationEmail(userDTO, code);
-		});
+		final Thread thread = new Thread(
+				() -> this.accountMailer.sendCreateAccountConfirmationEmail(userDTO, code, type));
 		thread.start();
 	}
 	
@@ -264,7 +265,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			final String confirmationCode = SppotiUtils.generateConfirmationKey();
 			connectedUser.setConfirmationCode(confirmationCode);
 			
-			sendConfirmationEmail(userDTO, confirmationCode);
+			sendConfirmationEmail(userDTO, confirmationCode, TypeAccountValidation.signup);
 		} else if (StringUtils.hasText(userDTO.getLanguage())) {
 			connectedUser.setLanguageEnum(LanguageEnum.valueOf(userDTO.getLanguage()));
 		}
@@ -399,7 +400,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			//update
 			this.userRepository.saveAndFlush(u);
 			//send email
-			SendEmailToActivateAccount(u);
+			SendEmailToActivateAccount(u, TypeAccountValidation.preference_edit_email);
 			this.LOGGER.info("New activation link has been sent to user: " + userDTO.getEmail());
 		});
 		
@@ -501,6 +502,8 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			u.setDeleted(true);
 			u.setDeactivationDate(new Date());
 			this.userRepository.save(u);
+			
+			//TODO: send email
 		});
 		
 		optional.orElseThrow(() -> new EntityNotFoundException("Account not found"));

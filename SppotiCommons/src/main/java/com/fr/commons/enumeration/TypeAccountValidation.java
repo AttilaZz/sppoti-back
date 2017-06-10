@@ -5,5 +5,5 @@ package com.fr.commons.enumeration;
  */
 public enum TypeAccountValidation
 {
-	signup, preference_edit_email;
+	signup, preference_edit_email
 }
