@@ -409,10 +409,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	/**
 	 * Init notif entity.
 	 */
-	private NotificationEntity getNotificationEntity(final NotificationTypeEnum notificationType,
-													 final UserEntity userFrom, final UserEntity userTo,
-													 final TeamEntity team, final SppotiEntity sppoti,
-													 final PostEntity post, final CommentEntity comment)
+	NotificationEntity getNotificationEntity(final NotificationTypeEnum notificationType, final UserEntity userFrom,
+											 final UserEntity userTo, final TeamEntity team, final SppotiEntity sppoti,
+											 final PostEntity post, final CommentEntity comment)
 	{
 		final NotificationEntity notification = new NotificationEntity();
 		notification.setNotificationType(notificationType);

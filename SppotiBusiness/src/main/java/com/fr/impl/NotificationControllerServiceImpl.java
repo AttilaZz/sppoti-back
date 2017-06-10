@@ -44,12 +44,19 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 		
 		final Pageable pageable = new PageRequest(page, this.notificationSize, Sort.Direction.DESC, "creationDate");
 		
-		final List<NotificationEntity> notifications = this.notificationRepository.findByToUuid(userId, pageable);
+		List<NotificationEntity> notifications = this.notificationRepository.findByToUuid(userId, pageable);
+		
+		notifications = notifications.stream()
+				.map(n -> getNotificationEntity(n.getNotificationType(), n.getFrom(), n.getTo(), n.getTeam(),
+						n.getSppoti(), n.getPost(), n.getComment())).collect(Collectors.toList());
 		
 		final NotificationListDTO notificationListDTO = new NotificationListDTO();
+		
 		notificationListDTO.setNotifications(
 				notifications.stream().map(this.notificationTransformer::modelToDto).collect(Collectors.toList()));
+		
 		notificationListDTO.setNotifCounter(this.notificationRepository.countByToUuid(userId));
+		
 		notificationListDTO.setUnreadCounter(
 				this.notificationRepository.countByToUuidAndStatus(userId, GlobalAppStatusEnum.UNREAD));
 		
