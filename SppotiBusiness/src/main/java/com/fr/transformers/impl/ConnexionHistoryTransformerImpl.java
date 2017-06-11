@@ -3,6 +3,7 @@ package com.fr.transformers.impl;
 import com.fr.commons.dto.ConnexionHistoryDto;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.entities.ConnexionHistoryEntity;
+import com.fr.entities.UserEntity;
 import com.fr.transformers.ConnexionHistoryTransformer;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class ConnexionHistoryTransformerImpl extends
 		AbstractTransformerImpl<ConnexionHistoryDto, ConnexionHistoryEntity> implements ConnexionHistoryTransformer
 {
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -20,6 +22,9 @@ public class ConnexionHistoryTransformerImpl extends
 	public ConnexionHistoryEntity dtoToModel(final ConnexionHistoryDto dto) {
 		final ConnexionHistoryEntity model = new ConnexionHistoryEntity();
 		SppotiBeanUtils.copyProperties(model, dto);
+		final UserEntity userEntity = new UserEntity();
+		userEntity.setId(dto.getUserId());
+		model.setUser(userEntity);
 		return model;
 	}
 	

@@ -30,6 +30,8 @@ public class ConnexionHistoryDto extends AbstractCommonDTO
 	@NotEmpty
 	private String metroCode;
 	
+	private Long userId;
+	
 	public String getIp() {
 		return this.ip;
 	}
@@ -116,5 +118,13 @@ public class ConnexionHistoryDto extends AbstractCommonDTO
 	
 	public void setMetroCode(final String metroCode) {
 		this.metroCode = metroCode;
+	}
+	
+	public Long getUserId() {
+		return this.userId;
+	}
+	
+	public void setUserId(final Long userId) {
+		this.userId = userId;
 	}
 }

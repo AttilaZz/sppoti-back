@@ -9,10 +9,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.Past;
-import java.util.Date;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -125,6 +122,8 @@ public class UserEntity extends AbstractCommonEntity
 	//	@JoinColumn(name = "user_id")
 	//	private Map<Date, String> ipHistory = new LinkedHashMap<>();
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+	private List<ConnexionHistoryEntity> connexionHistory;
 	
 	@Column(name = "time_zone")
 	private String timeZone = "02";
@@ -419,6 +418,14 @@ public class UserEntity extends AbstractCommonEntity
 	
 	public void setDeactivationDate(final Date deactivationDate) {
 		this.deactivationDate = deactivationDate;
+	}
+	
+	public List<ConnexionHistoryEntity> getConnexionHistory() {
+		return this.connexionHistory;
+	}
+	
+	public void setConnexionHistory(final List<ConnexionHistoryEntity> connexionHistory) {
+		this.connexionHistory = connexionHistory;
 	}
 	
 	/**

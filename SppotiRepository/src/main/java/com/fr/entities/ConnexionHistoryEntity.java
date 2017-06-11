@@ -1,8 +1,6 @@
 package com.fr.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by djenanewail on 6/11/17.
@@ -33,6 +31,10 @@ public class ConnexionHistoryEntity extends AbstractCommonEntity
 	private String longitude;
 	@Column(name = "metro_code")
 	private String metroCode;
+	
+	@ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false, updatable = false)
+	private UserEntity user;
 	
 	public String getIp() {
 		return this.ip;
@@ -120,5 +122,13 @@ public class ConnexionHistoryEntity extends AbstractCommonEntity
 	
 	public void setMetroCode(final String metroCode) {
 		this.metroCode = metroCode;
+	}
+	
+	public UserEntity getUser() {
+		return this.user;
+	}
+	
+	public void setUser(final UserEntity user) {
+		this.user = user;
 	}
 }

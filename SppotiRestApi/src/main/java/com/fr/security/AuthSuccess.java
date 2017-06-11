@@ -17,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 import static com.fr.filter.HeadersAttributes.*;
 import static com.fr.filter.HeadersValues.*;
@@ -66,10 +65,6 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 		final UserEntity users = this.userRepository.getByIdAndDeletedFalse(accountUserDetails.getId());
 		final UserDTO user = this.userTransformer.modelToDto(users);
 		user.setPassword(null);
-		
-		//Save new connexion date and ip address.
-		users.getIpHistory().put(new Date(), request.getRemoteAddr());
-		this.userRepository.save(users);
 		
 		//Convert data to json.
 		final Gson gson = new Gson();
