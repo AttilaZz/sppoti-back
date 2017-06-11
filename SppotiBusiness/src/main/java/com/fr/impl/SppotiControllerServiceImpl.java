@@ -111,6 +111,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			
 			hostTeam.setTeamMembers(getTeamMembersEntityFromDto(teamDTO.getMembers(), hostTeam, sppoti));
 			hostTeam.setSport(sppoti.getSport());
+			hostTeam.setTimeZone(sppoti.getTimeZone());
 			//            teamRepository.save(hostTeam);
 			
 		} else if (newSppoti.getMyTeamId() != 0) {

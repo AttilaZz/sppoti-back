@@ -12,8 +12,6 @@ import com.fr.transformers.ScoreTransformer;
 import com.fr.transformers.SppotiTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
@@ -86,7 +84,6 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 	/**
 	 * {@inheritDoc}
 	 */
-	@Transactional(propagation = Propagation.REQUIRED)
 	@Override
 	public SppotiDTO modelToDto(final SppotiEntity model)
 	{

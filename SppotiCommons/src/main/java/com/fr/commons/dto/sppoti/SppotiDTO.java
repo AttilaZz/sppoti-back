@@ -75,6 +75,8 @@ public class SppotiDTO extends AbstractCommonDTO
 	
 	private String teamAdverseStatus;
 	
+	private String timeZone;
+	
 	public Date getDatetimeCreated()
 	{
 		return this.datetimeCreated;
@@ -313,5 +315,13 @@ public class SppotiDTO extends AbstractCommonDTO
 	public void setTeamAdverseStatus(final String teamAdverseStatus)
 	{
 		this.teamAdverseStatus = teamAdverseStatus;
+	}
+	
+	public String getTimeZone() {
+		return this.timeZone;
+	}
+	
+	public void setTimeZone(final String timeZone) {
+		this.timeZone = timeZone;
 	}
 }
