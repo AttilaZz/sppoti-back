@@ -71,6 +71,9 @@ public class SppotiEntity extends AbstractCommonEntity
 	@JoinColumn(name = "score_id")
 	private ScoreEntity scoreEntity;
 	
+	@Column(name = "time_zone")
+	private String timeZone;
+	
 	/**
 	 * to get trace of the connected user when using transformers.
 	 */
@@ -266,6 +269,14 @@ public class SppotiEntity extends AbstractCommonEntity
 		this.connectedUserId = connectedUserId;
 	}
 	
+	public String getTimeZone() {
+		return this.timeZone;
+	}
+	
+	public void setTimeZone(final String timeZone) {
+		this.timeZone = timeZone;
+	}
+	
 	/**
 	 * {@inheritDoc}.
 	 */
@@ -305,6 +316,8 @@ public class SppotiEntity extends AbstractCommonEntity
 			return false;
 		if (this.altitude != null ? !this.altitude.equals(that.altitude) : that.altitude != null)
 			return false;
+		if (this.timeZone != null ? !this.timeZone.equals(that.timeZone) : that.timeZone != null)
+			return false;
 		return this.longitude != null ? this.longitude.equals(that.longitude) : that.longitude == null;
 	}
 	
@@ -327,6 +340,7 @@ public class SppotiEntity extends AbstractCommonEntity
 		result = 31 * result + (this.sppotiDuration != null ? this.sppotiDuration.hashCode() : 0);
 		result = 31 * result + (this.altitude != null ? this.altitude.hashCode() : 0);
 		result = 31 * result + (this.longitude != null ? this.longitude.hashCode() : 0);
+		result = 31 * result + (this.timeZone != null ? this.timeZone.hashCode() : 0);
 		return result;
 	}
 }

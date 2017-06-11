@@ -23,6 +23,8 @@ public class PostRequestDTO extends AbstractCommonDTO
 	@JsonProperty("targetUser")
 	private Integer targetUserUuid;
 	
+	private String timeZone;
+	
 	public int getVisibility()
 	{
 		return this.visibility;
@@ -71,6 +73,14 @@ public class PostRequestDTO extends AbstractCommonDTO
 	public void setTargetUserUuid(final Integer targetUserUuid)
 	{
 		this.targetUserUuid = targetUserUuid;
+	}
+	
+	public String getTimeZone() {
+		return this.timeZone;
+	}
+	
+	public void setTimeZone(final String timeZone) {
+		this.timeZone = timeZone;
 	}
 	
 	public class Data

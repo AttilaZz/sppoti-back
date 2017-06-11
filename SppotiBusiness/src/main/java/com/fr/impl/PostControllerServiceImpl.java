@@ -61,6 +61,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		entity.setContent(postRequestDTO.getContent().getContent());
 		entity.setVideo(postRequestDTO.getContent().getVideoLink());
 		entity.setVisibility(postRequestDTO.getVisibility());
+		entity.setTimeZone(postRequestDTO.getTimeZone());
 		entity.setUser(connectedUSer);
 		
 		//Post sport.

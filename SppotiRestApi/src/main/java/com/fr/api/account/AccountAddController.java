@@ -1,5 +1,6 @@
 package com.fr.api.account;
 
+import com.fr.commons.dto.ConnexionHistoryDto;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.service.AccountControllerService;
 import com.fr.versionning.ApiVersion;
@@ -42,6 +43,25 @@ class AccountAddController
 	{
 		
 		this.accountControllerService.saveNewUser(user);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+		
+	}
+	
+	/**
+	 * Save user connexion details.
+	 *
+	 * @param historyDto
+	 * 		details to save.
+	 *
+	 * @return 201 if data has been saved correctly.
+	 */
+	@PostMapping(value = "/connexion/endpoint")
+	@ResponseBody
+	ResponseEntity addConnexionHistory(@RequestBody @Valid final ConnexionHistoryDto historyDto)
+	{
+		
+		this.accountControllerService.saveConnexionHistory(historyDto);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 		

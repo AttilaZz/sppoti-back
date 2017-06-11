@@ -85,7 +85,7 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		if (!editHistory.isEmpty()) {
 			pres.setEdited(true);
 			final EditHistoryEntity ec = editHistory.get(0);
-			pres.setDatetimeCreated(SppotiUtils.dateWithTimeZone(ec.getDatetimeEdited(), getTimeZone()));
+			pres.setDatetimeCreated(SppotiUtils.dateWithTimeZone(ec.getDatetimeEdited(), model.getTimeZone()));
 			if (ec.getText() != null) {
 				pres.setContent(ec.getText());
 			}
@@ -102,7 +102,7 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 			if (model.getSport() != null && model.getSport().getId() != null) {
 				pres.setSportId(model.getSport().getId());
 			}
-			pres.setDatetimeCreated(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), getTimeZone()));
+			pres.setDatetimeCreated(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), model.getTimeZone()));
 		}
 
 		/*

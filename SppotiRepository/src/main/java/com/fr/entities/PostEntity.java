@@ -72,6 +72,9 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	@JoinColumn(name = "target_user")
 	private UserEntity targetUserProfile;
 	
+	@Column(name = "time_zone")
+	private String timeZone;
+	
 	/**
 	 * to get trace of the connected user when using transformers.
 	 */
@@ -207,6 +210,14 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 		this.album = album;
 	}
 	
+	public String getTimeZone() {
+		return this.timeZone;
+	}
+	
+	public void setTimeZone(final String timeZone) {
+		this.timeZone = timeZone;
+	}
+	
 	/**
 	 * {@inheritDoc}.
 	 */
@@ -245,6 +256,8 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 			return false;
 		if (this.video != null ? !this.video.equals(that.video) : that.video != null)
 			return false;
+		if (this.timeZone != null ? !this.timeZone.equals(that.timeZone) : that.timeZone != null)
+			return false;
 		return this.album != null ? this.album.equals(that.album) : that.album == null;
 		
 	}
@@ -260,6 +273,7 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 		result = 31 * result + (this.datetimeCreated != null ? this.datetimeCreated.hashCode() : 0);
 		result = 31 * result + (this.video != null ? this.video.hashCode() : 0);
 		result = 31 * result + (this.album != null ? this.album.hashCode() : 0);
+		result = 31 * result + (this.timeZone != null ? this.timeZone.hashCode() : 0);
 		result = 31 * result + this.visibility;
 		result = 31 * result + (this.deleted ? 1 : 0);
 		return result;

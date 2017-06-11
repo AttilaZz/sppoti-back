@@ -1,5 +1,6 @@
 package com.fr.service;
 
+import com.fr.commons.dto.ConnexionHistoryDto;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.TypeAccountValidation;
@@ -105,4 +106,14 @@ public interface AccountControllerService extends AbstractControllerService
 	 * 		user id.
 	 */
 	void deactivateAccount(int userId);
+	
+	/**
+	 * Save user connexion details.
+	 *
+	 * @param historyDto
+	 * 		connexion details.
+	 *
+	 * @return saved details.
+	 */
+	ConnexionHistoryDto saveConnexionHistory(ConnexionHistoryDto historyDto);
 }

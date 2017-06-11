@@ -53,7 +53,7 @@ public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, 
 		
 		commentDTO.setImageLink(model.getImageLink());
 		commentDTO.setVideoLink(model.getVideoLink());
-		commentDTO.setCreationDate(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), getTimeZone()));
+		commentDTO.setCreationDate(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), model.getTimeZone()));
 		
 		commentDTO.setAuthorAvatar(this.userTransformer.getUserCoverAndAvatar(userEntity).getAvatar());
 		

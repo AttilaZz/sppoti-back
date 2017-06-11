@@ -46,6 +46,9 @@ public class CommentEntity extends AbstractCommonEntity implements Comparable<Co
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
 	private Set<EditHistoryEntity> editList;
 	
+	@Column(name = "time_zone")
+	private String timeZone;
+	
 	/**
 	 * to get trace of the connected user when using transformers.
 	 */
@@ -129,6 +132,14 @@ public class CommentEntity extends AbstractCommonEntity implements Comparable<Co
 	
 	public void setConnectedUserId(final Long connectedUserId) {
 		this.connectedUserId = connectedUserId;
+	}
+	
+	public String getTimeZone() {
+		return this.timeZone;
+	}
+	
+	public void setTimeZone(final String timeZone) {
+		this.timeZone = timeZone;
 	}
 	
 	/**

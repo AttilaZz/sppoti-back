@@ -1,5 +1,6 @@
 package com.fr.impl;
 
+import com.fr.commons.dto.ConnexionHistoryDto;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
@@ -15,7 +16,9 @@ import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.enums.CoverType;
 import com.fr.mail.AccountMailer;
+import com.fr.repositories.ConnexionHistoryRepository;
 import com.fr.service.AccountControllerService;
+import com.fr.transformers.ConnexionHistoryTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.SportTransformer;
 import com.fr.transformers.impl.UserTransformerImpl;
@@ -55,6 +58,12 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	/** {@link com.fr.entities.SportEntity} transformer. */
 	private final SportTransformer sportTransformer;
 	
+	/** {@link ConnexionHistoryEntity} repository. */
+	private final ConnexionHistoryRepository connexionHistoryRepository;
+	
+	/** {@link ConnexionHistoryEntity} transformer. */
+	private final ConnexionHistoryTransformer connexionHistoryTransformer;
+	
 	/** Days before expiration. */
 	@Value("${spring.app.account.recover.expiry.date}")
 	private int daysBeforeExpiration;
@@ -63,12 +72,16 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	@Autowired
 	public AccountControllerServiceImpl(final AccountMailer accountMailer, final PasswordEncoder passwordEncoder,
 										final UserTransformerImpl userTransformer,
-										final SportTransformer sportTransformer)
+										final SportTransformer sportTransformer,
+										final ConnexionHistoryRepository connexionHistoryRepository,
+										final ConnexionHistoryTransformer connexionHistoryTransformer)
 	{
 		this.accountMailer = accountMailer;
 		this.passwordEncoder = passwordEncoder;
 		this.userTransformer = userTransformer;
 		this.sportTransformer = sportTransformer;
+		this.connexionHistoryRepository = connexionHistoryRepository;
+		this.connexionHistoryTransformer = connexionHistoryTransformer;
 	}
 	
 	/**
@@ -507,5 +520,15 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		});
 		
 		optional.orElseThrow(() -> new EntityNotFoundException("Account not found"));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional
+	public ConnexionHistoryDto saveConnexionHistory(final ConnexionHistoryDto historyDto) {
+		return this.connexionHistoryTransformer.modelToDto(
+				this.connexionHistoryRepository.save(this.connexionHistoryTransformer.dtoToModel(historyDto)));
 	}
 }

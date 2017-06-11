@@ -55,6 +55,8 @@ public class PostDTO extends AbstractCommonDTO
 	
 	private boolean myPost;
 	
+	private String timeZone;
+	
 	public String getFirstName()
 	{
 		return this.firstName;
@@ -207,11 +209,6 @@ public class PostDTO extends AbstractCommonDTO
 		this.datetimeCreated = datetimeCreated;
 	}
 	
-	public void setTargetUser(final TargetUser targetUser)
-	{
-		this.targetUser = targetUser;
-	}
-	
 	public List<CommentDTO> getComment()
 	{
 		return this.comment;
@@ -227,6 +224,11 @@ public class PostDTO extends AbstractCommonDTO
 		return this.targetUser;
 	}
 	
+	public void setTargetUser(final TargetUser targetUser)
+	{
+		this.targetUser = targetUser;
+	}
+	
 	public String getAvatar()
 	{
 		return this.avatar;
@@ -237,6 +239,14 @@ public class PostDTO extends AbstractCommonDTO
 		this.avatar = avatar;
 	}
 	
+	public String getTimeZone() {
+		return this.timeZone;
+	}
+	
+	public void setTimeZone(final String timeZone) {
+		this.timeZone = timeZone;
+	}
+	
 	public void setTargetUser(final String firstName, final String lastName, final String username, final int id,
 							  final boolean myAccount)
 	{
@@ -245,16 +255,15 @@ public class PostDTO extends AbstractCommonDTO
 	
 	public class TargetUser
 	{
-		public TargetUser()
-		{
-		}
-		
 		private int id;
 		private String firstName;
 		private String lastName;
 		private String username;
-		
 		private boolean myAccount;
+		
+		public TargetUser()
+		{
+		}
 		
 		
 		public TargetUser(final String firstName, final String lastName, final String username, final int id,

@@ -9,7 +9,10 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import javax.validation.constraints.Past;
-import java.util.*;
+import java.util.Date;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -114,16 +117,21 @@ public class UserEntity extends AbstractCommonEntity
 	@Column(nullable = false, name = "language")
 	private LanguageEnum languageEnum = LanguageEnum.fr;
 	
-	@ElementCollection(fetch = FetchType.LAZY)
-	@MapKeyColumn(name = "date_connexion")
-	@MapKeyTemporal(TemporalType.TIMESTAMP)
-	@Column(name = "ip_address", nullable = false)
-	@JoinTable(name = "connexion_history")
-	@JoinColumn(name = "user_id")
-	private Map<Date, String> ipHistory = new LinkedHashMap<>();
+	//	@ElementCollection(fetch = FetchType.LAZY)
+	//	@MapKeyColumn(name = "date_connexion")
+	//	@MapKeyTemporal(TemporalType.TIMESTAMP)
+	//	@Column(name = "ip_address", nullable = false)
+	//	@JoinTable(name = "connexion_history")
+	//	@JoinColumn(name = "user_id")
+	//	private Map<Date, String> ipHistory = new LinkedHashMap<>();
+	
 	
 	@Column(name = "time_zone")
 	private String timeZone = "02";
+	
+	public UserEntity()
+	{
+	}
 	
 	public boolean isDeleted()
 	{
@@ -143,10 +151,6 @@ public class UserEntity extends AbstractCommonEntity
 	public void setConfirmed(final boolean confirmed)
 	{
 		this.confirmed = confirmed;
-	}
-	
-	public UserEntity()
-	{
 	}
 	
 	public Set<PostEntity> getUserPosts()
@@ -399,16 +403,6 @@ public class UserEntity extends AbstractCommonEntity
 		this.languageEnum = languageEnum;
 	}
 	
-	public Map<Date, String> getIpHistory()
-	{
-		return this.ipHistory;
-	}
-	
-	public void setIpHistory(final Map<Date, String> ipHistory)
-	{
-		this.ipHistory = ipHistory;
-	}
-	
 	public String getTimeZone()
 	{
 		return this.timeZone;
@@ -486,8 +480,6 @@ public class UserEntity extends AbstractCommonEntity
 			return false;
 		if (this.languageEnum != entity.languageEnum)
 			return false;
-		if (this.ipHistory != null ? !this.ipHistory.equals(entity.ipHistory) : entity.ipHistory != null)
-			return false;
 		return this.timeZone != null ? this.timeZone.equals(entity.timeZone) : entity.timeZone == null;
 	}
 	
@@ -516,7 +508,6 @@ public class UserEntity extends AbstractCommonEntity
 		result = 31 * result + (this.accountCreationDate != null ? this.accountCreationDate.hashCode() : 0);
 		result = 31 * result + (this.accountMaxActivationDate != null ? this.accountMaxActivationDate.hashCode() : 0);
 		result = 31 * result + (this.languageEnum != null ? this.languageEnum.hashCode() : 0);
-		result = 31 * result + (this.ipHistory != null ? this.ipHistory.hashCode() : 0);
 		result = 31 * result + (this.timeZone != null ? this.timeZone.hashCode() : 0);
 		result = 31 * result + (this.deactivationDate != null ? this.deactivationDate.hashCode() : 0);
 		return result;

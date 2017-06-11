@@ -38,9 +38,7 @@ public class CommentDTO extends AbstractCommonDTO
 	
 	private List<HeaderDataDTO> commentLikers;
 	
-	public CommentDTO()
-	{
-	}
+	private String timeZone;
 	
 	public List<HeaderDataDTO> getCommentLikers()
 	{
@@ -180,5 +178,13 @@ public class CommentDTO extends AbstractCommonDTO
 	public void setPostId(final int postId)
 	{
 		this.postId = postId;
+	}
+	
+	public String getTimeZone() {
+		return this.timeZone;
+	}
+	
+	public void setTimeZone(final String timeZone) {
+		this.timeZone = timeZone;
 	}
 }

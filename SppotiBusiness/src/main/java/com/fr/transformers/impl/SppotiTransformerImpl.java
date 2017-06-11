@@ -94,7 +94,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 		SppotiBeanUtils.copyProperties(sppotiDTO, model);
 		
 		sppotiDTO.setId(model.getUuid());
-		sppotiDTO.setDatetimeCreated(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), getTimeZone()));
+		sppotiDTO.setDatetimeCreated(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), model.getTimeZone()));
 		
 		if (model.getConnectedUserId() != null)
 			sppotiDTO.setConnectedUserId(this.userRepository.findOne(model.getConnectedUserId()).getUuid());

@@ -44,6 +44,8 @@ public class TeamDTO extends AbstractCommonDTO
 	private String teamAdverseStatus;
 	private Boolean sentFromSppotiAdmin;
 	
+	private String timeZone;
+	
 	public String getName()
 	{
 		return this.name;
@@ -182,5 +184,13 @@ public class TeamDTO extends AbstractCommonDTO
 	public void setSentFromSppotiAdmin(final Boolean sentFromSppotiAdmin)
 	{
 		this.sentFromSppotiAdmin = sentFromSppotiAdmin;
+	}
+	
+	public String getTimeZone() {
+		return this.timeZone;
+	}
+	
+	public void setTimeZone(final String timeZone) {
+		this.timeZone = timeZone;
 	}
 }
