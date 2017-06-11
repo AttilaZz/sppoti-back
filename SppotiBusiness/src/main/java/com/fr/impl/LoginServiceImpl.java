@@ -16,7 +16,7 @@ class LoginServiceImpl extends AbstractControllerServiceImpl implements LoginSer
 	@Override
 	public UserEntity getByEmail(final String username)
 	{
-		return this.userRepository.getByEmailAndDeletedFalse(username);
+		return this.userRepository.getByEmailAndDeletedFalseAndConfirmedTrue(username);
 	}
 	
 	/**
@@ -25,7 +25,7 @@ class LoginServiceImpl extends AbstractControllerServiceImpl implements LoginSer
 	@Override
 	public UserEntity getByTelephone(final String username)
 	{
-		return this.userRepository.getByTelephoneAndDeletedFalse(username);
+		return this.userRepository.getByTelephoneAndDeletedFalseAndConfirmedTrue(username);
 	}
 	
 	/**
@@ -34,6 +34,6 @@ class LoginServiceImpl extends AbstractControllerServiceImpl implements LoginSer
 	@Override
 	public UserEntity getByUsername(final String username)
 	{
-		return this.userRepository.getByUsernameAndDeletedFalse(username);
+		return this.userRepository.getByUsernameAndDeletedFalseAndConfirmedTrue(username);
 	}
 }

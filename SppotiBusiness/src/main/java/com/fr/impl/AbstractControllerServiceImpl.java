@@ -110,7 +110,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	@Override
 	public UserEntity getUserById(final Long id)
 	{
-		return this.userRepository.getByIdAndDeletedFalse(id);
+		return this.userRepository.getByIdAndDeletedFalseAndConfirmedTrue(id);
 	}
 	
 	/**
@@ -120,7 +120,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	public UserEntity getUserByUuId(final int id)
 	{
 		
-		final Optional<UserEntity> usersList = this.userRepository.getByUuidAndDeletedFalse(id);
+		final Optional<UserEntity> usersList = this.userRepository.getByUuidAndDeletedFalseAndConfirmedTrue(id);
 		
 		return usersList.orElse(null);
 		
@@ -181,11 +181,11 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		
 		if (filterDeleted) {
 			if (username.contains("@")) {
-				return this.userRepository.getByEmailAndDeletedFalse(username);
+				return this.userRepository.getByEmailAndDeletedFalseAndConfirmedTrue(username);
 			} else if (username.matches(numberRegex)) {
-				return this.userRepository.getByTelephoneAndDeletedFalse(username);
+				return this.userRepository.getByTelephoneAndDeletedFalseAndConfirmedTrue(username);
 			} else {
-				return this.userRepository.getByUsernameAndDeletedFalse(username);
+				return this.userRepository.getByUsernameAndDeletedFalseAndConfirmedTrue(username);
 			}
 		} else {
 			if (username.contains("@")) {
@@ -482,7 +482,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 			for (final String username : tags) {
 				final UserEntity userToNotify;
 				
-				userToNotify = this.userRepository.getByUsernameAndDeletedFalse(username);
+				userToNotify = this.userRepository.getByUsernameAndDeletedFalseAndConfirmedTrue(username);
 				
 				if (userToNotify != null) {
 					if (commentEntity != null) {

@@ -18,17 +18,17 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long>
 {
 	
-	UserEntity getByEmailAndDeletedFalse(String email);
+	UserEntity getByEmailAndDeletedFalseAndConfirmedTrue(String email);
 	
-	UserEntity getByTelephoneAndDeletedFalse(String telephone);
+	UserEntity getByTelephoneAndDeletedFalseAndConfirmedTrue(String telephone);
 	
-	UserEntity getByUsernameAndDeletedFalse(String username);
+	UserEntity getByUsernameAndDeletedFalseAndConfirmedTrue(String username);
 	
 	UserEntity getByConfirmationCodeAndDeletedFalseAndConfirmedFalse(String code);
 	
-	UserEntity getByIdAndDeletedFalse(Long id);
+	UserEntity getByIdAndDeletedFalseAndConfirmedTrue(Long id);
 	
-	Optional<UserEntity> getByUuidAndDeletedFalse(int id);
+	Optional<UserEntity> getByUuidAndDeletedFalseAndConfirmedTrue(int id);
 	
 	@Query("SELECT u from UserEntity u WHERE u.username LIKE CONCAT('%',:prefix,'%') " +
 			"OR u.firstName LIKE CONCAT('%',:prefix,'%') " + "OR u.lastName LIKE CONCAT('%',:prefix,'%') " +
@@ -41,7 +41,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>
 	List<UserEntity> getSearchedUsersByFirstNameAndLastName(@Param("part1") String part1, @Param("part2") String part2,
 															Pageable pageable);
 	
-	UserEntity getByRecoverCodeAndDeletedFalse(String code);
+	UserEntity getByRecoverCodeAndDeletedFalseAndConfirmedTrue(String code);
 	
 	/**
 	 * Find all sppoter allowed to join sppoti.
@@ -55,7 +55,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>
 	 */
 	@Query("SELECT s FROM UserEntity s WHERE (s.username LIKE CONCAT('%', :prefix ,'%')" +
 			"OR s.firstName LIKE CONCAT('%', :prefix, '%')" + "OR s.lastName LIKE CONCAT('%', :prefix, '%'))" +
-			"AND s.id NOT IN (:existingSppoter)")
+			"AND s.deleted = FALSE AND s.confirmed = TRUE AND s.id NOT IN (:existingSppoter)")
 	List<UserEntity> findAllAllowedSppoter(@Param("prefix") String prefix,
 										   @Param("existingSppoter") List existingSppoter, Pageable pageable);
 	
@@ -67,7 +67,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>
 	 *
 	 * @return user account data.
 	 */
-	Optional<UserEntity> getByUuidAndConfirmedTrueAndDeletedFalse(int userId);
+	Optional<UserEntity> getByUuidAndConfirmedTrueAndDeletedFalseAndConfirmedTrue(int userId);
 	
 	/**
 	 * Find user in login process by email.

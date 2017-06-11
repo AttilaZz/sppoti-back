@@ -39,54 +39,51 @@ class CommentAddController
 	{
 		
 		final CommentEntity commentEntityToSave = new CommentEntity();
+		commentEntityToSave.setTimeZone(newComment.getTimeZone());
 		
-		if (newComment != null) {
-			
-			final String content = newComment.getText();
-			final String image = newComment.getImageLink();
-			final String video = newComment.getVideoLink();
-			final int postId = newComment.getPostId();
-			
-			if (content == null && image == null && video == null) {
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
-			
-			if (content != null) {
-				if (content.trim().length() <= 0) {
-					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-				}
-				commentEntityToSave.setContent(content);
-			}
-			
-			if (image != null && video != null) {
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			}
-			
-			if (image != null) {
-				if (image.trim().length() <= 0) {
-					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-				}
-				commentEntityToSave.setImageLink(image);
-			}
-			
-			if (video != null) {
-				if (video.trim().length() <= 0) {
-					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-				}
-				commentEntityToSave.setVideoLink(video);
-			}
-			
-			final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
-			
-			final CommentDTO savedComment = this.commentDataService.saveComment(commentEntityToSave, userId, postId);
-			
-			savedComment.setMyComment(true);
-			
-			return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
-			
-		} else {
+		final String content = newComment.getText();
+		final String image = newComment.getImageLink();
+		final String video = newComment.getVideoLink();
+		final int postId = newComment.getPostId();
+		
+		if (content == null && image == null && video == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+		
+		if (content != null) {
+			if (content.trim().length() <= 0) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			commentEntityToSave.setContent(content);
+		}
+		
+		if (image != null && video != null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		if (image != null) {
+			if (image.trim().length() <= 0) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			commentEntityToSave.setImageLink(image);
+		}
+		
+		if (video != null) {
+			if (video.trim().length() <= 0) {
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			commentEntityToSave.setVideoLink(video);
+		}
+		
+		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
+		
+		final CommentDTO savedComment = this.commentDataService.saveComment(commentEntityToSave, userId, postId);
+		
+		savedComment.setMyComment(true);
+		
+		return new ResponseEntity<>(savedComment, HttpStatus.CREATED);
+		
+		
 	}
 	
 }

@@ -73,7 +73,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		//Post in friend profile.
 		final Optional<UserEntity> targetProfile = this.userRepository
-				.getByUuidAndDeletedFalse(postRequestDTO.getTargetUserUuid());
+				.getByUuidAndDeletedFalseAndConfirmedTrue(postRequestDTO.getTargetUserUuid());
 		targetProfile.ifPresent(entity::setTargetUserProfile);
 		targetProfile.orElseThrow(() -> new EntityNotFoundException("Target profile not found !!"));
 		
@@ -385,7 +385,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		final Pageable pageable = new PageRequest(page, this.postSize, Sort.Direction.DESC, "datetimeCreated");
 		
-		final Optional<UserEntity> optional = this.userRepository.getByUuidAndDeletedFalse(userId);
+		final Optional<UserEntity> optional = this.userRepository.getByUuidAndDeletedFalseAndConfirmedTrue(userId);
 		
 		if (optional.isPresent()) {
 			final List<PostEntity> returnedPostEntities = new ArrayList<>();

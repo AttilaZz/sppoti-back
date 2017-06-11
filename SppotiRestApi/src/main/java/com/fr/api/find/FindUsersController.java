@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,8 +63,8 @@ class FindUsersController
 		
 		//TODO: move implementation to CORE MODULE
 		
-		if (userPrefix.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		if (StringUtils.isEmpty(userPrefix)) {
+			return new ResponseEntity<>(HttpStatus.OK);
 		}
 		
 		final List<UserEntity> foundUsers;

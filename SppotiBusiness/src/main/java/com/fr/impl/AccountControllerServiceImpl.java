@@ -98,9 +98,9 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
              - delete old account
          */
 		final Optional<UserEntity> checkUsername = Optional
-				.ofNullable(this.userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
+				.ofNullable(this.userRepository.getByUsernameAndDeletedFalseAndConfirmedTrue(user.getUsername()));
 		final Optional<UserEntity> checkEmail = Optional
-				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(user.getEmail()));
+				.ofNullable(this.userRepository.getByEmailAndDeletedFalseAndConfirmedTrue(user.getEmail()));
 		
 		checkEmail.ifPresent(e -> {
 			if (accountExist(e)) {
@@ -343,7 +343,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	{
 		
 		final Optional<UserEntity> optional = Optional
-				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
+				.ofNullable(this.userRepository.getByEmailAndDeletedFalseAndConfirmedTrue(userDTO.getEmail()));
 		
 		optional.ifPresent(u -> {
 			final String code = SppotiUtils.generateConfirmationKey();
@@ -373,7 +373,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	{
 		
 		final Optional<UserEntity> optional = Optional
-				.ofNullable(this.userRepository.getByRecoverCodeAndDeletedFalse(code));
+				.ofNullable(this.userRepository.getByRecoverCodeAndDeletedFalseAndConfirmedTrue(code));
 		
 		optional.ifPresent(u -> {
 			
@@ -399,7 +399,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	{
 		
 		final Optional<UserEntity> optional = Optional
-				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
+				.ofNullable(this.userRepository.getByEmailAndDeletedFalseAndConfirmedTrue(userDTO.getEmail()));
 		
 		optional.ifPresent(u -> {
 			if (u.isConfirmed()) {
@@ -509,7 +509,8 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	@Override
 	@Transactional
 	public void deactivateAccount(final int userId) {
-		final Optional<UserEntity> optional = this.userRepository.getByUuidAndConfirmedTrueAndDeletedFalse(userId);
+		final Optional<UserEntity> optional = this.userRepository
+				.getByUuidAndConfirmedTrueAndDeletedFalseAndConfirmedTrue(userId);
 		
 		optional.ifPresent(u -> {
 			u.setDeleted(true);

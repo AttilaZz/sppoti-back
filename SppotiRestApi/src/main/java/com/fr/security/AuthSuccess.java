@@ -62,7 +62,7 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
 		//Get connected user data.
-		final UserEntity users = this.userRepository.getByIdAndDeletedFalse(accountUserDetails.getId());
+		final UserEntity users = this.userRepository.getByIdAndDeletedFalseAndConfirmedTrue(accountUserDetails.getId());
 		final UserDTO user = this.userTransformer.modelToDto(users);
 		user.setPassword(null);
 		

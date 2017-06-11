@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -41,10 +42,10 @@ public class CommentEntity extends AbstractCommonEntity implements Comparable<Co
 	private PostEntity post;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
-	private Set<LikeContentEntity> likes;
+	private Set<LikeContentEntity> likes = new HashSet<>();
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
-	private Set<EditHistoryEntity> editList;
+	private Set<EditHistoryEntity> editList = new HashSet<>();
 	
 	@Column(name = "time_zone")
 	private String timeZone;
