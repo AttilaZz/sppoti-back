@@ -74,7 +74,8 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		pres.setUsername(postEditor.getUsername());
 		
 		pres.setSportId(model.getSport().getId());
-		pres.setMyPost(connectedUser.equals(postEditor.getId()));
+		
+		pres.setMyPost(connectedUser.equals(model.getUser().getId()));
 		
 		/*
 		 * Check if content has been modified or not
@@ -152,13 +153,11 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		/*
 		 * Check if post has been posted on a friend profile -- default value for integer is ZERO (UUID can never be a zero)
 		 */
-		if (model.getTargetUserProfile() != null) {
-			
-			final UserEntity t = model.getTargetUserProfile();
-			
-			pres.setTargetUser(t.getFirstName(), t.getLastName(), t.getUsername(), t.getUuid(),
-					connectedUser.equals(t.getId()));
-		}
+		
+		final UserEntity t = model.getTargetUserProfile();
+		pres.setTargetUser(t.getFirstName(), t.getLastName(), t.getUsername(), t.getUuid(),
+				connectedUser.equals(t.getId()));
+		
 		
 		return pres;
 		

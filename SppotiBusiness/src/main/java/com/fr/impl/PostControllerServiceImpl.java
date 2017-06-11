@@ -7,7 +7,6 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.entities.*;
 import com.fr.service.PostControllerService;
-import com.fr.transformers.CommentTransformer;
 import com.fr.transformers.PostTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,9 +28,6 @@ import java.util.stream.Collectors;
 class PostControllerServiceImpl extends AbstractControllerServiceImpl implements PostControllerService
 {
 	
-	/** Comment transformer. */
-	private final CommentTransformer commentTransformer;
-	
 	/** Post transformer. */
 	private final PostTransformer postTransformer;
 	
@@ -41,9 +37,8 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	
 	/** Init dependencies. */
 	@Autowired
-	public PostControllerServiceImpl(final CommentTransformer commentTransformer, final PostTransformer postTransformer)
+	public PostControllerServiceImpl(final PostTransformer postTransformer)
 	{
-		this.commentTransformer = commentTransformer;
 		this.postTransformer = postTransformer;
 	}
 	
@@ -54,7 +49,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public PostDTO savePost(final PostRequestDTO postRequestDTO)
 	{
-		final UserEntity connectedUSer = getConnectedUser();
+		final UserEntity connectedUser = getConnectedUser();
 		
 		final PostEntity entity = new PostEntity();
 		entity.setAlbum(postRequestDTO.getContent().getImageLink());
@@ -62,7 +57,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		entity.setVideo(postRequestDTO.getContent().getVideoLink());
 		entity.setVisibility(postRequestDTO.getVisibility());
 		entity.setTimeZone(postRequestDTO.getTimeZone());
-		entity.setUser(connectedUSer);
+		entity.setUser(connectedUser);
 		
 		//Post sport.
 		final SportEntity sportEntity = this.sportRepository.findOne(postRequestDTO.getSportId());
@@ -79,11 +74,11 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		//Saved post final
 		final PostEntity savedPost = this.postRepository.save(entity);
-		savedPost.setConnectedUserId(connectedUSer.getId());
+		savedPost.setConnectedUserId(connectedUser.getId());
 		
 		//Send notification
 		if (savedPost.getTargetUserProfile() != null &&
-				!savedPost.getTargetUserProfile().getId().equals(connectedUSer.getId())) {
+				!savedPost.getTargetUserProfile().getId().equals(connectedUser.getId())) {
 			
 			addNotification(NotificationTypeEnum.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(),
 					savedPost.getTargetUserProfile(), null, null, savedPost, null);
@@ -95,6 +90,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 			
 		}
 		
+		savedPost.setConnectedUserId(connectedUser.getId());
 		return this.postTransformer.modelToDto(savedPost);
 	}
 
