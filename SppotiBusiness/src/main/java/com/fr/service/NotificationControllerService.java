@@ -34,12 +34,8 @@ public interface NotificationControllerService
 	/**
 	 * Update open status to true
 	 *
-	 * @param notifId
-	 * 		notif id.
-	 * @param connectedUserId
-	 * 		connected user id.
 	 * @param notificationDTO
 	 * 		notif status.
 	 */
-	void switchNotificationStatus(int notifId, Long connectedUserId, NotificationDTO notificationDTO);
+	void switchNotificationStatus(NotificationDTO notificationDTO);
 }

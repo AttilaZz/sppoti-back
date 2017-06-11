@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Created by djenanewail on 2/9/17.
  */
@@ -59,11 +61,8 @@ class NotificationController
 	 */
 	@PutMapping("/{notifId}")
 	ResponseEntity<Void> openNotification(@PathVariable final int notifId,
-										  @RequestBody final NotificationDTO notificationDTO,
-										  final Authentication authentication)
+										  @RequestBody final NotificationDTO notificationDTO)
 	{
-		
-		final Long connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 		
 		if (notificationDTO.getStatus() == null) {
 			throw new BusinessGlobalException("Notification status missing");
@@ -74,8 +73,30 @@ class NotificationController
 			throw new BusinessGlobalException("Status not accepted.");
 		}
 		
-		this.notificationControllerService.switchNotificationStatus(notifId, connectedUserId, notificationDTO);
+		notificationDTO.setId(notifId);
+		this.notificationControllerService.switchNotificationStatus(notificationDTO);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
+	
+	/**
+	 * Update status of many notifications in the same time.
+	 *
+	 * @param notifications
+	 * 		list of notifications to update.
+	 *
+	 * @return 202 status if everything OK.
+	 */
+	@PutMapping("/update/all")
+	ResponseEntity<Void> openAllNotification(@RequestBody final List<NotificationDTO> notifications)
+	{
+		notifications.forEach(n -> {
+			if (n.getStatus().equals(GlobalAppStatusEnum.UNREAD) || n.getStatus().equals(GlobalAppStatusEnum.READ)) {
+				this.notificationControllerService.switchNotificationStatus(n);
+			}
+		});
+		
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
 }

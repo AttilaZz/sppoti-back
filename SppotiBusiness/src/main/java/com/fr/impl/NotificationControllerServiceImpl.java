@@ -85,14 +85,13 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 	 */
 	@Transactional
 	@Override
-	public void switchNotificationStatus(final int notifId, final Long connectedUserId,
-										 final NotificationDTO notificationDTO)
+	public void switchNotificationStatus(final NotificationDTO notificationDTO)
 	{
 		final Optional<NotificationEntity> notification = Optional
-				.ofNullable(this.notificationRepository.findByUuid(notifId));
+				.ofNullable(this.notificationRepository.findByUuid(notificationDTO.getId()));
 		
 		notification.ifPresent(n -> {
-			if (!n.getTo().getId().equals(connectedUserId)) {
+			if (!n.getTo().getId().equals(getConnectedUser().getId())) {
 				throw new NotAdminException("This is not your notification");
 			}
 			
