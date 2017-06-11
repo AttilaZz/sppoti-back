@@ -13,7 +13,7 @@ public class ConnexionHistoryEntity extends AbstractCommonEntity
 	private String ip;
 	@Column(name = "country_code")
 	private String countryCode;
-	@Column(name = "country_name;")
+	@Column(name = "country_name")
 	private String countryName;
 	@Column(name = "region_code")
 	private String regionCode;
