@@ -128,10 +128,6 @@ public class UserEntity extends AbstractCommonEntity
 	@Column(name = "time_zone")
 	private String timeZone = "02";
 	
-	public UserEntity()
-	{
-	}
-	
 	public boolean isDeleted()
 	{
 		return this.deleted;

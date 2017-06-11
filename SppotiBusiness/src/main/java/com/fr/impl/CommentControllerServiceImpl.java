@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -65,8 +66,8 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			if (targetUser != 0 && targetUser != getConnectedUser().getUuid()) {
 				
 				//like on other posts not mine
-				if (commentEntity.get().getUser().getUuid() !=
-						commentEntity.get().getPost().getTargetUserProfile().getId()) {
+				if (!Objects.equals(commentEntity.get().getUser().getUuid(),
+						commentEntity.get().getPost().getTargetUserProfile().getUuid())) {
 					addNotification(NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getUser(),
 							commentEntity.get().getPost().getTargetUserProfile(), null, null,
 							commentEntity.get().getPost(), commentEntity.get());

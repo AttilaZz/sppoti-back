@@ -36,7 +36,7 @@ public class AbstractCommonEntity
 	 * fonctionnal id.
 	 */
 	@Column(nullable = false, unique = true, updatable = false)
-	private int uuid = UUID.randomUUID().hashCode() * UUID.randomUUID().hashCode();
+	private Integer uuid = UUID.randomUUID().hashCode() * UUID.randomUUID().hashCode();
 	
 	/**
 	 * {@inheritDoc}.
@@ -94,11 +94,11 @@ public class AbstractCommonEntity
 		this.version = version;
 	}
 	
-	public int getUuid() {
+	public Integer getUuid() {
 		return this.uuid;
 	}
 	
-	public void setUuid(final int uuid) {
+	public void setUuid(final Integer uuid) {
 		this.uuid = uuid;
 	}
 }

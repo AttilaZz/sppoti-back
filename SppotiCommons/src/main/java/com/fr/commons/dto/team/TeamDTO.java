@@ -44,6 +44,7 @@ public class TeamDTO extends AbstractCommonDTO
 	private String teamAdverseStatus;
 	private Boolean sentFromSppotiAdmin;
 	
+	@NotNull
 	private String timeZone;
 	
 	public String getName()

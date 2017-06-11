@@ -73,11 +73,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			throw new EntityNotFoundException("SportEntity id not found");
 		}
 		
-		final TeamEntity teamToSave = new TeamEntity();
-		teamToSave.setName(team.getName());
-		teamToSave.setCoverPath(team.getCoverPath());
-		teamToSave.setLogoPath(team.getLogoPath());
-		teamToSave.setSport(sportEntity);
+		final TeamEntity teamToSave = this.teamTransformer.dtoToModel(team);
+		
 		teamToSave.setTeamMembers(getTeamMembersEntityFromDto(team.getMembers(), teamToSave, null));
 		
 		final TeamEntity addedTeam = this.teamRepository.save(teamToSave);

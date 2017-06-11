@@ -5,6 +5,7 @@ import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.SportEntity;
 import com.fr.entities.SppotiEntity;
 import com.fr.entities.TeamEntity;
+import com.fr.repositories.SportRepository;
 import com.fr.repositories.SppotiRepository;
 import com.fr.repositories.TeamMembersRepository;
 import com.fr.transformers.TeamTransformer;
@@ -41,18 +42,24 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 	private final SppotiRepository sppotiRepository;
 	
 	/**
+	 * {@link SportEntity} repository.
+	 */
+	private final SportRepository sportRepository;
+	
+	/**
 	 * Init dependencies.
 	 */
 	@Autowired
 	public TeamTransformerImpl(final SportTransformer sportTransformer,
 							   final TeamMemberTransformer teamMemberTransformer,
 							   final TeamMembersRepository teamMembersRepository,
-							   final SppotiRepository sppotiRepository)
+							   final SppotiRepository sppotiRepository, final SportRepository sportRepository)
 	{
 		this.sportTransformer = sportTransformer;
 		this.teamMemberTransformer = teamMemberTransformer;
 		this.teamMembersRepository = teamMembersRepository;
 		this.sppotiRepository = sppotiRepository;
+		this.sportRepository = sportRepository;
 	}
 	
 	/**
@@ -96,12 +103,18 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 	{
 		final TeamEntity entity = new TeamEntity();
 		
-		entity.setUuid(dto.getId());
-		entity.setVersion(dto.getVersion());
+		if (dto.getId() != null) {
+			entity.setUuid(dto.getId());
+		}
+		if (dto.getVersion() != null) {
+			entity.setVersion(dto.getVersion());
+		}
 		
 		entity.setName(dto.getName());
 		entity.setCoverPath(dto.getCoverPath());
 		entity.setLogoPath(dto.getLogoPath());
+		entity.setTimeZone(dto.getTimeZone());
+		entity.setSport(this.sportRepository.getById(dto.getSportId()));
 		
 		return entity;
 	}
