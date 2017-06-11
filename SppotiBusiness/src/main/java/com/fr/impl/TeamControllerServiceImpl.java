@@ -23,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -83,11 +80,11 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		addedTeam.getTeamMembers().forEach(m -> {
 			if (!m.getUser().getId().equals(getConnectedUser().getId())) {
 				//Email
-				sendJoinTeamEmail(addedTeam, getUserById(m.getUser().getId()),
-						this.teamMembersRepository.findByTeamUuidAndAdminTrue(addedTeam.getUuid()));
+				sendJoinTeamEmail(addedTeam, getUserById(m.getUser().getId()), this.teamMembersRepository
+						.findByTeamUuidAndStatusNotAndAdminTrue(addedTeam.getUuid(), GlobalAppStatusEnum.DELETED));
 				//Notification
 				final TeamMemberEntity admin = this.teamMembersRepository
-						.findByTeamUuidAndAdminTrue(addedTeam.getUuid());
+						.findByTeamUuidAndStatusNotAndAdminTrue(addedTeam.getUuid(), GlobalAppStatusEnum.DELETED);
 				addNotification(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_TEAM, admin.getUser(), m.getUser(),
 						admin.getTeam(), null, null, null);
 			}
@@ -105,7 +102,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public void updateTeamMembers(final TeamDTO TeamDTO, final int memberId, final int teamId)
 	{
 		
-		final TeamMemberEntity usersTeam = this.teamMembersRepository.findByUserUuidAndTeamUuid(memberId, teamId);
+		final TeamMemberEntity usersTeam = this.teamMembersRepository
+				.findByUserUuidAndTeamUuidAndStatusNot(memberId, teamId, GlobalAppStatusEnum.DELETED);
 		
 		if (usersTeam == null) {
 			throw new EntityNotFoundException("Member not found");
@@ -152,7 +150,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
 		
-		final List<TeamMemberEntity> myTeams = this.teamMembersRepository.findByUserUuidAndAdminTrue(userId, pageable);
+		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
+				.findByUserUuidAndStatusNotAndAdminTrue(userId, GlobalAppStatusEnum.DELETED, pageable);
 		
 		return myTeams.stream().map(team -> fillTeamResponse(team.getTeam(), null)).collect(Collectors.toList());
 	}
@@ -165,7 +164,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public void acceptTeam(final int teamId, final int userId)
 	{
 		
-		final TeamMemberEntity teamMembers = this.teamMembersRepository.findByUserUuidAndTeamUuid(userId, teamId);
+		final TeamMemberEntity teamMembers = this.teamMembersRepository
+				.findByUserUuidAndTeamUuidAndStatusNot(userId, teamId, GlobalAppStatusEnum.DELETED);
 		
 		if (teamMembers == null) {
 			throw new EntityNotFoundException("TeamEntity not found");
@@ -175,8 +175,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		if (this.teamMembersRepository.save(teamMembers) != null) {
 			addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_TEAM_INVITATION, teamMembers.getUser(),
-					this.teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUser(), teamMembers.getTeam(),
-					null, null, null);
+					this.teamMembersRepository
+							.findByTeamUuidAndStatusNotAndAdminTrue(teamId, GlobalAppStatusEnum.DELETED).getUser(),
+					teamMembers.getTeam(), null, null, null);
 		}
 		
 	}
@@ -189,8 +190,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public void refuseTeam(final int teamId, final int userId)
 	{
 		
-		final Optional<TeamMemberEntity> teamMembers = Optional
-				.ofNullable(this.teamMembersRepository.findByUserUuidAndTeamUuid(userId, teamId));
+		final Optional<TeamMemberEntity> teamMembers = Optional.ofNullable(this.teamMembersRepository
+				.findByUserUuidAndTeamUuidAndStatusNot(userId, teamId, GlobalAppStatusEnum.DELETED));
 		
 		teamMembers.orElseThrow(() -> new EntityNotFoundException("TeamEntity not found"));
 		
@@ -199,8 +200,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			
 			if (this.teamMembersRepository.save(t) != null) {
 				addNotification(NotificationTypeEnum.X_REFUSED_YOUR_TEAM_INVITATION, t.getUser(),
-						this.teamMembersRepository.findByTeamUuidAndAdminTrue(teamId).getUser(), t.getTeam(), null,
-						null, null);
+						this.teamMembersRepository
+								.findByTeamUuidAndStatusNotAndAdminTrue(teamId, GlobalAppStatusEnum.DELETED).getUser(),
+						t.getTeam(), null, null, null);
 			}
 			
 		});
@@ -218,7 +220,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		//Check if connected user is team admin
 		final TeamMemberEntity adminTeamMembers = this.teamMembersRepository
-				.findByUserUuidAndTeamUuidAndAdminTrue(admin.getUuid(), teamId);
+				.findByUserUuidAndTeamUuidAndStatusNotAndAdminTrue(admin.getUuid(), teamId,
+						GlobalAppStatusEnum.DELETED);
 		
 		if (adminTeamMembers == null) {
 			throw new NotAdminException("Only team admin can delete members");
@@ -226,7 +229,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		//find target member to delete.
 		final TeamMemberEntity targetTeamMember = this.teamMembersRepository
-				.findByUserUuidAndTeamUuid(memberId, teamId);
+				.findByUserUuidAndTeamUuidAndStatusNot(memberId, teamId, GlobalAppStatusEnum.DELETED);
 		
 		if (targetTeamMember == null) {
 			throw new EntityNotFoundException("Member to delete not found");
@@ -241,7 +244,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		if (adminTeamMembers.getTeam().getId().equals(targetTeamMember.getTeam().getId())) {
 			
 			//Remove member.
-			this.teamMembersRepository.delete(targetTeamMember);
+			targetTeamMember.setStatus(GlobalAppStatusEnum.DELETED);
+			targetTeamMember.getSppotiMembers().forEach(s -> s.setStatus(GlobalAppStatusEnum.DELETED));
+			this.teamMembersRepository.save(targetTeamMember);
 			
 			//Notify him
 			//TODO: notification (Remove team member)
@@ -296,14 +301,15 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		final TeamEntity team = teamList.get(0);
 		
 		//Check if connected user is team admin
-		final TeamMemberEntity teamAdmin = this.teamMembersRepository.findByTeamUuidAndAdminTrue(teamId);
+		final TeamMemberEntity teamAdmin = this.teamMembersRepository
+				.findByTeamUuidAndStatusNotAndAdminTrue(teamId, GlobalAppStatusEnum.DELETED);
 		if (!teamAdmin.getUser().getId().equals(getConnectedUser().getId())) {
 			//NOT TEAM ADMIN.
 			throw new NotAdminException("You must be the team admin to access this service");
 		}
 		
 		//Check if the user is not already a member
-		if (team.getTeamMembers().stream().anyMatch(tm -> tm.getUser().getUuid() == userParam.getId())) {
+		if (team.getTeamMembers().stream().anyMatch(tm -> Objects.equals(tm.getUser().getUuid(), userParam.getId()))) {
 			throw new BusinessGlobalException("User is already a member in this team.");
 		}
 		
@@ -344,7 +350,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	{
 		
 		final TeamMemberEntity teamMemberEntity = this.teamMembersRepository
-				.findByUserUuidAndTeamUuidAndAdminTrue(connectedUserId, TeamDTO.getId());
+				.findByUserUuidAndTeamUuidAndStatusNotAndAdminTrue(connectedUserId, TeamDTO.getId(),
+						GlobalAppStatusEnum.DELETED);
 		
 		if (teamMemberEntity == null) {
 			throw new NotAdminException("You must be the team admin to access this service");
@@ -381,7 +388,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		checkTeamAdminAccess(teamId, connectedUserId);
 		
-		final List<TeamMemberEntity> teamMemberEntity = this.teamMembersRepository.findByTeamUuid(teamId);
+		final List<TeamMemberEntity> teamMemberEntity = this.teamMembersRepository
+				.findByTeamUuidAndStatusNot(teamId, GlobalAppStatusEnum.DELETED);
 		
 		teamMemberEntity.forEach(t -> {
 			if (t.getUuid() == memberId || t.getUser().getUuid() == memberId) {
@@ -411,8 +419,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			filter = t -> t.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name());
 		}
 		
-		return this.teamMembersRepository.findByUserUuidAndAdminFalse(userId, pageable).stream().filter(filter)
-				.map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
+		return this.teamMembersRepository
+				.findByUserUuidAndStatusNotAndAdminFalse(userId, GlobalAppStatusEnum.DELETED, pageable).stream()
+				.filter(filter).map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -424,7 +433,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
-				.findByUserUuidAndTeamDeletedFalse(getConnectedUser().getUuid(), pageable);
+				.findByUserUuidAndStatusNotAndTeamDeletedFalse(getConnectedUser().getUuid(),
+						GlobalAppStatusEnum.DELETED, pageable);
 		
 		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null)).collect(Collectors.toList());
 	}
@@ -632,7 +642,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			
 			//all user teams.
 			final List<TeamDTO> teamDTOList = this.teamMembersRepository
-					.findByTeamSportIdAndUserIdAndAdminTrue(sppoti.getSport().getId(), userId, pageable).stream()
+					.findByTeamSportIdAndUserIdAndStatusNotAndAdminTrue(sppoti.getSport().getId(), userId,
+							GlobalAppStatusEnum.DELETED, pageable).stream()
 					.map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
 			
 			//Do not return teams that are already in sppoti adverse team list.
@@ -659,7 +670,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
 		
 		return this.teamMembersRepository
-				.findByTeamSportIdAndUserIdAndAdminTrue(sportId, getConnectedUser().getId(), pageable).stream()
+				.findByTeamSportIdAndUserIdAndStatusNotAndAdminTrue(sportId, getConnectedUser().getId(),
+						GlobalAppStatusEnum.DELETED, pageable).stream()
 				.map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
 		
 	}
@@ -673,7 +685,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		final Pageable pageable = new PageRequest(page, this.teamPageSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
-				.findByUserUuidAndTeamNameContaining(getConnectedUser().getUuid(), team, pageable);
+				.findByUserUuidAndTeamNameContainingAndStatusNot(getConnectedUser().getUuid(), team,
+						GlobalAppStatusEnum.DELETED, pageable);
 		
 		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null)).collect(Collectors.toList());
 		
@@ -701,7 +714,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		final Pageable pageable = new PageRequest(page, this.teamPageSize);
 		
 		final List<TeamMemberEntity> myTeams = this.teamMembersRepository
-				.findByTeamSportIdAndUserUuidAndTeamNameContaining(sport, getConnectedUser().getUuid(), team, pageable);
+				.findByTeamSportIdAndUserUuidAndTeamNameContainingAndStatusNot(sport, getConnectedUser().getUuid(),
+						team, GlobalAppStatusEnum.DELETED, pageable);
 		
 		return myTeams.stream().map(t -> fillTeamResponse(t.getTeam(), null)).collect(Collectors.toList());
 	}
@@ -717,7 +731,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	private void checkTeamAdminAccess(final int teamId, final int connectedUserId)
 	{
-		if (this.teamMembersRepository.findByUserUuidAndTeamUuidAndAdminTrue(connectedUserId, teamId) == null) {
+		if (this.teamMembersRepository.findByUserUuidAndTeamUuidAndStatusNotAndAdminTrue(connectedUserId, teamId,
+				GlobalAppStatusEnum.DELETED) == null) {
 			throw new NotAdminException("You must be the team admin to access this service");
 		}
 	}

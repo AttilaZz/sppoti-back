@@ -308,7 +308,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				
 				if (sppoti != null) {
 					final TeamMemberEntity sppoterMember = this.teamMembersRepository
-							.findByUserUuidAndTeamUuid(userDTO.getId(), team.getUuid());
+							.findByUserUuidAndTeamUuidAndStatusNot(userDTO.getId(), team.getUuid(),
+									GlobalAppStatusEnum.DELETED);
 
                     /* if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter. */
 					if (userDTO.getxPosition() != null && !userDTO.getxPosition().equals(0)) {

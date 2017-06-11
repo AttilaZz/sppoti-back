@@ -1,6 +1,7 @@
 package com.fr.transformers.impl;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.SppoterEntity;
 import com.fr.entities.SppotiEntity;
 import com.fr.entities.SppotiRatingEntity;
@@ -96,7 +97,8 @@ public class TeamMemberTransformer
 			userDTO.setRating(getRatingStars(memberEntity.getUser().getUuid(), sppotiId));
 			
 			final Optional<SppoterEntity> optional = Optional.ofNullable(this.sppotiMembersRepository
-					.findByTeamMemberUserUuidAndSppotiUuid(memberEntity.getUser().getUuid(), sppotiId));
+					.findByTeamMemberUserUuidAndSppotiUuidAndStatusNot(memberEntity.getUser().getUuid(), sppotiId,
+							GlobalAppStatusEnum.DELETED));
 			optional.ifPresent(sm -> userDTO.setHasRateOtherSppoters(sm.getHasRateOtherSppoter()));
 			
 		}

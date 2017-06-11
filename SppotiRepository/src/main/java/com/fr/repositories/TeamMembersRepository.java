@@ -1,5 +1,6 @@
 package com.fr.repositories;
 
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.TeamMemberEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +21,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByUserUuidAndTeamUuid(int memberId, int teamId);
+	TeamMemberEntity findByUserUuidAndTeamUuidAndStatusNot(int memberId, int teamId, GlobalAppStatusEnum status);
 	
 	/**
 	 * @param userId
@@ -30,7 +31,8 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of found team.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndAdminTrue(int userId, Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndStatusNotAndAdminTrue(int userId, GlobalAppStatusEnum status,
+																  Pageable pageable);
 	
 	/**
 	 * @param memberId
@@ -40,7 +42,8 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByUserUuidAndTeamUuidAndAdminTrue(int memberId, int teamId);
+	TeamMemberEntity findByUserUuidAndTeamUuidAndStatusNotAndAdminTrue(int memberId, int teamId,
+																	   GlobalAppStatusEnum status);
 	
 	/**
 	 * @param id
@@ -52,7 +55,9 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of teams.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndTeamNameContaining(int id, String team, Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndTeamNameContainingAndStatusNot(int id, String team,
+																		   GlobalAppStatusEnum status,
+																		   Pageable pageable);
 	
 	/**
 	 * @param teamId
@@ -60,7 +65,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByTeamUuidAndAdminTrue(int teamId);
+	TeamMemberEntity findByTeamUuidAndStatusNotAndAdminTrue(int teamId, GlobalAppStatusEnum status);
 	
 	/**
 	 * @param sport
@@ -74,8 +79,10 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of teams.
 	 */
-	List<TeamMemberEntity> findByTeamSportIdAndUserUuidAndTeamNameContaining(Long sport, int user, String team,
-																			 Pageable pageable);
+	List<TeamMemberEntity> findByTeamSportIdAndUserUuidAndTeamNameContainingAndStatusNot(Long sport, int user,
+																						 String team,
+																						 GlobalAppStatusEnum status,
+																						 Pageable pageable);
 	
 	/**
 	 * @param teamId
@@ -83,17 +90,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return all team members.
 	 */
-	List<TeamMemberEntity> findByTeamUuid(int teamId);
-	
-	/**
-	 * @param teamId
-	 * 		team id.
-	 * @param memberId
-	 * 		member id.
-	 *
-	 * @return team member.
-	 */
-	TeamMemberEntity findByTeamUuidAndTeamCaptainTrue(int teamId, int memberId);
+	List<TeamMemberEntity> findByTeamUuidAndStatusNot(int teamId, GlobalAppStatusEnum status);
 	
 	/**
 	 * @param userId
@@ -103,7 +100,8 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return all confirmed teams.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndAdminFalse(int userId, Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndStatusNotAndAdminFalse(int userId, GlobalAppStatusEnum status,
+																   Pageable pageable);
 	
 	/**
 	 * @param uuid
@@ -113,33 +111,8 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return all deleted teams.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndTeamDeletedFalse(int uuid, Pageable pageable);
-	
-	/**
-	 * @param sport
-	 * 		sport id.
-	 * @param team
-	 * 		team name prefix.
-	 * @param pageable
-	 * 		page number. sppoti_adverse
-	 *
-	 * @return list of team members.
-	 */
-	List<TeamMemberEntity> findDistinctByTeamSportIdAndTeamNameContaining(Long sport, String team, Pageable pageable);
-	
-	/**
-	 * Find all user's teams by sport.
-	 *
-	 * @param sportId
-	 * 		sppoti sport id.
-	 * @param userId
-	 * 		connected user id.
-	 * @param pageable
-	 * 		page number.
-	 *
-	 * @return list of {@link TeamMemberEntity}
-	 */
-	List<TeamMemberEntity> findByTeamSportIdAndUserId(Long sportId, Long userId, Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndStatusNotAndTeamDeletedFalse(int uuid, GlobalAppStatusEnum status,
+																		 Pageable pageable);
 	
 	/**
 	 * Find all user's teams by sport and admin true.
@@ -153,5 +126,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of {@link TeamMemberEntity}
 	 */
-	List<TeamMemberEntity> findByTeamSportIdAndUserIdAndAdminTrue(Long sportId, Long userId, Pageable pageable);
+	List<TeamMemberEntity> findByTeamSportIdAndUserIdAndStatusNotAndAdminTrue(Long sportId, Long userId,
+																			  GlobalAppStatusEnum status,
+																			  Pageable pageable);
 }

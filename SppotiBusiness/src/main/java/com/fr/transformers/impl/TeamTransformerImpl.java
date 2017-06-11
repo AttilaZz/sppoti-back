@@ -1,6 +1,7 @@
 package com.fr.transformers.impl;
 
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.SportEntity;
 import com.fr.entities.SppotiEntity;
@@ -84,8 +85,8 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 			sppotiEntity = this.sppotiRepository.findOne(model.getRelatedSppotiId());
 		}
 		
-		teamDTO.setTeamAdmin(this.teamMemberTransformer
-				.modelToDto(this.teamMembersRepository.findByTeamUuidAndAdminTrue(model.getUuid()), sppotiEntity));
+		teamDTO.setTeamAdmin(this.teamMemberTransformer.modelToDto(this.teamMembersRepository
+				.findByTeamUuidAndStatusNotAndAdminTrue(model.getUuid(), GlobalAppStatusEnum.DELETED), sppotiEntity));
 		
 		final SppotiEntity finalSppotiEntity = sppotiEntity;
 		teamDTO.setMembers(

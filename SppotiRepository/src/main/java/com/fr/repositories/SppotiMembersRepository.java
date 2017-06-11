@@ -27,7 +27,8 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 *
 	 * @return sppoter related to a defined team and a sppoti.
 	 */
-	SppoterEntity findByTeamMemberUserUuidAndSppotiUuid(int userId, int sppotiId);
+	SppoterEntity findByTeamMemberUserUuidAndSppotiUuidAndStatusNot(int userId, int sppotiId,
+																	GlobalAppStatusEnum status);
 	
 	/**
 	 * Find sppoter by team and sport.
@@ -40,7 +41,8 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 *
 	 * @return all joined sppoties for a particular sport.
 	 */
-	List<SppoterEntity> findByTeamMemberUserUuidAndSppotiSportId(int uuid, Long id);
+	List<SppoterEntity> findByTeamMemberUserUuidAndSppotiSportIdAndStatusNot(int uuid, Long id,
+																			 GlobalAppStatusEnum status);
 	
 	/**
 	 * Find sppoter by his global user id.
@@ -53,7 +55,7 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 *
 	 * @return return all joined sppoties, unless refused ones.
 	 */
-	List<SppoterEntity> findByTeamMemberUserUuid(int userId, Pageable pageable);
+	List<SppoterEntity> findByTeamMemberUserUuidAndStatusNot(int userId, GlobalAppStatusEnum status, Pageable pageable);
 	
 	/**
 	 * Find all upcomming sppoties:
