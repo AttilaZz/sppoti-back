@@ -63,7 +63,7 @@ class AccountAddController
 		
 		this.accountControllerService.saveConnexionHistory(historyDto);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		return ResponseEntity.status(HttpStatus.OK).build();
 		
 	}
 	

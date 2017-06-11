@@ -528,7 +528,13 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	@Override
 	@Transactional
 	public ConnexionHistoryDto saveConnexionHistory(final ConnexionHistoryDto historyDto) {
-		return this.connexionHistoryTransformer.modelToDto(
-				this.connexionHistoryRepository.save(this.connexionHistoryTransformer.dtoToModel(historyDto)));
+		try {
+			historyDto.setUserId(getConnectedUser().getId());
+			
+			return this.connexionHistoryTransformer.modelToDto(
+					this.connexionHistoryRepository.save(this.connexionHistoryTransformer.dtoToModel(historyDto)));
+		} catch (final RuntimeException e) {
+			return new ConnexionHistoryDto();
+		}
 	}
 }

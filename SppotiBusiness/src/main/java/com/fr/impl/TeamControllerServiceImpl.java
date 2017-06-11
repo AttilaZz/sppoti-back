@@ -309,7 +309,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		}
 		
 		//Check if the user is not already a member
-		if (team.getTeamMembers().stream().anyMatch(tm -> Objects.equals(tm.getUser().getUuid(), userParam.getId()))) {
+		if (team.getTeamMembers().stream().anyMatch(tm -> Objects.equals(tm.getUser().getUuid(), userParam.getId()) &&
+				!tm.getStatus().equals(GlobalAppStatusEnum.DELETED))) {
 			throw new BusinessGlobalException("User is already a member in this team.");
 		}
 		

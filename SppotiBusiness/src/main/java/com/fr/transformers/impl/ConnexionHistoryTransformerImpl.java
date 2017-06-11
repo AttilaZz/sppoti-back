@@ -3,8 +3,9 @@ package com.fr.transformers.impl;
 import com.fr.commons.dto.ConnexionHistoryDto;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.entities.ConnexionHistoryEntity;
-import com.fr.entities.UserEntity;
+import com.fr.repositories.UserRepository;
 import com.fr.transformers.ConnexionHistoryTransformer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,6 +16,15 @@ public class ConnexionHistoryTransformerImpl extends
 		AbstractTransformerImpl<ConnexionHistoryDto, ConnexionHistoryEntity> implements ConnexionHistoryTransformer
 {
 	
+	/** User repository. */
+	private final UserRepository userRepository;
+	
+	/** Init transformer. */
+	@Autowired
+	public ConnexionHistoryTransformerImpl(final UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -22,9 +32,8 @@ public class ConnexionHistoryTransformerImpl extends
 	public ConnexionHistoryEntity dtoToModel(final ConnexionHistoryDto dto) {
 		final ConnexionHistoryEntity model = new ConnexionHistoryEntity();
 		SppotiBeanUtils.copyProperties(model, dto);
-		final UserEntity userEntity = new UserEntity();
-		userEntity.setId(dto.getUserId());
-		model.setUser(userEntity);
+		
+		model.setUser(this.userRepository.findOne(dto.getUserId()));
 		return model;
 	}
 	

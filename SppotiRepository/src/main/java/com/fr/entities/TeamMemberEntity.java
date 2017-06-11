@@ -1,6 +1,7 @@
 package com.fr.entities;
 
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,6 +17,7 @@ public class TeamMemberEntity extends AbstractCommonEntity
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Where(clause = "status!='DELETED'")
 	private GlobalAppStatusEnum status = GlobalAppStatusEnum.PENDING;
 	
 	@Column

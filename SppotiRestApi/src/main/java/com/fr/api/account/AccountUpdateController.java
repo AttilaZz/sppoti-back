@@ -112,7 +112,6 @@ class AccountUpdateController
 	{
 		this.accountControllerService.deactivateAccount(userId);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
-		
 	}
 	
 }
