@@ -58,7 +58,7 @@ class AccountAddController
 	 */
 	@PostMapping(value = "/connexion/endpoint")
 	@ResponseBody
-	ResponseEntity addConnexionHistory(@RequestBody @Valid final ConnexionHistoryDto historyDto)
+	ResponseEntity addConnexionHistory(@RequestBody final ConnexionHistoryDto historyDto)
 	{
 		
 		this.accountControllerService.saveConnexionHistory(historyDto);
