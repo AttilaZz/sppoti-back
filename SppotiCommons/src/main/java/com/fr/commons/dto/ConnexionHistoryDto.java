@@ -1,33 +1,46 @@
 package com.fr.commons.dto;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+;
 
 /**
  * Created by djenanewail on 6/11/17.
  */
 public class ConnexionHistoryDto extends AbstractCommonDTO
 {
-	@NotEmpty
+	
+	@JsonProperty("ip")
 	private String ip;
-	@NotEmpty
+	
+	@JsonProperty("country_code")
 	private String countryCode;
-	@NotEmpty
+	
+	@JsonProperty("country_name")
 	private String countryName;
-	@NotEmpty
+	
+	@JsonProperty("region_code")
 	private String regionCode;
-	@NotEmpty
+	
+	@JsonProperty("region_name")
 	private String regionName;
-	@NotEmpty
+	
+	@JsonProperty("city")
 	private String city;
-	@NotEmpty
+	
+	@JsonProperty("zip_code")
 	private String zipCode;
-	@NotEmpty
+	
+	@JsonProperty("time_zone")
 	private String timeZone;
-	@NotEmpty
+	
+	@JsonProperty("latitude")
 	private String latitude;
-	@NotEmpty
+	
+	@JsonProperty("longitude")
 	private String longitude;
-	@NotEmpty
+	
+	@JsonProperty("metro_code")
 	private String metroCode;
 	
 	private Long userId;
