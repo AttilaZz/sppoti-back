@@ -23,11 +23,13 @@ import com.fr.transformers.impl.TeamMemberTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -162,8 +164,13 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 */
 	protected UserEntity getConnectedUser()
 	{
-		final UserDetails accountUserDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-				.getPrincipal();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		if(auth.getPrincipal().equals("anonymousUser")){
+			return null;
+		}
+
+		final UserDetails accountUserDetails = (UserDetails) auth.getPrincipal();
 		return this.getUserByLogin(accountUserDetails.getUsername(), true);
 	}
 	

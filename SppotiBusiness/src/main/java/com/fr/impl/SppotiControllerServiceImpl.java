@@ -37,29 +37,22 @@ import java.util.stream.Collectors;
 class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService
 {
 	
-	/**
-	 * {@link SportEntity} transformer.
-	 */
+	/** {@link SportEntity} transformer. */
 	private final SportTransformer sportTransformer;
-	/**
-	 * {@link SppotiEntity} transformer.
-	 */
+
+	/** {@link SppotiEntity} transformer.*/
 	private final SppotiTransformer sppotiTransformer;
-	/**
-	 * {@link TeamMemberEntity} transformer.
-	 */
+
+	/** {@link TeamMemberEntity} transformer. */
 	private final TeamMemberTransformer teamMemberTransformer;
-	/**
-	 * {@link UserEntity} transformer
-	 */
+
+	/** {@link UserEntity} transformer */
 	private final UserTransformer userTransformer;
-	/**
-	 * Sppoti mailer.
-	 */
+
+	/** Sppoti mailer. */
 	private final SppotiMailer sppotiMailer;
-	/**
-	 * Returned sppoti list size.
-	 */
+
+	/** Returned sppoti list size. */
 	@Value("${key.sppotiesPerPage}")
 	private int sppotiSize;
 	
