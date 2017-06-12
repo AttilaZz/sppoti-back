@@ -208,16 +208,18 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		final UserEntity entity = getUserByLogin(username, false);
 		//if account is deactivated and suppress date is less than 90 days reactivate account.
 		UserEntity temp = null;
-		if (entity.getDeactivationDate() != null &&
-				!SppotiUtils.isAccountReadyToBeCompletlyDeleted(entity.getDeactivationDate(), 90)) {
-			entity.setDeleted(false);
-			temp = this.userRepository.saveAndFlush(entity);
+		if (entity != null){
+			if (entity.getDeactivationDate() != null &&
+					!SppotiUtils.isAccountReadyToBeCompletlyDeleted(entity.getDeactivationDate(), 90)) {
+				entity.setDeleted(false);
+				temp = this.userRepository.saveAndFlush(entity);
+				return this.userTransformer.modelToDto(temp);
+			}
+			return this.userTransformer.modelToDto(entity);
+
 		}
-		
-		if (temp != null) {
-			return this.userTransformer.modelToDto(temp);
-		}
-		return this.userTransformer.modelToDto(entity);
+
+		return null;
 	}
 	
 	/**

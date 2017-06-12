@@ -343,9 +343,14 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	{
 		
 		final Optional<UserEntity> optional = Optional
-				.ofNullable(this.userRepository.getByEmailAndDeletedFalseAndConfirmedTrue(userDTO.getEmail()));
+				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
 		
 		optional.ifPresent(u -> {
+
+			if(!u.isConfirmed()){
+				throw new AccountConfirmationLinkExpiredException("Account confirmation email has expired or not sent");
+			}
+
 			final String code = SppotiUtils.generateConfirmationKey();
 			
 			final Date tokenExpiryDate = SppotiUtils.generateExpiryDate(this.daysBeforeExpiration);
@@ -354,8 +359,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			u.setRecoverCode(code);
 			this.userRepository.save(u);
 			this.LOGGER.info("Recover password email sent tocommit: " + u.getEmail());
-			
-			
+
 			final Thread thread = new Thread(() -> this.accountMailer
 					.sendRecoverPasswordEmail(this.userTransformer.modelToDto(u), code, tokenExpiryDate));
 			thread.start();

@@ -83,4 +83,13 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>
 	 * Find user in login process by username.
 	 */
 	UserEntity findByUsername(String username);
+
+	/**
+	 * Find all existing users accounts by email.
+	 * Otherwise confirmed or not.
+	 *
+	 * @param email user email.
+	 * @return User account.
+	 */
+	UserEntity getByEmailAndDeletedFalse(String email);
 }
