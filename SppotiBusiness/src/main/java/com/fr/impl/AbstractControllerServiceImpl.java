@@ -208,7 +208,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		final UserEntity entity = getUserByLogin(username, false);
 		//if account is deactivated and suppress date is less than 90 days reactivate account.
 		UserEntity temp = null;
-		if (entity != null){
+		if (entity != null) {
 			if (entity.getDeactivationDate() != null &&
 					!SppotiUtils.isAccountReadyToBeCompletlyDeleted(entity.getDeactivationDate(), 90)) {
 				entity.setDeleted(false);
@@ -216,9 +216,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				return this.userTransformer.modelToDto(temp);
 			}
 			return this.userTransformer.modelToDto(entity);
-
+			
 		}
-
+		
 		return null;
 	}
 	
@@ -384,7 +384,19 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		final List<UserDTO> teamUsers = new ArrayList<>();
 		
 		for (final TeamMemberEntity memberEntity : team.getTeamMembers()) {
-			teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, sppoti));
+			/**
+			 * If team member is not deleted && Sppoter Not deleted too, add sppoter to the list of members.
+			 */
+			if (sppoti != null) {
+				if (!memberEntity.getStatus().equals(GlobalAppStatusEnum.DELETED) &&
+						memberEntity.getSppotiMembers().stream().anyMatch(
+								s -> s.getSppoti().getUuid().equals(sppoti.getUuid()) &&
+										!s.getStatus().equals(GlobalAppStatusEnum.DELETED))) {
+					teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, sppoti));
+				}
+			} else if (!memberEntity.getStatus().equals(GlobalAppStatusEnum.DELETED)) {
+				teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, sppoti));
+			}
 		}
 		final TeamDTO teamDTO = this.teamTransformer.modelToDto(team);
 		teamDTO.setMembers(teamUsers);
@@ -507,6 +519,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * @param userId
 	 * 		user id resource.
 	 */
+	
 	void CheckConnectedUserAccessPrivileges(final int userId)
 	{
 		if (getConnectedUser().getUuid() != userId) {
