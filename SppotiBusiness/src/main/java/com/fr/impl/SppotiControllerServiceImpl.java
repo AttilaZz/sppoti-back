@@ -512,12 +512,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 								teamAdverse.setStatus(GlobalAppStatusEnum.valueOf(teamDTO.getTeamAdverseStatus()));
 								this.sppotiRepository.save(sp);
 								
-								//get team adverse admin.
-								final UserEntity teamAdverseAdmin = tad.getTeamMembers().stream()
-										.filter(t -> t.getAdmin().equals(true) &&
-												Objects.equals(t.getTeam().getUuid(), teamDTO.getId())).findFirst()
-										.get().getUser();
-								
 								//Convert team members to sppoters if status equals to confirmed
 								if (GlobalAppStatusEnum.valueOf(teamDTO.getTeamAdverseStatus())
 										.equals(GlobalAppStatusEnum.CONFIRMED)) {
