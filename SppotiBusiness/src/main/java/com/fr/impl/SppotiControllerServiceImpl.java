@@ -537,7 +537,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 								
 								//send notification to team adverse admins.
 								teamAdverse.getTeam().getTeamMembers().forEach(m -> {
-									if (m.getAdmin()) {
+									if (m.getSppotiMembers().stream().anyMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
 										addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_YOUR_CHALLENGE,
 												sp.getUserSppoti(), m.getUser(), teamAdverse.getTeam(), sp, null, null);
 									}
