@@ -31,7 +31,7 @@ public class ResourcesEntity
     @Column
     private String dateTime = new Date().toString();
     @Column
-    private boolean isSelected = false;
+    private boolean selected = false;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
@@ -70,11 +70,11 @@ public class ResourcesEntity
     }
 
     public boolean isSelected() {
-        return isSelected;
+        return selected;
     }
 
     public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
+        this.selected = isSelected;
     }
 
     public UserEntity getUserRessources() {
@@ -112,7 +112,7 @@ public class ResourcesEntity
 
         ResourcesEntity that = (ResourcesEntity) o;
 
-        if (isSelected != that.isSelected) return false;
+        if (selected != that.selected) return false;
         if (url != null ? !url.equals(that.url) : that.url != null) return false;
         if (description != null ? !description.equals(that.description) : that.description != null) return false;
         if (type != null ? !type.equals(that.type) : that.type != null) return false;
@@ -133,7 +133,7 @@ public class ResourcesEntity
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (typeExtension != null ? typeExtension.hashCode() : 0);
         result = 31 * result + (dateTime != null ? dateTime.hashCode() : 0);
-        result = 31 * result + (isSelected ? 1 : 0);
+        result = 31 * result + (selected ? 1 : 0);
         return result;
     }
 }

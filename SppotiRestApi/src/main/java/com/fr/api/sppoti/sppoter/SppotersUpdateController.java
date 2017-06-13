@@ -38,7 +38,7 @@ class SppotersUpdateController
 	 * @return 202 status if sppoti status updated.
 	 */
 	@PutMapping("/accept/{userId}")
-	ResponseEntity<String> acceptSppoti(@PathVariable final int sppotiId, @PathVariable final int userId)
+	ResponseEntity<String> acceptSppoti(@PathVariable final String sppotiId, @PathVariable final String userId)
 	{
 		
 		this.sppotiControllerService.acceptSppoti(sppotiId, userId);
@@ -56,7 +56,7 @@ class SppotersUpdateController
 	 * @return 202 status if sppoti status updated.
 	 */
 	@PutMapping("/refuse/{userId}")
-	ResponseEntity<Void> refuseSppoti(@PathVariable final int sppotiId, @PathVariable final int userId)
+	ResponseEntity<Void> refuseSppoti(@PathVariable final String sppotiId, @PathVariable final String userId)
 	{
 		
 		this.sppotiControllerService.refuseSppoti(userId, sppotiId);

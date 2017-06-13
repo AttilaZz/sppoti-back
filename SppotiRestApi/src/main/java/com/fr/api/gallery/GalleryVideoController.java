@@ -38,7 +38,7 @@ class GalleryVideoController
 	 * @return all videos posted by user.
 	 */
 	@GetMapping(value = "/{page}")
-	ResponseEntity<List<PostDTO>> videoGallery(@PathVariable final int page, @PathVariable final int userId)
+	ResponseEntity<List<PostDTO>> videoGallery(@PathVariable final int page, @PathVariable final String userId)
 	{
 		
 		return new ResponseEntity<>(this.postControllerService.getVideoGallery(userId, page), HttpStatus.OK);

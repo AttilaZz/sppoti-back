@@ -15,7 +15,7 @@ public class ScoreDTO extends AbstractCommonDTO
 	
 	/** Sppoti Id. */
 	@NotNull
-	private Integer sppotiId;
+	private String sppotiId;
 	
 	/** Host team score. */
 	@NotNull
@@ -27,12 +27,12 @@ public class ScoreDTO extends AbstractCommonDTO
 	
 	private String status;
 	
-	public Integer getSppotiId()
+	public String getSppotiId()
 	{
 		return this.sppotiId;
 	}
 	
-	public void setSppotiId(final Integer sppotiId)
+	public void setSppotiId(final String sppotiId)
 	{
 		this.sppotiId = sppotiId;
 	}

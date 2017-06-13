@@ -23,7 +23,7 @@ public interface MyUserDetails extends UserDetails
 	 *
 	 * @return user unique id.
 	 */
-	int getUuid();
+	String getUuid();
 	
 	/**
 	 * Get user account details.

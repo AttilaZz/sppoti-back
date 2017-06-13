@@ -46,7 +46,7 @@ class TeamUpdateController
 	 * @return The updated team.
 	 */
 	@PutMapping
-	ResponseEntity<TeamDTO> updateTeam(@PathVariable final int teamId, @RequestBody final TeamDTO teamRequestDTO,
+	ResponseEntity<TeamDTO> updateTeam(@PathVariable final String teamId, @RequestBody final TeamDTO teamRequestDTO,
 									   final Authentication authentication)
 	{
 		
@@ -72,7 +72,7 @@ class TeamUpdateController
 			canUpdate = true;
 		}
 		
-		final int connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getUuid();
+		final String connectedUserId = ((AccountUserDetails) authentication.getPrincipal()).getUuid();
 		teamRequestDTO.setId(teamId);
 		if (canUpdate) {
 			this.teamControllerService.updateTeam(connectedUserId, teamRequestDTO);
@@ -92,7 +92,7 @@ class TeamUpdateController
 	 * @return 202 http status if updated succeed.
 	 */
 	@PutMapping("/accept")
-	ResponseEntity<Void> acceptTeam(@PathVariable final int teamId, final Authentication authentication)
+	ResponseEntity<Void> acceptTeam(@PathVariable final String teamId, final Authentication authentication)
 	{
 		
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
@@ -111,7 +111,7 @@ class TeamUpdateController
 	 * @return 202 http status if updated succeed.
 	 */
 	@PutMapping("/refuse")
-	ResponseEntity<Void> refuseTeam(@PathVariable final int teamId, final Authentication authentication)
+	ResponseEntity<Void> refuseTeam(@PathVariable final String teamId, final Authentication authentication)
 	{
 		
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
@@ -130,7 +130,7 @@ class TeamUpdateController
 	 * @return 202 http status if updated succeed.
 	 */
 	@PutMapping("/challenge")
-	ResponseEntity<TeamDTO> requestChallenge(@PathVariable final int teamId, @RequestBody final SppotiDTO dto)
+	ResponseEntity<TeamDTO> requestChallenge(@PathVariable final String teamId, @RequestBody final SppotiDTO dto)
 	{
 		
 		if (dto.getId() == null || !StringUtils.hasText(dto.getTeamAdverseStatus())) {

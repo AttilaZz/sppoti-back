@@ -11,5 +11,5 @@ import java.util.Set;
  */
 public interface RatingRepository extends JpaRepository<SppotiRatingEntity, Long> {
 
-    Optional<Set<SppotiRatingEntity>> findByRatedSppoterUuidAndSppotiEntityUuid(int userId, int sppotiId);
+    Optional<Set<SppotiRatingEntity>> findByRatedSppoterUuidAndSppotiEntityUuid(String userId, String sppotiId);
 }

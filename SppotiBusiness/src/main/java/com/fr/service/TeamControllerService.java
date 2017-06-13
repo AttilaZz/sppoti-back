@@ -31,7 +31,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return team data.
 	 */
-	TeamDTO getTeamById(int teamId);
+	TeamDTO getTeamById(String teamId);
 	
 	/**
 	 * Update memeber informations.
@@ -43,7 +43,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @param teamId
 	 * 		team id.
 	 */
-	void updateTeamMembers(TeamDTO request, int memberId, int teamId);
+	void updateTeamMembers(TeamDTO request, String memberId, String teamId);
 	
 	/**
 	 * @param userId
@@ -53,7 +53,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return all team that user is admin
 	 */
-	List<TeamDTO> getAllTeamsByUserId(int userId, int page);
+	List<TeamDTO> getAllTeamsByUserId(String userId, int page);
 	
 	/**
 	 * Member can accept team invitation
@@ -63,7 +63,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @param uuid
 	 * 		user unique id.
 	 */
-	void acceptTeam(int teamId, int uuid);
+	void acceptTeam(String teamId, String uuid);
 	
 	/**
 	 * Member can refuse team invitation
@@ -73,7 +73,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @param uuid
 	 * 		user unique id.
 	 */
-	void refuseTeam(int teamId, int uuid);
+	void refuseTeam(String teamId, String uuid);
 	
 	/**
 	 * Delete a memeber from a team.
@@ -86,7 +86,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @param memberId
 	 * 		member team id.
 	 */
-	void deleteMemberFromTeam(int teamId, int memberId);
+	void deleteMemberFromTeam(String teamId, String memberId);
 	
 	/**
 	 * Delete a team.
@@ -96,7 +96,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @param id
 	 * 		team id.
 	 */
-	void deleteTeam(int id);
+	void deleteTeam(String id);
 	
 	/**
 	 * @param teamId
@@ -106,7 +106,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return Added memeber.
 	 */
-	UserDTO addMember(int teamId, UserDTO userParam);
+	UserDTO addMember(String teamId, UserDTO userParam);
 	
 	/**
 	 * @param team
@@ -148,7 +148,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return updated team.
 	 */
-	TeamDTO updateTeam(int teamId, TeamDTO TeamDTO);
+	TeamDTO updateTeam(String teamId, TeamDTO TeamDTO);
 	
 	/**
 	 * @param teamId
@@ -158,7 +158,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @param connectedUserId
 	 * 		connected user id.
 	 */
-	void updateTeamCaptain(int teamId, int memberId, int connectedUserId);
+	void updateTeamCaptain(String teamId, String memberId, String connectedUserId);
 	
 	/**
 	 * Get all joined teams, except my teams.
@@ -170,7 +170,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return all teams.
 	 */
-	List<TeamDTO> getAllJoinedTeamsByUserId(int userId, int page);
+	List<TeamDTO> getAllJoinedTeamsByUserId(String userId, int page);
 	
 	/**
 	 * @param userId
@@ -180,7 +180,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return all deleted teams.
 	 */
-	List<TeamDTO> getAllDeletedTeamsByUserId(int userId, int page);
+	List<TeamDTO> getAllDeletedTeamsByUserId(String userId, int page);
 	
 	
 	/**
@@ -191,7 +191,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @param teamId
 	 * 		team id.
 	 */
-	TeamDTO responseToSppotiAdminChallenge(SppotiDTO dto, int teamId);
+	TeamDTO responseToSppotiAdminChallenge(SppotiDTO dto, String teamId);
 	
 	/**
 	 * Get all pending challe,nge sppoti requests, sent from sppoti admin.
@@ -203,7 +203,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return all pending sppoti challenge requests.
 	 */
-	List<SppotiDTO> getAllPendingChallenges(int teamId, int page);
+	List<SppotiDTO> getAllPendingChallenges(String teamId, int page);
 	
 	/**
 	 * @param sppotiId
@@ -215,7 +215,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return list of teams.
 	 */
-	List<TeamDTO> findAllAdverseTeamsAllowedToBeChallengedBySppotiAdmin(int sppotiId, String team, int page);
+	List<TeamDTO> findAllAdverseTeamsAllowedToBeChallengedBySppotiAdmin(String sppotiId, String team, int page);
 	
 	/**
 	 * Get all my teams that can send challenge request to sppoti admin.
@@ -229,7 +229,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return list of all founded teams.
 	 */
-	List<TeamDTO> getAllAllowedTeamsToChallengeSppoti(Long userId, Integer sppotiId, int page);
+	List<TeamDTO> getAllAllowedTeamsToChallengeSppoti(Long userId, String sppotiId, int page);
 	
 	/**
 	 * Get all teams by sport id.

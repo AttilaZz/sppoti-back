@@ -40,7 +40,7 @@ class GalleryPhotoController
 	 * @return List of all photos posted by a user.
 	 */
 	@GetMapping(value = "/{page}")
-	ResponseEntity<List<PostDTO>> photoGallery(@PathVariable final int page, @PathVariable final int userId)
+	ResponseEntity<List<PostDTO>> photoGallery(@PathVariable final int page, @PathVariable final String userId)
 	{
 		
 		return new ResponseEntity<>(this.postControllerService.getPhotoGallery(userId, page), HttpStatus.OK);

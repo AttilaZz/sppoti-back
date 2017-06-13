@@ -43,7 +43,7 @@ class SppotiUpdateController
 	 * @return 200 status with the updated sppoti, 400 status otherwise.
 	 */
 	@PutMapping("/{sppotiId}")
-	ResponseEntity<SppotiDTO> updateSppoti(@PathVariable final int sppotiId, @RequestBody final SppotiDTO sppotiRequest,
+	ResponseEntity<SppotiDTO> updateSppoti(@PathVariable final String sppotiId, @RequestBody final SppotiDTO sppotiRequest,
 										   final Authentication authentication)
 	{
 		
@@ -76,7 +76,7 @@ class SppotiUpdateController
 			canUpdate = true;
 		}
 		
-		if (sppotiRequest.getVsTeam() != null && sppotiRequest.getVsTeam() != 0) {
+		if (StringUtils.hasText(sppotiRequest.getVsTeam())) {
 			canUpdate = true;
 		}
 		
@@ -100,7 +100,7 @@ class SppotiUpdateController
 	 * 		team id to add in the challenge.
 	 */
 	@PutMapping("/challenge/send/{sppotiId}/{teamId}")
-	ResponseEntity<SppotiDTO> sendChallenge(@PathVariable final int sppotiId, @PathVariable final int teamId,
+	ResponseEntity<SppotiDTO> sendChallenge(@PathVariable final String sppotiId, @PathVariable final String teamId,
 											final Authentication authentication)
 	{
 		
@@ -122,7 +122,7 @@ class SppotiUpdateController
 	 * @return 202 if update done correctly, 400 if not
 	 */
 	@PutMapping("/challenge/answer/{sppotiId}")
-	ResponseEntity<Void> sendChallenge(@PathVariable final int sppotiId, @RequestBody final TeamDTO teamDTO)
+	ResponseEntity<Void> sendChallenge(@PathVariable final String sppotiId, @RequestBody final TeamDTO teamDTO)
 	{
 		
 		if (StringUtils.isEmpty(teamDTO.getId()) || StringUtils.isEmpty(teamDTO.getTeamAdverseStatus())) {

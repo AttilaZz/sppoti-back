@@ -114,7 +114,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	@Transactional
 	@Override
-	public void updateFriendShip(final Long userId, final int friendUuid, final int friendStatus)
+	public void updateFriendShip(final Long userId, final String friendUuid, final int friendStatus)
 	{
 
          /*
@@ -162,7 +162,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	@Transactional
 	@Override
-	public void deleteFriendShip(final int friendId)
+	public void deleteFriendShip(final String friendId)
 	{
 		final Pageable pageable = new PageRequest(0, 1);
 		final UserEntity connectedUser = getConnectedUser();
@@ -183,7 +183,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<UserDTO> getConfirmedFriendList(final int userId, final int page)
+	public List<UserDTO> getConfirmedFriendList(final String userId, final int page)
 	{
 		
 		final Pageable pageable = new PageRequest(page, this.friendListSize);

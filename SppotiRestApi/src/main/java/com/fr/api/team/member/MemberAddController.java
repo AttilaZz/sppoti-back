@@ -33,7 +33,7 @@ public class MemberAddController
 	 * @return 201 status if memeber has been added.
 	 */
 	@PostMapping
-	ResponseEntity<UserDTO> addMember(@PathVariable final int teamId, @RequestBody final UserDTO user)
+	ResponseEntity<UserDTO> addMember(@PathVariable final String teamId, @RequestBody final UserDTO user)
 	{
 		
 		if (user.getId() == null) {

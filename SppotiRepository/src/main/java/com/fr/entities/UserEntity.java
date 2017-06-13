@@ -93,7 +93,7 @@ public class UserEntity extends AbstractCommonEntity
 	
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
-	@Where(clause = "is_selected='1'")
+	@Where(clause = "selected='1'")
 	private Set<ResourcesEntity> resources;
 	
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

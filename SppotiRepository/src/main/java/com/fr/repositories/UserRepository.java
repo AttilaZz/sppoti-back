@@ -28,7 +28,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>
 	
 	UserEntity getByIdAndDeletedFalseAndConfirmedTrue(Long id);
 	
-	Optional<UserEntity> getByUuidAndDeletedFalseAndConfirmedTrue(int id);
+	Optional<UserEntity> getByUuidAndDeletedFalseAndConfirmedTrue(String id);
 	
 	@Query("SELECT u from UserEntity u WHERE u.deleted = false AND u.confirmed = true " +
 			"AND (u.username LIKE CONCAT('%',:prefix,'%') " + "OR u.firstName LIKE CONCAT('%',:prefix,'%') " +
@@ -67,7 +67,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>
 	 *
 	 * @return user account data.
 	 */
-	Optional<UserEntity> getByUuidAndConfirmedTrueAndDeletedFalseAndConfirmedTrue(int userId);
+	Optional<UserEntity> getByUuidAndConfirmedTrueAndDeletedFalseAndConfirmedTrue(String userId);
 	
 	/**
 	 * Find user in login process by email.

@@ -40,8 +40,8 @@ public class MemberUpdateController
 	 * @return The updated member information.
 	 */
 	@PutMapping("/{memberId}")
-	ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") final int memberId,
-												@PathVariable final int teamId, @RequestBody final TeamDTO teamDto)
+	ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") final String memberId,
+												@PathVariable final String teamId, @RequestBody final TeamDTO teamDto)
 	{
 		
 		boolean canUpdate = false;
@@ -77,7 +77,7 @@ public class MemberUpdateController
 	 * @return 202 status if captain updated.
 	 */
 	@PutMapping("/captain/{memberId}")
-	ResponseEntity<TeamDTO> updateTeamCaptain(@PathVariable final int teamId, @PathVariable final int memberId,
+	ResponseEntity<TeamDTO> updateTeamCaptain(@PathVariable final String teamId, @PathVariable final String memberId,
 											  final Authentication authentication)
 	{
 		

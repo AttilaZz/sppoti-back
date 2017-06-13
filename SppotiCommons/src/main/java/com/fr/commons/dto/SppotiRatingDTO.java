@@ -9,7 +9,7 @@ public class SppotiRatingDTO extends AbstractCommonDTO
 	//set automatically using the connected user.
 	private Integer sppoterRaterId;
 	
-	private Integer sppoterRatedId;
+	private String sppoterRatedId;
 	
 	private Integer stars;
 	
@@ -33,12 +33,12 @@ public class SppotiRatingDTO extends AbstractCommonDTO
 		this.sppoterRaterId = sppoterRaterId;
 	}
 	
-	public Integer getSppoterRatedId()
+	public String getSppoterRatedId()
 	{
 		return this.sppoterRatedId;
 	}
 	
-	public void setSppoterRatedId(final Integer sppoterRatedId)
+	public void setSppoterRatedId(final String sppoterRatedId)
 	{
 		this.sppoterRatedId = sppoterRatedId;
 	}

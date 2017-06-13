@@ -61,7 +61,7 @@ public class AccountUserDetails implements MyUserDetails
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getUuid()
+	public String getUuid()
 	{
 		return this.account.getId();
 	}

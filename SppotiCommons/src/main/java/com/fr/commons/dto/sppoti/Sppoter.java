@@ -5,39 +5,33 @@ import javax.validation.constraints.NotNull;
 public class Sppoter
 {
 	@NotNull
-	private Integer userId;
+	private String userId;
 	@NotNull
-	private Integer sppotiId;
+	private String sppotiId;
 	@NotNull
-	private Integer teamId;
-	
-	public Integer getUserId()
-	{
-		return this.userId;
+	private String teamId;
+
+	public String getUserId() {
+		return userId;
 	}
-	
-	public void setUserId(final Integer userId)
-	{
+
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
-	public Integer getSppotiId()
-	{
-		return this.sppotiId;
+
+	public String getSppotiId() {
+		return sppotiId;
 	}
-	
-	public void setSppotiId(final Integer sppotiId)
-	{
+
+	public void setSppotiId(String sppotiId) {
 		this.sppotiId = sppotiId;
 	}
-	
-	public Integer getTeamId()
-	{
-		return this.teamId;
+
+	public String getTeamId() {
+		return teamId;
 	}
-	
-	public void setTeamId(final Integer teamId)
-	{
+
+	public void setTeamId(String teamId) {
 		this.teamId = teamId;
 	}
 }

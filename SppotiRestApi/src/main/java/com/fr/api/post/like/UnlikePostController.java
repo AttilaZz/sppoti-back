@@ -37,7 +37,7 @@ class UnlikePostController
 	 * @return unlike post
 	 */
 	@DeleteMapping(value = "/post/{id}")
-	ResponseEntity<Void> unLikePost(@PathVariable("id") final int id)
+	ResponseEntity<Void> unLikePost(@PathVariable("id") final String id)
 	{
 		
 		this.likeControllerService.unLikePost(id);

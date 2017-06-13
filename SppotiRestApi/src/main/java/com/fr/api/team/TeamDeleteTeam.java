@@ -40,7 +40,7 @@ class TeamDeleteTeam
 	 * @return 200 status if team was deleted, 400 status otherwise
 	 */
 	@DeleteMapping("{/id}")
-	ResponseEntity deleteTeam(@PathVariable final int id)
+	ResponseEntity deleteTeam(@PathVariable final String id)
 	{
 		this.teamControllerService.deleteTeam(id);
 		return new ResponseEntity(HttpStatus.OK);

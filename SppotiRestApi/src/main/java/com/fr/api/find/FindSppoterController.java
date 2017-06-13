@@ -43,7 +43,7 @@ public class FindSppoterController
 	 * @return list of sppoter.
 	 */
 	@GetMapping("/{sppotiId}/{prefix}/{page}")
-	ResponseEntity<List<UserDTO>> findMyTeams(@PathVariable final String prefix, @PathVariable final int sppotiId,
+	ResponseEntity<List<UserDTO>> findMyTeams(@PathVariable final String prefix, @PathVariable final String sppotiId,
 											  @PathVariable final int page)
 	{
 		

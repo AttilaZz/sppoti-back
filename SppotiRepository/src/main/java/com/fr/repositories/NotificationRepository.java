@@ -25,7 +25,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 	 *
 	 * @return all notifications.
 	 */
-	List<NotificationEntity> findByToUuid(int userId, Pageable pageable);
+	List<NotificationEntity> findByToUuid(String userId, Pageable pageable);
 	
 	/**
 	 * Find notification by ut's id.
@@ -35,7 +35,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 	 *
 	 * @return notification.
 	 */
-	NotificationEntity findByUuid(int notifId);
+	NotificationEntity findByUuid(String notifId);
 	
 	/**
 	 * Get count of all user notifications.
@@ -45,7 +45,7 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 	 *
 	 * @return counter of all notifications.
 	 */
-	Integer countByToUuid(int userId);
+	Integer countByToUuid(String userId);
 	
 	/**
 	 * Get count of all notif by a status.
@@ -57,5 +57,5 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 	 *
 	 * @return counter of all notifications by the specified status.
 	 */
-	Integer countByToUuidAndStatus(int userId, GlobalAppStatusEnum status);
+	Integer countByToUuidAndStatus(String userId, GlobalAppStatusEnum status);
 }

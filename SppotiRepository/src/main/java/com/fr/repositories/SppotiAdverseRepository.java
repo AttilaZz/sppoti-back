@@ -21,7 +21,7 @@ public interface SppotiAdverseRepository extends JpaRepository<SppotiAdverseEnti
 	 *
 	 * @return list of {@link SppotiAdverseEntity}
 	 */
-	List<SppotiAdverseEntity> findByTeamUuidAndFromSppotiAdminTrue(int teamId);
+	List<SppotiAdverseEntity> findByTeamUuidAndFromSppotiAdminTrue(String teamId);
 	
 	/**
 	 * find all chellenges sent for a team.
@@ -31,7 +31,7 @@ public interface SppotiAdverseRepository extends JpaRepository<SppotiAdverseEnti
 	 *
 	 * @return list of {@link SppotiAdverseEntity}
 	 */
-	List<SppotiAdverseEntity> findByTeamUuid(int uuid);
+	List<SppotiAdverseEntity> findByTeamUuid(String uuid);
 	
 	/**
 	 * @param userId
@@ -43,7 +43,7 @@ public interface SppotiAdverseRepository extends JpaRepository<SppotiAdverseEnti
 	 *
 	 * @return list of {@link SppotiAdverseEntity}
 	 */
-	List<SppotiAdverseEntity> findBySppotiUserSppotiUuidAndStatusAndFromSppotiAdminFalse(int userId,
+	List<SppotiAdverseEntity> findBySppotiUserSppotiUuidAndStatusAndFromSppotiAdminFalse(String userId,
 																						 GlobalAppStatusEnum status,
 																						 Pageable pageable);
 }

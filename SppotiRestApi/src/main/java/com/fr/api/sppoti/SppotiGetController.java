@@ -39,7 +39,7 @@ class SppotiGetController
 	 * @return 200 status with the target sppoti, 400 status otherwise.
 	 */
 	@GetMapping("/{id}")
-	ResponseEntity<SppotiDTO> getSppotiById(@PathVariable final Integer id)
+	ResponseEntity<SppotiDTO> getSppotiById(@PathVariable final String id)
 	{
 		
 		return new ResponseEntity<>(this.sppotiControllerService.getSppotiByUuid(id), HttpStatus.OK);
@@ -57,7 +57,7 @@ class SppotiGetController
 	 * @return List of {@link SppotiDTO}
 	 */
 	@GetMapping("/all/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllUserSppoties(@PathVariable("userId") final int id,
+	ResponseEntity<List<SppotiDTO>> getAllUserSppoties(@PathVariable("userId") final String id,
 													   @PathVariable final int page)
 	{
 		
@@ -76,7 +76,7 @@ class SppotiGetController
 	 * @return List of {@link SppotiDTO}
 	 */
 	@GetMapping("/all/joined/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllJoinedUserSppoties(@PathVariable("userId") final int id,
+	ResponseEntity<List<SppotiDTO>> getAllJoinedUserSppoties(@PathVariable("userId") final String id,
 															 @PathVariable    final int page)
 	{
 		
@@ -95,7 +95,7 @@ class SppotiGetController
 	 * @return List of {@link SppotiDTO}
 	 */
 	@GetMapping("/all/confirmed/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllConfirmedSppoties(@PathVariable final int userId,
+	ResponseEntity<List<SppotiDTO>> getAllConfirmedSppoties(@PathVariable final String userId,
 															@PathVariable final int page)
 	{
 		return new ResponseEntity<>(this.sppotiControllerService.getAllConfirmedSppoties(userId, page), HttpStatus.OK);
@@ -112,7 +112,7 @@ class SppotiGetController
 	 * @return List of {@link SppotiDTO}
 	 */
 	@GetMapping("/all/refused/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllRefusedSppoties(@PathVariable final int userId, @PathVariable final int page)
+	ResponseEntity<List<SppotiDTO>> getAllRefusedSppoties(@PathVariable final String userId, @PathVariable final int page)
 	{
 		
 		return new ResponseEntity<>(this.sppotiControllerService.getAllRefusedSppoties(userId, page), HttpStatus.OK);
@@ -137,7 +137,7 @@ class SppotiGetController
 	 * @return List of {@link SppotiDTO}
 	 */
 	@GetMapping("/all/upcoming/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllUpcomingSppoties(@PathVariable final int userId, @PathVariable final int page)
+	ResponseEntity<List<SppotiDTO>> getAllUpcomingSppoties(@PathVariable final String userId, @PathVariable final int page)
 	{
 		
 		return new ResponseEntity<>(this.sppotiControllerService.getAllUpcomingSppoties(userId, page), HttpStatus.OK);
@@ -155,7 +155,7 @@ class SppotiGetController
 	 * @return list of sppoties.
 	 */
 	@GetMapping("/all/pending/challenge/request/{userId}/{page}")
-	ResponseEntity<List<SppotiDTO>> getAllPendingChallengeRequest(@PathVariable final int userId,
+	ResponseEntity<List<SppotiDTO>> getAllPendingChallengeRequest(@PathVariable final String userId,
 																  @PathVariable final int page)
 	{
 		

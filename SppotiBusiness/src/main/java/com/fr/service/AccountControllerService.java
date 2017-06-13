@@ -6,6 +6,7 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public interface AccountControllerService extends AbstractControllerService
@@ -105,9 +106,9 @@ public interface AccountControllerService extends AbstractControllerService
 	 * @param userId
 	 * 		user id.
 	 */
-	void deactivateAccount(int userId);
-	
-	/**
+    void deactivateAccount(String userId);
+
+    /**
 	 * Save user connexion details.
 	 *
 	 * @param historyDto

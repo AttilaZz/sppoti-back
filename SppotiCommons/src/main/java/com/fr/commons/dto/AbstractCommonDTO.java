@@ -12,7 +12,7 @@ public class AbstractCommonDTO
 	
 	protected Integer version;
 	
-	protected Integer id;
+	protected String id;
 	
 	/**
 	 * {@inheritDoc}.
@@ -32,14 +32,12 @@ public class AbstractCommonDTO
 	{
 		this.version = version;
 	}
-	
-	public Integer getId()
-	{
-		return this.id;
+
+	public String getId() {
+		return id;
 	}
-	
-	public void setId(final Integer id)
-	{
+
+	public void setId(String id) {
 		this.id = id;
 	}
 }

@@ -20,7 +20,7 @@ public interface SppotiRepository extends JpaRepository<SppotiEntity, Long>
 	 *
 	 * @return sppoti entity.
 	 */
-	SppotiEntity findByUuid(int uuid);
+	SppotiEntity findByUuid(String uuid);
 	
 	/**
 	 * @param id
@@ -30,5 +30,5 @@ public interface SppotiRepository extends JpaRepository<SppotiEntity, Long>
 	 *
 	 * @return return all found sppoties.
 	 */
-	List<SppotiEntity> findByUserSppotiUuidAndDeletedFalse(Integer id, Pageable pageable);
+	List<SppotiEntity> findByUserSppotiUuidAndDeletedFalse(String id, Pageable pageable);
 }

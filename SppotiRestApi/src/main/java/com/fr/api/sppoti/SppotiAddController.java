@@ -3,6 +3,7 @@ package com.fr.api.sppoti;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.service.SppotiControllerService;
 import com.fr.versionning.ApiVersion;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,10 +46,9 @@ class SppotiAddController
 		
 		if (newSppoti.getMaxTeamCount() == 0) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			
 		}
 		
-		if (newSppoti.getTeamHost() == null && newSppoti.getMyTeamId() == 0) {
+		if (!StringUtils.isBlank(newSppoti.getMyTeamId()) && newSppoti.getTeamHost() == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		

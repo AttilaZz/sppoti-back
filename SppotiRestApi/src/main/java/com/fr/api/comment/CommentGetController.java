@@ -47,7 +47,7 @@ class CommentGetController
 	 * @return List of like DTO.
 	 */
 	@GetMapping("/{postId}/{page}")
-	ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable final int postId, @PathVariable final int page,
+	ResponseEntity<List<CommentDTO>> getAllPostComments(@PathVariable final String postId, @PathVariable final int page,
 														final Authentication authentication)
 	{
 		

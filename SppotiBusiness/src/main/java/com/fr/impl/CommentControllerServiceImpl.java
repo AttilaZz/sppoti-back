@@ -8,6 +8,7 @@ import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
 import com.fr.service.CommentControllerService;
 import com.fr.transformers.impl.CommentTransformerImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Transactional
 	@Override
-	public CommentDTO saveComment(final CommentEntity newCommentEntity, final Long userId, final int postId)
+	public CommentDTO saveComment(final CommentEntity newCommentEntity, final Long userId, final String postId)
 	{
 		
 		
@@ -62,8 +63,8 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 				.ofNullable(this.commentRepository.save(newCommentEntity));
 		
 		if (commentEntity.isPresent()) {
-			final int targetUser = commentEntity.get().getPost().getTargetUserProfile().getUuid();
-			if (targetUser != 0 && targetUser != getConnectedUser().getUuid()) {
+			final String targetUser = commentEntity.get().getPost().getTargetUserProfile().getUuid();
+			if (!StringUtils.isBlank(targetUser )&& !Objects.equals(targetUser, getConnectedUser().getUuid())) {
 				
 				//like on other posts not mine
 				if (!Objects.equals(commentEntity.get().getUser().getUuid(),
@@ -105,7 +106,7 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public CommentEntity findComment(final int id)
+	public CommentEntity findComment(final String id)
 	{
 		return this.commentRepository.getByUuid(id);
 	}
@@ -132,7 +133,7 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<CommentDTO> getPostCommentsFromLastId(final int postId, final int page, final Long userId)
+	public List<CommentDTO> getPostCommentsFromLastId(final String postId, final int page, final Long userId)
 	{
 		
 		final Pageable pageable = new PageRequest(page, this.commentSize);
@@ -148,7 +149,7 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ContentEditedResponseDTO> getAllCommentHistory(final int id, final int page)
+	public List<ContentEditedResponseDTO> getAllCommentHistory(final String id, final int page)
 	{
 		
 		final Pageable pageable = new PageRequest(page, this.commentSize);

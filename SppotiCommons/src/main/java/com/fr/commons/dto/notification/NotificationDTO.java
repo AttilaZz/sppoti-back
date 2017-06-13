@@ -26,9 +26,9 @@ public class NotificationDTO extends AbstractCommonDTO
 	private Integer notificationType;
 	private GlobalAppStatusEnum status;
 	
-	private Integer teamId;
-	private Integer sppotiId;
-	private Integer postId;
+	private String teamId;
+	private String sppotiId;
+	private String postId;
 	
 	private TeamDTO team;
 	private SppotiDTO sppoti;
@@ -87,37 +87,31 @@ public class NotificationDTO extends AbstractCommonDTO
 	{
 		this.status = status;
 	}
-	
-	public Integer getTeamId()
-	{
-		return this.teamId;
+
+	public String getTeamId() {
+		return teamId;
 	}
-	
-	public void setTeamId(final Integer teamId)
-	{
+
+	public void setTeamId(String teamId) {
 		this.teamId = teamId;
 	}
-	
-	public Integer getSppotiId()
-	{
-		return this.sppotiId;
+
+	public String getSppotiId() {
+		return sppotiId;
 	}
-	
-	public void setSppotiId(final Integer sppotiId)
-	{
+
+	public void setSppotiId(String sppotiId) {
 		this.sppotiId = sppotiId;
 	}
-	
-	public Integer getPostId()
-	{
-		return this.postId;
+
+	public String getPostId() {
+		return postId;
 	}
-	
-	public void setPostId(final Integer postId)
-	{
+
+	public void setPostId(String postId) {
 		this.postId = postId;
 	}
-	
+
 	public TeamDTO getTeam()
 	{
 		return this.team;

@@ -37,7 +37,7 @@ class PostDeleteController
 	 * @return 200 status if post deleted.
 	 */
 	@DeleteMapping(value = "/{postId}")
-	ResponseEntity<Void> deletePost(@PathVariable final int postId)
+	ResponseEntity<Void> deletePost(@PathVariable final String postId)
 	{
 		
 		this.postDataService.deletePost(postId);

@@ -39,7 +39,7 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 	 * {@inheritDoc}
 	 */
 	@Override
-	public NotificationListDTO getAllReceivedNotifications(final int userId, final int page)
+	public NotificationListDTO getAllReceivedNotifications(final String userId, final int page)
 	{
 		
 		final Pageable pageable = new PageRequest(page, this.notificationSize, Sort.Direction.DESC, "creationDate");

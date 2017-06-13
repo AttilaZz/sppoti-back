@@ -35,7 +35,7 @@ class RatingSppoter
 	 * Evaluate other sppoters in same sppoti.
 	 */
 	@PostMapping("/sppoter/{sppotiId}")
-	ResponseEntity<List<UserDTO>> rateSppoter(@PathVariable final int sppotiId,
+	ResponseEntity<List<UserDTO>> rateSppoter(@PathVariable final String sppotiId,
 											  @RequestBody final List<SppotiRatingDTO> sppotiRatingDTO)
 	{
 		

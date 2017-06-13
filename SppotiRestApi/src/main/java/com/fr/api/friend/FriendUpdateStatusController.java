@@ -5,6 +5,7 @@ import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.FriendControllerService;
 import com.fr.versionning.ApiVersion;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +51,7 @@ class FriendUpdateStatusController
 		
 		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 		
-		if (user == null || user.getFriendUuid() == 0) {
+		if (!StringUtils.isBlank(user.getFriendUuid())) {
 			throw new BusinessGlobalException("Friend id must not be null or O");
 		}
 		

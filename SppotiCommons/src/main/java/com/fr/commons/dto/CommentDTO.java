@@ -15,7 +15,7 @@ import java.util.List;
 public class CommentDTO extends AbstractCommonDTO
 {
 	
-	private int postId;
+	private String postId;
 	
 	private String authorFirstName;
 	private String authorLastName;
@@ -170,12 +170,12 @@ public class CommentDTO extends AbstractCommonDTO
 		this.isEdited = isEdited;
 	}
 	
-	public int getPostId()
+	public String getPostId()
 	{
 		return this.postId;
 	}
 	
-	public void setPostId(final int postId)
+	public void setPostId(final String postId)
 	{
 		this.postId = postId;
 	}

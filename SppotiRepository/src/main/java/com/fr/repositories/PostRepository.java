@@ -22,7 +22,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 	 *
 	 * @return posts data.
 	 */
-	List<PostEntity> getByUuidAndDeletedFalse(int postId);
+	List<PostEntity> getByUuidAndDeletedFalse(String postId);
 	
 	/**
 	 * Find all users's and user friends posts.
@@ -44,7 +44,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 	 * @return list of all user's posts.
 	 */
 	@PostFilter("filterObject.user.id == authentication.getPrincipal().getId()")
-	List<PostEntity> getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(int posiUuid);
+	List<PostEntity> getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(String posiUuid);
 	
 	/**
 	 * Get all posts containing a picture.
@@ -56,7 +56,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 	 *
 	 * @return lists of {@link PostEntity}
 	 */
-	List<PostEntity> getByAlbumIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(int userId,
+	List<PostEntity> getByAlbumIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(String userId,
 																							 Pageable pageable);
 	
 	/**
@@ -69,12 +69,12 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 	 *
 	 * @return list of posts containing a video.
 	 */
-	List<PostEntity> getByVideoIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(int userId,
+	List<PostEntity> getByVideoIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(String userId,
 																							 Pageable pageable);
 	
 	@Query("SELECT p FROM PostEntity p WHERE (p.user.id = :userId OR p.targetUserProfile.uuid = :userUuid) " +
 			"AND p.visibility IN (:visibility) AND p.deleted = false")
-	List<PostEntity> getAllPosts(@Param("userUuid") int userIntId, @Param("userId") Long userLongId,
+	List<PostEntity> getAllPosts(@Param("userUuid") String userIntId, @Param("userId") Long userLongId,
 								 @Param("visibility") List visibility, Pageable pageable);
 	
 	/**
@@ -87,5 +87,5 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 	 *
 	 * @return list of {@link PostEntity}
 	 */
-	List<PostEntity> getByUserUuidAndDeletedFalse(int uuid, Pageable pageable);
+	List<PostEntity> getByUserUuidAndDeletedFalse(String uuid, Pageable pageable);
 }

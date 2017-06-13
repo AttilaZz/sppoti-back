@@ -33,10 +33,9 @@ class LikePostController
 	
 	/** like service. */
 	private final LikeControllerService likeControllerService;
-	/** Init service. */
-	
+
 	private final Logger LOGGER = LoggerFactory.getLogger(LikePostController.class);
-	
+
 	/** Init services. */
 	@Autowired
 	public LikePostController(final PostControllerService postDataService,
@@ -55,7 +54,7 @@ class LikePostController
 	 * @return Like post
 	 */
 	@PutMapping(value = "/post/{id}")
-	ResponseEntity<Void> likePost(@PathVariable("id") final int id, final Authentication authentication)
+	ResponseEntity<Void> likePost(@PathVariable("id") final String id, final Authentication authentication)
 	{
 		
 		final PostEntity postToLike = this.postDataService.findPost(id);

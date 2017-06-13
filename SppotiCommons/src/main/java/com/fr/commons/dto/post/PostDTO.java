@@ -247,7 +247,7 @@ public class PostDTO extends AbstractCommonDTO
 		this.timeZone = timeZone;
 	}
 	
-	public void setTargetUser(final String firstName, final String lastName, final String username, final int id,
+	public void setTargetUser(final String firstName, final String lastName, final String username, final String id,
 							  final boolean myAccount)
 	{
 		this.targetUser = new TargetUser(firstName, lastName, username, id, myAccount);
@@ -255,7 +255,7 @@ public class PostDTO extends AbstractCommonDTO
 	
 	public class TargetUser
 	{
-		private int id;
+		private String id;
 		private String firstName;
 		private String lastName;
 		private String username;
@@ -266,7 +266,7 @@ public class PostDTO extends AbstractCommonDTO
 		}
 		
 		
-		public TargetUser(final String firstName, final String lastName, final String username, final int id,
+		public TargetUser(final String firstName, final String lastName, final String username, final String id,
 						  final boolean myAccount)
 		{
 			this.firstName = firstName;
@@ -291,7 +291,7 @@ public class PostDTO extends AbstractCommonDTO
 			return this.username;
 		}
 		
-		public int getId()
+		public String getId()
 		{
 			return this.id;
 		}

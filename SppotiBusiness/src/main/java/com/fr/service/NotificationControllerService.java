@@ -19,9 +19,9 @@ public interface NotificationControllerService
 	 *
 	 * @return All received notifications for a given user id
 	 */
-	NotificationListDTO getAllReceivedNotifications(int userId, int page);
-	
-	/**
+    NotificationListDTO getAllReceivedNotifications(String userId, int page);
+
+    /**
 	 * @param userId
 	 * 		user id.
 	 * @param page

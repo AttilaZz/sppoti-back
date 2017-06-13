@@ -41,7 +41,7 @@ class TeamGetController
 	 * @return target team.
 	 */
 	@GetMapping("/{teamId}")
-	ResponseEntity<TeamDTO> getTeamById(@PathVariable final int teamId)
+	ResponseEntity<TeamDTO> getTeamById(@PathVariable final String teamId)
 	{
 		
 		return new ResponseEntity<>(this.teamControllerService.getTeamById(teamId), HttpStatus.OK);
@@ -58,7 +58,7 @@ class TeamGetController
 	 * @return All teams for a giver user Id.
 	 */
 	@GetMapping("/all/{userId}/{page}")
-	ResponseEntity getAllTeams(@PathVariable final int userId, @PathVariable final int page)
+	ResponseEntity getAllTeams(@PathVariable final String userId, @PathVariable final int page)
 	{
 		
 		return new ResponseEntity<>(this.teamControllerService.getAllTeamsByUserId(userId, page), HttpStatus.OK);
@@ -75,7 +75,7 @@ class TeamGetController
 	 * @return All teams for a giver user Id.
 	 */
 	@GetMapping("/all/joined/{userId}/{page}")
-	ResponseEntity getAllJoinedTeams(@PathVariable final int userId, @PathVariable final int page)
+	ResponseEntity getAllJoinedTeams(@PathVariable final String userId, @PathVariable final int page)
 	{
 		
 		return new ResponseEntity<>(this.teamControllerService.getAllJoinedTeamsByUserId(userId, page), HttpStatus.OK);
@@ -92,7 +92,7 @@ class TeamGetController
 	 * @return deleted teams.
 	 */
 	@GetMapping("/all/deleted/{userId}/{page}")
-	ResponseEntity getAllDeletedTeams(@PathVariable final int userId, @PathVariable final int page)
+	ResponseEntity getAllDeletedTeams(@PathVariable final String userId, @PathVariable final int page)
 	{
 		return new ResponseEntity<>(this.teamControllerService.getAllDeletedTeamsByUserId(userId, page), HttpStatus.OK);
 	}
@@ -108,7 +108,7 @@ class TeamGetController
 	 * @return 200 http status if found.
 	 */
 	@GetMapping("/all/challenge/pending/{teamId}/{page}")
-	ResponseEntity getAllChallengeRequests(@PathVariable final int teamId, @PathVariable final int page)
+	ResponseEntity getAllChallengeRequests(@PathVariable final String teamId, @PathVariable final int page)
 	{
 		return new ResponseEntity<>(this.teamControllerService.getAllPendingChallenges(teamId, page), HttpStatus.OK);
 	}
@@ -127,7 +127,7 @@ class TeamGetController
 	 */
 	@GetMapping("/all/challenge/allowed/{sppotiId}/{page}")
 	ResponseEntity getAllTeamSAllowedToChallengeSppoti(@PathVariable final int page,
-													   @PathVariable final Integer sppotiId,
+													   @PathVariable final String sppotiId,
 													   final Authentication authentication)
 	{
 		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();

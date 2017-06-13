@@ -40,7 +40,7 @@ class CommentDeleteController
 	 * @return 200 http status.
 	 */
 	@DeleteMapping("/{commentId}")
-	ResponseEntity<Void> deleteComment(@PathVariable("commentId") final int id, final Authentication authentication)
+	ResponseEntity<Void> deleteComment(@PathVariable("commentId") final String id, final Authentication authentication)
 	{
 		
 		final CommentEntity commentEntityToDelete = this.commentDataService.findComment(id);

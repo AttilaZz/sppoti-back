@@ -15,20 +15,20 @@ import java.util.List;
 public interface FriendShipRepository extends CrudRepository<FriendShipEntity, Long>
 {
 	
-	FriendShipEntity findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(int friend_uuid,
-																							  int connected_user);
+	FriendShipEntity findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(String friendUuid,
+																							  String connectedUser);
 	
-	List<FriendShipEntity> findByUserUuidAndStatusAndDeletedFalse(int uuid, GlobalAppStatusEnum name,
+	List<FriendShipEntity> findByUserUuidAndStatusAndDeletedFalse(String uuid, GlobalAppStatusEnum name,
 																  Pageable pageable);
 	
-	List<FriendShipEntity> findByFriendUuidAndStatusAndDeletedFalse(int friend, GlobalAppStatusEnum name,
+	List<FriendShipEntity> findByFriendUuidAndStatusAndDeletedFalse(String friend, GlobalAppStatusEnum name,
 																	Pageable pageable);
 	
-	List<FriendShipEntity> findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(int connectedUser, int uuid,
+	List<FriendShipEntity> findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(String connectedUser, String uuid,
 																			   GlobalAppStatusEnum status);
 	
 	//    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
-	@Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.firstName LIKE CONCAT('%',:part1,'%') " +
+	@Query(value = "SELECT f FROM FriendShipEntity f WHERE (f.friend.firstName LIKE CONCAT('%',:part1,'%') " +
 			"AND f.friend.lastName LIKE CONCAT('%',:part2,'%')) OR (f.friend.firstName LIKE CONCAT('%',:part2,'%') " +
 			"AND f.friend.lastName LIKE CONCAT('%',:part1,'%')) AND f.status = :status AND f.deleted = false")
 	List<FriendShipEntity> findFriendsByFirstNameAndLastNameAndStatus(@Param("part1") String part1,
@@ -36,21 +36,21 @@ public interface FriendShipRepository extends CrudRepository<FriendShipEntity, L
 																	  @Param("status") String status,
 																	  Pageable pageable);
 	
-	@Query("SELECT f FROM FriendShipEntity f WHERE f.friend.username LIKE CONCAT('%',:prefix,'%') " +
+	@Query(value = "SELECT f FROM FriendShipEntity f WHERE f.friend.username LIKE CONCAT('%',:prefix,'%') " +
 			"AND f.status = :status AND f.deleted = false")
 	List<FriendShipEntity> findFriendByUsernameAndStatus(@Param("prefix") String part, @Param("status") String status,
 														 Pageable pageable);
 	
-	@Query("SELECT f FROM FriendShipEntity f WHERE (f.friend.uuid = :user1 AND f.user.uuid =:user2) " +
+	@Query(value = "SELECT f FROM FriendShipEntity f WHERE (f.friend.uuid = :user1 AND f.user.uuid =:user2) " +
 			"OR (f.friend.uuid = :user2 AND f.user.uuid =:user1) AND f.deleted = false " +
 			"ORDER BY f.datetimeCreated DESC")
-	List<FriendShipEntity> findLastFriendShipOrderByDatetimeCreatedDesc(@Param("user1") int user1,
-																		@Param("user2") int user2);
+	List<FriendShipEntity> findLastFriendShipOrderByDatetimeCreatedDesc(@Param("user1") String user1,
+																		@Param("user2") String user2);
 	
 	@Query("SELECT f FROM FriendShipEntity f WHERE (f.user.uuid = :asUserId OR f.friend.uuid = :asFriendId) " +
 			"AND status = :status AND f.deleted = FALSE")
-	List<FriendShipEntity> findByUserUuidOrFriendUuidAndStatusAndDeletedFalse(@Param("asUserId") int asUserId,
-																			  @Param("asFriendId") int asFriendId,
+	List<FriendShipEntity> findByUserUuidOrFriendUuidAndStatusAndDeletedFalse(@Param("asUserId") String asUserId,
+																			  @Param("asFriendId") String asFriendId,
 																			  @Param("status")
 																					  GlobalAppStatusEnum status,
 																			  Pageable pageable);

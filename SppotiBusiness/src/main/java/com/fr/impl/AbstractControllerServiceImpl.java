@@ -119,7 +119,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserEntity getUserByUuId(final int id)
+	public UserEntity getUserByUuId(final String id)
 	{
 		
 		final Optional<UserEntity> usersList = this.userRepository.getByUuidAndDeletedFalseAndConfirmedTrue(id);
@@ -223,9 +223,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				return this.userTransformer.modelToDto(temp);
 			}
 			return this.userTransformer.modelToDto(entity);
-			
+
 		}
-		
+
 		return null;
 	}
 	
@@ -242,7 +242,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 		final List<CommentDTO> myList = new ArrayList<>();
 		
 		for (final CommentEntity commentEntity : dbCommentEntityList) {
-			final int commentId = commentEntity.getUuid();
+			final String commentId = commentEntity.getUuid();
 			final CommentDTO cm = new CommentDTO();
 			
 			//            if (!userDaoService.getLastAvatar(userId).isEmpty())
@@ -509,7 +509,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 					if (commentEntity != null) {
 						addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(),
 								userToNotify, null, null, commentEntity.getPost(), commentEntity);
-					} else if (postEntity != null) {
+					} else {
 						addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify,
 								null, null, postEntity, null);
 					}
@@ -526,10 +526,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 * @param userId
 	 * 		user id resource.
 	 */
-	
-	void CheckConnectedUserAccessPrivileges(final int userId)
+	void CheckConnectedUserAccessPrivileges(final String userId)
 	{
-		if (getConnectedUser().getUuid() != userId) {
+		if (!Objects.equals(getConnectedUser().getUuid(), userId)) {
 			throw new NotAdminException("Unauthorized access");
 		}
 	}

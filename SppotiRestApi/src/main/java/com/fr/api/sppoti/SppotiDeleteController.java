@@ -37,7 +37,7 @@ class SppotiDeleteController
 	 * @return 200 status if deleted, 400 status otherwise.
 	 */
 	@DeleteMapping("/{id}")
-	ResponseEntity deleteSppoti(@PathVariable final int id)
+	ResponseEntity deleteSppoti(@PathVariable final String id)
 	{
 		
 		this.sppotiControllerService.deleteSppoti(id);

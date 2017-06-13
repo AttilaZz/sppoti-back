@@ -45,7 +45,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void unLikePost(final int postId)
+	public void unLikePost(final String postId)
 	{
 		
 		final List<PostEntity> postToUnlike = this.postRepository.getByUuidAndDeletedFalse(postId);
@@ -70,7 +70,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isPostAlreadyLikedByUser(final int postId, final Long userId)
+	public boolean isPostAlreadyLikedByUser(final String postId, final Long userId)
 	{
 		
 		return this.likeRepository.getByUserIdAndPostUuid(userId, postId) != null;
@@ -81,7 +81,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<UserDTO> getPostLikersList(final int id, final int page)
+	public List<UserDTO> getPostLikersList(final String id, final int page)
 	{
 		
 		final Pageable pageable1 = new PageRequest(page, this.likeSize);
@@ -97,7 +97,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<UserDTO> getCommentLikersList(final int id, final int page)
+	public List<UserDTO> getCommentLikersList(final String id, final int page)
 	{
 		
 		final Pageable pageable1 = new PageRequest(page, this.likeSize);
@@ -126,7 +126,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isCommentAlreadyLikedByUser(final int commentId, final Long userId)
+	public boolean isCommentAlreadyLikedByUser(final String commentId, final Long userId)
 	{
 		return this.likeRepository.getByUserIdAndCommentUuid(userId, commentId) != null;
 		

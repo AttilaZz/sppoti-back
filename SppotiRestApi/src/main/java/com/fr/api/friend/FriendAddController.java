@@ -3,6 +3,7 @@ package com.fr.api.friend;
 import com.fr.commons.dto.UserDTO;
 import com.fr.service.FriendControllerService;
 import com.fr.versionning.ApiVersion;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ class FriendAddController
 	{
 		
 		//Check received data
-		if (user == null || user.getFriendUuid() == 0) {
+		if (!StringUtils.isBlank(user.getFriendUuid())) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		

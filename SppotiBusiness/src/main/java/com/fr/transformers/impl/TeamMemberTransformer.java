@@ -58,7 +58,7 @@ public class TeamMemberTransformer
 		
 		final UserDTO userCoverAndAvatar = this.userTransformer.getUserCoverAndAvatar(memberEntity.getUser());
 		
-		final Integer sppotiId = sppoti != null ? sppoti.getUuid() : 0;
+		final String sppotiId = sppoti != null ? sppoti.getUuid() : "";
 		
 		final UserDTO userDTO = new UserDTO();
 		userDTO.setUserId(memberEntity.getUser().getUuid());
@@ -115,7 +115,7 @@ public class TeamMemberTransformer
 	 * @return rating stars.
 	 */
 	@Transactional
-	private Double getRatingStars(final int userId, final int sppotiId)
+	private Double getRatingStars(final String userId, final String sppotiId)
 	{
 		
 		final Optional<Set<SppotiRatingEntity>> sppotiRatingEntity = this.ratingRepository

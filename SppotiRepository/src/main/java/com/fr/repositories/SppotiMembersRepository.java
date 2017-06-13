@@ -27,7 +27,7 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 *
 	 * @return sppoter related to a defined team and a sppoti.
 	 */
-	SppoterEntity findByTeamMemberUserUuidAndSppotiUuidAndStatusNot(int userId, int sppotiId,
+	SppoterEntity findByTeamMemberUserUuidAndSppotiUuidAndStatusNot(String userId, String sppotiId,
 																	GlobalAppStatusEnum status);
 	
 	/**
@@ -41,7 +41,7 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 *
 	 * @return all joined sppoties for a particular sport.
 	 */
-	List<SppoterEntity> findByTeamMemberUserUuidAndSppotiSportIdAndStatusNot(int uuid, Long id,
+	List<SppoterEntity> findByTeamMemberUserUuidAndSppotiSportIdAndStatusNot(String uuid, Long id,
 																			 GlobalAppStatusEnum status);
 	
 	/**
@@ -55,7 +55,7 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 *
 	 * @return return all joined sppoties, unless refused ones.
 	 */
-	List<SppoterEntity> findByTeamMemberUserUuidAndStatusNot(int userId, GlobalAppStatusEnum status, Pageable pageable);
+	List<SppoterEntity> findByTeamMemberUserUuidAndStatusNot(String userId, GlobalAppStatusEnum status, Pageable pageable);
 	
 	/**
 	 * Find all upcomming sppoties:
@@ -75,6 +75,6 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	@Query("SELECT s from SppoterEntity s WHERE s.teamMember.user.uuid= :userId " +
 			"AND s.sppoti.dateTimeStart > current_date() AND s.status = :status " +
 			"ORDER BY s.sppoti.dateTimeStart ASC")
-	List<SppoterEntity> findAllUpcomingSppoties(@Param("userId") int userId,
+	List<SppoterEntity> findAllUpcomingSppoties(@Param("userId") String userId,
 												@Param("status") GlobalAppStatusEnum status, Pageable pageable);
 }

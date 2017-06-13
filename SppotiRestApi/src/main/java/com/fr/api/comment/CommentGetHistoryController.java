@@ -41,7 +41,7 @@ class CommentGetHistoryController
 	 * @return List of like DTO
 	 */
 	@GetMapping("/history/{id}/{page}")
-	ResponseEntity<List<ContentEditedResponseDTO>> getAllCommentModification(@PathVariable final int id,
+	ResponseEntity<List<ContentEditedResponseDTO>> getAllCommentModification(@PathVariable final String id,
 																			 @PathVariable final int page)
 	{
 		

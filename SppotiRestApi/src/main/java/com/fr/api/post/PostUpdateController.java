@@ -41,7 +41,7 @@ public class PostUpdateController
 	 * Edit post visibility.
 	 */
 	@PutMapping(value = "/{postId}/{visibility}")
-	ResponseEntity<Void> editVisibility(@PathVariable final int id, @PathVariable final int visibility)
+	ResponseEntity<Void> editVisibility(@PathVariable final String id, @PathVariable final int visibility)
 	{
 		
 		this.postDataService.editPostVisibility(id, visibility);
@@ -54,7 +54,7 @@ public class PostUpdateController
 	 * Update post information.
 	 */
 	@PutMapping(value = "/{postId}")
-	ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("postId") final int postId,
+	ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("postId") final String postId,
 														@RequestBody final ContentEditedResponseDTO newData)
 	{
 		

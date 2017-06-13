@@ -45,7 +45,7 @@ class NotificationController
 																final Authentication authentication)
 	{
 		
-		final int userId = ((AccountUserDetails) authentication.getPrincipal()).getUuid();
+		final String userId = ((AccountUserDetails) authentication.getPrincipal()).getUuid();
 		
 		final NotificationListDTO notificationListDTO = this.notificationControllerService
 				.getAllReceivedNotifications(userId, page);
@@ -60,7 +60,7 @@ class NotificationController
 	 * @return 200 http status if notif were updated, 404 http status if notif not found, 500 http status otherwise.
 	 */
 	@PutMapping("/{notifId}")
-	ResponseEntity<Void> openNotification(@PathVariable final int notifId,
+	ResponseEntity<Void> openNotification(@PathVariable final String notifId,
 										  @RequestBody final NotificationDTO notificationDTO)
 	{
 		

@@ -27,18 +27,12 @@ import java.util.List;
 @ApiVersion("1")
 class GetAllPostLikersController
 {
-	
-	/**
-	 * Posts Controller service.
-	 */
+
+	/** Posts Controller service. */
 	private final PostControllerService postDataService;
-	/**
-	 * Likes Controller service.
-	 */
+	/** Likes Controller service. */
 	private final LikeControllerService likeControllerService;
-	/**
-	 * Class logger.
-	 */
+	/** Class logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(GetAllPostLikersController.class);
 	
 	/**
@@ -61,7 +55,7 @@ class GetAllPostLikersController
 	 * @return list of people who liked the post.
 	 */
 	@GetMapping(value = "/post/{id}/{page}")
-	ResponseEntity<PostDTO> getPostLikers(@PathVariable("id") final int id, @PathVariable("page") final int page)
+	ResponseEntity<PostDTO> getPostLikers(@PathVariable("id") final String id, @PathVariable("page") final int page)
 	{
 		
 		final PostEntity currentPost = this.postDataService.findPost(id);

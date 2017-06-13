@@ -22,7 +22,7 @@ public interface TeamRepository extends JpaRepository<TeamEntity, Long>
 	 *
 	 * @return List of teams.
 	 */
-	List<TeamEntity> findByUuidAndDeletedFalse(int uuid);
+	List<TeamEntity> findByUuidAndDeletedFalse(String uuid);
 	
 	/**
 	 * Find teams by a given prefix and delete status False.
@@ -35,21 +35,7 @@ public interface TeamRepository extends JpaRepository<TeamEntity, Long>
 	 * @return list of teams.
 	 */
 	List<TeamEntity> findByNameContainingAndDeletedFalse(String team, Pageable pageable);
-	
-	/**
-	 * Find teams by a specific sport and a prefix and delete status False.
-	 *
-	 * @param sport
-	 * 		sport id.
-	 * @param team
-	 * 		team prefix.
-	 * @param pageable
-	 * 		page number.
-	 *
-	 * @return list of teams.
-	 */
-	List<TeamEntity> findBySportIdAndNameContaining(Long sport, String team, Pageable pageable);
-	
+
 	/**
 	 * Find teams by a specific sport and a prefix and delete status False.
 	 * This method filter sppoti admin teams from result.

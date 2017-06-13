@@ -38,7 +38,7 @@ class PostGetController
 	
 	/** Get post details. */
 	@GetMapping(value = "/{postId}")
-	ResponseEntity<PostDTO> detailsPost(@PathVariable final int postId, final Authentication authentication)
+	ResponseEntity<PostDTO> detailsPost(@PathVariable final String postId, final Authentication authentication)
 	{
 		
 		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
@@ -52,7 +52,7 @@ class PostGetController
 	 * Get al posts for a given user id.
 	 */
 	@GetMapping(value = "/all/{userId}/{page}")
-	ResponseEntity<List<PostDTO>> getAllPosts(@PathVariable final int userId, @PathVariable final int page,
+	ResponseEntity<List<PostDTO>> getAllPosts(@PathVariable final String userId, @PathVariable final int page,
 											  final Authentication authentication)
 	{
 		
@@ -68,7 +68,7 @@ class PostGetController
 	 * List of all edition on a post.
 	 */
 	@GetMapping(value = "/history/{postId}/{page}")
-	ResponseEntity<List<ContentEditedResponseDTO>> getPostHistory(@PathVariable final int postId,
+	ResponseEntity<List<ContentEditedResponseDTO>> getPostHistory(@PathVariable final String postId,
 																  @PathVariable    final int page)
 	{
 		
@@ -83,7 +83,7 @@ class PostGetController
 	 * Get all friend posts
 	 */
 	@GetMapping("/all/timeline/{userId}/{page}")
-	ResponseEntity<List<PostDTO>> getAllFriendPosts(@PathVariable final int userId, @PathVariable final int page,
+	ResponseEntity<List<PostDTO>> getAllFriendPosts(@PathVariable final String userId, @PathVariable final int page,
 													final Authentication authentication)
 	{
 		

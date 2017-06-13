@@ -31,7 +31,7 @@ public class SppoterDeleteController
 	}
 	
 	@DeleteMapping("/{userId}")
-	ResponseEntity<String> acceptSppoti(@PathVariable final int sppotiId, @PathVariable final int userId)
+	ResponseEntity<String> acceptSppoti(@PathVariable final String sppotiId, @PathVariable final String userId)
 	{
 		
 		this.sppotiControllerService.deleteSppoter(sppotiId, userId);

@@ -103,7 +103,7 @@ class FindTeamController
 	 * @return list of teams.
 	 */
 	@GetMapping("/" + ALL_ADVERSE_TEAMS_SEARCH + "/{sppotiId}/{team}/{page}")
-	ResponseEntity<List<TeamDTO>> findAllAdverseTeams(@PathVariable final String team, @PathVariable final int sppotiId,
+	ResponseEntity<List<TeamDTO>> findAllAdverseTeams(@PathVariable final String team, @PathVariable final String sppotiId,
 													  @PathVariable final int page)
 	{
 		

@@ -108,7 +108,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Transactional
 	@Override
 	public boolean updatePost(final EditHistoryEntity postEditRow, final SortedSet<AddressEntity> postEditAddress,
-							  final int postId)
+							  final String postId)
 	{
 		if (postEditAddress != null) {
 			
@@ -142,7 +142,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void deletePost(final int postId)
+	public void deletePost(final String postId)
 	{
 		
 		final List<PostEntity> postEntity = this.postRepository.getByUuidAndDeletedFalse(postId);
@@ -160,7 +160,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PostEntity findPost(final int id)
+	public PostEntity findPost(final String id)
 	{
 		
 		final List<PostEntity> posts = this.postRepository.getByUuidAndDeletedFalse(id);
@@ -197,7 +197,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostDTO> getPhotoGallery(final int userId, final int page)
+	public List<PostDTO> getPhotoGallery(final String userId, final int page)
 	{
 		
 		final Pageable pageable = new PageRequest(page, this.postSize);
@@ -219,7 +219,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostDTO> getVideoGallery(final int userId, final int page)
+	public List<PostDTO> getVideoGallery(final String userId, final int page)
 	{
 		final Pageable pageable = new PageRequest(page, this.postSize);
 		
@@ -240,7 +240,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PostDTO fillPostToSend(final int postId, final Long userId)
+	public PostDTO fillPostToSend(final String postId, final Long userId)
 	{
 		
 		final List<PostEntity> postEntities = this.postRepository.getByUuidAndDeletedFalse(postId);
@@ -257,13 +257,12 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		return this.postTransformer.modelToDto(postEntities.get(0));
 	}
-	
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<ContentEditedResponseDTO> getAllPostHistory(final int id, final int page)
+	public List<ContentEditedResponseDTO> getAllPostHistory(final String id, final int page)
 	{
 		final Pageable pageable = new PageRequest(page, this.postSize, Sort.Direction.DESC, "datetimeEdited");
 		
@@ -277,7 +276,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<EditHistoryEntity> getLastModification(final int postId)
+	public List<EditHistoryEntity> getLastModification(final String postId)
 	{
 		//        return editContentDaoService.getLastEditedPost(postId);
 		return this.editHistoryRepository.getByPostUuidOrderByDatetimeEditedDesc(postId);
@@ -297,7 +296,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void editPostVisibility(final int id, final int visibility)
+	public void editPostVisibility(final String id, final int visibility)
 	{
 		
 		final List<PostEntity> posts = this.postRepository.getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(id);
@@ -317,7 +316,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostEntity> findAllPosts(final Long userLongId, final int userIntId, final List visibility,
+	public List<PostEntity> findAllPosts(final Long userLongId, final String userIntId, final List visibility,
 										 final int page)
 	{
 		
@@ -330,7 +329,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isTargetUserFriendOfMe(final int connectedUserUuid, final int friendId)
+	public boolean isTargetUserFriendOfMe(final String connectedUserUuid, final String friendId)
 	{
 		return this.friendShipRepository
 				.findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(friendId,
@@ -341,7 +340,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostDTO> getAllUserPosts(final Long connectedUserId, final int connectedUserUuid, final int userID,
+	public List<PostDTO> getAllUserPosts(final Long connectedUserId, final String connectedUserUuid, final String userID,
 										 final int page)
 	{
 		final List<PostEntity> posts;
@@ -376,7 +375,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostDTO> getAllTimelinePosts(final int userId, final int page, final Long accountUserId)
+	public List<PostDTO> getAllTimelinePosts(final String userId, final int page, final Long accountUserId)
 	{
 		
 		final Pageable pageable = new PageRequest(page, this.postSize, Sort.Direction.DESC, "datetimeCreated");

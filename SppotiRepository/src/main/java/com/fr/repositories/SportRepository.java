@@ -9,6 +9,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface SportRepository extends JpaRepository<SportEntity, Long> {
 
     SportEntity getById(Long id);
-
-    SportEntity findById(Long sportId);
 }

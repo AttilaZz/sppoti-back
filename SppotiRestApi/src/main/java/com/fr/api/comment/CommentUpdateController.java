@@ -31,7 +31,7 @@ class CommentUpdateController
 	}
 	
 	@PutMapping(value = "/{id}")
-	ResponseEntity<CommentDTO> updateComment(@PathVariable final int id, @RequestBody final CommentDTO newComment)
+	ResponseEntity<CommentDTO> updateComment(@PathVariable final String id, @RequestBody final CommentDTO newComment)
 	{
 		
 		final CommentEntity commentEntityToEdit = this.commentDataService.findComment(id);

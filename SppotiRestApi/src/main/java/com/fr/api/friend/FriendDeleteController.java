@@ -37,7 +37,7 @@ class FriendDeleteController
 	 * @return 200 http status if friendship deleted, 400 status otherwise
 	 */
 	@DeleteMapping("/{friend_id}")
-	ResponseEntity deleteFriend(@PathVariable("friend_id") final int friendId)
+	ResponseEntity deleteFriend(@PathVariable("friend_id") final String friendId)
 	{
 		
 		this.friendControllerService.deleteFriendShip(friendId);

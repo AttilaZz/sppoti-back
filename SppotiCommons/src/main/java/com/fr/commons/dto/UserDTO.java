@@ -44,7 +44,7 @@ public class UserDTO extends AbstractCommonDTO
 	private Integer coverType;
 	
 	@JsonProperty("friend_id")
-	private Integer friendUuid;
+	private String friendUuid;
 	
 	@JsonProperty(value = "friend_status")
 	private Integer friendStatus;
@@ -58,7 +58,7 @@ public class UserDTO extends AbstractCommonDTO
 	private Integer sppotiStatus;
 	
 	//used in team response.
-	private Integer userId;
+	private String userId;
 	
 	private Boolean teamAdmin;
 	private Integer teamStatus;
@@ -201,12 +201,12 @@ public class UserDTO extends AbstractCommonDTO
 		this.coverType = coverType;
 	}
 	
-	public Integer getFriendUuid()
+	public String getFriendUuid()
 	{
 		return this.friendUuid;
 	}
 	
-	public void setFriendUuid(final Integer friendUuid)
+	public void setFriendUuid(final String friendUuid)
 	{
 		this.friendUuid = friendUuid;
 	}
@@ -291,12 +291,12 @@ public class UserDTO extends AbstractCommonDTO
 		this.birthDate = birthDate;
 	}
 	
-	public Integer getUserId()
+	public String getUserId()
 	{
 		return this.userId;
 	}
 	
-	public void setUserId(final Integer userId)
+	public void setUserId(final String userId)
 	{
 		this.userId = userId;
 	}

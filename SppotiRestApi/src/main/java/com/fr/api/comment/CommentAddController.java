@@ -44,7 +44,7 @@ class CommentAddController
 		final String content = newComment.getText();
 		final String image = newComment.getImageLink();
 		final String video = newComment.getVideoLink();
-		final int postId = newComment.getPostId();
+		final String postId = newComment.getPostId();
 		
 		if (content == null && image == null && video == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

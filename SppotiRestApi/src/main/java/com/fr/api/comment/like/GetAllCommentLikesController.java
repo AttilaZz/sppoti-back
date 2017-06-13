@@ -48,7 +48,7 @@ class GetAllCommentLikesController
 	 * @return list of likers for a comment
 	 */
 	@GetMapping(value = "/comment/{id}/{page}")
-	ResponseEntity<PostDTO> getCommentLikers(@PathVariable("id") final int id, @PathVariable("page") final int page)
+	ResponseEntity<PostDTO> getCommentLikers(@PathVariable("id") final String id, @PathVariable("page") final int page)
 	{
 		
 		final CommentEntity currentCommentEntity = this.commentControllerService.findComment(id);

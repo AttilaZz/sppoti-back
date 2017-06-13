@@ -11,12 +11,12 @@ import java.util.List;
  */
 public interface EditHistoryRepository extends JpaRepository<EditHistoryEntity, Long> {
 
-    List<EditHistoryEntity> getByPostUuidOrderByDatetimeEditedDesc(int postId);
+    List<EditHistoryEntity> getByPostUuidOrderByDatetimeEditedDesc(String postId);
 
-    List<EditHistoryEntity> getByPostUuidOrderByDatetimeEditedDesc(int postId, Pageable pageable);
+    List<EditHistoryEntity> getByPostUuidOrderByDatetimeEditedDesc(String postId, Pageable pageable);
 
-    List<EditHistoryEntity> getByCommentUuidOrderByDatetimeEditedDesc(int commentId);
+    List<EditHistoryEntity> getByCommentUuidOrderByDatetimeEditedDesc(String commentId);
 
-    List<EditHistoryEntity> getByCommentUuidOrderByDatetimeEditedDesc(int commentId, Pageable pageable);
+    List<EditHistoryEntity> getByCommentUuidOrderByDatetimeEditedDesc(String commentId, Pageable pageable);
 
 }

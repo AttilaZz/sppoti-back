@@ -36,7 +36,7 @@ public class MemberDeleteController
 	 * @return 200 status if memeber has been added
 	 */
 	@DeleteMapping("/{memberId}")
-	ResponseEntity<Void> deleteMember(@PathVariable final int teamId, @PathVariable final int memberId)
+	ResponseEntity<Void> deleteMember(@PathVariable final String teamId, @PathVariable final String memberId)
 	{
 		
 		this.teamControllerService.deleteMemberFromTeam(teamId, memberId);

@@ -12,9 +12,9 @@ import java.util.List;
  */
 public interface CommentRepository extends JpaRepository<CommentEntity, Long>{
 
-    CommentEntity getByUuid(int id);
+    CommentEntity getByUuid(String id);
 
     @PostFilter("!filterObject.isDeleted()")
-    List<CommentEntity> getByPostUuidOrderByDatetimeCreatedDesc(int postId, Pageable pageable);
+    List<CommentEntity> getByPostUuidOrderByDatetimeCreatedDesc(String postId, Pageable pageable);
 
 }

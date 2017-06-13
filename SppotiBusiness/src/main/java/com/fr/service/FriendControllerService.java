@@ -4,6 +4,7 @@ import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -31,24 +32,24 @@ public interface FriendControllerService extends AbstractControllerService
 	 * @param friendStatus
 	 * 		friend status.
 	 */
-	void updateFriendShip(Long userId, int friendUuid, int friendStatus);
-	
-	/**
+    void updateFriendShip(Long userId, String friendUuid, int friendStatus);
+
+    /**
 	 * Delete friendship by the sender
 	 *
 	 * @param friendId
 	 * 		id of user friend.
 	 */
-	void deleteFriendShip(int friendId);
-	
+	void deleteFriendShip(String friendId);
+
 	/**
 	 * @param userId
 	 * 		user id.
 	 *
 	 * @return all confirmed friend requests.
 	 */
-	List<UserDTO> getConfirmedFriendList(int userId, int page);
-	
+	List<UserDTO> getConfirmedFriendList(String userId, int page);
+
 	/**
 	 * @param page
 	 * 		page number.

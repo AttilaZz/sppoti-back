@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -24,20 +25,20 @@ public class AbstractCommonEntity
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", nullable = false, unique = true)
 	private Long id;
-	
+
 	/**
 	 * versionning.
 	 */
 	@Version
 	@Column(name = "version", nullable = false)
 	private Integer version = -1;
-	
+
 	/**
 	 * fonctionnal id.
 	 */
 	@Column(nullable = false, unique = true, updatable = false)
-	private Integer uuid = UUID.randomUUID().hashCode() * UUID.randomUUID().hashCode();
-	
+	private String uuid = UUID.randomUUID().toString() + "-" +  UUID.randomUUID().toString();
+
 	/**
 	 * {@inheritDoc}.
 	 */
@@ -52,18 +53,16 @@ public class AbstractCommonEntity
 	 */
 	@Override
 	public boolean equals(final Object o) {
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
-		
+		}
+
 		final AbstractCommonEntity that = (AbstractCommonEntity) o;
-		
-		if (this.uuid != that.uuid)
-			return false;
-		if (!this.id.equals(that.id))
-			return false;
-		return this.version.equals(that.version);
+
+		return Objects.equals(this.uuid, that.uuid) && this.id.equals(that.id) && this.version.equals(that.version);
 	}
 	
 	/**
@@ -74,7 +73,7 @@ public class AbstractCommonEntity
 		int result = 31;
 		result = 31 * result + (getId() != null ? getId().hashCode() : 0);
 		result = 31 * result + (getVersion() != null ? getVersion().hashCode() : 0);
-		result = 31 * result + this.uuid;
+		result = 31 * result + this.uuid.hashCode();
 		return result;
 	}
 	
@@ -93,12 +92,12 @@ public class AbstractCommonEntity
 	public void setVersion(final Integer version) {
 		this.version = version;
 	}
-	
-	public Integer getUuid() {
-		return this.uuid;
+
+	public String getUuid() {
+		return uuid;
 	}
-	
-	public void setUuid(final Integer uuid) {
+
+	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 }

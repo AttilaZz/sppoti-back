@@ -43,7 +43,7 @@ class FriendGetController
 	 * @return confirmed friend list.
 	 */
 	@GetMapping("/confirmed/{userId}/{page}")
-	ResponseEntity<List<UserDTO>> getConfirmedFriendList(@PathVariable final int userId, @PathVariable final int page)
+	ResponseEntity<List<UserDTO>> getConfirmedFriendList(@PathVariable final String userId, @PathVariable final int page)
 	{
 		
 		final List<UserDTO> friendList = this.friendControllerService.getConfirmedFriendList(userId, page);

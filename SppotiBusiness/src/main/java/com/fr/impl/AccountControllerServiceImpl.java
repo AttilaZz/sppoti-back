@@ -293,7 +293,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	@Override
 	public void unSelectOldResource(final Long userId, final int i)
 	{
-		final ResourcesEntity resourcesEntity = this.resourceRepository.getByUserIdAndTypeAndIsSelectedTrue(userId, i);
+		final ResourcesEntity resourcesEntity = this.resourceRepository.getByUserIdAndTypeAndSelectedTrue(userId, i);
 		if (resourcesEntity != null) {
 			resourcesEntity.setSelected(false);
 			this.resourceRepository.save(resourcesEntity);
@@ -512,7 +512,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 */
 	@Override
 	@Transactional
-	public void deactivateAccount(final int userId) {
+	public void deactivateAccount(final String userId) {
 		final Optional<UserEntity> optional = this.userRepository
 				.getByUuidAndConfirmedTrueAndDeletedFalseAndConfirmedTrue(userId);
 		

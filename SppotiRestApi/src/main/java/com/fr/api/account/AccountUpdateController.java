@@ -108,7 +108,7 @@ class AccountUpdateController
 	 * @return 202 status if account has been deactivated.
 	 */
 	@PutMapping("/deactivate/{userId}")
-	ResponseEntity<Void> deactivateAccount(@PathVariable final int userId)
+	ResponseEntity<Void> deactivateAccount(@PathVariable final String userId)
 	{
 		this.accountControllerService.deactivateAccount(userId);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);

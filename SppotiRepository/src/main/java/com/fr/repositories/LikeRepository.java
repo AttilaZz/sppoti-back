@@ -14,13 +14,13 @@ public interface LikeRepository extends CrudRepository<LikeContentEntity, Long>
 	
 	LikeContentEntity getByPostId(Long id);
 	
-	List<LikeContentEntity> getByPostUuidOrderByDatetimeCreatedDesc(int id, Pageable pageable1);
+	List<LikeContentEntity> getByPostUuidOrderByDatetimeCreatedDesc(String id, Pageable pageable1);
 	
-	LikeContentEntity getByUserIdAndPostUuid(Long userId, int postId);
+	LikeContentEntity getByUserIdAndPostUuid(Long userId, String postId);
 	
 	LikeContentEntity getByCommentId(Long id);
 	
-	Object getByUserIdAndCommentUuid(Long userId, int commentId);
+	Object getByUserIdAndCommentUuid(Long userId, String commentId);
 	
-	List<LikeContentEntity> getByCommentUuidOrderByDatetimeCreatedDesc(int id, Pageable pageable1);
+	List<LikeContentEntity> getByCommentUuidOrderByDatetimeCreatedDesc(String id, Pageable pageable1);
 }

@@ -54,7 +54,7 @@ class UnlikeCommentController
 	 * @return 200 status if comment has been unliked or 404 if not.
 	 */
 	@DeleteMapping(value = "/comment/{id}")
-	ResponseEntity<Void> unLikeComment(@PathVariable("id") final int id, final Authentication authentication)
+	ResponseEntity<Void> unLikeComment(@PathVariable("id") final String id, final Authentication authentication)
 	{
 		
 		final CommentEntity commentEntityToLike = this.commentControllerService.findComment(id);

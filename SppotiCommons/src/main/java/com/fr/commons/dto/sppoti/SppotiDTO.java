@@ -31,9 +31,9 @@ public class SppotiDTO extends AbstractCommonDTO
 	private TeamDTO teamHost;
 	private Integer sppotiCounter;
 	private Boolean mySppoti;
-	private Integer adminUserId;
-	private Integer adminTeamId;
-	private Integer connectedUserId;
+	private String adminUserId;
+	private String adminTeamId;
+	private String connectedUserId;
 	private Long sppotiDuration;
 	private ScoreDTO score;
 	
@@ -56,10 +56,10 @@ public class SppotiDTO extends AbstractCommonDTO
 	private Date dateTimeStart;
 	
 	@JsonProperty("teamHostId")
-	private Integer myTeamId;
+	private String myTeamId;
 	
 	@JsonProperty("teamAdverseId")
-	private Integer vsTeam;
+	private String vsTeam;
 	
 	@NotEmpty
 	private String location;
@@ -136,37 +136,31 @@ public class SppotiDTO extends AbstractCommonDTO
 	{
 		this.mySppoti = mySppoti;
 	}
-	
-	public Integer getAdminUserId()
-	{
-		return this.adminUserId;
+
+	public String getAdminUserId() {
+		return adminUserId;
 	}
-	
-	public void setAdminUserId(final Integer adminUserId)
-	{
+
+	public void setAdminUserId(String adminUserId) {
 		this.adminUserId = adminUserId;
 	}
-	
-	public Integer getAdminTeamId()
-	{
-		return this.adminTeamId;
+
+	public String getAdminTeamId() {
+		return adminTeamId;
 	}
-	
-	public void setAdminTeamId(final Integer adminTeamId)
-	{
+
+	public void setAdminTeamId(String adminTeamId) {
 		this.adminTeamId = adminTeamId;
 	}
-	
-	public Integer getConnectedUserId()
-	{
-		return this.connectedUserId;
+
+	public String getConnectedUserId() {
+		return connectedUserId;
 	}
-	
-	public void setConnectedUserId(final Integer connectedUserId)
-	{
+
+	public void setConnectedUserId(String connectedUserId) {
 		this.connectedUserId = connectedUserId;
 	}
-	
+
 	public Long getSppotiDuration()
 	{
 		return this.sppotiDuration;
@@ -237,22 +231,22 @@ public class SppotiDTO extends AbstractCommonDTO
 		this.dateTimeStart = dateTimeStart;
 	}
 	
-	public Integer getMyTeamId()
+	public String getMyTeamId()
 	{
 		return this.myTeamId;
 	}
 	
-	public void setMyTeamId(final Integer myTeamId)
+	public void setMyTeamId(final String myTeamId)
 	{
 		this.myTeamId = myTeamId;
 	}
 	
-	public Integer getVsTeam()
+	public String getVsTeam()
 	{
 		return this.vsTeam;
 	}
 	
-	public void setVsTeam(final Integer vsTeam)
+	public void setVsTeam(final String vsTeam)
 	{
 		this.vsTeam = vsTeam;
 	}
