@@ -46,7 +46,6 @@ public class SppotiDTO extends AbstractCommonDTO
 	@NotNull
 	private Long sportId;
 	
-	@NotEmpty
 	private String description;
 	
 	@NotNull
