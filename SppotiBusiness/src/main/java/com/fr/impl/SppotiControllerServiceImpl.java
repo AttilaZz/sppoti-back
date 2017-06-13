@@ -518,10 +518,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 												Objects.equals(t.getTeam().getUuid(), teamDTO.getId())).findFirst()
 										.get().getUser();
 								
-								//notify team adverse admin.
-								addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION,
-										sp.getUserSppoti(), teamAdverseAdmin, null, sp, null, null);
-								
 								//Convert team members to sppoters if status equals to confirmed
 								if (GlobalAppStatusEnum.valueOf(teamDTO.getTeamAdverseStatus())
 										.equals(GlobalAppStatusEnum.CONFIRMED)) {
