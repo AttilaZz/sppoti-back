@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by djenanewail on 4/17/17.
  */
 @Entity
-@Table(name = "SPPOTI_ADVERSE")
+@Table(name = "CHALLENGE")
 public class SppotiAdverseEntity extends AbstractCommonEntity
 {
 	

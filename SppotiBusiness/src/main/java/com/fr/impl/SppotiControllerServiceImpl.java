@@ -757,8 +757,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 					.addAll(m.getTeam().getTeamMembers().stream().map(a -> a.getUser().getId())
 							.collect(Collectors.toList())));
 			
-			existingSppoter.addAll(sp.getTeamHostEntity().getTeamMembers().stream().map(m -> m.getUser().getId())
-					.collect(Collectors.toList()));
+			existingSppoter.addAll(sp.getTeamHostEntity().getTeamMembers().stream().filter(m -> m.getSppotiMembers()
+					.stream().noneMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.DELETED)))
+					.map(m -> m.getUser().getId()).collect(Collectors.toList()));
 			
 			return this.userRepository.findAllAllowedSppoter(prefix, existingSppoter, pageable).stream()
 					.map(this.userTransformer::modelToDto).collect(Collectors.toList());
