@@ -532,14 +532,19 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 								//Notify to all confirmed adverse team members.
 								teamAdverse.getTeam().getTeamMembers().forEach(m -> {
 //									if (m.getSppotiMembers().stream().anyMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
-										addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_YOUR_CHALLENGE,
+										addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE,
 												sp.getUserSppoti(), m.getUser(), teamAdverse.getTeam(), sp, null, null);
 //									}
 								});
 
 								//Notify host team confirmed members
-								sp.getTeamHostEntity().getTeamMembers().forEach(m -> addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_YOUR_CHALLENGE,
-                                        sp.getUserSppoti(), m.getUser(), sp.getTeamHostEntity(), sp, null, null));
+
+								sp.getTeamHostEntity().getTeamMembers().forEach(m -> {
+									if(!m.getAdmin()){
+										addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE,
+												sp.getUserSppoti(), m.getUser(), sp.getTeamHostEntity(), sp, null, null);
+									}
+								});
 							}
 						});
 				
