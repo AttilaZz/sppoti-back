@@ -529,13 +529,17 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 									}
 								});
 								
-								//send notification to team adverse admins.
+								//Notify to all confirmed adverse team members.
 								teamAdverse.getTeam().getTeamMembers().forEach(m -> {
-									if (m.getSppotiMembers().stream().anyMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
+//									if (m.getSppotiMembers().stream().anyMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
 										addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_YOUR_CHALLENGE,
 												sp.getUserSppoti(), m.getUser(), teamAdverse.getTeam(), sp, null, null);
-									}
+//									}
 								});
+
+								//Notify host team confirmed members
+								sp.getTeamHostEntity().getTeamMembers().forEach(m -> addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_YOUR_CHALLENGE,
+                                        sp.getUserSppoti(), m.getUser(), sp.getTeamHostEntity(), sp, null, null));
 							}
 						});
 				
@@ -748,7 +752,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 							.collect(Collectors.toList())));
 			
 			existingSppoter.addAll(sp.getTeamHostEntity().getTeamMembers().stream().filter(m -> m.getSppotiMembers()
-					.stream().noneMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.DELETED)))
+					.stream().noneMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.DELETED)) && !m.getSppotiMembers().isEmpty())
 					.map(m -> m.getUser().getId()).collect(Collectors.toList()));
 			
 			return this.userRepository.findAllAllowedSppoter(prefix, existingSppoter, pageable).stream()
@@ -819,24 +823,33 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 							a.getTeam().getTeamMembers().stream().anyMatch(m -> m.getAdmin().equals(true)))) {
 				throw new NotAdminException("BIM BIM - You don't have access");
 			}
-			
-			//prepare variables.
-			final TeamMemberEntity teamMembers = new TeamMemberEntity();
+
+			//FIXME: Check if the sppoter has been already deleted from the sppoti, if so, we don't have to add it again as a team member.
+
 			final SppoterEntity sppoter = new SppoterEntity();
-			
-			//team member.
-			teamMembers.setTeam(userTeam);
-			teamMembers.setUser(userSppoter);
-			
+			final TeamMemberEntity teamMembers;
+			final Set<SppoterEntity> sppotiMembers = new HashSet<>();
+
+			List<SppoterEntity> sppoterEntities = this.sppotiMembersRepository.findByTeamMemberUserUuidAndSppotiUuid(userId, sppotiId);
+			if(this.sppotiMembersRepository.findByTeamMemberUserUuidAndSppotiUuid(userId, sppotiId).isEmpty()){
+
+				//team member.
+				teamMembers = new TeamMemberEntity();
+				teamMembers.setTeam(userTeam);
+				teamMembers.setUser(userSppoter);
+
+			}else{
+				teamMembers = sppoterEntities.get(0).getTeamMember();
+			}
+
+			//Link sppoter with team member.
+			sppotiMembers.add(sppoter);
+			teamMembers.setSppotiMembers(sppotiMembers);
+
 			//sppoter.
 			sppoter.setTeamMember(teamMembers);
 			sppoter.setSppoti(sppoti);
-			
-			//Link sppoter with team member.
-			final Set<SppoterEntity> sppotiMembers = new HashSet<>();
-			sppotiMembers.add(sppoter);
-			teamMembers.setSppotiMembers(sppotiMembers);
-			
+
 			//save new member and sppoter.
 			final TeamMemberEntity savedMember = this.teamMembersRepository.save(teamMembers);
 			

@@ -402,7 +402,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 					teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, sppoti));
 				}
 			} else if (!memberEntity.getStatus().equals(GlobalAppStatusEnum.DELETED)) {
-				teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, sppoti));
+				teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, null));
 			}
 		}
 		final TeamDTO teamDTO = this.teamTransformer.modelToDto(team);
