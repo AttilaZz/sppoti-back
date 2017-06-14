@@ -218,29 +218,37 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final SppotiEntity sppoti = this.sppotiRepository.findByUuid(sppotiId);
 		if (sppoti == null)
 			throw new EntityNotFoundException("SppotiEntity not found with sppotiId: " + sppotiId);
-		
+
+		boolean editNotification = false;
+
 		if (StringUtils.hasText(sppotiRequest.getTags())) {
 			sppoti.setTags(sppotiRequest.getTags());
+			editNotification = true;
 		}
 		
 		if (StringUtils.hasText(sppotiRequest.getDescription())) {
 			sppoti.setDescription(sppotiRequest.getDescription());
+			editNotification = true;
 		}
 		
 		if (sppotiRequest.getDateTimeStart() != null) {
 			sppoti.setDateTimeStart(sppotiRequest.getDateTimeStart());
+			editNotification = true;
 		}
 		
 		if (StringUtils.hasText(sppotiRequest.getName())) {
 			sppoti.setName(sppotiRequest.getName());
+			editNotification = true;
 		}
 		
 		if (StringUtils.hasText(sppotiRequest.getLocation())) {
 			sppoti.setLocation(sppotiRequest.getLocation());
+			editNotification = true;
 		}
 		
 		if (sppotiRequest.getMaxTeamCount() != null && sppotiRequest.getMaxTeamCount() != 0) {
 			sppoti.setMaxTeamCount(sppotiRequest.getMaxTeamCount());
+			editNotification = true;
 		}
 		
 		if (sppotiRequest.getVsTeam() != null && !StringUtils.isEmpty(sppotiRequest.getVsTeam())) {
@@ -290,7 +298,12 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		}
 		
 		final SppotiEntity updatedSppoti = this.sppotiRepository.save(sppoti);
-		
+
+		//Notify sppoti members about the changes
+		if(editNotification){
+			updatedSppoti.getTeamHostEntity().getTeamMembers().stream().filter(m -> !m.getAdmin()).forEach(m -> addNotification(NotificationTypeEnum.SPPOTI_HAS_BEEN_EDITED, updatedSppoti.getUserSppoti(), m.getUser(), null, updatedSppoti, null, null));
+		}
+
 		return getSppotiResponse(updatedSppoti);
 		
 	}
