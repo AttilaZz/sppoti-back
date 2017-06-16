@@ -60,9 +60,9 @@ class SppotiUpdateController
 			canUpdate = true;
 		}
 		
-		if (StringUtils.hasText(sppotiRequest.getDescription())) {
-			canUpdate = true;
-		}
+//		if (StringUtils.hasText(sppotiRequest.getDescription())) {
+//			canUpdate = true;
+//		}
 		
 		if (sppotiRequest.getDateTimeStart() != null) {
 			canUpdate = true;

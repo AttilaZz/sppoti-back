@@ -225,11 +225,13 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			sppoti.setTags(sppotiRequest.getTags());
 			editNotification = true;
 		}
-		
-		if (StringUtils.hasText(sppotiRequest.getDescription())) {
-			sppoti.setDescription(sppotiRequest.getDescription());
-			editNotification = true;
-		}
+
+		sppoti.setDescription(sppotiRequest.getDescription());
+
+//		if (StringUtils.hasText(sppotiRequest.getDescription())) {
+//			sppoti.setDescription(sppotiRequest.getDescription());
+//			editNotification = true;
+//		}
 		
 		if (sppotiRequest.getDateTimeStart() != null) {
 			sppoti.setDateTimeStart(sppotiRequest.getDateTimeStart());
