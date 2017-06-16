@@ -125,6 +125,7 @@ public class TeamMemberTransformer
 			final Set<SppotiRatingEntity> sppotiRatingEntities = new HashSet<>();
 			sppotiRatingEntities.addAll(sppotiRatingEntity.get());
 			final OptionalDouble averageRating = sppotiRatingEntities.stream()
+					.filter(r -> r.getStarsCount() != 0)
 					.mapToDouble(SppotiRatingEntity::getStarsCount).average();
 			
 			if (averageRating.isPresent()) {
