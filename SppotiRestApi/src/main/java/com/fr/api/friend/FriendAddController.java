@@ -1,6 +1,7 @@
 package com.fr.api.friend;
 
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.FriendControllerService;
 import com.fr.versionning.ApiVersion;
 import org.apache.commons.lang3.StringUtils;
@@ -43,8 +44,8 @@ class FriendAddController
 	{
 		
 		//Check received data
-		if (!StringUtils.isBlank(user.getFriendUuid())) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		if (StringUtils.isBlank(user.getFriendUuid())) {
+			throw new BusinessGlobalException("Friend id is empty");
 		}
 		
 		this.friendControllerService.saveFriendShip(user);
