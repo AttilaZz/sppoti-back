@@ -51,8 +51,8 @@ class FriendUpdateStatusController
 		
 		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 		
-		if (!StringUtils.isBlank(user.getFriendUuid())) {
-			throw new BusinessGlobalException("Friend id must not be null or O");
+		if (StringUtils.isBlank(user.getFriendUuid())) {
+			throw new BusinessGlobalException("Friend id not found");
 		}
 		
 		this.friendControllerService.updateFriendShip(userId, user.getFriendUuid(), user.getFriendStatus());
