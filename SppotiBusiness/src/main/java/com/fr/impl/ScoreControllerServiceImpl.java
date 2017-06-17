@@ -9,8 +9,6 @@ import com.fr.entities.TeamEntity;
 import com.fr.repositories.ScoreRepository;
 import com.fr.service.ScoreControllerService;
 import com.fr.transformers.ScoreTransformer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +23,6 @@ import java.util.Optional;
 public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl implements ScoreControllerService
 {
 	
-	/** Class logger. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(ScoreControllerServiceImpl.class);
 	/** Score transformer. */
 	private final ScoreTransformer scoreTransformer;
 	/** Score Repository. */
@@ -43,6 +39,7 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	@Transactional
 	public void updateScore(final ScoreDTO scoreDTO, final Long connectedUserId)
@@ -55,9 +52,22 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 			//                throw new NotAdminException("You're not the sppoti admin");
 			//            }
 			
+			NotificationTypeEnum typeEnum = NotificationTypeEnum.SCORE_HAS_BEEN_APPROVED;
+			if (scoreDTO.getStatus().equals(GlobalAppStatusEnum.REFUSED.name())) {
+				typeEnum = NotificationTypeEnum.SCORE_HAS_BEEN_REFUSED;
+			}
+			
+			final Optional<TeamEntity> challengedTeam = s.getSppotiEntity().getAdverseTeams().stream()
+					.filter(a -> a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)).map(SppotiAdverseEntity::getTeam)
+					.findFirst();
+			
+			addNotification(typeEnum, this.teamMembersRepository
+							.findByTeamUuidAndStatusNotAndAdminTrue(challengedTeam.get().getUuid(), GlobalAppStatusEnum.DELETED)
+							.getUser(), s.getSppotiEntity().getUserSppoti(), challengedTeam.get(), s.getSppotiEntity(), null,
+					null, s);
+			
 			s.setScoreStatus(GlobalAppStatusEnum.valueOf(scoreDTO.getStatus()));
 			this.scoreRepository.save(s);
-			LOGGER.info("Score has been updated: " + scoreDTO);
 		});
 		
 		scoreEntity.orElseThrow(() -> new EntityNotFoundException("Sppoti has no score yet! "));
@@ -81,7 +91,9 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 		addNotification(NotificationTypeEnum.SCORE_SET_AND_WAITING_FOR_APPROVAL,
 				scoreEntity.getSppotiEntity().getUserSppoti(), this.teamMembersRepository
 						.findByTeamUuidAndStatusNotAndAdminTrue(challengedTeam.get().getUuid(),
-								GlobalAppStatusEnum.DELETED).getUser(), null, null, null, null, scoreEntity);
+								GlobalAppStatusEnum.DELETED).getUser(),
+				scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), null, null,
+				scoreEntity);
 		
 		return this.scoreTransformer.modelToDto(this.scoreRepository.save(scoreEntity));
 	}
