@@ -164,7 +164,6 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	@Override
 	public void deleteFriendShip(final String friendId)
 	{
-		final Pageable pageable = new PageRequest(0, 1);
 		final UserEntity connectedUser = getConnectedUser();
 		
 		//Check if friendship exist
