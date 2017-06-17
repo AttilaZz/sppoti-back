@@ -17,50 +17,69 @@ public class SppotiEntity extends AbstractCommonEntity
 {
 	
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	private final GlobalAppStatusEnum status = GlobalAppStatusEnum.IN_PROGRESS;
+	
 	@Column(nullable = false)
 	private String name;
+	
 	private String description;
+	
 	@Column(nullable = false, name = "datetime_created")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date datetimeCreated = new Date();
+	
 	@Column(nullable = false, name = "date_time_start")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dateTimeStart;
+	
 	@Column(nullable = false)
 	private String location;
+	
 	@Column(nullable = false)
 	private Integer maxTeamCount;
+	
 	private Long sppotiDuration;
 	private String cover;
 	private String tags;
+	
 	@Column(nullable = false)
 	private Long altitude;
+	
 	@Column(nullable = false)
 	private Long longitude;
+	
 	@Column(nullable = false)
 	private boolean deleted = false;
+	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "sport_id", nullable = false)
 	@JsonIgnore
 	private SportEntity sport;
+	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "user_id", nullable = false)
 	@JsonIgnore
 	private UserEntity userSppoti;
+	
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "team_host_id")
 	@JsonIgnore
 	private TeamEntity teamHostEntity;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sppoti", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<SppotiAdverseEntity> adverseTeams = new HashSet<>();
+	
 	@OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<SppoterEntity> sppotiMembers = new HashSet<>();
+	
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "score_id")
 	private ScoreEntity scoreEntity;
+	
 	@Column(name = "time_zone")
 	private String timeZone;
+	
 	/**
 	 * to get trace of the connected user when using transformers.
 	 */
