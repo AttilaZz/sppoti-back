@@ -48,7 +48,7 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 		
 		notifications = notifications.stream().map(n -> {
 			NotificationEntity notif = getNotificationEntity(n.getNotificationType(), n.getFrom(), n.getTo(),
-					n.getTeam(), n.getSppoti(), n.getPost(), n.getComment(), null);
+					n.getTeam(), n.getSppoti(), n.getPost(), n.getComment(), null, null);
 			
 			notif.setId(n.getId());
 			notif.setUuid(n.getUuid());

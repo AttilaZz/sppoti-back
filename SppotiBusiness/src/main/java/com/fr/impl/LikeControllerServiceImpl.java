@@ -163,13 +163,13 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 				//Comment like
 				addNotification(NotificationTypeEnum.X_LIKED_YOUR_COMMENT, likeContent.getUser(),
 						likeContent.getComment().getUser(), null, null, likeContent.getComment().getPost(),
-						likeContent.getComment(), null);
+						likeContent.getComment(), null, null);
 				
 			} else if (likeContent.getPost() != null &&
 					!likeContent.getPost().getUser().getId().equals(getConnectedUser().getId())) {
 				//like post
 				addNotification(NotificationTypeEnum.X_LIKED_YOUR_POST, likeContent.getUser(),
-						likeContent.getPost().getUser(), null, null, likeContent.getPost(), null, null);
+						likeContent.getPost().getUser(), null, null, likeContent.getPost(), null, null, null);
 			}
 			
 		}

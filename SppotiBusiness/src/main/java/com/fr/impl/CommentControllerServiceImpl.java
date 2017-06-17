@@ -71,7 +71,7 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 						commentEntity.get().getPost().getTargetUserProfile().getUuid())) {
 					addNotification(NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getUser(),
 							commentEntity.get().getPost().getTargetUserProfile(), null, null,
-							commentEntity.get().getPost(), commentEntity.get(), null);
+							commentEntity.get().getPost(), commentEntity.get(), null, null);
 					
 				}
 				

@@ -163,7 +163,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 								this.userTransformer.modelToDto(sppoti.getUserSppoti()))).start();
 				//Notification
 				addNotification(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, savedSppoti.getUserSppoti(),
-						m.getUser(), null, savedSppoti, null, null, null);
+						m.getUser(), null, savedSppoti, null, null, null, null);
 				
 			}
 		});
@@ -293,7 +293,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			adverse.getTeam().getTeamMembers().forEach(hostMember -> {
 				if (hostMember.getAdmin()) {
 					addNotification(NotificationTypeEnum.SPPOTI_ADMIN_CHALLENGED_YOU, sppoti.getUserSppoti(),
-							hostMember.getUser(), adverse.getTeam(), sppoti, null, null, null);
+							hostMember.getUser(), adverse.getTeam(), sppoti, null, null, null, null);
 				}
 			});
 			
@@ -305,7 +305,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		if (editNotification) {
 			updatedSppoti.getTeamHostEntity().getTeamMembers().stream().filter(m -> !m.getAdmin()).forEach(
 					m -> addNotification(NotificationTypeEnum.SPPOTI_HAS_BEEN_EDITED, updatedSppoti.getUserSppoti(),
-							m.getUser(), null, updatedSppoti, null, null, null));
+							m.getUser(), null, updatedSppoti, null, null, null, null));
 		}
 		
 		return getSppotiResponse(updatedSppoti);
@@ -331,7 +331,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			//Send notification to sppoti admin.
 			if (updatedSppoter != null) {
 				addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_SPPOTI_INVITATION, sm.getTeamMember().getUser(),
-						sm.getSppoti().getUserSppoti(), null, updatedSppoter.getSppoti(), null, null, null);
+						sm.getSppoti().getUserSppoti(), null, updatedSppoter.getSppoti(), null, null, null, null);
 			}
 			
 			//update team member status.
@@ -350,7 +350,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 								GlobalAppStatusEnum.DELETED).getUser();
 				
 				addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_TEAM_INVITATION, sm.getTeamMember().getUser(),
-						teamAdmin, teamMembers.getTeam(), null, null, null, null);
+						teamAdmin, teamMembers.getTeam(), null, null, null, null, null);
 			}
 		});
 		
@@ -379,7 +379,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		if (updatedSppoter != null) {
 			addNotification(NotificationTypeEnum.X_REFUSED_YOUR_SPPOTI_INVITATION,
 					sppotiMembers.getTeamMember().getUser(), sppotiMembers.getSppoti().getUserSppoti(), null,
-					updatedSppoter.getSppoti(), null, null, null);
+					updatedSppoter.getSppoti(), null, null, null, null);
 		}
 		
 	}
@@ -464,7 +464,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		//Send notif to sppoti admin
 		addNotification(NotificationTypeEnum.TEAM_ADMIN_SENT_YOU_A_CHALLENGE, null, sppotiEntity.getUserSppoti(),
-				adverse.getTeam(), sppotiEntity, null, null, null);
+				adverse.getTeam(), sppotiEntity, null, null, null, null);
 		
 		return getSppotiResponse(savedSppoti);
 	}
@@ -513,7 +513,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 										if (m.getAdmin()) {
 											addNotification(NotificationTypeEnum.SPPOTI_ADMIN_REFUSED_YOUR_CHALLENGE,
 													sp.getUserSppoti(), m.getUser(), teamAdverse.getTeam(), sp, null,
-													null, null);
+													null, null, null);
 										}
 									});
 								} else {
@@ -522,7 +522,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 										if (m.getAdmin()) {
 											addNotification(NotificationTypeEnum.SPPOTI_ADMIN_CANCELED_HIS_CHALLENGE,
 													sp.getUserSppoti(), m.getUser(), teamAdverse.getTeam(), sp, null,
-													null, null);
+													null, null, null);
 										}
 									});
 								}
@@ -552,7 +552,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 									//									if (m.getSppotiMembers().stream().anyMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
 									addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE,
 											sp.getUserSppoti(), m.getUser(), teamAdverse.getTeam(), sp, null, null,
-											null);
+											null, null);
 									//									}
 								});
 								
@@ -562,7 +562,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 									if (!m.getAdmin()) {
 										addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE,
 												sp.getUserSppoti(), m.getUser(), sp.getTeamHostEntity(), sp, null, null,
-												null);
+												null, null);
 									}
 								});
 							}
@@ -575,6 +575,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	@Transactional
 	public List<UserDTO> rateSppoters(final List<SppotiRatingDTO> sppotiRatingDTO, final String sppotiId)
@@ -615,6 +616,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 								GlobalAppStatusEnum.DELETED);
 				sppoterRaterEntity.setHasRateOtherSppoter(Boolean.TRUE);
 				this.sppotiMembersRepository.save(sppoterRaterEntity);
+				
+				if (!connectUser.getId().equals(rs.getTeamMember().getUser().getId())) {
+					addNotification(NotificationTypeEnum.YOU_HAVE_BEEN_RATED, connectUser, rs.getTeamMember().getUser(),
+							null, rs.getSppoti(), null, null, null, sppotiRatingEntity);
+				}
 				
 				//Get RATED SPPOTER.
 				SppoterEntity sppoterRatedEntity = this.sppotiMembersRepository
@@ -887,7 +893,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			
 			//Notify new sppoter
 			super.addNotification(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, sppoti.getUserSppoti(),
-					userSppoter, null, sppoti, null, null, null);
+					userSppoter, null, sppoti, null, null, null, null);
 			
 			//return new member.
 			return this.teamMemberTransformer.modelToDto(savedMember, sppoti);

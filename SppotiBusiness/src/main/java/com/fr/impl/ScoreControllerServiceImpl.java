@@ -64,7 +64,7 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 			addNotification(typeEnum, this.teamMembersRepository
 							.findByTeamUuidAndStatusNotAndAdminTrue(challengedTeam.get().getUuid(), GlobalAppStatusEnum.DELETED)
 							.getUser(), s.getSppotiEntity().getUserSppoti(), challengedTeam.get(), s.getSppotiEntity(), null,
-					null, s);
+					null, s, null);
 			
 			s.setScoreStatus(GlobalAppStatusEnum.valueOf(scoreDTO.getStatus()));
 			this.scoreRepository.save(s);
@@ -93,7 +93,7 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 						.findByTeamUuidAndStatusNotAndAdminTrue(challengedTeam.get().getUuid(),
 								GlobalAppStatusEnum.DELETED).getUser(),
 				scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), null, null,
-				scoreEntity);
+				scoreEntity, null);
 		
 		return this.scoreTransformer.modelToDto(this.scoreRepository.save(scoreEntity));
 	}

@@ -417,11 +417,12 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 */
 	@Transactional
 	protected void addNotification(final NotificationTypeEnum notificationType, final UserEntity userFrom,
-								   final UserEntity userTo, final TeamEntity teamEntity, final SppotiEntity sppoti,
-								   final PostEntity post, final CommentEntity comment, final ScoreEntity score)
+								   final UserEntity userTo, final TeamEntity team, final SppotiEntity sppoti,
+								   final PostEntity post, final CommentEntity comment, final ScoreEntity score,
+								   final SppotiRatingEntity rating)
 	{
-		final NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity,
-				sppoti, post, comment, score);
+		final NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, team, sppoti,
+				post, comment, score, null);
 		
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
 		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
@@ -434,7 +435,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	NotificationEntity getNotificationEntity(final NotificationTypeEnum notificationType, final UserEntity userFrom,
 											 final UserEntity userTo, final TeamEntity team, final SppotiEntity sppoti,
 											 final PostEntity post, final CommentEntity comment,
-											 final ScoreEntity scoreEntity)
+											 final ScoreEntity score, final SppotiRatingEntity rating)
 	{
 		final NotificationEntity notification = new NotificationEntity();
 		notification.setNotificationType(notificationType);
@@ -457,7 +458,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 			notification.setComment(comment);
 		}
 		
-		notification.setScore(scoreEntity);
+		notification.setScore(score);
+		notification.setRating(rating);
 		
 		return notification;
 	}
@@ -512,10 +514,10 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				if (userToNotify != null) {
 					if (commentEntity != null) {
 						addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(),
-								userToNotify, null, null, commentEntity.getPost(), commentEntity, null);
+								userToNotify, null, null, commentEntity.getPost(), commentEntity, null, null);
 					} else {
 						addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify,
-								null, null, postEntity, null, null);
+								null, null, postEntity, null, null, null);
 					}
 					
 				}

@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/rating")
 @ApiVersion("1")
-class RatingSppoter
+class RatingSppoterController
 {
 	
 	/** Sppoti controller service. */

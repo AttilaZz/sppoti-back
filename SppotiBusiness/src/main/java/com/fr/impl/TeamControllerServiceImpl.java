@@ -86,7 +86,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 				final TeamMemberEntity admin = this.teamMembersRepository
 						.findByTeamUuidAndStatusNotAndAdminTrue(addedTeam.getUuid(), GlobalAppStatusEnum.DELETED);
 				addNotification(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_TEAM, admin.getUser(), m.getUser(),
-						admin.getTeam(), null, null, null, null);
+						admin.getTeam(), null, null, null, null, null);
 			}
 		});
 		
@@ -177,7 +177,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			addNotification(NotificationTypeEnum.X_ACCEPTED_YOUR_TEAM_INVITATION, teamMembers.getUser(),
 					this.teamMembersRepository
 							.findByTeamUuidAndStatusNotAndAdminTrue(teamId, GlobalAppStatusEnum.DELETED).getUser(),
-					teamMembers.getTeam(), null, null, null, null);
+					teamMembers.getTeam(), null, null, null, null, null);
 		}
 		
 	}
@@ -202,7 +202,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 				addNotification(NotificationTypeEnum.X_REFUSED_YOUR_TEAM_INVITATION, t.getUser(),
 						this.teamMembersRepository
 								.findByTeamUuidAndStatusNotAndAdminTrue(teamId, GlobalAppStatusEnum.DELETED).getUser(),
-						t.getTeam(), null, null, null, null);
+						t.getTeam(), null, null, null, null, null);
 			}
 			
 		});
@@ -332,7 +332,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		//Notify added member
 		addNotification(NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_TEAM, teamAdmin.getUser(), teamMemberAsUser,
-				team, null, null, null, null);
+				team, null, null, null, null, null);
 		
 		//Send email to the new team member.
 		sendJoinTeamEmail(team, teamMemberAsUser, teamAdmin);
@@ -504,7 +504,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 							
 							//send notification to sppoti admin.
 							addNotification(NotificationTypeEnum.TEAM_ADMIN_ACCEPTED_YOUR_CHALLENGE, null,
-									sp.getUserSppoti(), t.getTeam(), sp, null, null, null);
+									sp.getUserSppoti(), t.getTeam(), sp, null, null, null, null);
 							
 							//save changes and return team.
 							return this.teamTransformer.modelToDto(this.sppotiAdverseRepository.save(t).getTeam());
@@ -515,7 +515,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 							
 							//send notification to sppoti admin.
 							addNotification(NotificationTypeEnum.TEAM_ADMIN_REFUSED_YOUR_CHALLENGE, null,
-									sp.getUserSppoti(), t.getTeam(), sp, null, null, null);
+									sp.getUserSppoti(), t.getTeam(), sp, null, null, null, null);
 							
 							return new TeamDTO();
 						}
@@ -530,7 +530,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 						
 						//send notification to sppoti admin.
 						addNotification(NotificationTypeEnum.TEAM_ADMIN_CANCELED_HIS_CHALLENGE, null,
-								sp.getUserSppoti(), t.getTeam(), sp, null, null, null);
+								sp.getUserSppoti(), t.getTeam(), sp, null, null, null, null);
 						
 						return new TeamDTO();
 					} else {
