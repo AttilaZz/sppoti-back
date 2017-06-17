@@ -2,7 +2,10 @@ package com.fr.impl;
 
 import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.entities.ScoreEntity;
+import com.fr.entities.SppotiAdverseEntity;
+import com.fr.entities.TeamEntity;
 import com.fr.repositories.ScoreRepository;
 import com.fr.service.ScoreControllerService;
 import com.fr.transformers.ScoreTransformer;
@@ -22,14 +25,12 @@ import java.util.Optional;
 public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl implements ScoreControllerService
 {
 	
-	/** Score transformer. */
-	private final ScoreTransformer scoreTransformer;
-	
-	/** Score Repository. */
-	private final ScoreRepository scoreRepository;
-	
 	/** Class logger. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScoreControllerServiceImpl.class);
+	/** Score transformer. */
+	private final ScoreTransformer scoreTransformer;
+	/** Score Repository. */
+	private final ScoreRepository scoreRepository;
 	
 	/** Init all dependencies. */
 	@Autowired
@@ -66,11 +67,22 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("ConstantConditions")
 	@Override
 	@Transactional
 	public ScoreDTO addSppotiScore(final ScoreDTO scoreDTO)
 	{
-		final ScoreEntity entity = this.scoreTransformer.dtoToModel(scoreDTO);
-		return this.scoreTransformer.modelToDto(this.scoreRepository.save(entity));
+		final ScoreEntity scoreEntity = this.scoreTransformer.dtoToModel(scoreDTO);
+		
+		final Optional<TeamEntity> challengedTeam = scoreEntity.getSppotiEntity().getAdverseTeams().stream()
+				.filter(a -> a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)).map(SppotiAdverseEntity::getTeam)
+				.findFirst();
+		
+		addNotification(NotificationTypeEnum.SCORE_SET_AND_WAITING_FOR_APPROVAL,
+				scoreEntity.getSppotiEntity().getUserSppoti(), this.teamMembersRepository
+						.findByTeamUuidAndStatusNotAndAdminTrue(challengedTeam.get().getUuid(),
+								GlobalAppStatusEnum.DELETED).getUser(), null, null, null, null, scoreEntity);
+		
+		return this.scoreTransformer.modelToDto(this.scoreRepository.save(scoreEntity));
 	}
 }

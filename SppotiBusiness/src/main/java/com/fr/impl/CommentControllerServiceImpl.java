@@ -64,14 +64,14 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		
 		if (commentEntity.isPresent()) {
 			final String targetUser = commentEntity.get().getPost().getTargetUserProfile().getUuid();
-			if (!StringUtils.isBlank(targetUser )&& !Objects.equals(targetUser, getConnectedUser().getUuid())) {
+			if (!StringUtils.isBlank(targetUser) && !Objects.equals(targetUser, getConnectedUser().getUuid())) {
 				
 				//like on other posts not mine
 				if (!Objects.equals(commentEntity.get().getUser().getUuid(),
 						commentEntity.get().getPost().getTargetUserProfile().getUuid())) {
 					addNotification(NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getUser(),
 							commentEntity.get().getPost().getTargetUserProfile(), null, null,
-							commentEntity.get().getPost(), commentEntity.get());
+							commentEntity.get().getPost(), commentEntity.get(), null);
 					
 				}
 				

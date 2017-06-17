@@ -81,7 +81,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 				!savedPost.getTargetUserProfile().getId().equals(connectedUser.getId())) {
 			
 			addNotification(NotificationTypeEnum.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(),
-					savedPost.getTargetUserProfile(), null, null, savedPost, null);
+					savedPost.getTargetUserProfile(), null, null, savedPost, null, null);
 			
 			//Tag notification
 			if (savedPost.getContent() != null) {
@@ -257,7 +257,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		return this.postTransformer.modelToDto(postEntities.get(0));
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -340,8 +340,8 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<PostDTO> getAllUserPosts(final Long connectedUserId, final String connectedUserUuid, final String userID,
-										 final int page)
+	public List<PostDTO> getAllUserPosts(final Long connectedUserId, final String connectedUserUuid,
+										 final String userID, final int page)
 	{
 		final List<PostEntity> posts;
 		

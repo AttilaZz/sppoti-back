@@ -52,6 +52,10 @@ public class NotificationEntity extends AbstractCommonEntity
 	@JoinColumn(name = "comment_id")
 	private CommentEntity comment;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "score_id")
+	private ScoreEntity score;
+	
 	public UserEntity getFrom()
 	{
 		return this.from;
@@ -136,6 +140,14 @@ public class NotificationEntity extends AbstractCommonEntity
 	
 	public void setComment(final CommentEntity comment) {
 		this.comment = comment;
+	}
+	
+	public ScoreEntity getScore() {
+		return this.score;
+	}
+	
+	public void setScore(final ScoreEntity score) {
+		this.score = score;
 	}
 	
 	/**

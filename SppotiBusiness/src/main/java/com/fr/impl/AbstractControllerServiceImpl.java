@@ -29,7 +29,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -164,12 +163,12 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 */
 	protected UserEntity getConnectedUser()
 	{
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
-		if(auth.getPrincipal().equals("anonymousUser")){
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth.getPrincipal().equals("anonymousUser")) {
 			return null;
 		}
-
+		
 		final UserDetails accountUserDetails = (UserDetails) auth.getPrincipal();
 		return this.getUserByLogin(accountUserDetails.getUsername(), true);
 	}
@@ -223,9 +222,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				return this.userTransformer.modelToDto(temp);
 			}
 			return this.userTransformer.modelToDto(entity);
-
+			
 		}
-
+		
 		return null;
 	}
 	
@@ -237,6 +236,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 *
 	 * @return list of Comment DTO
 	 */
+	//TODO: Move it to the transformer
 	protected List<CommentDTO> fillCommentModelList(final List<CommentEntity> dbCommentEntityList, final Long userId)
 	{
 		final List<CommentDTO> myList = new ArrayList<>();
@@ -418,10 +418,10 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	@Transactional
 	protected void addNotification(final NotificationTypeEnum notificationType, final UserEntity userFrom,
 								   final UserEntity userTo, final TeamEntity teamEntity, final SppotiEntity sppoti,
-								   final PostEntity post, final CommentEntity comment)
+								   final PostEntity post, final CommentEntity comment, final ScoreEntity score)
 	{
 		final NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, teamEntity,
-				sppoti, post, comment);
+				sppoti, post, comment, score);
 		
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
 		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
@@ -433,7 +433,8 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	 */
 	NotificationEntity getNotificationEntity(final NotificationTypeEnum notificationType, final UserEntity userFrom,
 											 final UserEntity userTo, final TeamEntity team, final SppotiEntity sppoti,
-											 final PostEntity post, final CommentEntity comment)
+											 final PostEntity post, final CommentEntity comment,
+											 final ScoreEntity scoreEntity)
 	{
 		final NotificationEntity notification = new NotificationEntity();
 		notification.setNotificationType(notificationType);
@@ -455,6 +456,9 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 			comment.setConnectedUserId(userTo.getId());
 			notification.setComment(comment);
 		}
+		
+		notification.setScore(scoreEntity);
+		
 		return notification;
 	}
 	
@@ -508,10 +512,10 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				if (userToNotify != null) {
 					if (commentEntity != null) {
 						addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(),
-								userToNotify, null, null, commentEntity.getPost(), commentEntity);
+								userToNotify, null, null, commentEntity.getPost(), commentEntity, null);
 					} else {
 						addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify,
-								null, null, postEntity, null);
+								null, null, postEntity, null, null);
 					}
 					
 				}
