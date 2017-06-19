@@ -28,9 +28,6 @@ public class FriendShipEntity extends AbstractCommonEntity
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
 	
-	@Column
-	private boolean deleted;
-	
 	public Date getDatetime()
 	{
 		return this.datetimeCreated;
@@ -71,16 +68,6 @@ public class FriendShipEntity extends AbstractCommonEntity
 		this.user = user;
 	}
 	
-	public boolean isDeleted()
-	{
-		return this.deleted;
-	}
-	
-	public void setDeleted(final boolean deleted)
-	{
-		this.deleted = deleted;
-	}
-	
 	/**
 	 * {@inheritDoc}.
 	 */
@@ -96,8 +83,6 @@ public class FriendShipEntity extends AbstractCommonEntity
 		
 		final FriendShipEntity that = (FriendShipEntity) o;
 		
-		if (this.deleted != that.deleted)
-			return false;
 		if (this.datetimeCreated != null ? !this.datetimeCreated.equals(that.datetimeCreated) :
 				that.datetimeCreated != null)
 			return false;
@@ -114,7 +99,6 @@ public class FriendShipEntity extends AbstractCommonEntity
 		int result = super.hashCode();
 		result = 31 * result + (this.datetimeCreated != null ? this.datetimeCreated.hashCode() : 0);
 		result = 31 * result + (this.status != null ? this.status.hashCode() : 0);
-		result = 31 * result + (this.deleted ? 1 : 0);
 		return result;
 	}
 }

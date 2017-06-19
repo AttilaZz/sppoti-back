@@ -23,6 +23,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -84,8 +85,8 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		Check if friendship exist
          */
 		final FriendShipEntity tempFriendShip = this.friendShipRepository
-				.findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(friend.getUuid(),
-						connectedUser.getUuid());
+				.findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(friend.getUuid(),
+						connectedUser.getUuid(), GlobalAppStatusEnum.DELETED);
 		if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
 			throw new EntityExistsException("FriendShip already exists !");
 		}
@@ -126,8 +127,8 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		Check if i received a friend request from the USER in the request
          */
 		final FriendShipEntity tempFriendShip = this.friendShipRepository
-				.findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
-						friendUuid);
+				.findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
+						friendUuid, GlobalAppStatusEnum.DELETED);
 		if (tempFriendShip == null) {
 			this.LOGGER.error("UPDATE-FRIEND: FriendShipEntity not found !");
 			throw new EntityNotFoundException(
@@ -173,7 +174,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			throw new EntityNotFoundException("Friendship not found");
 		}
 		
-		friendShip.get(0).setDeleted(true);
+		friendShip.get(0).setStatus(GlobalAppStatusEnum.DELETED);
 		this.friendShipRepository.save(friendShip);
 		
 	}
@@ -188,20 +189,18 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.friendListSize);
 		
 		final List<FriendShipEntity> friendShips = this.friendShipRepository
-				.findByUserUuidOrFriendUuidAndStatusAndDeletedFalse(userId, userId, GlobalAppStatusEnum.CONFIRMED,
-						pageable);
+				.findByUserUuidOrFriendUuidAndStatus(userId, userId, GlobalAppStatusEnum.CONFIRMED, pageable);
 		
-		return friendShips.stream().filter(f -> f.getStatus().name().equals(GlobalAppStatusEnum.CONFIRMED.name()))
-				.map(f -> {
-					UserDTO userDTO;
-					if (f.getUser().getUuid() == userId) {
-						userDTO = this.userTransformer.modelToDto(f.getFriend());
-					} else {
-						userDTO = this.userTransformer.modelToDto(f.getUser());
-					}
-					userDTO.setPassword(null);
-					return userDTO;
-				}).collect(Collectors.toList());
+		return friendShips.stream().map(f -> {
+			UserDTO userDTO;
+			if (Objects.equals(f.getUser().getUuid(), userId)) {
+				userDTO = this.userTransformer.modelToDto(f.getFriend());
+			} else {
+				userDTO = this.userTransformer.modelToDto(f.getUser());
+			}
+			userDTO.setPassword(null);
+			return userDTO;
+		}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -215,7 +214,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.friendListSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		final List<FriendShipEntity> friendShips = this.friendShipRepository
-				.findByUserUuidAndStatusAndDeletedFalse(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
+				.findByUserUuidAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
 		
 		return getFriendResponse(friendShips, connectedUser.getId());
 	}
@@ -232,8 +231,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.friendListSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		final List<FriendShipEntity> friendShips = this.friendShipRepository
-				.findByFriendUuidAndStatusAndDeletedFalse(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING,
-						pageable);
+				.findByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
 		
 		return getFriendResponse(friendShips, connectedUser.getId());
 	}
@@ -251,7 +249,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.friendListSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		final List<FriendShipEntity> friendShips = this.friendShipRepository
-				.findByUserUuidAndStatusAndDeletedFalse(connectedUser.getUuid(), GlobalAppStatusEnum.REFUSED, pageable);
+				.findByUserUuidAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.REFUSED, pageable);
 		
 		return getFriendResponse(friendShips, connectedUser.getId());
 	}

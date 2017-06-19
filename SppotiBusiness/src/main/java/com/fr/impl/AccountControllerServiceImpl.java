@@ -346,11 +346,11 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
 		
 		optional.ifPresent(u -> {
-
-			if(!u.isConfirmed()){
+			
+			if (!u.isConfirmed()) {
 				throw new AccountConfirmationLinkExpiredException("Account confirmation email has expired or not sent");
 			}
-
+			
 			final String code = SppotiUtils.generateConfirmationKey();
 			
 			final Date tokenExpiryDate = SppotiUtils.generateExpiryDate(this.daysBeforeExpiration);
@@ -359,7 +359,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			u.setRecoverCode(code);
 			this.userRepository.save(u);
 			this.LOGGER.info("Recover password email sent tocommit: " + u.getEmail());
-
+			
 			final Thread thread = new Thread(() -> this.accountMailer
 					.sendRecoverPasswordEmail(this.userTransformer.modelToDto(u), code, tokenExpiryDate));
 			thread.start();
@@ -457,13 +457,13 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 				FriendShipEntity friendShip;
 				
 				friendShip = this.friendShipRepository
-						.findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(
-								connectedUser.getUuid(), targetUser.getUuid());
+						.findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
+								targetUser.getUuid(), GlobalAppStatusEnum.DELETED);
 				
 				if (friendShip == null) {
 					friendShip = this.friendShipRepository
-							.findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(
-									targetUser.getUuid(), connectedUser.getUuid());
+							.findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(targetUser.getUuid(),
+									connectedUser.getUuid(), GlobalAppStatusEnum.DELETED);
 				}
 				
 				if (friendShip == null) {
@@ -485,8 +485,9 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 					}
 				}
 				/*  Manage request sent by me. */
-				if (!this.friendShipRepository.findByUserUuidAndFriendUuidAndStatusAndDeletedFalse(targetUser.getUuid(),
-						connectedUser.getUuid(), GlobalAppStatusEnum.PENDING).isEmpty()) {
+				if (!this.friendShipRepository
+						.findByUserUuidAndFriendUuidAndStatus(targetUser.getUuid(), connectedUser.getUuid(),
+								GlobalAppStatusEnum.PENDING).isEmpty()) {
 					user.setFriendStatus(GlobalAppStatusEnum.PENDING_SENT.getValue());
 				}
 			}
@@ -533,14 +534,14 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	@Override
 	@Transactional
 	public ConnexionHistoryDto saveConnexionHistory(final ConnexionHistoryDto historyDto) {
-
-		if(getConnectedUser() == null){
+		
+		if (getConnectedUser() == null) {
 			return new ConnexionHistoryDto();
 		}
-
+		
 		historyDto.setUserId(getConnectedUser().getId());
 		return this.connexionHistoryTransformer.modelToDto(
 				this.connexionHistoryRepository.save(this.connexionHistoryTransformer.dtoToModel(historyDto)));
-
+		
 	}
 }

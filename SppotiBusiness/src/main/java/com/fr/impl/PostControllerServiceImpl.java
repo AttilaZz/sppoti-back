@@ -332,8 +332,8 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public boolean isTargetUserFriendOfMe(final String connectedUserUuid, final String friendId)
 	{
 		return this.friendShipRepository
-				.findLastByFriendUuidAndUserUuidAndDeletedFalseOrderByDatetimeCreatedDesc(friendId,
-						connectedUserUuid) != null;
+				.findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(friendId, connectedUserUuid,
+						GlobalAppStatusEnum.DELETED) != null;
 	}
 	
 	/**
@@ -387,18 +387,18 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 			
 			//get recent posts from each friend
 			this.friendShipRepository
-					.findByUserUuidOrFriendUuidAndStatusAndDeletedFalse(userId, userId, GlobalAppStatusEnum.CONFIRMED,
-							pageable).forEach(f -> {
-				
-				if (f.getFriend().getUuid() != userId) {
-					returnedPostEntities.addAll(this.postRepository
-							.getByUserUuidAndDeletedFalse(f.getFriend().getUuid(), pageable));
-				} else if (f.getUser().getUuid() != userId) {
-					returnedPostEntities
-							.addAll(this.postRepository.getByUserUuidAndDeletedFalse(f.getUser().getUuid(), pageable));
-				}
-				
-			});
+					.findByUserUuidOrFriendUuidAndStatus(userId, userId, GlobalAppStatusEnum.CONFIRMED, pageable)
+					.forEach(f -> {
+						
+						if (f.getFriend().getUuid() != userId) {
+							returnedPostEntities.addAll(this.postRepository
+									.getByUserUuidAndDeletedFalse(f.getFriend().getUuid(), pageable));
+						} else if (f.getUser().getUuid() != userId) {
+							returnedPostEntities.addAll(this.postRepository
+									.getByUserUuidAndDeletedFalse(f.getUser().getUuid(), pageable));
+						}
+						
+					});
 			
 			//add connected user posts
 			returnedPostEntities
