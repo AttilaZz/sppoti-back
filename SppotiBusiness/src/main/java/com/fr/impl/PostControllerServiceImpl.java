@@ -390,10 +390,10 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 					.findByUserUuidOrFriendUuidAndStatus(userId, userId, GlobalAppStatusEnum.CONFIRMED, pageable)
 					.forEach(f -> {
 						
-						if (f.getFriend().getUuid() != userId) {
+						if (!f.getFriend().getUuid().equals(userId)) {
 							returnedPostEntities.addAll(this.postRepository
 									.getByUserUuidAndDeletedFalse(f.getFriend().getUuid(), pageable));
-						} else if (f.getUser().getUuid() != userId) {
+						} else if (!f.getUser().getUuid().equals(userId)) {
 							returnedPostEntities.addAll(this.postRepository
 									.getByUserUuidAndDeletedFalse(f.getUser().getUuid(), pageable));
 						}
