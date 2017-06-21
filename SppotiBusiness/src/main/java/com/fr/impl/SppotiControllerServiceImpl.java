@@ -301,9 +301,19 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		final SppotiEntity updatedSppoti = this.sppotiRepository.save(sppoti);
 		
-		//Notify sppoti members about the changes
+		//Notify sppoti members (host and adverse) about the changes
+		final Set<TeamMemberEntity> usersToNotify = updatedSppoti.getTeamHostEntity().getTeamMembers();
+		
+		final List<TeamEntity> te = updatedSppoti.getAdverseTeams().stream()
+				.filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)).map(SppotiAdverseEntity::getTeam)
+				.collect(Collectors.toList());
+		
+		if (!te.isEmpty()) {
+			usersToNotify.addAll(te.get(0).getTeamMembers());
+		}
+		
 		if (editNotification) {
-			updatedSppoti.getTeamHostEntity().getTeamMembers().stream().filter(m -> !m.getAdmin()).forEach(
+			usersToNotify.stream().filter(m -> !m.getAdmin()).forEach(
 					m -> addNotification(NotificationTypeEnum.SPPOTI_HAS_BEEN_EDITED, updatedSppoti.getUserSppoti(),
 							m.getUser(), null, updatedSppoti, null, null, null, null));
 		}
