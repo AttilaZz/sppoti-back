@@ -81,7 +81,8 @@ public class TeamMemberTransformer
 			if (!StringUtils.isEmpty(memberEntity.getSppotiMembers())) {
 				for (final SppoterEntity sppoter : memberEntity.getSppotiMembers()) {
 					if (sppoter.getTeamMember().getId().equals(memberEntity.getId()) &&
-							sppoter.getSppoti().getId().equals(sppoti.getId())) {
+							sppoter.getSppoti().getId().equals(sppoti.getId()) &&
+							!sppoter.getStatus().equals(GlobalAppStatusEnum.DELETED)) {
 						userDTO.setSppotiStatus(sppoter.getStatus().getValue());
 					}
 				}
@@ -124,8 +125,7 @@ public class TeamMemberTransformer
 		if (sppotiRatingEntity.isPresent()) {
 			final Set<SppotiRatingEntity> sppotiRatingEntities = new HashSet<>();
 			sppotiRatingEntities.addAll(sppotiRatingEntity.get());
-			final OptionalDouble averageRating = sppotiRatingEntities.stream()
-					.filter(r -> r.getStarsCount() != 0)
+			final OptionalDouble averageRating = sppotiRatingEntities.stream().filter(r -> r.getStarsCount() != 0)
 					.mapToDouble(SppotiRatingEntity::getStarsCount).average();
 			
 			if (averageRating.isPresent()) {

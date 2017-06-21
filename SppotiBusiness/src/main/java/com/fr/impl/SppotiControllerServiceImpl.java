@@ -355,7 +355,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 							GlobalAppStatusEnum.DELETED).getUser();
 			
 			addNotification(NotificationTypeEnum.X_ACCEPTED_THE_SPPOTI_INVITATION, sm.getTeamMember().getUser(),
-					teamAdmin, teamMembers.getTeam(), null, null, null, null, null);
+					teamAdmin, teamMembers.getTeam(), sm.getSppoti(), null, null, null, null);
 			
 		});
 		
