@@ -552,27 +552,21 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 									}
 								});
 								
+								//Notify team members
+								final List<TeamMemberEntity> usersToNotify = new ArrayList<>();
+								usersToNotify.addAll(teamAdverse.getTeam().getTeamMembers());
+								usersToNotify.addAll(sp.getTeamHostEntity().getTeamMembers());
+								
 								//Notify to all confirmed adverse team members.
-								teamAdverse.getTeam().getTeamMembers().forEach(m -> {
-									//									if (m.getSppotiMembers().stream().anyMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
-									addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE,
-											sp.getUserSppoti(), m.getUser(), teamAdverse.getTeam(), sp, null, null,
-											null, null);
-									//									}
-								});
-								
-								//Notify host team confirmed members
-								
-								sp.getTeamHostEntity().getTeamMembers().forEach(m -> {
-									if (!m.getAdmin()) {
+								usersToNotify.forEach(m -> {
+									if (!sp.getUserSppoti().getUuid().equals(m.getUser().getUuid())) {
 										addNotification(NotificationTypeEnum.SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE,
-												sp.getUserSppoti(), m.getUser(), sp.getTeamHostEntity(), sp, null, null,
+												sp.getUserSppoti(), m.getUser(), teamAdverse.getTeam(), sp, null, null,
 												null, null);
 									}
 								});
 							}
 						});
-				
 			});
 		});
 	}
