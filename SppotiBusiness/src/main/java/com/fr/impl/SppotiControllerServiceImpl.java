@@ -777,9 +777,11 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "username");
 			
 			final List<Long> existingSppoter = new ArrayList<>();
-			
-			sp.getAdverseTeams().forEach(m -> existingSppoter
-					.addAll(m.getTeam().getTeamMembers().stream().map(a -> a.getUser().getId())
+
+			sp.getAdverseTeams().forEach(ad -> existingSppoter
+					.addAll(ad.getTeam().getTeamMembers().stream().filter(m ->
+							m.getSppotiMembers().stream().noneMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.DELETED)) &&
+									!m.getSppotiMembers().isEmpty()).map(a -> a.getUser().getId())
 							.collect(Collectors.toList())));
 			
 			existingSppoter.addAll(sp.getTeamHostEntity().getTeamMembers().stream().filter(m ->
