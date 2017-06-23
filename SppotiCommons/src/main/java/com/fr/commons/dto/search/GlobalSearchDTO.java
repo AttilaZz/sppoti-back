@@ -10,12 +10,14 @@ import java.util.Date;
  * Created by wdjenane on 22/06/2017.
  */
 public class GlobalSearchDTO {
+
     private GenderEnum gender;
     private Integer minAge;
     private Integer maxAge;
     private Integer sport;
     private Date startDate;
-    private String name;
+    private String query;
+    private Integer type;
 
     public GenderEnum getGender() {
         return gender;
@@ -57,11 +59,19 @@ public class GlobalSearchDTO {
         this.startDate = startDate;
     }
 
-    public String getName() {
-        return name;
+    public String getQuery() {
+        return query;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

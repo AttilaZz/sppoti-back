@@ -35,9 +35,10 @@ class FindUsersController
 	private final UserRepository userRepository;
 	/** Account service. */
 	private final AccountControllerService accountControllerService;
-	/** Firiend list size. */
+
+	/** Friend list size. */
 	@Value("${key.friendShipPerPage}")
-	private int friend_size;
+	private int friendSize;
 	
 	/** Init service. */
 	@Autowired
@@ -68,7 +69,7 @@ class FindUsersController
 		}
 		
 		final List<UserEntity> foundUsers;
-		final Pageable pageable = new PageRequest(page, this.friend_size);
+		final Pageable pageable = new PageRequest(page, this.friendSize);
 		
 		final String[] parts = userPrefix.split(" ");
 		

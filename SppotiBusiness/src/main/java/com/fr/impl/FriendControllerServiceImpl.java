@@ -52,9 +52,6 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	
 	/**
 	 * {@inheritDoc}
-	 *
-	 * @param user
-	 * 		friend data.
 	 */
 	@Transactional
 	@Override
