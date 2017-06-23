@@ -1,6 +1,5 @@
 package com.fr.repositories;
 
-import com.fr.entities.SppoterEntity;
 import com.fr.entities.UserEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -52,7 +51,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>, QueryDs
 	 * @param pageable
 	 * 		page number.
 	 *
-	 * @return list of {@link SppoterEntity}
+	 * @return list of users
 	 */
 	@Query("SELECT s FROM UserEntity s WHERE (s.username LIKE CONCAT('%', :prefix ,'%')" +
 			"OR s.firstName LIKE CONCAT('%', :prefix, '%')" + "OR s.lastName LIKE CONCAT('%', :prefix, '%'))" +
@@ -84,12 +83,14 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>, QueryDs
 	 * Find user in login process by username.
 	 */
 	UserEntity findByUsername(String username);
-
+	
 	/**
 	 * Find all existing users accounts by email.
 	 * Otherwise confirmed or not.
 	 *
-	 * @param email user email.
+	 * @param email
+	 * 		user email.
+	 *
 	 * @return User account.
 	 */
 	UserEntity getByEmailAndDeletedFalse(String email);

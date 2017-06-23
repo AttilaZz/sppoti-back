@@ -38,9 +38,5 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.mysema.querydsl</groupId>
-            <artifactId>querydsl-jpa</artifactId>
-        </dependency>
     </dependencies>
 </project>
