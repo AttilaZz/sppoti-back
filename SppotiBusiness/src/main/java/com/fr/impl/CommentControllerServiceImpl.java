@@ -108,7 +108,7 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	@Override
 	public CommentEntity findComment(final String id)
 	{
-		return this.commentRepository.getByUuid(id);
+		return this.commentRepository.getByUuidAndDeletedFalse(id);
 	}
 	
 	/**
@@ -139,7 +139,7 @@ class CommentControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		final Pageable pageable = new PageRequest(page, this.commentSize);
 		
 		final List<CommentEntity> lCommentEntity = this.commentRepository
-				.getByPostUuidOrderByDatetimeCreatedDesc(postId, pageable);
+				.getByPostUuidAndDeletedFalseOrderByDatetimeCreatedDesc(postId, pageable);
 		
 		//userId used to distinguich connected user comments
 		return fillCommentModelList(lCommentEntity, userId);

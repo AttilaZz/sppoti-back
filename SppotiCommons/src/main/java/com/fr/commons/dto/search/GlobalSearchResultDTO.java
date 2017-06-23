@@ -4,6 +4,7 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,31 +14,31 @@ import java.util.List;
  */
 public class GlobalSearchResultDTO {
 
-    private List<TeamDTO> teams;
-    private List<SppotiDTO> sppoties;
-    private List<UserDTO> users;
+    private List<TeamDTO> teams = new ArrayList<>();
+    private List<SppotiDTO> sppoties = new ArrayList<>();
+    private List<UserDTO> users = new ArrayList<>();
 
     public List<TeamDTO> getTeams() {
-        return teams;
+        return this.teams;
     }
 
-    public void setTeams(List<TeamDTO> teams) {
+    public void setTeams(final List<TeamDTO> teams) {
         this.teams = teams;
     }
 
     public List<SppotiDTO> getSppoties() {
-        return sppoties;
+        return this.sppoties;
     }
 
-    public void setSppoties(List<SppotiDTO> sppoties) {
+    public void setSppoties(final List<SppotiDTO> sppoties) {
         this.sppoties = sppoties;
     }
 
     public List<UserDTO> getUsers() {
-        return users;
+        return this.users;
     }
 
-    public void setUsers(List<UserDTO> users) {
+    public void setUsers(final List<UserDTO> users) {
         this.users = users;
     }
 }

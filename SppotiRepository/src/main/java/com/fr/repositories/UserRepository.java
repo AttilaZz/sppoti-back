@@ -5,6 +5,7 @@ import com.fr.entities.UserEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import java.util.Optional;
  * Created by Moi on 27-Nov-16.
  */
 @Service
-public interface UserRepository extends JpaRepository<UserEntity, Long>
+public interface UserRepository extends JpaRepository<UserEntity, Long>, QueryDslPredicateExecutor<UserEntity>
 {
 	
 	UserEntity getByEmailAndDeletedFalseAndConfirmedTrue(String email);

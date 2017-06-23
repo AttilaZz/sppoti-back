@@ -155,4 +155,20 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		entity.setUsername(dto.getUsername().trim());
 		return entity;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<UserEntity> dtoToModel(final List<UserDTO> dtos) {
+		return dtos.stream().map(this::dtoToModel).collect(Collectors.toList());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<UserDTO> modelToDto(final List<UserEntity> models) {
+		return models.stream().map(this::modelToDto).collect(Collectors.toList());
+	}
 }

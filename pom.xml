@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,6 +22,7 @@
         <spring.boot.version>1.5.3.RELEASE</spring.boot.version>
         <apache.common.io.version>2.5</apache.common.io.version>
         <apache.common.lang.version>2.6</apache.common.lang.version>
+        <querydsl.version>3.7.4</querydsl.version>
     </properties>
 
     <modules>
@@ -93,6 +94,12 @@
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${apache.common.lang.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.querydsl/querydsl-maven-plugin -->
+            <dependency>
+                <groupId>com.querydsl</groupId>
+                <artifactId>querydsl-jpa</artifactId>
+                <version>${querydsl.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

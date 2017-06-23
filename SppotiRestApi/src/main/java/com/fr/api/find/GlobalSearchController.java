@@ -5,6 +5,7 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.GlobalSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,33 +31,36 @@ public class GlobalSearchController {
 
     @GetMapping
     public ResponseEntity<GlobalSearchResultDTO> findData(@RequestParam final int type, @RequestParam final String sex,
-                                                          @RequestParam("age_max") final int ageMax,
-                                                          @RequestParam("age_min") final int ageMin,
-                                                          @RequestParam final int sport,
+                                                          @RequestParam("age_max") final Integer ageMax,
+                                                          @RequestParam("age_min") final Integer ageMin,
+                                                          @RequestParam final Integer sport,
                                                           @RequestParam("start_date") final Date startDate,
                                                           @RequestParam final String query,
                                                           @RequestParam final int page) {
 
-        final GlobalSearchResultDTO search;
-        switch (type) {
-            case 1:
-                // search users
-                search = this.globalSearchService.findAllUsersFromCriteria(query, sex, ageMax, ageMin, page);
-                break;
-            case 2:
-                //search teams
-                search = this.globalSearchService.findAllTeamFromCriteria(query, sport, page);
-                break;
-            case 3:
-                //search sppotis
-                search = this.globalSearchService.findAllSppotisFromCriteria(query, sport, startDate, page);
-                break;
-            case 4:
-                //all - without criteria
-                search = this.globalSearchService.findAllWithoutCriteria(query, page);
-                break;
-            default:
-                throw new BusinessGlobalException("Search type not correct");
+
+        GlobalSearchResultDTO search = new GlobalSearchResultDTO();
+        if (!StringUtils.hasText(query)) {
+            switch (type) {
+                case 1:
+                    // search users
+                    search = this.globalSearchService.findAllUsersFromCriteria(query, sex, ageMax, ageMin, page);
+                    break;
+                case 2:
+                    //search teams
+                    search = this.globalSearchService.findAllTeamFromCriteria(query, sport, page);
+                    break;
+                case 3:
+                    //search sppotis
+                    search = this.globalSearchService.findAllSppotisFromCriteria(query, sport, startDate, page);
+                    break;
+                case 4:
+                    //all - without criteria
+                    search = this.globalSearchService.findAllWithoutCriteria(query, page);
+                    break;
+                default:
+                    throw new BusinessGlobalException("Search type not correct");
+            }
         }
 
         return ResponseEntity.ok(search);

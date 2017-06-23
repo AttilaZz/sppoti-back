@@ -12,11 +12,12 @@ import java.util.Date;
  */
 public interface GlobalSearchService extends AbstractControllerService{
 
-    GlobalSearchResultDTO findAllUsersFromCriteria(String query, String sexe, int ageMax, int ageMin, int page);
+    GlobalSearchResultDTO findAllUsersFromCriteria(String query, String sexe, Integer ageMax, Integer ageMin,
+                                                   Integer page);
 
-    GlobalSearchResultDTO findAllTeamFromCriteria(String query, int sport, int page);
+    GlobalSearchResultDTO findAllTeamFromCriteria(String query, Integer sport, Integer page);
 
-    GlobalSearchResultDTO findAllSppotisFromCriteria(String query, int sport, Date startDate, int page);
+    GlobalSearchResultDTO findAllSppotisFromCriteria(String query, Integer sport, Date startDate, Integer page);
 
-    GlobalSearchResultDTO findAllWithoutCriteria(String query, int page);
+    GlobalSearchResultDTO findAllWithoutCriteria(String query, Integer page);
 }
