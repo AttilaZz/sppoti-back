@@ -103,7 +103,7 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO, E ext
 		final List<T> tList = new ArrayList<>();
 		
 		models.forEach(t -> {
-			final T userDTO = modelToDto(t);
+			final T userDTO = this.modelToDto(t);
 			tList.add(userDTO);
 		});
 		

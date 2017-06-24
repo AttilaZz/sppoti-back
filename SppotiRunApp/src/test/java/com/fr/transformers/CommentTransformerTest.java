@@ -1,9 +1,8 @@
-package com.fr;
+package com.fr.transformers;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.CommentEntity;
-import com.fr.transformers.CommentTransformer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TransformerTest
+public class CommentTransformerTest
 {
 	@Autowired
 	private CommentTransformer commentTransformer;

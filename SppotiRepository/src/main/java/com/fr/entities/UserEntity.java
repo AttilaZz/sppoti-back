@@ -99,7 +99,7 @@ public class UserEntity extends AbstractCommonEntity
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "role_id", nullable = false)
 	@JsonIgnore
-	private Set<RoleEntity> roles;
+	private Set<RoleEntity> roles = new HashSet<>();
 	
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "sport_id")

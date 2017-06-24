@@ -26,7 +26,7 @@ public class UserDTO extends AbstractCommonDTO
 	private Integer yPosition;
 	
 	@JsonProperty("sports")
-	private List<SportDTO> sportDTOs;
+	private List<SportDTO> sportDTOs = new ArrayList<>();
 	
 	private String password;
 	private String oldPassword;
