@@ -2,6 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.search.GlobalSearchResultDTO;
 import com.fr.commons.enumeration.GenderEnum;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.QUserEntity;
 import com.fr.service.GlobalSearchService;
 import com.fr.transformers.UserTransformer;
@@ -11,8 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
+import org.springframework.util.StringUtils;
 
 /**
  * Created by wdjenane on 22/06/2017.
@@ -39,39 +39,34 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 	public GlobalSearchResultDTO findAllUsersFromCriteria(final String query, final String sex, final Integer ageMax,
 														  final Integer ageMin, final Integer page)
 	{
-		Predicate predicate = null;
 		final GlobalSearchResultDTO result = new GlobalSearchResultDTO();
-		if (sex != null) {
+		
+		final Predicate predicate;
+		Predicate predicate1 = null;
+		Predicate predicate2 = null;
+		Predicate predicate3 = null;
+		
+		if (StringUtils.hasText(sex)) {
 			GenderEnum gender = GenderEnum.MALE;
-			if (GenderEnum.FEMALE.name().equals(sex)) {
+			if ("f".equals(sex)) {
 				gender = GenderEnum.FEMALE;
 			}
-			
-			predicate = (QUserEntity.userEntity.username.containsIgnoreCase(query)
-					.or(QUserEntity.userEntity.firstName.containsIgnoreCase(query))
-					.or(QUserEntity.userEntity.lastName.containsIgnoreCase(query)))
-					.and(QUserEntity.userEntity.gender.eq(gender));
+			predicate1 = QUserEntity.userEntity.gender.eq(gender);
 		}
 		
 		if (ageMax != null) {
-		
+			//Dates are greater when they are in the past
+			predicate2 = QUserEntity.userEntity.dateBorn.gt(SppotiUtils.getDateOfBorn(ageMax));
 		}
 		
 		if (ageMin != null) {
-		
+			predicate3 = QUserEntity.userEntity.dateBorn.lt(SppotiUtils.getDateOfBorn(ageMin));
 		}
 		
-		if (sex != null && ageMax != null) {
-		
-		}
-		
-		if (sex != null && ageMin != null) {
-		
-		}
-		
-		if (ageMin != null && ageMax != null) {
-		
-		}
+		predicate = (QUserEntity.userEntity.username.containsIgnoreCase(query)
+				.or(QUserEntity.userEntity.firstName.containsIgnoreCase(query))
+				.or(QUserEntity.userEntity.lastName.containsIgnoreCase(query))).and(predicate1).and(predicate2)
+				.and(predicate3);
 		
 		result.getUsers().addAll(this.userTransformer.iterableModelsToDtos(this.userRepository.findAll(predicate)));
 		
@@ -91,7 +86,7 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 	 */
 	@Override
 	public GlobalSearchResultDTO findAllSppotisFromCriteria(final String query, final Integer sport,
-															final Date startDate, final Integer page)
+															final String startDate, final Integer page)
 	{
 		return null;
 	}

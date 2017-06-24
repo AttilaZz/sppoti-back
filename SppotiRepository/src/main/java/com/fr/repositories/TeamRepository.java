@@ -4,6 +4,7 @@ import com.fr.entities.TeamEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 /**
  * Created by djenanewail on 1/22/17.
  */
-public interface TeamRepository extends JpaRepository<TeamEntity, Long>
+public interface TeamRepository extends JpaRepository<TeamEntity, Long>, QueryDslPredicateExecutor<TeamEntity>
 {
 	
 	/**
@@ -35,7 +36,7 @@ public interface TeamRepository extends JpaRepository<TeamEntity, Long>
 	 * @return list of teams.
 	 */
 	List<TeamEntity> findByNameContainingAndDeletedFalse(String team, Pageable pageable);
-
+	
 	/**
 	 * Find teams by a specific sport and a prefix and delete status False.
 	 * This method filter sppoti admin teams from result.

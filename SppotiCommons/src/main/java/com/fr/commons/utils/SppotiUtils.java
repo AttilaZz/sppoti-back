@@ -104,6 +104,22 @@ public class SppotiUtils
 	}
 	
 	/**
+	 * Get date of born from the age.
+	 *
+	 * @param age
+	 * 		person's age.
+	 *
+	 * @return born date.
+	 */
+	public static Date getDateOfBorn(final int age) {
+		final LocalDate localDate = LocalDate.now();
+		final LocalDate bornDate = localDate.minusYears(age);
+		
+		return Date.from(bornDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		
+	}
+	
+	/**
 	 * Check if account has been deactivated more than 90 days.
 	 *
 	 * @return true if account must be completly deleted.

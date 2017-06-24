@@ -114,14 +114,6 @@ public class UserEntity extends AbstractCommonEntity
 	@Column(nullable = false, name = "language")
 	private LanguageEnum languageEnum = LanguageEnum.fr;
 	
-	//	@ElementCollection(fetch = FetchType.LAZY)
-	//	@MapKeyColumn(name = "date_connexion")
-	//	@MapKeyTemporal(TemporalType.TIMESTAMP)
-	//	@Column(name = "ip_address", nullable = false)
-	//	@JoinTable(name = "connexion_history")
-	//	@JoinColumn(name = "user_id")
-	//	private Map<Date, String> ipHistory = new LinkedHashMap<>();
-	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
 	private List<ConnexionHistoryEntity> connexionHistory;
 	
