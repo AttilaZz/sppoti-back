@@ -63,7 +63,7 @@ public class SppotiUtils
 	 *
 	 * @return un String random
 	 */
-	private static String randomString(final int size)
+	public static String randomString(final int size)
 	{
 		return RandomStringUtils.randomAlphanumeric(size);
 	}

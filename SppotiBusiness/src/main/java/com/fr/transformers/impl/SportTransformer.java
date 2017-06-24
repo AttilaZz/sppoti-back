@@ -21,12 +21,13 @@ public class SportTransformer
 	 *
 	 * @return SportDTO.
 	 */
-	public SportDTO modelToDto(SportEntity sportEntity)
+	public SportDTO modelToDto(final SportEntity sportEntity)
 	{
-		SportDTO sportDTO = new SportDTO();
+		final SportDTO sportDTO = new SportDTO();
 		sportDTO.setId(sportEntity.getId());
 		sportDTO.setName(sportEntity.getName());
 		return sportDTO;
 	}
+	
 	
 }

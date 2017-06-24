@@ -177,13 +177,6 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 	 */
 	@Override
 	public List<UserDTO> iterableModelsToDtos(final Iterable<UserEntity> models) {
-		final List<UserDTO> userDTOS = new ArrayList<>();
-		
-		models.forEach(t -> {
-			final UserDTO userDTO = modelToDto(t);
-			userDTOS.add(userDTO);
-		});
-		
-		return userDTOS;
+		return super.iterableModelsToDtos(models);
 	}
 }

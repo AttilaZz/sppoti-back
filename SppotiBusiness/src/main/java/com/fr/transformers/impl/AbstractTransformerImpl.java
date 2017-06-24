@@ -67,7 +67,7 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO, E ext
 			throw new BusinessGlobalException("Erreur lors de l'instantiation de l'entité Java par réflexion.");
 		}
 		if (dto != null) {
-			SppotiBeanUtils.copyProperties(dto, model);
+			SppotiBeanUtils.copyProperties(model, dto);
 		}
 		return model;
 	}
@@ -90,7 +90,7 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO, E ext
 		}
 		
 		if (model != null) {
-			SppotiBeanUtils.copyProperties(model, dto);
+			SppotiBeanUtils.copyProperties(dto, model);
 		}
 		return dto;
 	}
@@ -100,7 +100,14 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO, E ext
 	 */
 	@Override
 	public List<T> iterableModelsToDtos(final Iterable<E> models) {
-		return null;
+		final List<T> tList = new ArrayList<>();
+		
+		models.forEach(t -> {
+			final T userDTO = modelToDto(t);
+			tList.add(userDTO);
+		});
+		
+		return tList;
 	}
 	
 	/**
@@ -108,7 +115,8 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO, E ext
 	 */
 	@Override
 	public String getTimeZone() {
-		final AccountUserDetails accountUserDetails = (AccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
 		return accountUserDetails.getTimeZone();
 	}
 }
