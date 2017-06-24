@@ -55,7 +55,8 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 *
 	 * @return return all joined sppoties, unless refused ones.
 	 */
-	List<SppoterEntity> findByTeamMemberUserUuidAndStatusNot(String userId, GlobalAppStatusEnum status, Pageable pageable);
+	List<SppoterEntity> findByTeamMemberUserUuidAndStatusNot(String userId, GlobalAppStatusEnum status,
+															 Pageable pageable);
 	
 	/**
 	 * Find all upcomming sppoties:
@@ -73,16 +74,18 @@ public interface SppotiMembersRepository extends JpaRepository<SppoterEntity, Lo
 	 * @return list of {@link SppoterEntity}
 	 */
 	@Query("SELECT s from SppoterEntity s WHERE s.teamMember.user.uuid= :userId " +
-			"AND s.sppoti.dateTimeStart > current_date() AND s.status = :status " +
-			"ORDER BY s.sppoti.dateTimeStart ASC")
+			"AND s.sppoti.dateTimeStart > now() AND s.status = :status " + "ORDER BY s.sppoti.dateTimeStart ASC")
 	List<SppoterEntity> findAllUpcomingSppoties(@Param("userId") String userId,
 												@Param("status") GlobalAppStatusEnum status, Pageable pageable);
-
+	
 	/**
 	 * Find all sppoter's entries
 	 *
-	 * @param userId user id.
-	 * @param sppotiId sppoti id.
+	 * @param userId
+	 * 		user id.
+	 * @param sppotiId
+	 * 		sppoti id.
+	 *
 	 * @return list of all user entries in sppoter table.
 	 */
 	List<SppoterEntity> findByTeamMemberUserUuidAndSppotiUuid(String userId, String sppotiId);
