@@ -98,9 +98,17 @@ public abstract class AbstractTransformerImpl<T extends AbstractCommonDTO, E ext
 	/**
 	 * {@inheritDoc}.
 	 */
+	@Override
+	public List<T> iterableModelsToDtos(final Iterable<E> models) {
+		return null;
+	}
+	
+	/**
+	 * {@inheritDoc}.
+	 */
+	@Override
 	public String getTimeZone() {
-		final AccountUserDetails accountUserDetails = (AccountUserDetails) SecurityContextHolder.getContext()
-				.getAuthentication().getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		return accountUserDetails.getTimeZone();
 	}
 }

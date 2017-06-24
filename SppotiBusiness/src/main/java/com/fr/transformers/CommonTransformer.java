@@ -49,8 +49,7 @@ public interface CommonTransformer<T extends AbstractCommonDTO, E extends Abstra
 	List<E> dtoToModel(final List<T> dtos);
 	
 	/**
-	 * Transformation d'une {@link List} d'objets model en une {@link List} de
-	 * leurs objets DTO.
+	 * Transform list of models to a list of dtos.
 	 *
 	 * @param models
 	 * 		La {@link List} d'objets model
@@ -58,6 +57,16 @@ public interface CommonTransformer<T extends AbstractCommonDTO, E extends Abstra
 	 * @return La {@link List} d'objet DTO correspondant.
 	 */
 	List<T> modelToDto(final List<E> models);
+	
+	/**
+	 * Transform an iterable list of models to list dtos.
+	 *
+	 * @param models
+	 * 		La {@link List} d'objets model
+	 *
+	 * @return eturn La {@link List} d'objet DTO correspondant.
+	 */
+	List<T> iterableModelsToDtos(Iterable<E> models);
 	
 	/**
 	 * Get timeZone from security context.

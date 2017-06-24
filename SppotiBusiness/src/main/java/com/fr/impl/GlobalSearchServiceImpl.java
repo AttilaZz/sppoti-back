@@ -2,7 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.search.GlobalSearchResultDTO;
 import com.fr.commons.enumeration.GenderEnum;
-import com.fr.entities.UserEntity;
+import com.fr.entities.QUserEntity;
 import com.fr.service.GlobalSearchService;
 import com.fr.transformers.UserTransformer;
 import com.querydsl.core.types.Predicate;
@@ -39,18 +39,18 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 	public GlobalSearchResultDTO findAllUsersFromCriteria(final String query, final String sex, final Integer ageMax,
 														  final Integer ageMin, final Integer page)
 	{
-		final Predicate predicate = null;
+		Predicate predicate = null;
 		final GlobalSearchResultDTO result = new GlobalSearchResultDTO();
 		if (sex != null) {
 			GenderEnum gender = GenderEnum.MALE;
 			if (GenderEnum.FEMALE.name().equals(sex)) {
 				gender = GenderEnum.FEMALE;
 			}
-			final GenderEnum finalGender = gender;
-			final UserEntity user = new UserEntity();
-			//            predicate = (user.getUsername().toLowerCase().contains(query) ||
-			//                    user.getFirstName().contains(query) || user.getLastName().contains(query)) && finalGender
-			//                    .name().equals(user.getGender().name());
+			
+			predicate = (QUserEntity.userEntity.username.containsIgnoreCase(query)
+					.or(QUserEntity.userEntity.firstName.containsIgnoreCase(query))
+					.or(QUserEntity.userEntity.lastName.containsIgnoreCase(query)))
+					.and(QUserEntity.userEntity.gender.eq(gender));
 		}
 		
 		if (ageMax != null) {
@@ -73,8 +73,9 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 		
 		}
 		
-		//        this.userTransformer.modelToDto(this.userRepository.findAll(predicate))
-		return null;
+		result.getUsers().addAll(this.userTransformer.iterableModelsToDtos(this.userRepository.findAll(predicate)));
+		
+		return result;
 	}
 	
 	/**
