@@ -4,10 +4,7 @@ import com.fr.commons.dto.ConnexionHistoryDto;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
-import com.fr.commons.enumeration.LanguageEnum;
-import com.fr.commons.enumeration.TypeAccountValidation;
-import com.fr.commons.enumeration.UserRoleTypeEnum;
+import com.fr.commons.enumeration.*;
 import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.ConflictEmailException;
@@ -97,22 +94,28 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
              - reject sign_up
              - delete old account
          */
-		final Optional<UserEntity> checkUsername = Optional
-				.ofNullable(this.userRepository.getByUsernameAndDeletedFalseAndConfirmedTrue(user.getUsername()));
-		final Optional<UserEntity> checkEmail = Optional
-				.ofNullable(this.userRepository.getByEmailAndDeletedFalseAndConfirmedTrue(user.getEmail()));
+		final Optional<UserEntity> checkUsernameConfirmedAccount = Optional
+				.ofNullable(this.userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
+		final Optional<UserEntity> checkEmailConfirmedAccount = Optional
+				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(user.getEmail()));
 		
-		checkEmail.ifPresent(e -> {
+		/**
+		 * Confirmed account
+		 */
+		checkEmailConfirmedAccount.ifPresent(e -> {
 			if (accountExist(e)) {
-				throw new ConflictEmailException("L'adresse email existe déjà.");
+				throw new ConflictEmailException(ErrorMessageEnum.EMAIL_ALREADY_EXISTS.getMessage());
 			}
 		});
-		checkUsername.ifPresent(e -> {
+		checkUsernameConfirmedAccount.ifPresent(e -> {
 			if (accountExist(e)) {
-				throw new ConflictUsernameException("Le username existe déjà.");
+				throw new ConflictUsernameException(ErrorMessageEnum.USERNAME_ALREADY_EXISTS.getMessage());
 			}
 		});
 		
+		/**
+		 * Save user.
+		 */
 		final UserEntity newUser = this.userTransformer.signUpDtoToEntity(user);
 		newUser.setFirstName(SppotiUtils.normaliser(newUser.getFirstName()));
 		newUser.setLastName(SppotiUtils.normaliser(newUser.getLastName()));

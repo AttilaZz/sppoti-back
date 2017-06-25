@@ -94,4 +94,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>, QueryDs
 	 * @return User account.
 	 */
 	UserEntity getByEmailAndDeletedFalse(String email);
+	
+	UserEntity getByUsernameAndDeletedFalse(String username);
 }

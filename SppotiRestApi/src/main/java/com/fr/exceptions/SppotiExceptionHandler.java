@@ -157,7 +157,7 @@ public class SppotiExceptionHandler
 	public ResponseEntity conflictEmailException(final ConflictEmailException e)
 	{
 		this.LOGGER.error(e.getMessage(), e);
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+		return ResponseEntity.status(410).body(e.getMessage());
 	}
 	
 	/**
@@ -169,7 +169,7 @@ public class SppotiExceptionHandler
 	 * @return 413 http status.
 	 */
 	@ExceptionHandler(value = AccountConfirmationLinkExpiredException.class)
-	public ResponseEntity conflictEmailException(final AccountConfirmationLinkExpiredException e)
+	public ResponseEntity accountConfirmationLinkExpired(final AccountConfirmationLinkExpiredException e)
 	{
 		this.LOGGER.error(e.getMessage(), e);
 		return ResponseEntity.status(413).body(e.getMessage());
