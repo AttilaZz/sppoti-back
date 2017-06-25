@@ -116,7 +116,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 					.logout()
 					.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 					.logoutSuccessHandler(this.logoutSuccessHandler).and().exceptionHandling()
-					.authenticationEntryPoint(this.pointUnAthorisedHandler);
+				.authenticationEntryPoint(this.pointUnAthorisedHandler).and().headers().xssProtection()
+				.xssProtectionEnabled(true);
 	}
 	
 	/**
