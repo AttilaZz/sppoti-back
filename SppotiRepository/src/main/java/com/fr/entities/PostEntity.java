@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.google.gson.annotations.SerializedName;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.*;
@@ -60,7 +61,8 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
 	@OrderBy("datetimeCreated DESC")
-	private SortedSet<CommentEntity> commentEntities = new TreeSet<CommentEntity>();
+	@Where(clause = "deleted='0'")
+	private SortedSet<CommentEntity> commentEntities = new TreeSet<>();
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
 	private List<LikeContentEntity> likes = new ArrayList<>();
