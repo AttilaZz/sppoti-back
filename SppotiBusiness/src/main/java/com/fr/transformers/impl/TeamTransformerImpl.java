@@ -86,7 +86,8 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 		}
 		
 		teamDTO.setTeamAdmin(this.teamMemberTransformer.modelToDto(this.teamMembersRepository
-				.findByTeamUuidAndStatusNotAndAdminTrue(model.getUuid(), GlobalAppStatusEnum.DELETED), sppotiEntity));
+				.findByTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(model.getUuid(),
+						GlobalAppStatusEnum.DELETED), sppotiEntity));
 		
 		final SppotiEntity finalSppotiEntity = sppotiEntity;
 		teamDTO.setMembers(

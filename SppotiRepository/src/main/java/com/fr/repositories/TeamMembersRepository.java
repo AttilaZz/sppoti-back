@@ -21,7 +21,8 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByUserUuidAndTeamUuidAndStatusNot(String memberId, String teamId, GlobalAppStatusEnum status);
+	TeamMemberEntity findByUserUuidAndTeamUuidAndStatusNotAndTeamDeletedFalse(String memberId, String teamId,
+																			  GlobalAppStatusEnum status);
 	
 	/**
 	 * @param userId
@@ -31,8 +32,9 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of found team.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndStatusNotAndAdminTrue(String userId, GlobalAppStatusEnum status,
-																  Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(String userId,
+																					 GlobalAppStatusEnum status,
+																					 Pageable pageable);
 	
 	/**
 	 * @param memberId
@@ -42,8 +44,9 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByUserUuidAndTeamUuidAndStatusNotAndAdminTrue(String memberId, String teamId,
-																	   GlobalAppStatusEnum status);
+	TeamMemberEntity findByUserUuidAndTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(String memberId,
+																						  String teamId,
+																						  GlobalAppStatusEnum status);
 	
 	/**
 	 * @param id
@@ -55,9 +58,9 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of teams.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndTeamNameContainingAndStatusNot(String id, String team,
-																		   GlobalAppStatusEnum status,
-																		   Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndTeamNameContainingAndStatusNotAndTeamDeletedFalse(String id, String team,
+																							  GlobalAppStatusEnum status,
+																							  Pageable pageable);
 	
 	/**
 	 * @param teamId
@@ -65,7 +68,8 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByTeamUuidAndStatusNotAndAdminTrue(String teamId, GlobalAppStatusEnum status);
+	TeamMemberEntity findByTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(String teamId,
+																			   GlobalAppStatusEnum status);
 	
 	/**
 	 * @param sport
@@ -79,10 +83,11 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of teams.
 	 */
-	List<TeamMemberEntity> findByTeamSportIdAndUserUuidAndTeamNameContainingAndStatusNot(Long sport, String user,
-																						 String team,
-																						 GlobalAppStatusEnum status,
-																						 Pageable pageable);
+	List<TeamMemberEntity> findByTeamSportIdAndUserUuidAndTeamNameContainingAndStatusNotAndTeamDeletedFalse(Long sport,
+																											String user,
+																											String team,
+																											GlobalAppStatusEnum status,
+																											Pageable pageable);
 	
 	/**
 	 * @param teamId
@@ -90,7 +95,7 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return all team members.
 	 */
-	List<TeamMemberEntity> findByTeamUuidAndStatusNot(String teamId, GlobalAppStatusEnum status);
+	List<TeamMemberEntity> findByTeamUuidAndStatusNotAndTeamDeletedFalse(String teamId, GlobalAppStatusEnum status);
 	
 	/**
 	 * @param userId
@@ -100,8 +105,9 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return all confirmed teams.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndStatusNotAndAdminFalse(String userId, GlobalAppStatusEnum status,
-																   Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndStatusNotAndAdminFalseAndTeamDeletedFalse(String userId,
+																					  GlobalAppStatusEnum status,
+																					  Pageable pageable);
 	
 	/**
 	 * @param uuid
@@ -111,8 +117,9 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return all deleted teams.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndStatusNotAndTeamDeletedFalse(String uuid, GlobalAppStatusEnum status,
-																		 Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndStatusNotAndTeamDeletedFalseAndTeamDeletedFalse(String uuid,
+																							GlobalAppStatusEnum status,
+																							Pageable pageable);
 	
 	/**
 	 * Find all user's teams by sport and admin true.
@@ -126,7 +133,8 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 *
 	 * @return list of {@link TeamMemberEntity}
 	 */
-	List<TeamMemberEntity> findByTeamSportIdAndUserIdAndStatusNotAndAdminTrue(Long sportId, Long userId,
-																			  GlobalAppStatusEnum status,
-																			  Pageable pageable);
+	List<TeamMemberEntity> findByTeamSportIdAndUserIdAndStatusNotAndAdminTrueAndTeamDeletedFalse(Long sportId,
+																								 Long userId,
+																								 GlobalAppStatusEnum status,
+																								 Pageable pageable);
 }

@@ -64,7 +64,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	@Autowired
 	TeamMembersRepository teamMembersRepository;
 	@Autowired
-	SppotiMembersRepository sppotiMembersRepository;
+	SppoterRepository sppoterRepository;
 	@Autowired
 	NotificationRepository notificationRepository;
 	@Autowired
@@ -317,7 +317,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 				
 				if (sppoti != null) {
 					final TeamMemberEntity sppoterMember = this.teamMembersRepository
-							.findByUserUuidAndTeamUuidAndStatusNot(userDTO.getId(), team.getUuid(),
+							.findByUserUuidAndTeamUuidAndStatusNotAndTeamDeletedFalse(userDTO.getId(), team.getUuid(),
 									GlobalAppStatusEnum.DELETED);
 
                     /* if request comming from add sppoti, insert new coordinate in (team_sppoti) to define new sppoter. */

@@ -7,7 +7,7 @@ import com.fr.entities.SppotiEntity;
 import com.fr.entities.SppotiRatingEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.repositories.RatingRepository;
-import com.fr.repositories.SppotiMembersRepository;
+import com.fr.repositories.SppoterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,19 +30,18 @@ public class TeamMemberTransformer
 	private final RatingRepository ratingRepository;
 	
 	/** Sppoti member repository. */
-	private final SppotiMembersRepository sppotiMembersRepository;
+	private final SppoterRepository sppoterRepository;
 	
 	/** User transformer. */
 	private final UserTransformerImpl userTransformer;
 	
 	/** Init dependencies. */
 	@Autowired
-	public TeamMemberTransformer(final RatingRepository ratingRepository,
-								 final SppotiMembersRepository sppotiMembersRepository,
+	public TeamMemberTransformer(final RatingRepository ratingRepository, final SppoterRepository sppoterRepository,
 								 final UserTransformerImpl userTransformer)
 	{
 		this.ratingRepository = ratingRepository;
-		this.sppotiMembersRepository = sppotiMembersRepository;
+		this.sppoterRepository = sppoterRepository;
 		this.userTransformer = userTransformer;
 	}
 	
@@ -97,9 +96,9 @@ public class TeamMemberTransformer
 			
 			userDTO.setRating(getRatingStars(memberEntity.getUser().getUuid(), sppotiId));
 			
-			final Optional<SppoterEntity> optional = Optional.ofNullable(this.sppotiMembersRepository
-					.findByTeamMemberUserUuidAndSppotiUuidAndStatusNot(memberEntity.getUser().getUuid(), sppotiId,
-							GlobalAppStatusEnum.DELETED));
+			final Optional<SppoterEntity> optional = Optional.ofNullable(this.sppoterRepository
+					.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotAndSppotiDeletedFalse(
+							memberEntity.getUser().getUuid(), sppotiId, GlobalAppStatusEnum.DELETED));
 			optional.ifPresent(sm -> userDTO.setHasRateOtherSppoters(sm.getHasRateOtherSppoter()));
 			
 		}

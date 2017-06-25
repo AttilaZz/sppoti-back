@@ -62,9 +62,9 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 					.findFirst();
 			
 			addNotification(typeEnum, this.teamMembersRepository
-							.findByTeamUuidAndStatusNotAndAdminTrue(challengedTeam.get().getUuid(), GlobalAppStatusEnum.DELETED)
-							.getUser(), s.getSppotiEntity().getUserSppoti(), challengedTeam.get(), s.getSppotiEntity(), null,
-					null, s, null);
+							.findByTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(challengedTeam.get().getUuid(),
+									GlobalAppStatusEnum.DELETED).getUser(), s.getSppotiEntity().getUserSppoti(),
+					challengedTeam.get(), s.getSppotiEntity(), null, null, s, null);
 			
 			s.setScoreStatus(GlobalAppStatusEnum.valueOf(scoreDTO.getStatus()));
 			this.scoreRepository.save(s);
@@ -90,7 +90,7 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 		
 		addNotification(NotificationTypeEnum.SCORE_SET_AND_WAITING_FOR_APPROVAL,
 				scoreEntity.getSppotiEntity().getUserSppoti(), this.teamMembersRepository
-						.findByTeamUuidAndStatusNotAndAdminTrue(challengedTeam.get().getUuid(),
+						.findByTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(challengedTeam.get().getUuid(),
 								GlobalAppStatusEnum.DELETED).getUser(),
 				scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), null, null,
 				scoreEntity, null);
