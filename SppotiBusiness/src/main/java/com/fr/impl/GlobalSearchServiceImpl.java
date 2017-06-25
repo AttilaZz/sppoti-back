@@ -81,7 +81,7 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 				.and(predicate3);
 		
 		result.getUsers().addAll(this.userTransformer
-				.iterableModelsToDtos(this.userRepository.findAll(predicate, getPage(0)).getContent()));
+				.iterableModelsToDtos(this.userRepository.findAll(predicate, getPage(page)).getContent()));
 		
 		return result;
 	}
@@ -104,7 +104,7 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 		predicate = QTeamEntity.teamEntity.name.containsIgnoreCase(query).and(predicate1);
 		
 		result.getTeams().addAll(this.teamTransformer
-				.iterableModelsToDtos(this.teamRepository.findAll(predicate, getPage(0)).getContent()));
+				.iterableModelsToDtos(this.teamRepository.findAll(predicate, getPage(page)).getContent()));
 		
 		return result;
 	}
@@ -134,7 +134,7 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 		predicate = QSppotiEntity.sppotiEntity.name.containsIgnoreCase(query).and(predicate1).and(predicate2);
 		
 		result.getSppoties().addAll(this.sppotiTransformer
-				.iterableModelsToDtos(this.sppotiRepository.findAll(predicate, getPage(0)).getContent()));
+				.iterableModelsToDtos(this.sppotiRepository.findAll(predicate, getPage(page)).getContent()));
 		
 		return result;
 		
@@ -156,15 +156,15 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 				.or(QUserEntity.userEntity.firstName.containsIgnoreCase(query))
 				.or(QUserEntity.userEntity.lastName.containsIgnoreCase(query));
 		result.getUsers().addAll(this.userTransformer
-				.iterableModelsToDtos(this.userRepository.findAll(predicate1, getPage(0)).getContent()));
+				.iterableModelsToDtos(this.userRepository.findAll(predicate1, getPage(page)).getContent()));
 		
 		predicate2 = QTeamEntity.teamEntity.name.containsIgnoreCase(query);
 		result.getTeams().addAll(this.teamTransformer
-				.iterableModelsToDtos(this.teamRepository.findAll(predicate2, getPage(0)).getContent()));
+				.iterableModelsToDtos(this.teamRepository.findAll(predicate2, getPage(page)).getContent()));
 		
 		predicate3 = QSppotiEntity.sppotiEntity.name.containsIgnoreCase(query);
 		result.getSppoties().addAll(this.sppotiTransformer
-				.iterableModelsToDtos(this.sppotiRepository.findAll(predicate3, getPage(0)).getContent()));
+				.iterableModelsToDtos(this.sppotiRepository.findAll(predicate3, getPage(page)).getContent()));
 		
 		return result;
 	}
