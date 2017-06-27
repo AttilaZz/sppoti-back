@@ -2,6 +2,7 @@ package com.fr.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.SppotiStatus;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,7 +19,11 @@ public class SppotiEntity extends AbstractCommonEntity
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private final GlobalAppStatusEnum status = GlobalAppStatusEnum.IN_PROGRESS;
+	private GlobalAppStatusEnum status = GlobalAppStatusEnum.IN_PROGRESS;
+	
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private SppotiStatus type = SppotiStatus.PUBLIC;
 	
 	@Column(nullable = false)
 	private String name;
@@ -285,6 +290,18 @@ public class SppotiEntity extends AbstractCommonEntity
 	
 	public GlobalAppStatusEnum getStatus() {
 		return this.status;
+	}
+	
+	public SppotiStatus getType() {
+		return this.type;
+	}
+	
+	public void setStatus(final GlobalAppStatusEnum status) {
+		this.status = status;
+	}
+	
+	public void setType(final SppotiStatus type) {
+		this.type = type;
 	}
 	
 	/**

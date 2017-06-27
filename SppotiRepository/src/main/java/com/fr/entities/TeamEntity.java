@@ -1,6 +1,7 @@
 package com.fr.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fr.commons.enumeration.TeamStatus;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -37,6 +38,10 @@ public class TeamEntity extends AbstractCommonEntity
 	
 	@OneToMany(mappedBy = "team", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<NotificationEntity> notificationEntities;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private final TeamStatus type = TeamStatus.PUBLIC;
 	
 	/**
 	 * When creating a host team from a sppotigit co, we need a reference to the sppoti,
@@ -152,6 +157,10 @@ public class TeamEntity extends AbstractCommonEntity
 		this.timeZone = timeZone;
 	}
 	
+	public TeamStatus getType() {
+		return this.type;
+	}
+	
 	/**
 	 * {@inheritDoc}.
 	 */
@@ -178,6 +187,8 @@ public class TeamEntity extends AbstractCommonEntity
 			return false;
 		if (this.color != null ? !this.color.equals(that.color) : that.color != null)
 			return false;
+		if (!this.type.equals(that.type))
+			return false;
 		return this.coverPath != null ? this.coverPath.equals(that.coverPath) : that.coverPath == null;
 		
 	}
@@ -194,6 +205,7 @@ public class TeamEntity extends AbstractCommonEntity
 		result = 31 * result + (this.coverPath != null ? this.coverPath.hashCode() : 0);
 		result = 31 * result + (this.creationDate != null ? this.creationDate.hashCode() : 0);
 		result = 31 * result + (this.color != null ? this.color.hashCode() : 0);
+		result = 31 * result + this.type.hashCode();
 		result = 31 * result + (this.deleted ? 1 : 0);
 		return result;
 	}
