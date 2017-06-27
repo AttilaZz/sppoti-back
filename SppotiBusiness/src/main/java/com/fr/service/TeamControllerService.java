@@ -3,6 +3,7 @@ package com.fr.service;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.TeamStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -242,4 +243,16 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @return list of teams.
 	 */
 	List<TeamDTO> getAllTeamsBySportType(Long sportId, int page);
+	
+	/**
+	 * Update team type to Public or Private
+	 *
+	 * @param teamId
+	 * 		id of the team to update.
+	 * @param type
+	 * 		new type to assign.
+	 *
+	 * @return updated team data.
+	 */
+	TeamDTO updateTeamType(String teamId, TeamStatus type);
 }

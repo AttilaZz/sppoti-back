@@ -41,7 +41,7 @@ public class TeamEntity extends AbstractCommonEntity
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private final TeamStatus type = TeamStatus.PUBLIC;
+	private TeamStatus type = TeamStatus.PUBLIC;
 	
 	/**
 	 * When creating a host team from a sppotigit co, we need a reference to the sppoti,
@@ -159,6 +159,10 @@ public class TeamEntity extends AbstractCommonEntity
 	
 	public TeamStatus getType() {
 		return this.type;
+	}
+	
+	public void setType(final TeamStatus type) {
+		this.type = type;
 	}
 	
 	/**

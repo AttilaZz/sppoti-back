@@ -4,6 +4,7 @@ import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.SppotiStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @return saved sppoti.
 	 */
 	SppotiDTO saveSppoti(SppotiDTO newSppoti);
-
+	
 	/**
 	 * @param uuid
 	 * 		sppoti unique id.
@@ -32,7 +33,7 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @return found sppoti.
 	 */
 	SppotiDTO getSppotiByUuid(String uuid);
-
+	
 	/**
 	 * Get all cppoties created by a user, even thoses refused by adverse team.
 	 *
@@ -42,8 +43,8 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @return all sppoties created by a user.
 	 */
 	List<SppotiDTO> getAllUserSppoties(String id, int page);
-
-    /**
+	
+	/**
 	 * Logical delete of a sppoti.
 	 *
 	 * @param id
@@ -222,4 +223,16 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * 		user id.
 	 */
 	void deleteSppoter(String sppotiId, String userId);
+	
+	/**
+	 * Update status to: Public or Private
+	 *
+	 * @param sppotiId
+	 * 		id of the sppoti;
+	 * @param type
+	 * 		new type.
+	 *
+	 * @return updated sppoti with the newvalues.
+	 */
+	SppotiDTO updateSppotiType(String sppotiId, SppotiStatus type);
 }

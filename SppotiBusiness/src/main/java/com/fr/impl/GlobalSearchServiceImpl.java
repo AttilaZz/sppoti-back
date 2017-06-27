@@ -2,6 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.search.GlobalSearchResultDTO;
 import com.fr.commons.enumeration.GenderEnum;
+import com.fr.commons.enumeration.TeamStatus;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.QSppotiEntity;
 import com.fr.entities.QTeamEntity;
@@ -90,7 +91,7 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GlobalSearchResultDTO findAllTeamFromCriteria(final String query, final Long sport, final Integer page) {
+	public GlobalSearchResultDTO findAllTeamsFromCriteria(final String query, final Long sport, final Integer page) {
 		
 		final GlobalSearchResultDTO result = new GlobalSearchResultDTO();
 		
@@ -98,7 +99,8 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 		Predicate predicate1 = null;
 		
 		if (sport != null) {
-			predicate1 = QTeamEntity.teamEntity.sport.eq(this.sportRepository.findOne(sport));
+			predicate1 = QTeamEntity.teamEntity.sport.eq(this.sportRepository.findOne(sport))
+					.and(QTeamEntity.teamEntity.type.eq(TeamStatus.PUBLIC));
 		}
 		
 		predicate = QTeamEntity.teamEntity.name.containsIgnoreCase(query).and(predicate1);

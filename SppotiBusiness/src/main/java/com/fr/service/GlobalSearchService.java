@@ -14,7 +14,7 @@ public interface GlobalSearchService extends AbstractControllerService
 	GlobalSearchResultDTO findAllUsersFromCriteria(String query, String sexe, Integer ageMax, Integer ageMin,
 												   Integer page);
 	
-	GlobalSearchResultDTO findAllTeamFromCriteria(String query, Long sport, Integer page);
+	GlobalSearchResultDTO findAllTeamsFromCriteria(String query, Long sport, Integer page);
 	
 	GlobalSearchResultDTO findAllSppotisFromCriteria(String query, Long sport, String startDate, Integer page);
 	

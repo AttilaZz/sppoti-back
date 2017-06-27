@@ -8,7 +8,7 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationStatus;
 import com.fr.commons.utils.JsonDateSerializer;
 
 import java.util.Date;
@@ -24,7 +24,7 @@ public class NotificationDTO extends AbstractCommonDTO
 	private UserDTO from;
 	private UserDTO to;
 	private Integer notificationType;
-	private GlobalAppStatusEnum status;
+	private NotificationStatus status;
 	
 	private String teamId;
 	private String sppotiId;
@@ -78,40 +78,40 @@ public class NotificationDTO extends AbstractCommonDTO
 		this.notificationType = notificationType;
 	}
 	
-	public GlobalAppStatusEnum getStatus()
+	public NotificationStatus getStatus()
 	{
 		return this.status;
 	}
 	
-	public void setStatus(final GlobalAppStatusEnum status)
+	public void setStatus(final NotificationStatus status)
 	{
 		this.status = status;
 	}
-
+	
 	public String getTeamId() {
-		return teamId;
+		return this.teamId;
 	}
-
-	public void setTeamId(String teamId) {
+	
+	public void setTeamId(final String teamId) {
 		this.teamId = teamId;
 	}
-
+	
 	public String getSppotiId() {
-		return sppotiId;
+		return this.sppotiId;
 	}
-
-	public void setSppotiId(String sppotiId) {
+	
+	public void setSppotiId(final String sppotiId) {
 		this.sppotiId = sppotiId;
 	}
-
+	
 	public String getPostId() {
-		return postId;
+		return this.postId;
 	}
-
-	public void setPostId(String postId) {
+	
+	public void setPostId(final String postId) {
 		this.postId = postId;
 	}
-
+	
 	public TeamDTO getTeam()
 	{
 		return this.team;

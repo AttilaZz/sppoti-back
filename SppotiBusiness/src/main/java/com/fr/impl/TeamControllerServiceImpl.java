@@ -3,8 +3,10 @@ package com.fr.impl;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.ErrorMessageEnum;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.commons.enumeration.TeamStatus;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.MemberNotInAdminTeamException;
 import com.fr.commons.exception.NotAdminException;
@@ -679,6 +681,23 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 				getConnectedUser().getId(), GlobalAppStatusEnum.DELETED, pageable).stream()
 				.map(t -> this.teamTransformer.modelToDto(t.getTeam())).collect(Collectors.toList());
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional
+	public TeamDTO updateTeamType(final String teamId, final TeamStatus type) {
+		final List<TeamEntity> entities = this.teamRepository.findByUuidAndDeletedFalse(teamId);
+		
+		if (!entities.isEmpty()) {
+			final TeamEntity t = entities.get(0);
+			t.setType(type);
+			return this.teamTransformer.modelToDto(this.teamRepository.save(t));
+		}
+		
+		throw new EntityNotFoundException(ErrorMessageEnum.TEAM_NOT_FOUND.getMessage());
 	}
 	
 	/**

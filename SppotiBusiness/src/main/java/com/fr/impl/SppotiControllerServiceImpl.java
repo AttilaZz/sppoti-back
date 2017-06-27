@@ -4,8 +4,10 @@ import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.ErrorMessageEnum;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.commons.enumeration.SppotiStatus;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.*;
@@ -942,6 +944,23 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		//Notify him.
 		//TODO: notification (Remove sppoter)
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional
+	public SppotiDTO updateSppotiType(final String sppotiId, final SppotiStatus type) {
+		final Optional<SppotiEntity> entity = Optional.ofNullable(this.sppotiRepository.findByUuid(sppotiId));
+		
+		if (entity.isPresent()) {
+			entity.get().setType(type);
+			return this.sppotiTransformer.modelToDto(this.sppotiRepository.save(entity.get()));
+			
+		}
+		
+		throw new EntityNotFoundException(ErrorMessageEnum.SPPOTI_NOT_FOUND.getMessage());
 	}
 	
 	/**

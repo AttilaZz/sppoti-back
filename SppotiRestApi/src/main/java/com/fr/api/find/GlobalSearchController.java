@@ -48,7 +48,7 @@ public class GlobalSearchController
 					break;
 				case 2:
 					//search teams
-					search = this.globalSearchService.findAllTeamFromCriteria(query, sport, page);
+					search = this.globalSearchService.findAllTeamsFromCriteria(query, sport, page);
 					break;
 				case 3:
 					//search sppotis

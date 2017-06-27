@@ -2,7 +2,7 @@ package com.fr.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationStatus;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 
 import javax.persistence.*;
@@ -34,7 +34,7 @@ public class NotificationEntity extends AbstractCommonEntity
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private GlobalAppStatusEnum status = GlobalAppStatusEnum.UNREAD;
+	private NotificationStatus status = NotificationStatus.UNREAD;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "team_id")
@@ -120,12 +120,12 @@ public class NotificationEntity extends AbstractCommonEntity
 		this.sppoti = sppoti;
 	}
 	
-	public GlobalAppStatusEnum getStatus()
+	public NotificationStatus getStatus()
 	{
 		return this.status;
 	}
 	
-	public void setStatus(final GlobalAppStatusEnum status)
+	public void setStatus(final NotificationStatus status)
 	{
 		this.status = status;
 	}
