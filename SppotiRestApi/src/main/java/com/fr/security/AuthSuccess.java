@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +50,7 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
 										final Authentication authentication) throws IOException, ServletException
 	{
@@ -62,13 +64,18 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
 		//Get connected user data.
-		final UserEntity users = this.userRepository.getByIdAndDeletedFalseAndConfirmedTrue(accountUserDetails.getId());
-		final UserDTO user = this.userTransformer.modelToDto(users);
-		user.setPassword(null);
-		
+		final UserEntity user = this.userRepository.getByIdAndDeletedFalseAndConfirmedTrue(accountUserDetails.getId());
+		final UserDTO userDTO = this.userTransformer.modelToDto(user);
+		userDTO.setPassword(null);
+
+		if (!user.isFirstConnexion()) {
+			user.setFirstConnexion(true);
+			this.userRepository.save(user);
+		}
+
 		//Convert data to json.
 		final Gson gson = new Gson();
-		response.getWriter().write(gson.toJson(user));
+		response.getWriter().write(gson.toJson(userDTO));
 		
 		//Return OK status.
 		response.setStatus(HttpServletResponse.SC_OK);

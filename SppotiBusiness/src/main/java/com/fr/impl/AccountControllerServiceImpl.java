@@ -132,7 +132,14 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		final Set<RoleEntity> roles = new HashSet<>();
 		roles.add(profile);
 		newUser.setRoles(roles);
-		
+
+		//manage password
+
+		final PasswordHistory p = new PasswordHistory();
+		p.setPassword(newUser.getPassword());
+		p.setUser(getConnectedUser());
+		newUser.getPasswordHistories().add(p);
+
 		//save new user.
 		this.userRepository.save(newUser);
 		this.LOGGER.info("Account has been created for user : " + user.getEmail());
@@ -263,6 +270,11 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			
 			final String encodedPassword = this.passwordEncoder.encode(userDTO.getPassword());
 			connectedUser.setPassword(encodedPassword);
+
+			final PasswordHistory p = new PasswordHistory();
+			p.setPassword(encodedPassword);
+			p.setUser(connectedUser);
+			connectedUser.getPasswordHistories().add(p);
 		}
 		/*
 			email --

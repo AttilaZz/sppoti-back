@@ -20,61 +20,82 @@ import java.util.*;
 @JsonInclude(Include.NON_EMPTY)
 public class UserEntity extends AbstractCommonEntity
 {
-	
-	@Column(nullable = false)
+
+	@Column(nullable = false, name = "last_name")
 	private String lastName;
-	
-	@Column(nullable = false)
+
+	@Column(nullable = false, name = "first_name")
 	private String firstName;
 	
 	@Temporal(TemporalType.DATE)
 	@Past
-	@Column(nullable = false)
+	@Column(nullable = false, name = "date_born")
 	private Date dateBorn;
-	
-	@Column(nullable = false)
+
+	@Column(nullable = false, name = "gender")
 	@Enumerated(EnumType.STRING)
 	private GenderEnum gender;
 	
 	@Column(unique = true)
 	private String telephone;
-	
-	@Column(nullable = false, unique = true)
+
+	@Column(nullable = false, unique = true, name = "email")
 	private String email;
-	
-	@Column(nullable = false, unique = true)
+
+	@Column(nullable = false, unique = true, name = "username")
 	private String username;
-	
-	@Column(nullable = false, unique = true)
+
+	@Column(nullable = false, unique = true, name = "confirmation_code")
 	private String confirmationCode;
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
+	@Column(nullable = false, name = "account_creation_date")
 	private Date accountCreationDate = new Date();
 	
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
+	@Column(nullable = false, name = "account_max_activation_date")
 	private Date accountMaxActivationDate;
-	
-	@Column(nullable = false)
+
+	@Column(nullable = false, name = "password")
 	private String password;
-	
+
+	@Column(name = "deleted")
 	private boolean deleted;
+
+	@Column(name = "first_connexion")
+	private boolean firstConnexion = false;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "deactivate_date")
 	private Date deactivationDate;
-	
+
+	@Column(name = "confirmed")
 	private boolean confirmed = false;
-	
+
 	private String job;
 	private String description;
-	
+
+	@Column(name = "recover_code")
 	private String recoverCode;
 	
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "recover_code_creation_date")
 	private Date recoverCodeCreationDate;
-	
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, name = "language")
+	private LanguageEnum languageEnum = LanguageEnum.fr;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+	private List<ConnexionHistoryEntity> connexionHistory = new ArrayList<>();
+
+	@Column(name = "time_zone")
+	private String timeZone = "02";
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+	@OrderBy("datetimeCreated DESC")
+	private List<PasswordHistory> passwordHistories = new ArrayList<>();
+
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
 	@OrderBy("datetimeCreated DESC")
 	private SortedSet<PostEntity> userPosts = new TreeSet<PostEntity>();
@@ -109,16 +130,6 @@ public class UserEntity extends AbstractCommonEntity
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
 	@OrderBy("dateTime DESC")
 	private SortedSet<AddressEntity> addresses;
-	
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, name = "language")
-	private LanguageEnum languageEnum = LanguageEnum.fr;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
-	private List<ConnexionHistoryEntity> connexionHistory;
-	
-	@Column(name = "time_zone")
-	private String timeZone = "02";
 	
 	public boolean isDeleted()
 	{
@@ -415,7 +426,23 @@ public class UserEntity extends AbstractCommonEntity
 	public void setConnexionHistory(final List<ConnexionHistoryEntity> connexionHistory) {
 		this.connexionHistory = connexionHistory;
 	}
-	
+
+	public boolean isFirstConnexion() {
+		return this.firstConnexion;
+	}
+
+	public void setFirstConnexion(final boolean firstConnexion) {
+		this.firstConnexion = firstConnexion;
+	}
+
+	public List<PasswordHistory> getPasswordHistories() {
+		return this.passwordHistories;
+	}
+
+	public void setPasswordHistories(final List<PasswordHistory> passwordHistories) {
+		this.passwordHistories = passwordHistories;
+	}
+
 	/**
 	 * {@inheritDoc}.
 	 */
@@ -430,8 +457,11 @@ public class UserEntity extends AbstractCommonEntity
 			return false;
 		
 		final UserEntity entity = (UserEntity) o;
-		
-		if (this.deleted != entity.deleted)
+
+		if (this.deleted != entity.deleted) {
+			return false;
+		}
+		if (this.firstConnexion != entity.firstConnexion)
 			return false;
 		if (this.confirmed != entity.confirmed)
 			return false;
@@ -495,6 +525,7 @@ public class UserEntity extends AbstractCommonEntity
 		result = 31 * result + (this.confirmationCode != null ? this.confirmationCode.hashCode() : 0);
 		result = 31 * result + (this.password != null ? this.password.hashCode() : 0);
 		result = 31 * result + (this.deleted ? 1 : 0);
+		result = 31 * result + (this.firstConnexion ? 1 : 0);
 		result = 31 * result + (this.confirmed ? 1 : 0);
 		result = 31 * result + (this.job != null ? this.job.hashCode() : 0);
 		result = 31 * result + (this.description != null ? this.description.hashCode() : 0);

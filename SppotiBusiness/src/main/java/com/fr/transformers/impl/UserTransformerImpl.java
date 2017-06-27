@@ -125,7 +125,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 			} else {
 				// size is = 1 -> cover or avatar
 				final ResourcesEntity resource = resourcesEntityTemp.get(0);
-				if (resource.getType() == 1) {//acatar
+				if (resource.getType() == 1) {
 					user.setAvatar(resource.getUrl());
 				} else {
 					user.setCover(resource.getUrl());
@@ -151,8 +151,9 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		entity.setConfirmationCode(confirmationCode);
 		
 		entity.setPassword(this.passwordEncoder.encode(dto.getPassword()));
-		
 		entity.setUsername(dto.getUsername().trim());
+		entity.setFirstConnexion(false);
+
 		return entity;
 	}
 	

@@ -18,11 +18,8 @@ public class TestStaticMethods
 	public void testTimeZone() {
 		
 		final Date date = new Date();
-		System.out.println("Before: " + date);
-		
+
 		final Date correctDate = SppotiUtils.dateWithTimeZone(date, "+06");
-		
-		System.out.println("After: " + correctDate);
 		
 		Assert.assertNotNull(correctDate);
 		Assert.assertNotEquals(date, correctDate);
