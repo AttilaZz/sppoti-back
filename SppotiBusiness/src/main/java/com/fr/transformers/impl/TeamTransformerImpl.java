@@ -79,6 +79,7 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 		teamDTO.setSport(this.sportTransformer.modelToDto(model.getSport()));
 		teamDTO.setCreationDate(SppotiUtils.dateWithTimeZone(model.getCreationDate(), model.getTimeZone()));
 		teamDTO.setColor(model.getColor());
+		teamDTO.setType(model.getType());
 		
 		SppotiEntity sppotiEntity = null;
 		if (model.getRelatedSppotiId() != null) {

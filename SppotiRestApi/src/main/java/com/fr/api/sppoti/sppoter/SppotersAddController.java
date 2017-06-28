@@ -21,30 +21,26 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/sppoti/sppoter")
 @ApiVersion("1")
-public class SppotersAddController
-{
-	
-	/** Sppoti service. */
-	private SppotiControllerService sppotiControllerService;
-	
-	/** Init service. */
-	@Autowired
-	void setSppotiControllerService(final SppotiControllerService sppotiControllerService)
-	{
-		this.sppotiControllerService = sppotiControllerService;
-	}
-	
-	/**
-	 * Add member for a given team - only admin can add a member to his team.
-	 *
-	 * @return 201 status if memeber has been added.
-	 */
-	@PostMapping("/add")
-	ResponseEntity<UserDTO> addMember(@RequestBody @Valid final SppoterDTO sppoter)
-	{
-		
-		return new ResponseEntity<>(this.sppotiControllerService
-				.addSppoter(sppoter.getSppotiId(), sppoter.getUserId(), sppoter.getTeamId()), HttpStatus.CREATED);
-	}
-}
+public class SppotersAddController {
 
+    /** Sppoti service. */
+    private SppotiControllerService sppotiControllerService;
+
+    /** Init service. */
+    @Autowired
+    void setSppotiControllerService(final SppotiControllerService sppotiControllerService) {
+        this.sppotiControllerService = sppotiControllerService;
+    }
+
+    /**
+     * Add member for a given team - only admin can add a member to his team.
+     *
+     * @return 201 status if memeber has been added.
+     */
+    @PostMapping("/add")
+    ResponseEntity<UserDTO> addMember(@RequestBody @Valid final SppoterDTO sppoter) {
+
+        return new ResponseEntity<>(this.sppotiControllerService
+                .addSppoter(sppoter.getSppotiId(), sppoter.getUserId(), sppoter.getTeamId()), HttpStatus.CREATED);
+    }
+}

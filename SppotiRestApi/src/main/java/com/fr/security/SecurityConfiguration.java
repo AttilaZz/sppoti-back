@@ -101,7 +101,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 				.passwordParameter("password").successHandler(this.authSuccess).failureHandler(this.authFailure)
 				.permitAll().and().rememberMe().rememberMeParameter("remember-me").tokenRepository(this.tokenRepository)
 				.tokenValiditySeconds(86400).and().authorizeRequests()
-				.antMatchers("/**/account/**", "/**/sport/**", "/**/contact/**").permitAll()
+				.antMatchers("/**/account/**", "/**/sport/**", "/**/contact/**", "/**/version/**").permitAll()
 				.antMatchers("/**/profile/**")
 				.hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(), UserRoleTypeEnum.ADMIN.getUserProfileType())
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and().logout()
