@@ -17,7 +17,7 @@ public class PasswordHistory extends AbstractCommonEntity {
 
     @Column(updatable = false, nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date datetimeCreated;
+    private Date datetimeCreated = new Date();
 
     @ManyToOne
     @JoinColumn(name = "user_id", updatable = false, nullable = false)

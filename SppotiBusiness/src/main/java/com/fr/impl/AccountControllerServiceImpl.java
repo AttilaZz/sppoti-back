@@ -137,7 +137,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 
 		final PasswordHistory p = new PasswordHistory();
 		p.setPassword(newUser.getPassword());
-		p.setUser(getConnectedUser());
+		p.setUser(newUser);
 		newUser.getPasswordHistories().add(p);
 
 		//save new user.
