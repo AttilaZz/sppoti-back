@@ -103,12 +103,10 @@ public interface SppotiControllerService extends AbstractControllerService
 	/**
 	 * Check if user is the sppoti admin.
 	 *
-	 * @param userId
-	 * 		id of the connected user.
 	 * @param sppotiId
 	 * 		id of the sppoti.
 	 */
-	boolean isSppotiAdmin(String sppotiId, Long userId);
+	boolean isSppotiAdmin(String sppotiId);
 	
 	/**
 	 * This method allow to challenge a team in a sppoti.

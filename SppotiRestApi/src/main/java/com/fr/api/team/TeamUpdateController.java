@@ -175,6 +175,6 @@ class TeamUpdateController
 			throw new BusinessGlobalException("Type can be Private or Public");
 		}
 
-		return ResponseEntity.ok(this.teamControllerService.updateTeamType(teamId, dto.getType()));
+		return ResponseEntity.accepted().body(this.teamControllerService.updateTeamType(teamId, dto.getType()));
 	}
 }

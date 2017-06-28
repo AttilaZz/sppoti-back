@@ -142,7 +142,9 @@ class SppotiUpdateController
 	 * @return 202 status with sppoti data if update success.
 	 */
 	@PutMapping("/type")
-	ResponseEntity<SppotiDTO> requestChallenge(@RequestBody final SppotiDTO dto) {
+	ResponseEntity<SppotiDTO> updateType(@RequestBody final SppotiDTO dto) {
+
+
 
 		if (!StringUtils.hasText(dto.getId()) && dto.getType() == null) {
 			throw new BusinessGlobalException("Sppoti id and status are required to update sppoti type");

@@ -156,10 +156,8 @@ public interface TeamControllerService extends AbstractControllerService
 	 * 		team id.
 	 * @param memberId
 	 * 		member id.
-	 * @param connectedUserId
-	 * 		connected user id.
 	 */
-	void updateTeamCaptain(String teamId, String memberId, String connectedUserId);
+	void updateTeamCaptain(String teamId, String memberId);
 	
 	/**
 	 * Get all joined teams, except my teams.

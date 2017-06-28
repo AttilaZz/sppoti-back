@@ -8,7 +8,7 @@ package com.fr.commons.enumeration;
  */
 public enum UserRoleTypeEnum
 {
-	USER("USER"), ADMIN("ADMIN"), CLIENT("CLIENT");
+	USER("USER"), ADMIN("ADMIN"), CLIENT("CLIENT"), TEAM_ADMIN("TEAM_ADMIN"), SPPOTI_ADMIN("SPPOTI_ADMIN");
 	
 	String userRoleType;
 	

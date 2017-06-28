@@ -1,6 +1,5 @@
 package com.fr.api.team.member;
 
-import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.service.TeamControllerService;
@@ -8,7 +7,6 @@ import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -77,13 +75,10 @@ public class MemberUpdateController
 	 * @return 202 status if captain updated.
 	 */
 	@PutMapping("/captain/{memberId}")
-	ResponseEntity<TeamDTO> updateTeamCaptain(@PathVariable final String teamId, @PathVariable final String memberId,
-											  final Authentication authentication)
+	ResponseEntity<TeamDTO> updateTeamCaptain(@PathVariable final String teamId, @PathVariable final String memberId)
 	{
-		
-		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-		
-		this.teamControllerService.updateTeamCaptain(teamId, memberId, accountUserDetails.getUuid());
+
+		this.teamControllerService.updateTeamCaptain(teamId, memberId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}

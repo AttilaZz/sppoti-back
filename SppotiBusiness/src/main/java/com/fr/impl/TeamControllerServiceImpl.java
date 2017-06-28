@@ -390,16 +390,16 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void updateTeamCaptain(final String teamId, final String memberId, final String connectedUserId)
+	public void updateTeamCaptain(final String teamId, final String memberId)
 	{
-		
-		checkTeamAdminAccess(teamId, connectedUserId);
+
+		checkTeamAdminAccess(teamId);
 		
 		final List<TeamMemberEntity> teamMemberEntity = this.teamMembersRepository
 				.findByTeamUuidAndStatusNotAndTeamDeletedFalse(teamId, GlobalAppStatusEnum.DELETED);
 		
 		teamMemberEntity.forEach(t -> {
-			if (t.getUuid() == memberId || t.getUser().getUuid() == memberId) {
+			if (t.getUuid().equals(memberId) || t.getUser().getUuid().equals(memberId)) {
 				t.setTeamCaptain(true);
 			} else {
 				t.setTeamCaptain(false);
@@ -454,8 +454,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public TeamDTO responseToSppotiAdminChallenge(final SppotiDTO dto, final String teamId)
 	{
-		
-		checkTeamAdminAccess(teamId, getConnectedUser().getUuid());
+
+		checkTeamAdminAccess(teamId);
 		
 		final Optional<SppotiEntity> optional = Optional.ofNullable(this.sppotiRepository.findByUuid(dto.getId()));
 		
@@ -574,7 +574,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	{
 		
 		//Check if user is team admin.
-		checkTeamAdminAccess(teamId, getConnectedUser().getUuid());
+		checkTeamAdminAccess(teamId);
 		
 		//Check if team exists.
 		getTeamEntityIfExist(teamId);
@@ -690,7 +690,9 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Transactional
 	public TeamDTO updateTeamType(final String teamId, final TeamStatus type) {
 		final List<TeamEntity> entities = this.teamRepository.findByUuidAndDeletedFalse(teamId);
-		
+
+		checkTeamAdminAccess(teamId);
+
 		if (!entities.isEmpty()) {
 			final TeamEntity t = entities.get(0);
 			t.setType(type);
@@ -750,13 +752,12 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 *
 	 * @param teamId
 	 * 		team id.
-	 * @param connectedUserId
-	 * 		user id.
 	 */
-	private void checkTeamAdminAccess(final String teamId, final String connectedUserId)
+	private void checkTeamAdminAccess(final String teamId)
 	{
 		if (this.teamMembersRepository
-				.findByUserUuidAndTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(connectedUserId, teamId,
+				.findByUserUuidAndTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(getConnectedUser().getUuid(),
+						teamId,
 						GlobalAppStatusEnum.DELETED) == null) {
 			throw new NotAdminException("You must be the team admin to access this service");
 		}

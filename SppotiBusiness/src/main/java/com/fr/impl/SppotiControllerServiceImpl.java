@@ -643,20 +643,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isSppotiAdmin(final String sppotiId, final Long userId)
-	{
-		final SppotiEntity sppotiEntity = this.sppotiRepository.findByUuid(sppotiId);
-		if (sppotiEntity == null) {
-			throw new EntityNotFoundException("Sppoti (" + sppotiId + ") not found !");
-		}
-		
-		return sppotiEntity.getUserSppoti().getId().equals(userId);
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public List<SppotiDTO> getAllJoinedSppoties(final String userId, final int page)
 	{
 		
@@ -919,10 +905,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	@Override
 	public void deleteSppoter(final String sppotiId, final String userId) {
 		
-		final UserEntity connectedUSer = getConnectedUser();
-		
 		//User must be the admin of the sppoti.
-		isSppotiAdmin(sppotiId, connectedUSer.getId());
+		isSppotiAdmin(sppotiId);
 		
 		//Find sppoter and delete it.
 		final Optional<SppoterEntity> sppoter = Optional.ofNullable(this.sppoterRepository
@@ -952,12 +936,14 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	@Override
 	@Transactional
 	public SppotiDTO updateSppotiType(final String sppotiId, final SppotiStatus type) {
+
+		isSppotiAdmin(sppotiId);
+
 		final Optional<SppotiEntity> entity = Optional.ofNullable(this.sppotiRepository.findByUuid(sppotiId));
 		
 		if (entity.isPresent()) {
 			entity.get().setType(type);
 			return this.sppotiTransformer.modelToDto(this.sppotiRepository.save(entity.get()));
-			
 		}
 		
 		throw new EntityNotFoundException(ErrorMessageEnum.SPPOTI_NOT_FOUND.getMessage());
@@ -973,7 +959,6 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 */
 	private SppotiDTO getSppotiResponse(final SppotiEntity sppoti)
 	{
-		
 		if (sppoti == null) {
 			throw new EntityNotFoundException("SppotiEntity not found");
 		}
@@ -1006,5 +991,18 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		}
 		
 		return sppotiDTO;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isSppotiAdmin(final String sppotiId) {
+		final SppotiEntity sppotiEntity = this.sppotiRepository.findByUuid(sppotiId);
+		if (sppotiEntity == null) {
+			throw new EntityNotFoundException("Sppoti (" + sppotiId + ") not found !");
+		}
+
+		return sppotiEntity.getUserSppoti().getId().equals(getConnectedUser().getId());
 	}
 }
