@@ -3,6 +3,7 @@ package com.fr.impl;
 import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.commons.enumeration.SppotiStatus;
 import com.fr.entities.ScoreEntity;
 import com.fr.entities.SppotiAdverseEntity;
 import com.fr.entities.TeamEntity;
@@ -83,6 +84,7 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 	public ScoreDTO addSppotiScore(final ScoreDTO scoreDTO)
 	{
 		final ScoreEntity scoreEntity = this.scoreTransformer.dtoToModel(scoreDTO);
+		scoreEntity.getSppotiEntity().setStatus(SppotiStatus.DONE);
 		
 		final Optional<TeamEntity> challengedTeam = scoreEntity.getSppotiEntity().getAdverseTeams().stream()
 				.filter(a -> a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)).map(SppotiAdverseEntity::getTeam)

@@ -4,6 +4,7 @@ import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationListDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationStatus;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.NotificationControllerService;
 import com.fr.versionning.ApiVersion;
@@ -67,9 +68,9 @@ class NotificationController
 		if (notificationDTO.getStatus() == null) {
 			throw new BusinessGlobalException("Notification status missing");
 		}
-		
-		if (!notificationDTO.getStatus().equals(GlobalAppStatusEnum.UNREAD) &&
-				!notificationDTO.getStatus().equals(GlobalAppStatusEnum.READ)) {
+
+		if (!notificationDTO.getStatus().equals(NotificationStatus.UNREAD) &&
+				!notificationDTO.getStatus().equals(NotificationStatus.READ)) {
 			throw new BusinessGlobalException("Status not accepted.");
 		}
 		
