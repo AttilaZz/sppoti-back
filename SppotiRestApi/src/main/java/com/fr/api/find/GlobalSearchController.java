@@ -46,7 +46,11 @@ public class GlobalSearchController
 	{
 		
 		
-		GlobalSearchResultDTO search = new GlobalSearchResultDTO();
+		final GlobalSearchResultDTO search = new GlobalSearchResultDTO();
+		Long t1;
+		final Long t2;
+		final Long t3;
+		
 		if (StringUtils.hasText(query)) {
 			
 			final List<Long> arrayListTypes = new ArrayList<>();
@@ -56,34 +60,74 @@ public class GlobalSearchController
 				this.globalSearchService.findAllWithoutCriteria(query, page);
 			} else {
 				
+				t1 = arrayListTypes.get(0);
+				
 				if (arrayListTypes.size() == 1) {
-					switch (arrayListTypes.get(0).intValue()) {
-						case 1:
-							// search users
-							search = this.globalSearchService
-									.findAllUsersFromCriteria(query, sex, ageMax, ageMin, page);
-							break;
-						case 2:
-							//search teams
-							search = this.globalSearchService.findAllTeamsFromCriteria(query, sport, page);
-							break;
-						case 3:
-							//search sppotis
-							search = this.globalSearchService.findAllSppotisFromCriteria(query, sport, startDate, page);
-							break;
-						default:
-							throw new BusinessGlobalException("Search type not correct");
+					
+					if (t1.intValue() == 1) {
+						search.getUsers().addAll(this.globalSearchService
+								.findAllUsersFromCriteria(query, sex, ageMax, ageMin, page).getUsers());
 					}
+					
+					if (t1.intValue() == 2) {
+						search.getTeams().addAll(this.globalSearchService.findAllTeamsFromCriteria(query, sport, page)
+								.getTeams());
+					}
+					
+					if (t1.intValue() == 3) {
+						search.getSppoties().addAll(this.globalSearchService
+								.findAllSppotisFromCriteria(query, sport, startDate, page).getSppoties());
+					}
+					
 				} else if (arrayListTypes.size() == 2) {
-				
+					
+					t1 = arrayListTypes.get(0);
+					t2 = arrayListTypes.get(1);
+					
+					if (t1.intValue() == 1 || t2.intValue() == 1) {
+						search.getUsers().addAll(this.globalSearchService
+								.findAllUsersFromCriteria(query, sex, ageMax, ageMin, page).getUsers());
+					}
+					
+					if (t1.intValue() == 2 || t2.intValue() == 2) {
+						search.getTeams().addAll(this.globalSearchService.findAllTeamsFromCriteria(query, sport, page)
+								.getTeams());
+					}
+					
+					if (t1.intValue() == 3 || t2.intValue() == 3) {
+						search.getSppoties().addAll(this.globalSearchService
+								.findAllSppotisFromCriteria(query, sport, startDate, page).getSppoties());
+					}
+					
 				} else if (arrayListTypes.size() == 3) {
-				
+					
+					t1 = arrayListTypes.get(0);
+					t2 = arrayListTypes.get(1);
+					t3 = arrayListTypes.get(2);
+					
+					if (t1.intValue() == 1 || t2.intValue() == 1 || t3.intValue() == 1) {
+						search.getUsers().addAll(this.globalSearchService
+								.findAllUsersFromCriteria(query, sex, ageMax, ageMin, page).getUsers());
+					}
+					
+					if (t1.intValue() == 2 || t2.intValue() == 2 || t3.intValue() == 2) {
+						search.getTeams().addAll(this.globalSearchService.findAllTeamsFromCriteria(query, sport, page)
+								.getTeams());
+					}
+					
+					if (t1.intValue() == 3 || t2.intValue() == 3 || t3.intValue() == 3) {
+						search.getSppoties().addAll(this.globalSearchService
+								.findAllSppotisFromCriteria(query, sport, startDate, page).getSppoties());
+					}
+					
 				}
 			}
-			
 			return ResponseEntity.ok(search);
+			
 		}
 		
 		throw new BusinessGlobalException("Query not found in the request");
+		
 	}
+	
 }
