@@ -23,6 +23,7 @@
         <apache.common.io.version>2.5</apache.common.io.version>
         <apache.common.lang.version>2.6</apache.common.lang.version>
         <querydsl.version>4.1.4</querydsl.version>
+        <quartz.version>2.3.0</quartz.version>
     </properties>
 
     <modules>
@@ -31,6 +32,7 @@
         <module>SppotiBusiness</module>
         <module>SppotiRestApi</module>
         <module>SppotiRunApp</module>
+        <module>SppotiBatch</module>
     </modules>
 
     <parent>
@@ -77,29 +79,36 @@
                 <artifactId>jackson-databind</artifactId>
                 <version>${com.fasterxml.jackson.version}</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+
+            <!--APACHE-->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${org.apache.commons.version}</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${apache.common.io.version}</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${apache.common.lang.version}</version>
             </dependency>
 
+            <!--JPA DSL-QUERY-->
             <dependency>
                 <groupId>com.querydsl</groupId>
                 <artifactId>querydsl-jpa</artifactId>
                 <version>${querydsl.version}</version>
+            </dependency>
+
+            <!-- Quartz framework -->
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
