@@ -1,7 +1,7 @@
 package com.fr.api.sppoti.sppoter;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.dto.sppoti.Sppoter;
+import com.fr.commons.dto.sppoti.SppoterDTO;
 import com.fr.service.SppotiControllerService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +40,11 @@ public class SppotersAddController
 	 * @return 201 status if memeber has been added.
 	 */
 	@PostMapping("/add")
-	ResponseEntity<UserDTO> addMember(@RequestBody @Valid final Sppoter sppoterDTO)
+	ResponseEntity<UserDTO> addMember(@RequestBody @Valid final SppoterDTO sppoter)
 	{
 		
 		return new ResponseEntity<>(this.sppotiControllerService
-				.addSppoter(sppoter.getSppotiId(), sppoterDTO.getUserId(), sppoterDTO.getTeamId()), HttpStatus.CREATED);
+				.addSppoter(sppoter.getSppotiId(), sppoter.getUserId(), sppoter.getTeamId()), HttpStatus.CREATED);
 	}
 }
 
