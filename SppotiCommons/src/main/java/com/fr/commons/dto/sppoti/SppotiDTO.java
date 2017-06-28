@@ -7,6 +7,7 @@ import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.SppotiStatus;
 import com.fr.commons.utils.JsonDateDeserializer;
 import com.fr.commons.utils.JsonDateSerializer;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -75,6 +76,7 @@ public class SppotiDTO extends AbstractCommonDTO
 	private String teamAdverseStatus;
 	
 	private String timeZone;
+	private SppotiStatus type;
 	
 	public Date getDatetimeCreated()
 	{
@@ -137,26 +139,26 @@ public class SppotiDTO extends AbstractCommonDTO
 	}
 
 	public String getAdminUserId() {
-		return adminUserId;
+		return this.adminUserId;
 	}
 
-	public void setAdminUserId(String adminUserId) {
+	public void setAdminUserId(final String adminUserId) {
 		this.adminUserId = adminUserId;
 	}
 
 	public String getAdminTeamId() {
-		return adminTeamId;
+		return this.adminTeamId;
 	}
 
-	public void setAdminTeamId(String adminTeamId) {
+	public void setAdminTeamId(final String adminTeamId) {
 		this.adminTeamId = adminTeamId;
 	}
 
 	public String getConnectedUserId() {
-		return connectedUserId;
+		return this.connectedUserId;
 	}
 
-	public void setConnectedUserId(String connectedUserId) {
+	public void setConnectedUserId(final String connectedUserId) {
 		this.connectedUserId = connectedUserId;
 	}
 
@@ -316,5 +318,13 @@ public class SppotiDTO extends AbstractCommonDTO
 	
 	public void setTimeZone(final String timeZone) {
 		this.timeZone = timeZone;
+	}
+
+	public SppotiStatus getType() {
+		return this.type;
+	}
+
+	public void setType(final SppotiStatus type) {
+		this.type = type;
 	}
 }

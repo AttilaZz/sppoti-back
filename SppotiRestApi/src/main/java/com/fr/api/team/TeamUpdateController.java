@@ -4,6 +4,7 @@ import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.TeamStatus;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.TeamControllerService;
 import com.fr.versionning.ApiVersion;
@@ -155,5 +156,25 @@ class TeamUpdateController
 		return new ResponseEntity<>(adverseTeam, HttpStatus.ACCEPTED);
 		
 	}
-	
+
+	/**
+	 * Update team type to private or public.
+	 *
+	 * @param teamId id of the tea to update.
+	 * @param dto    dto containing the new type.
+	 * @return 202 status if team has been updated.
+	 */
+	@PutMapping("/type")
+	ResponseEntity<TeamDTO> requestChallenge(@PathVariable final String teamId, @RequestBody final TeamDTO dto) {
+
+		if (!StringUtils.hasText(teamId) && dto.getType() == null) {
+			throw new BusinessGlobalException("Team id and status are required to update team type");
+		}
+
+		if (!dto.getType().equals(TeamStatus.PRIVATE) && !dto.getType().equals(TeamStatus.PUBLIC)) {
+			throw new BusinessGlobalException("Type can be Private or Public");
+		}
+
+		return ResponseEntity.ok(this.teamControllerService.updateTeamType(teamId, dto.getType()));
+	}
 }

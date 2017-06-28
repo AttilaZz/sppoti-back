@@ -40,11 +40,11 @@ public class SppotersAddController
 	 * @return 201 status if memeber has been added.
 	 */
 	@PostMapping("/add")
-	ResponseEntity<UserDTO> addMember(@RequestBody @Valid final Sppoter sppoter)
+	ResponseEntity<UserDTO> addMember(@RequestBody @Valid final Sppoter sppoterDTO)
 	{
 		
 		return new ResponseEntity<>(this.sppotiControllerService
-				.addSppoter(sppoter.getSppotiId(), sppoter.getUserId(), sppoter.getTeamId()), HttpStatus.CREATED);
+				.addSppoter(sppoter.getSppotiId(), sppoterDTO.getUserId(), sppoterDTO.getTeamId()), HttpStatus.CREATED);
 	}
 }
 

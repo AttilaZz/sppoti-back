@@ -2,7 +2,7 @@ package com.fr.commons.dto.sppoti;
 
 import javax.validation.constraints.NotNull;
 
-public class Sppoter
+public class SppoterDTO
 {
 	@NotNull
 	private String userId;
@@ -12,26 +12,26 @@ public class Sppoter
 	private String teamId;
 
 	public String getUserId() {
-		return userId;
+		return this.userId;
 	}
 
-	public void setUserId(String userId) {
+	public void setUserId(final String userId) {
 		this.userId = userId;
 	}
 
 	public String getSppotiId() {
-		return sppotiId;
+		return this.sppotiId;
 	}
 
-	public void setSppotiId(String sppotiId) {
+	public void setSppotiId(final String sppotiId) {
 		this.sppotiId = sppotiId;
 	}
 
 	public String getTeamId() {
-		return teamId;
+		return this.teamId;
 	}
 
-	public void setTeamId(String teamId) {
+	public void setTeamId(final String teamId) {
 		this.teamId = teamId;
 	}
 }

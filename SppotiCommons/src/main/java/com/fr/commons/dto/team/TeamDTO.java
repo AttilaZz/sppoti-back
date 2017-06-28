@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.TeamStatus;
 import com.fr.commons.utils.JsonDateSerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -43,6 +44,7 @@ public class TeamDTO extends AbstractCommonDTO
 	
 	private String teamAdverseStatus;
 	private Boolean sentFromSppotiAdmin;
+	private TeamStatus type;
 	
 	@NotNull
 	private String timeZone;
@@ -193,5 +195,13 @@ public class TeamDTO extends AbstractCommonDTO
 	
 	public void setTimeZone(final String timeZone) {
 		this.timeZone = timeZone;
+	}
+
+	public TeamStatus getType() {
+		return this.type;
+	}
+
+	public void setType(final TeamStatus type) {
+		this.type = type;
 	}
 }

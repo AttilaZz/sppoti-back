@@ -3,6 +3,7 @@ package com.fr.api.sppoti;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.SppotiStatus;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.service.SppotiControllerService;
@@ -132,5 +133,26 @@ class SppotiUpdateController
 		this.sppotiControllerService.chooseOneAdverseTeamFromAllChallengeRequests(sppotiId, teamDTO);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+
+	/**
+	 * Update sppoti type to private or public.
+	 *
+	 * @param dto dto containing sppoti id and type to set.
+	 * @return 202 status with sppoti data if update success.
+	 */
+	@PutMapping("/type")
+	ResponseEntity<SppotiDTO> requestChallenge(@RequestBody final SppotiDTO dto) {
+
+		if (!StringUtils.hasText(dto.getId()) && dto.getType() == null) {
+			throw new BusinessGlobalException("Sppoti id and status are required to update sppoti type");
+		}
+
+		if (!dto.getType().equals(SppotiStatus.PRIVATE) && !dto.getType().equals(SppotiStatus.PUBLIC)) {
+			throw new BusinessGlobalException("Type can be Private or Public");
+		}
+
+		return ResponseEntity.accepted()
+				.body(this.sppotiControllerService.updateSppotiType(dto.getId(), dto.getType()));
 	}
 }
