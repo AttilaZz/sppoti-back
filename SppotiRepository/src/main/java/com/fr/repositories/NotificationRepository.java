@@ -1,6 +1,6 @@
 package com.fr.repositories;
 
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationStatus;
 import com.fr.entities.NotificationEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -57,5 +57,5 @@ public interface NotificationRepository extends JpaRepository<NotificationEntity
 	 *
 	 * @return counter of all notifications by the specified status.
 	 */
-	Integer countByToUuidAndStatus(String userId, GlobalAppStatusEnum status);
+	Integer countByToUuidAndStatus(String userId, NotificationStatus status);
 }

@@ -68,9 +68,17 @@ public class UserDTO extends AbstractCommonDTO
 	private Boolean hasRateOtherSppoters;
 	
 	private String language;
-	
 	private String timeZone;
-	
+	private boolean firstConnexion;
+
+	public boolean isFirstConnexion() {
+		return this.firstConnexion;
+	}
+
+	public void setFirstConnexion(final boolean firstConnexion) {
+		this.firstConnexion = firstConnexion;
+	}
+
 	public String getFirstName()
 	{
 		return this.firstName;

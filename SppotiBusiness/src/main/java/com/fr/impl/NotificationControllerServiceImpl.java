@@ -2,7 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationListDTO;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.NotificationStatus;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.NotificationEntity;
 import com.fr.service.NotificationControllerService;
@@ -67,7 +67,7 @@ class NotificationControllerServiceImpl extends AbstractControllerServiceImpl im
 		notificationListDTO.setNotifCounter(this.notificationRepository.countByToUuid(userId));
 		
 		notificationListDTO.setUnreadCounter(
-				this.notificationRepository.countByToUuidAndStatus(userId, GlobalAppStatusEnum.UNREAD));
+				this.notificationRepository.countByToUuidAndStatus(userId, NotificationStatus.UNREAD));
 		
 		return notificationListDTO;
 	}
