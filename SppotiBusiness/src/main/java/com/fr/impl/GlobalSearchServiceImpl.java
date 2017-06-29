@@ -1,6 +1,7 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.search.GlobalSearchResultDTO;
+import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.enumeration.GenderEnum;
 import com.fr.commons.enumeration.TeamStatus;
 import com.fr.commons.utils.SppotiUtils;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by wdjenane on 22/06/2017.
@@ -134,9 +137,14 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 		}
 		
 		predicate = QSppotiEntity.sppotiEntity.name.containsIgnoreCase(query).and(predicate1).and(predicate2);
-		
-		result.getSppoties().addAll(this.sppotiTransformer
-				.iterableModelsToDtos(this.sppotiRepository.findAll(predicate, getPage(page)).getContent()));
+
+		final List<SppotiDTO> list = this.sppotiRepository.findAll(predicate, getPage(page)).getContent().stream()
+				.map(s -> {
+					s.setConnectedUserId(getConnectedUser().getId());
+					return this.sppotiTransformer.modelToDto(s);
+				}).collect(Collectors.toList());
+
+		result.getSppoties().addAll(list);
 		
 		return result;
 		
