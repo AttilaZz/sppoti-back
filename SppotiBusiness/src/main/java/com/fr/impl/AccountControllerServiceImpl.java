@@ -165,12 +165,11 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	/** Test if account exists. */
 	private boolean accountExist(final UserEntity u)
 	{
-		if (!SppotiUtils.isDateExpired(u.getAccountMaxActivationDate()) || u.isConfirmed()) {
-			return true;
-		} else if (!u.isConfirmed()) {
+		if (!u.isConfirmed()) {
 			throw new AccountConfirmationLinkExpiredException("Account exist! Ask for another confirmation code.");
 		}
-		return false;
+
+		return true;
 	}
 	
 	/**
