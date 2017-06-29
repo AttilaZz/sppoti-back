@@ -81,8 +81,9 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 		
 		predicate = (QUserEntity.userEntity.username.containsIgnoreCase(query)
 				.or(QUserEntity.userEntity.firstName.containsIgnoreCase(query))
-				.or(QUserEntity.userEntity.lastName.containsIgnoreCase(query))).and(predicate1).and(predicate2)
-				.and(predicate3);
+				.or(QUserEntity.userEntity.lastName.containsIgnoreCase(query)))
+				.and(QUserEntity.userEntity.confirmed.eq(true)).and(QUserEntity.userEntity.deleted.eq(false))
+				.and(predicate1).and(predicate2).and(predicate3);
 		
 		result.getUsers().addAll(this.userTransformer
 				.iterableModelsToDtos(this.userRepository.findAll(predicate, getPage(page)).getContent()));
@@ -137,13 +138,13 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 		}
 		
 		predicate = QSppotiEntity.sppotiEntity.name.containsIgnoreCase(query).and(predicate1).and(predicate2);
-
+		
 		final List<SppotiDTO> list = this.sppotiRepository.findAll(predicate, getPage(page)).getContent().stream()
 				.map(s -> {
 					s.setConnectedUserId(getConnectedUser().getId());
 					return this.sppotiTransformer.modelToDto(s);
 				}).collect(Collectors.toList());
-
+		
 		result.getSppoties().addAll(list);
 		
 		return result;
