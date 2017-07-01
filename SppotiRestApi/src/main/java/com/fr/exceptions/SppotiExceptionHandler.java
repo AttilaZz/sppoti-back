@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.NonUniqueResultException;
 
 /**
  * This Class handle all Exceptions.
@@ -93,7 +94,7 @@ public class SppotiExceptionHandler
 	 *
 	 * @return 404 http status if exception was catched.
 	 */
-	@ExceptionHandler(EntityExistsException.class)
+	@ExceptionHandler({EntityExistsException.class, NonUniqueResultException.class})
 	public ResponseEntity conflictExistException(final EntityExistsException e)
 	{
 		this.LOGGER.error(e.getMessage(), e);

@@ -5,6 +5,7 @@ import com.fr.commons.enumeration.TeamStatus;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -30,7 +31,7 @@ public class TeamEntity extends AbstractCommonEntity
 	
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "team")
-	private Set<TeamMemberEntity> teamMembers;
+	private Set<TeamMemberEntity> teamMembers = new HashSet<>();
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(nullable = false, name = "sport_id")

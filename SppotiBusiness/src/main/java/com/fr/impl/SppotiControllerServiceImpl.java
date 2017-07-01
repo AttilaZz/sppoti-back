@@ -936,13 +936,39 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	@Override
 	@Transactional
 	public SppotiDTO updateSppotiType(final String sppotiId, final SppotiStatus type) {
-
+		
 		isSppotiAdmin(sppotiId);
-
+		
 		final Optional<SppotiEntity> entity = Optional.ofNullable(this.sppotiRepository.findByUuid(sppotiId));
 		
 		if (entity.isPresent()) {
 			entity.get().setType(type);
+			return this.sppotiTransformer.modelToDto(this.sppotiRepository.save(entity.get()));
+		}
+		
+		throw new EntityNotFoundException(ErrorMessageEnum.SPPOTI_NOT_FOUND.getMessage());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional
+	public SppotiDTO requestJoinSppoti(final String sppotiId) {
+		final Optional<SppotiEntity> entity = Optional.ofNullable(this.sppotiRepository.findByUuid(sppotiId));
+		
+		if (entity.isPresent()) {
+			final UserEntity user = getConnectedUser();
+			
+			if (this.sppoterRepository
+					.findByTeamMemberUserUuidAndSppotiUuidAndSppotiDeletedFalse(user.getUuid(), sppotiId) == null) {
+				throw new EntityExistsException("Sppoter already exists");
+			}
+			
+			final SppotiRequest r = new SppotiRequest();
+			r.setSppoti(entity.get());
+			r.setUser(user);
+			entity.get().getSppotiRequests().add(r);
 			return this.sppotiTransformer.modelToDto(this.sppotiRepository.save(entity.get()));
 		}
 		
@@ -992,7 +1018,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		return sppotiDTO;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -1002,7 +1028,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		if (sppotiEntity == null) {
 			throw new EntityNotFoundException("Sppoti (" + sppotiId + ") not found !");
 		}
-
+		
 		return sppotiEntity.getUserSppoti().getId().equals(getConnectedUser().getId());
 	}
 }

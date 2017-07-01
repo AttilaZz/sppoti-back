@@ -253,4 +253,14 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @return updated team data.
 	 */
 	TeamDTO updateTeamType(String teamId, TeamStatus type);
+	
+	/**
+	 * Request team to join it.
+	 *
+	 * @param teamId
+	 * 		team id to join.
+	 *
+	 * @return Joined team data.
+	 */
+	TeamDTO requestJoinTeam(String teamId);
 }

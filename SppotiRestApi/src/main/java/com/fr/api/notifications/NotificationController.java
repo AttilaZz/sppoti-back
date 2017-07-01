@@ -3,7 +3,6 @@ package com.fr.api.notifications;
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationListDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationStatus;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.NotificationControllerService;
@@ -64,11 +63,10 @@ class NotificationController
 	ResponseEntity<Void> openNotification(@PathVariable final String notifId,
 										  @RequestBody final NotificationDTO notificationDTO)
 	{
-		
 		if (notificationDTO.getStatus() == null) {
 			throw new BusinessGlobalException("Notification status missing");
 		}
-
+		
 		if (!notificationDTO.getStatus().equals(NotificationStatus.UNREAD) &&
 				!notificationDTO.getStatus().equals(NotificationStatus.READ)) {
 			throw new BusinessGlobalException("Status not accepted.");
@@ -92,7 +90,7 @@ class NotificationController
 	ResponseEntity<Void> openAllNotification(@RequestBody final List<NotificationDTO> notifications)
 	{
 		notifications.forEach(n -> {
-			if (n.getStatus().equals(GlobalAppStatusEnum.UNREAD) || n.getStatus().equals(GlobalAppStatusEnum.READ)) {
+			if (n.getStatus().equals(NotificationStatus.UNREAD) || n.getStatus().equals(NotificationStatus.READ)) {
 				this.notificationControllerService.switchNotificationStatus(n);
 			}
 		});

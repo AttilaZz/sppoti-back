@@ -20,6 +20,8 @@ public class TeamMemberEntity extends AbstractCommonEntity
 	@Where(clause = "status!='DELETED'")
 	private GlobalAppStatusEnum status = GlobalAppStatusEnum.PENDING;
 	
+	private Boolean requestSentFromUser = Boolean.FALSE;
+	
 	@Column
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date joinDate;
@@ -126,6 +128,14 @@ public class TeamMemberEntity extends AbstractCommonEntity
 	
 	public void setTeamCaptain(final Boolean teamCaptain) {
 		this.teamCaptain = teamCaptain;
+	}
+	
+	public Boolean getRequestSentFromUser() {
+		return this.requestSentFromUser;
+	}
+	
+	public void setRequestSentFromUser(final Boolean requestSentFromUser) {
+		this.requestSentFromUser = requestSentFromUser;
 	}
 	
 	/**

@@ -119,6 +119,7 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 		if (dto.getId() != null) {
 			entity.setUuid(dto.getId());
 		}
+		
 		if (dto.getVersion() != null) {
 			entity.setVersion(dto.getVersion());
 		}

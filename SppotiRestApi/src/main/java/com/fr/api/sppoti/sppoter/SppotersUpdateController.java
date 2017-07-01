@@ -1,5 +1,6 @@
 package com.fr.api.sppoti.sppoter;
 
+import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.service.SppotiControllerService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,40 +30,27 @@ class SppotersUpdateController
 		this.sppotiControllerService = sppotiControllerService;
 	}
 	
-	/**
-	 * @param sppotiId
-	 * 		sppoti id.
-	 * @param userId
-	 * 		user id.
-	 *
-	 * @return 202 status if sppoti status updated.
-	 */
 	@PutMapping("/accept/{userId}")
 	ResponseEntity<String> acceptSppoti(@PathVariable final String sppotiId, @PathVariable final String userId)
 	{
-		
 		this.sppotiControllerService.acceptSppoti(sppotiId, userId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
-		
 	}
 	
-	/**
-	 * @param sppotiId
-	 * 		sppoti id.
-	 * @param userId
-	 * 		user id.
-	 *
-	 * @return 202 status if sppoti status updated.
-	 */
 	@PutMapping("/refuse/{userId}")
 	ResponseEntity<Void> refuseSppoti(@PathVariable final String sppotiId, @PathVariable final String userId)
 	{
-		
 		this.sppotiControllerService.refuseSppoti(userId, sppotiId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
-		
 	}
 	
+	@PutMapping("/request/join")
+	ResponseEntity<SppotiDTO> requestJoinTeam(@PathVariable final String sppotiId)
+	{
+		this.sppotiControllerService.requestJoinSppoti(sppotiId);
+		
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
 }

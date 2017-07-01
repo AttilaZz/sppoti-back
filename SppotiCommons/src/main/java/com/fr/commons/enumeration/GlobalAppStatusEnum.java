@@ -6,9 +6,7 @@ package com.fr.commons.enumeration;
 public enum GlobalAppStatusEnum
 {
 	
-	PUBLIC_RELATION(1), PENDING_SENT(2), PENDING(3), CONFIRMED(4), REFUSED(5), NO_CHALLENGE_YET(6), READ(7), UNREAD(8),
-	DELETED(9), IN_PROGRESS(10), DONE(11);
-	
+	PUBLIC_RELATION(1), PENDING_SENT(2), PENDING(3), CONFIRMED(4), REFUSED(5), NO_CHALLENGE_YET(6), DELETED(9);
 	private final int status;
 	
 	GlobalAppStatusEnum(final int status)

@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fr.commons.enumeration.SppotiStatus;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -73,6 +71,9 @@ public class SppotiEntity extends AbstractCommonEntity
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sppoti", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<SppotiAdverseEntity> adverseTeams = new HashSet<>();
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sppoti", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<SppotiRequest> sppotiRequests = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "sppoti", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<SppoterEntity> sppotiMembers = new HashSet<>();
@@ -291,16 +292,24 @@ public class SppotiEntity extends AbstractCommonEntity
 		return this.status;
 	}
 	
-	public SppotiStatus getType() {
-		return this.type;
-	}
-	
 	public void setStatus(final SppotiStatus status) {
 		this.status = status;
 	}
 	
+	public SppotiStatus getType() {
+		return this.type;
+	}
+	
 	public void setType(final SppotiStatus type) {
 		this.type = type;
+	}
+	
+	public List<SppotiRequest> getSppotiRequests() {
+		return this.sppotiRequests;
+	}
+	
+	public void setSppotiRequests(final List<SppotiRequest> sppotiRequests) {
+		this.sppotiRequests = sppotiRequests;
 	}
 	
 	/**

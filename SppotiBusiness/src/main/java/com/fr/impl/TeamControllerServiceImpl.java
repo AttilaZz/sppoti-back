@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.function.Predicate;
@@ -392,7 +393,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public void updateTeamCaptain(final String teamId, final String memberId)
 	{
-
+		
 		checkTeamAdminAccess(teamId);
 		
 		final List<TeamMemberEntity> teamMemberEntity = this.teamMembersRepository
@@ -454,7 +455,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	public TeamDTO responseToSppotiAdminChallenge(final SppotiDTO dto, final String teamId)
 	{
-
+		
 		checkTeamAdminAccess(teamId);
 		
 		final Optional<SppotiEntity> optional = Optional.ofNullable(this.sppotiRepository.findByUuid(dto.getId()));
@@ -690,12 +691,42 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Transactional
 	public TeamDTO updateTeamType(final String teamId, final TeamStatus type) {
 		final List<TeamEntity> entities = this.teamRepository.findByUuidAndDeletedFalse(teamId);
-
+		
 		checkTeamAdminAccess(teamId);
-
+		
 		if (!entities.isEmpty()) {
 			final TeamEntity t = entities.get(0);
 			t.setType(type);
+			return this.teamTransformer.modelToDto(this.teamRepository.save(t));
+		}
+		
+		throw new EntityNotFoundException(ErrorMessageEnum.TEAM_NOT_FOUND.getMessage());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional
+	public TeamDTO requestJoinTeam(final String teamId) {
+		final List<TeamEntity> entities = this.teamRepository.findByUuidAndDeletedFalse(teamId);
+		
+		if (!entities.isEmpty()) {
+			final UserEntity entity = getConnectedUser();
+			
+			if (this.teamMembersRepository
+					.findByUserUuidAndTeamUuidAndStatusNotAndTeamDeletedFalse(entity.getUuid(), teamId,
+							GlobalAppStatusEnum.DELETED) != null) {
+				throw new EntityExistsException("Already a member");
+			}
+			
+			final TeamEntity t = entities.get(0);
+			final TeamMemberEntity m = new TeamMemberEntity();
+			m.setStatus(GlobalAppStatusEnum.PENDING);
+			m.setRequestSentFromUser(Boolean.TRUE);
+			m.setUser(entity);
+			m.setTeam(t);
+			t.getTeamMembers().add(m);
 			return this.teamTransformer.modelToDto(this.teamRepository.save(t));
 		}
 		
@@ -757,8 +788,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	{
 		if (this.teamMembersRepository
 				.findByUserUuidAndTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(getConnectedUser().getUuid(),
-						teamId,
-						GlobalAppStatusEnum.DELETED) == null) {
+						teamId, GlobalAppStatusEnum.DELETED) == null) {
 			throw new NotAdminException("You must be the team admin to access this service");
 		}
 	}

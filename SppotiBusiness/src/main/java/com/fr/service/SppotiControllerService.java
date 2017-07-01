@@ -233,4 +233,14 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @return updated sppoti with the newvalues.
 	 */
 	SppotiDTO updateSppotiType(String sppotiId, SppotiStatus type);
+	
+	/**
+	 * Request join sppoti.
+	 *
+	 * @param sppotiId
+	 * 		sppoti id to join.
+	 *
+	 * @return joined sppoti.
+	 */
+	SppotiDTO requestJoinSppoti(String sppotiId);
 }

@@ -67,6 +67,7 @@ public class TeamMemberTransformer
 		userDTO.setAvatar(userCoverAndAvatar.getAvatar());
 		userDTO.setCover(userCoverAndAvatar.getCover());
 		userDTO.setCoverType(userCoverAndAvatar.getCoverType());
+		userDTO.setWaitConfirmation(memberEntity.getRequestSentFromUser());
 		
 		userDTO.setId(memberEntity.getUuid());
 		userDTO.setTeamAdmin(memberEntity.getAdmin());

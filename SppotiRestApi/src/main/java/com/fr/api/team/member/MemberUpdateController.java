@@ -29,14 +29,6 @@ public class MemberUpdateController
 		this.teamControllerService = teamControllerService;
 	}
 	
-	/**
-	 * Update coordinate in the stadium (X, Y).
-	 *
-	 * @param memberId
-	 * 		team member id.
-	 *
-	 * @return The updated member information.
-	 */
 	@PutMapping("/{memberId}")
 	ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") final String memberId,
 												@PathVariable final String teamId, @RequestBody final TeamDTO teamDto)
@@ -66,19 +58,18 @@ public class MemberUpdateController
 		
 	}
 	
-	/**
-	 * @param teamId
-	 * 		team id.
-	 * @param memberId
-	 * 		memeber id.
-	 *
-	 * @return 202 status if captain updated.
-	 */
 	@PutMapping("/captain/{memberId}")
 	ResponseEntity<TeamDTO> updateTeamCaptain(@PathVariable final String teamId, @PathVariable final String memberId)
 	{
-
 		this.teamControllerService.updateTeamCaptain(teamId, memberId);
+		
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
+	@PutMapping("/request/join")
+	ResponseEntity<TeamDTO> requestJoinTeam(@PathVariable final String teamId)
+	{
+		this.teamControllerService.requestJoinTeam(teamId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}

@@ -19,6 +19,9 @@ public class UserDTO extends AbstractCommonDTO
 	private String address;
 	private String gender;
 	
+	//team admin decision about user request to join team
+	private Boolean waitConfirmation;
+	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date birthDate;
 	
@@ -70,15 +73,15 @@ public class UserDTO extends AbstractCommonDTO
 	private String language;
 	private String timeZone;
 	private boolean firstConnexion;
-
+	
 	public boolean isFirstConnexion() {
 		return this.firstConnexion;
 	}
-
+	
 	public void setFirstConnexion(final boolean firstConnexion) {
 		this.firstConnexion = firstConnexion;
 	}
-
+	
 	public String getFirstName()
 	{
 		return this.firstName;
@@ -403,4 +406,11 @@ public class UserDTO extends AbstractCommonDTO
 		this.techId = techId;
 	}
 	
+	public Boolean getWaitConfirmation() {
+		return this.waitConfirmation;
+	}
+	
+	public void setWaitConfirmation(final Boolean waitConfirmation) {
+		this.waitConfirmation = waitConfirmation;
+	}
 }
