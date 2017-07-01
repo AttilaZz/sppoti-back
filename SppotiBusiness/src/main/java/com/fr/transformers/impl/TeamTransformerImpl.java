@@ -2,6 +2,7 @@ package com.fr.transformers.impl;
 
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.TeamStatus;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.SportEntity;
 import com.fr.entities.SppotiEntity;
@@ -12,6 +13,7 @@ import com.fr.repositories.TeamMembersRepository;
 import com.fr.transformers.TeamTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.stream.Collectors;
 
@@ -76,7 +78,7 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 		teamDTO.setName(model.getName());
 		teamDTO.setCoverPath(model.getCoverPath());
 		teamDTO.setLogoPath(model.getLogoPath());
-		teamDTO.setSport(this.sportTransformer.modelToDto(model.getSport()));
+		teamDTO.setSportDTO(this.sportTransformer.modelToDto(model.getSport()));
 		teamDTO.setCreationDate(SppotiUtils.dateWithTimeZone(model.getCreationDate(), model.getTimeZone()));
 		teamDTO.setColor(model.getColor());
 		teamDTO.setType(model.getType());
@@ -104,7 +106,15 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 	@Override
 	public TeamEntity dtoToModel(final TeamDTO dto)
 	{
-		final TeamEntity entity = new TeamEntity();
+		final TeamEntity entity = super.dtoToModel(dto);
+		
+		if (entity.getType() == null) {
+			entity.setType(TeamStatus.PUBLIC);
+		}
+		
+		if (!StringUtils.hasText(entity.getColor())) {
+			entity.setColor("#30d3c2");
+		}
 		
 		if (dto.getId() != null) {
 			entity.setUuid(dto.getId());
@@ -113,10 +123,6 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 			entity.setVersion(dto.getVersion());
 		}
 		
-		entity.setName(dto.getName());
-		entity.setCoverPath(dto.getCoverPath());
-		entity.setLogoPath(dto.getLogoPath());
-		entity.setTimeZone(dto.getTimeZone());
 		entity.setSport(this.sportRepository.getById(dto.getSportId()));
 		
 		return entity;

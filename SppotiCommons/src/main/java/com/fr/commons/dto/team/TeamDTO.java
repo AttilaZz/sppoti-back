@@ -24,12 +24,18 @@ public class TeamDTO extends AbstractCommonDTO
 	private String name;
 	private String logoPath;
 	private String coverPath;
-	private UserDTO teamAdmin;
-	private SportDTO sport;
 	private String color;
+	private String teamAdverseStatus;
+	private Boolean sentFromSppotiAdmin;
+	private TeamStatus type;
 	
 	@JsonSerialize(using = JsonDateSerializer.class)
-	private Date creationDate;
+	private Date creationDate = new Date();
+	
+	private UserDTO teamAdmin;
+	
+	@JsonProperty("sport")
+	private SportDTO sportDTO;
 	
 	@NotNull
 	@JsonProperty("teamMembers")
@@ -41,10 +47,6 @@ public class TeamDTO extends AbstractCommonDTO
 	
 	@NotNull
 	private Long sportId;
-	
-	private String teamAdverseStatus;
-	private Boolean sentFromSppotiAdmin;
-	private TeamStatus type;
 	
 	@NotNull
 	private String timeZone;
@@ -89,14 +91,14 @@ public class TeamDTO extends AbstractCommonDTO
 		this.teamAdmin = teamAdmin;
 	}
 	
-	public SportDTO getSport()
+	public SportDTO getSportDTO()
 	{
-		return this.sport;
+		return this.sportDTO;
 	}
 	
-	public void setSport(final SportDTO sport)
+	public void setSportDTO(final SportDTO sportDTO)
 	{
-		this.sport = sport;
+		this.sportDTO = sportDTO;
 	}
 	
 	public String getColor()
@@ -196,11 +198,11 @@ public class TeamDTO extends AbstractCommonDTO
 	public void setTimeZone(final String timeZone) {
 		this.timeZone = timeZone;
 	}
-
+	
 	public TeamStatus getType() {
 		return this.type;
 	}
-
+	
 	public void setType(final TeamStatus type) {
 		this.type = type;
 	}
