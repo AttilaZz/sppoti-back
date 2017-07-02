@@ -23,17 +23,23 @@ public class EntryPointUnAthorisedHandler implements AuthenticationEntryPoint
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void commence(final HttpServletRequest arg0, final HttpServletResponse arg1,
+	public void commence(final HttpServletRequest request, final HttpServletResponse response,
 						 final AuthenticationException arg2) throws IOException, ServletException
 	{
+		final String[] allowedHeaders = Origins.getValue().split(",");
 		
-		arg1.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
-		arg1.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
-		arg1.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
-		arg1.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
-		arg1.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
+		for (final String allowedHeader : allowedHeaders) {
+			if (request.getHeader("origin").equals(allowedHeader)) {
+				response.setHeader(ATTR_ORIGIN.getValue(), request.getHeader("origin"));
+			}
+		}
 		
-		arg1.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized Access");
+		response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
+		response.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
+		response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
+		response.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
+		
+		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized Access");
 	}
 	
 }

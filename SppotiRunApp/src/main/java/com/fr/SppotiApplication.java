@@ -85,7 +85,7 @@ public class SppotiApplication extends WebMvcConfigurationSupport implements Ser
 	//			@Override
 	//			public void addCorsMappings(final CorsRegistry registry)
 	//			{
-	//				registry.addMapping("/**").allowedOrigins(Origins.getValue()).allowCredentials(true)
+	//				registry.addMapping("/**").allowedOrigins(Origins.getValue().split(",")).allowCredentials(true)
 	//						.allowedHeaders(Allowed_Headers.getValue()).allowedMethods(AllMethods.getValue());
 	//			}
 	//		};

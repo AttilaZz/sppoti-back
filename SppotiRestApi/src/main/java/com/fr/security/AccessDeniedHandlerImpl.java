@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.fr.filter.HeadersAttributes.ATTR_ORIGIN;
+import static com.fr.filter.HeadersValues.Origins;
+
 /**
  * Created by: Wail DJENANE on Jun 19, 2016
  */
@@ -27,7 +30,14 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler
 					   final AccessDeniedException accessDeniedException) throws IOException, ServletException
 	{
 		
-		response.setHeader(HeadersAttributes.ATTR_ORIGIN.getValue(), HeadersValues.Origins.getValue());
+		final String[] allowedHeaders = Origins.getValue().split(",");
+		
+		for (final String allowedHeader : allowedHeaders) {
+			if (request.getHeader("origin").equals(allowedHeader)) {
+				response.setHeader(ATTR_ORIGIN.getValue(), request.getHeader("origin"));
+			}
+		}
+		
 		response.setHeader(HeadersAttributes.ATTR_CREDENTIALS.getValue(), HeadersValues.AllowCredentials.getValue());
 		response.setHeader(HeadersAttributes.ATTR_METHODS.getValue(), HeadersValues.AllMethods.getValue());
 		response.setHeader(HeadersAttributes.ATTR_AGE.getValue(), HeadersValues.Max_Age.getValue());

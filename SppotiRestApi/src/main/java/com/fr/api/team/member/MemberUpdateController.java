@@ -33,7 +33,6 @@ public class MemberUpdateController
 	ResponseEntity<Void> updateInvitationStatus(@PathVariable("memberId") final String memberId,
 												@PathVariable final String teamId, @RequestBody final TeamDTO teamDto)
 	{
-		
 		boolean canUpdate = false;
 		
 		if (teamDto.getStatus() != null && !teamDto.getStatus().equals(0)) {
@@ -55,7 +54,6 @@ public class MemberUpdateController
 		this.teamControllerService.updateTeamMembers(teamDto, memberId, teamId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
-		
 	}
 	
 	@PutMapping("/captain/{memberId}")

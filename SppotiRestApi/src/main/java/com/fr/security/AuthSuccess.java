@@ -54,8 +54,14 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 	public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
 										final Authentication authentication) throws IOException, ServletException
 	{
+		final String[] allowedHeaders = Origins.getValue().split(",");
 		
-		response.setHeader(ATTR_ORIGIN.getValue(), Origins.getValue());
+		for (final String allowedHeader : allowedHeaders) {
+			if (request.getHeader("origin").equals(allowedHeader)) {
+				response.setHeader(ATTR_ORIGIN.getValue(), request.getHeader("origin"));
+			}
+		}
+		
 		response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());
 		response.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
 		response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
@@ -67,12 +73,12 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 		final UserEntity user = this.userRepository.getByIdAndDeletedFalseAndConfirmedTrue(accountUserDetails.getId());
 		final UserDTO userDTO = this.userTransformer.modelToDto(user);
 		userDTO.setPassword(null);
-
+		
 		if (!user.isFirstConnexion()) {
 			user.setFirstConnexion(true);
 			this.userRepository.save(user);
 		}
-
+		
 		//Convert data to json.
 		final Gson gson = new Gson();
 		response.getWriter().write(gson.toJson(userDTO));
