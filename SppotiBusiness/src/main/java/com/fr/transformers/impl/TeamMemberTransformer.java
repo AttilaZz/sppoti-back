@@ -71,7 +71,7 @@ public class TeamMemberTransformer
 		
 		userDTO.setId(memberEntity.getUuid());
 		userDTO.setTeamAdmin(memberEntity.getAdmin());
-		userDTO.setTeamStatus(memberEntity.getStatus().getValue());
+		userDTO.setTeamStatus(memberEntity.getStatus());
 		userDTO.setTeamCaptain(memberEntity.getTeamCaptain());
 		userDTO.setxPosition(memberEntity.getxPosition());
 		userDTO.setyPosition(memberEntity.getyPosition());

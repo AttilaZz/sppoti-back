@@ -37,13 +37,6 @@ class TeamAddController
 	
 	/**
 	 * This service create team
-	 *
-	 * @param team
-	 * 		team to add.
-	 * @param authentication
-	 * 		auth object.
-	 *
-	 * @return Created team data
 	 */
 	@PostMapping
 	ResponseEntity<TeamDTO> createTeam(@RequestBody @Valid final TeamDTO team, final Authentication authentication)

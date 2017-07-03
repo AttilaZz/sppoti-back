@@ -1,7 +1,7 @@
 package com.fr.api.team;
 
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
-import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.TeamStatus;
@@ -37,14 +37,7 @@ class TeamUpdateController
 	
 	/**
 	 * This method update general team informations.
-	 * Title, Logos, Cover
-	 *
-	 * @param teamId
-	 * 		team teamId.
-	 * @param teamRequestDTO
-	 * 		data to update.
-	 *
-	 * @return The updated team.
+	 * Title, Logos, Cover.
 	 */
 	@PutMapping
 	ResponseEntity<TeamDTO> updateTeam(@PathVariable final String teamId, @RequestBody final TeamDTO teamRequestDTO,
@@ -86,87 +79,37 @@ class TeamUpdateController
 	
 	/**
 	 * Accept team invitation.
-	 *
-	 * @param teamId
-	 * 		team id.
-	 *
-	 * @return 202 http status if updated succeed.
 	 */
 	@PutMapping("/accept")
 	ResponseEntity<Void> acceptTeam(@PathVariable final String teamId, final Authentication authentication)
 	{
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		this.teamControllerService.acceptTeam(teamId, accountUserDetails.getUuid());
+		this.teamControllerService.acceptTeamRequestSentFromTeamAdmin(teamId, accountUserDetails.getUuid());
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 	
 	/**
 	 * Refuse team invitation.
-	 *
-	 * @param teamId
-	 * 		team id.
-	 *
-	 * @return 202 http status if updated succeed.
 	 */
 	@PutMapping("/refuse")
 	ResponseEntity<Void> refuseTeam(@PathVariable final String teamId, final Authentication authentication)
 	{
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		this.teamControllerService.refuseTeam(teamId, accountUserDetails.getUuid());
+		this.teamControllerService.refuseTeamRequestSentFromTeamAdmin(teamId, accountUserDetails.getUuid());
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 	
 	/**
-	 * Accept / Refuse sppoti admin challenge
-	 *
-	 * @param dto
-	 * 		sppoti dto, containing sppoti id and response to challenge.
-	 *
-	 * @return 202 http status if updated succeed.
-	 */
-	@PutMapping("/challenge")
-	ResponseEntity<TeamDTO> requestChallenge(@PathVariable final String teamId, @RequestBody final SppotiDTO dto)
-	{
-		
-		if (dto.getId() == null || !StringUtils.hasText(dto.getTeamAdverseStatus())) {
-			throw new BusinessGlobalException("Sppoti id or team status missing");
-		}
-		
-		boolean statusExist = false;
-		for (final GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
-			if (status.name().equals(dto.getTeamAdverseStatus()) &&
-					(dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.CONFIRMED.name()) ||
-							dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.REFUSED.name()))) {
-				statusExist = true;
-			}
-		}
-		
-		if (!statusExist) {
-			throw new BusinessGlobalException("Status must be (CONFIRMED) or (REFUSED)");
-		}
-		
-		final TeamDTO adverseTeam = this.teamControllerService.responseToSppotiAdminChallenge(dto, teamId);
-		
-		return new ResponseEntity<>(adverseTeam, HttpStatus.ACCEPTED);
-		
-	}
-	
-	/**
-	 * Update team type to private or public.
-	 *
-	 * @param teamId
-	 * 		id of the tea to update.
-	 * @param dto
-	 * 		dto containing the new type.
-	 *
-	 * @return 202 status if team has been updated.
+	 * Accept / Refuse sppoti admin challenge.
 	 */
 	@PutMapping("/type")
-	ResponseEntity<TeamDTO> requestChallenge(@PathVariable final String teamId, @RequestBody final TeamDTO dto) {
+	ResponseEntity<TeamDTO> acceptOrRefuseSppotiAdminChallenge(@PathVariable final String teamId,
+															   @RequestBody final TeamDTO dto)
+	{
 		
 		if (!StringUtils.hasText(teamId) && dto.getType() == null) {
 			throw new BusinessGlobalException("Team id and status are required to update team type");
@@ -179,5 +122,28 @@ class TeamUpdateController
 		return ResponseEntity.accepted().body(this.teamControllerService.updateTeamType(teamId, dto.getType()));
 	}
 	
-	
+	/**
+	 * Accept or Refuse team member request to join the team.
+	 */
+	@PutMapping("/answer/member/join/request")
+	ResponseEntity acceptTeamMemberRequestToJoinTheTeam(@PathVariable final String teamId,
+														@RequestBody final UserDTO dto)
+	{
+		if (!StringUtils.hasText(dto.getId()) || dto.getTeamStatus() == null || !StringUtils.hasText(teamId)) {
+			throw new BusinessGlobalException("Team ID or Member ID or Status not found");
+		}
+		
+		if (!dto.getTeamStatus().equals(GlobalAppStatusEnum.CONFIRMED) &&
+				!dto.getTeamStatus().equals(GlobalAppStatusEnum.REFUSED)) {
+			throw new BusinessGlobalException("Authorized status are: CONFIRMED / REFUSED");
+		}
+		
+		if (dto.getTeamStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+			this.teamControllerService.confirmTeamRequestSentFromUser(teamId, dto);
+		} else if (dto.getTeamStatus().equals(GlobalAppStatusEnum.REFUSED)) {
+			this.teamControllerService.refuseTeamRequestSentFromUser(teamId, dto);
+		}
+		
+		return ResponseEntity.accepted().build();
+	}
 }

@@ -34,11 +34,6 @@ class TeamGetController
 	
 	/**
 	 * Get team data from an id
-	 *
-	 * @param teamId
-	 * 		team id.
-	 *
-	 * @return target team.
 	 */
 	@GetMapping("/{teamId}")
 	ResponseEntity<TeamDTO> getTeamById(@PathVariable final String teamId)
@@ -49,13 +44,6 @@ class TeamGetController
 	
 	/**
 	 * Get all user teams.
-	 *
-	 * @param userId
-	 * 		user id.
-	 * @param page
-	 * 		page number.
-	 *
-	 * @return All teams for a giver user Id.
 	 */
 	@GetMapping("/all/{userId}/{page}")
 	ResponseEntity getAllTeams(@PathVariable final String userId, @PathVariable final int page)
@@ -66,13 +54,6 @@ class TeamGetController
 	
 	/**
 	 * Get all joined teams (CONFIRMED/PENDING) except mine.
-	 *
-	 * @param userId
-	 * 		user id.
-	 * @param page
-	 * 		page number.
-	 *
-	 * @return All teams for a giver user Id.
 	 */
 	@GetMapping("/all/joined/{userId}/{page}")
 	ResponseEntity getAllJoinedTeams(@PathVariable final String userId, @PathVariable final int page)
@@ -82,14 +63,7 @@ class TeamGetController
 	}
 	
 	/**
-	 * GEt all deleted teams for a user.
-	 *
-	 * @param userId
-	 * 		user id.
-	 * @param page
-	 * 		page number.
-	 *
-	 * @return deleted teams.
+	 * Get all deleted teams for a user.
 	 */
 	@GetMapping("/all/deleted/{userId}/{page}")
 	ResponseEntity getAllDeletedTeams(@PathVariable final String userId, @PathVariable final int page)
@@ -99,13 +73,6 @@ class TeamGetController
 	
 	/**
 	 * Get all pending challenge requests from sppoti admin.
-	 *
-	 * @param teamId
-	 * 		team id.
-	 * @param page
-	 * 		page number.
-	 *
-	 * @return 200 http status if found.
 	 */
 	@GetMapping("/all/challenge/pending/{teamId}/{page}")
 	ResponseEntity getAllChallengeRequests(@PathVariable final String teamId, @PathVariable final int page)
@@ -115,15 +82,6 @@ class TeamGetController
 	
 	/**
 	 * Get all teams allowed to challenge a sppoti. (same sport, not already in sppoti adverse)
-	 *
-	 * @param page
-	 * 		page number.
-	 * @param authentication
-	 * 		spring security auth.
-	 * @param sppotiId
-	 * 		if of sppoti.
-	 *
-	 * @return list of teams.
 	 */
 	@GetMapping("/all/challenge/allowed/{sppotiId}/{page}")
 	ResponseEntity getAllTeamSAllowedToChallengeSppoti(@PathVariable final int page,
@@ -138,13 +96,6 @@ class TeamGetController
 	
 	/**
 	 * Get all teams by the sport id.
-	 *
-	 * @param page
-	 * 		page number
-	 * @param sportId
-	 * 		sport id.
-	 *
-	 * @return list of teams.
 	 */
 	@GetMapping("/all/by/sport/{sportId}/{page}")
 	ResponseEntity getAllTeamBySportType(@PathVariable final int page, @PathVariable final Long sportId)

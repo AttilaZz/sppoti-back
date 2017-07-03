@@ -2,6 +2,7 @@ package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,7 +65,7 @@ public class UserDTO extends AbstractCommonDTO
 	private String userId;
 	
 	private Boolean teamAdmin;
-	private Integer teamStatus;
+	private GlobalAppStatusEnum teamStatus;
 	private Boolean teamCaptain;
 	
 	private Double rating;
@@ -272,12 +273,12 @@ public class UserDTO extends AbstractCommonDTO
 		this.sppotiAdmin = sppotiAdmin;
 	}
 	
-	public Integer getTeamStatus()
+	public GlobalAppStatusEnum getTeamStatus()
 	{
 		return this.teamStatus;
 	}
 	
-	public void setTeamStatus(final Integer teamStatus)
+	public void setTeamStatus(final GlobalAppStatusEnum teamStatus)
 	{
 		this.teamStatus = teamStatus;
 	}

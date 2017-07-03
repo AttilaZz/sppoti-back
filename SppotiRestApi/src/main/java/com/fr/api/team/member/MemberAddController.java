@@ -29,8 +29,6 @@ public class MemberAddController
 	
 	/**
 	 * Add member for a given team - only admin can add a member to his team.
-	 *
-	 * @return 201 status if memeber has been added.
 	 */
 	@PostMapping
 	ResponseEntity<UserDTO> addMember(@PathVariable final String teamId, @RequestBody final UserDTO user)

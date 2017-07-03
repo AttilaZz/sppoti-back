@@ -32,8 +32,6 @@ public class MemberDeleteController
 	
 	/**
 	 * Delete memeber for a given team - only team admin can delete a member
-	 *
-	 * @return 200 status if memeber has been added
 	 */
 	@DeleteMapping("/{memberId}")
 	ResponseEntity<Void> deleteMember(@PathVariable final String teamId, @PathVariable final String memberId)

@@ -168,7 +168,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void acceptTeam(final String teamId, final String userId)
+	public void acceptTeamRequestSentFromTeamAdmin(final String teamId, final String userId)
 	{
 		
 		final TeamMemberEntity teamMembers = this.teamMembersRepository
@@ -194,7 +194,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	 */
 	@Transactional
 	@Override
-	public void refuseTeam(final String teamId, final String userId)
+	public void refuseTeamRequestSentFromTeamAdmin(final String teamId, final String userId)
 	{
 		
 		final Optional<TeamMemberEntity> teamMembers = Optional.ofNullable(this.teamMembersRepository
@@ -690,17 +690,14 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	@Transactional
 	public TeamDTO updateTeamType(final String teamId, final TeamStatus type) {
-		final List<TeamEntity> entities = this.teamRepository.findByUuidAndDeletedFalse(teamId);
+		
+		final TeamEntity teamEntity = checkIfTeamExists(teamId);
 		
 		checkTeamAdminAccess(teamId);
 		
-		if (!entities.isEmpty()) {
-			final TeamEntity t = entities.get(0);
-			t.setType(type);
-			return this.teamTransformer.modelToDto(this.teamRepository.save(t));
-		}
+		teamEntity.setType(type);
+		return this.teamTransformer.modelToDto(this.teamRepository.save(teamEntity));
 		
-		throw new EntityNotFoundException(ErrorMessageEnum.TEAM_NOT_FOUND.getMessage());
 	}
 	
 	/**
@@ -709,28 +706,26 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Override
 	@Transactional
 	public TeamDTO requestJoinTeam(final String teamId) {
-		final List<TeamEntity> entities = this.teamRepository.findByUuidAndDeletedFalse(teamId);
 		
-		if (!entities.isEmpty()) {
-			final UserEntity entity = getConnectedUser();
-			
-			if (this.teamMembersRepository
-					.findByUserUuidAndTeamUuidAndStatusNotAndTeamDeletedFalse(entity.getUuid(), teamId,
-							GlobalAppStatusEnum.DELETED) != null) {
-				throw new EntityExistsException("Already a member");
-			}
-			
-			final TeamEntity t = entities.get(0);
-			final TeamMemberEntity m = new TeamMemberEntity();
-			m.setStatus(GlobalAppStatusEnum.PENDING);
-			m.setRequestSentFromUser(Boolean.TRUE);
-			m.setUser(entity);
-			m.setTeam(t);
-			t.getTeamMembers().add(m);
-			return this.teamTransformer.modelToDto(this.teamRepository.save(t));
+		final TeamEntity teamEntity = checkIfTeamExists(teamId);
+		
+		final UserEntity entity = getConnectedUser();
+		
+		if (this.teamMembersRepository
+				.findByUserUuidAndTeamUuidAndStatusNotAndTeamDeletedFalse(entity.getUuid(), teamId,
+						GlobalAppStatusEnum.DELETED) != null) {
+			throw new EntityExistsException("Already a member");
 		}
 		
-		throw new EntityNotFoundException(ErrorMessageEnum.TEAM_NOT_FOUND.getMessage());
+		final TeamEntity t = teamEntity;
+		final TeamMemberEntity m = new TeamMemberEntity();
+		m.setStatus(GlobalAppStatusEnum.PENDING);
+		m.setRequestSentFromUser(Boolean.TRUE);
+		m.setUser(entity);
+		m.setTeam(t);
+		t.getTeamMembers().add(m);
+		return this.teamTransformer.modelToDto(this.teamRepository.save(t));
+		
 	}
 	
 	/**
@@ -779,6 +774,54 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	
 	
 	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional
+	@Override
+	public void confirmTeamRequestSentFromUser(final String teamId, final UserDTO dto) {
+		
+		checkTeamAdminAccess(teamId);
+		
+		checkIfTeamExists(teamId);
+		
+		final Optional<TeamMemberEntity> memberEntity = this.teamMembersRepository
+				.findByTeamUuidAndUserUuidAndStatusAndRequestSentFromUserTrueAndTeamDeletedFalse(teamId, dto.getId(),
+						GlobalAppStatusEnum.PENDING);
+		
+		memberEntity.ifPresent(m -> {
+			m.setStatus(GlobalAppStatusEnum.CONFIRMED);
+			this.teamMembersRepository.save(m);
+		});
+		
+		memberEntity.orElseThrow(() -> new EntityNotFoundException("No request to confirm for the given parameters"));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional
+	@Override
+	public void refuseTeamRequestSentFromUser(final String teamId, final UserDTO dto) {
+		
+		
+		checkTeamAdminAccess(teamId);
+		
+		checkIfTeamExists(teamId);
+		
+		final Optional<TeamMemberEntity> memberEntity = this.teamMembersRepository
+				.findByTeamUuidAndUserUuidAndStatusAndRequestSentFromUserTrueAndTeamDeletedFalse(teamId, dto.getId(),
+						GlobalAppStatusEnum.PENDING);
+		
+		memberEntity.ifPresent(m -> {
+			m.setStatus(GlobalAppStatusEnum.REFUSED);
+			this.teamMembersRepository.save(m);
+		});
+		
+		memberEntity.orElseThrow(() -> new EntityNotFoundException("No request to refuse for the given parameters."));
+		
+	}
+	
+	/**
 	 * Allow access only for team admin.
 	 *
 	 * @param teamId
@@ -791,5 +834,23 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 						teamId, GlobalAppStatusEnum.DELETED) == null) {
 			throw new NotAdminException("You must be the team admin to access this service");
 		}
+	}
+	
+	/**
+	 * Check if team exists or not, if exists return the team, if not throw a {@link BusinessGlobalException}
+	 *
+	 * @param teamId
+	 * 		id of the team.
+	 *
+	 * @return the team.
+	 */
+	private TeamEntity checkIfTeamExists(final String teamId) {
+		final List<TeamEntity> entity = this.teamRepository.findByUuidAndDeletedFalse(teamId);
+		
+		if (entity.isEmpty()) {
+			throw new EntityNotFoundException(ErrorMessageEnum.TEAM_NOT_FOUND.getMessage());
+		}
+		
+		return entity.get(0);
 	}
 }

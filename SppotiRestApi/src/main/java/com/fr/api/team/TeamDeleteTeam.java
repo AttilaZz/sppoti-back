@@ -33,11 +33,6 @@ class TeamDeleteTeam
 	
 	/**
 	 * This method delete a team
-	 *
-	 * @param id
-	 * 		team id.
-	 *
-	 * @return 200 status if team was deleted, 400 status otherwise
 	 */
 	@DeleteMapping("/{id}")
 	ResponseEntity deleteTeam(@PathVariable final String id)

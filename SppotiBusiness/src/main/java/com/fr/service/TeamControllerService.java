@@ -64,7 +64,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @param uuid
 	 * 		user unique id.
 	 */
-	void acceptTeam(String teamId, String uuid);
+	void acceptTeamRequestSentFromTeamAdmin(String teamId, String uuid);
 	
 	/**
 	 * Member can refuse team invitation
@@ -74,7 +74,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @param uuid
 	 * 		user unique id.
 	 */
-	void refuseTeam(String teamId, String uuid);
+	void refuseTeamRequestSentFromTeamAdmin(String teamId, String uuid);
 	
 	/**
 	 * Delete a memeber from a team.
@@ -263,4 +263,24 @@ public interface TeamControllerService extends AbstractControllerService
 	 * @return Joined team data.
 	 */
 	TeamDTO requestJoinTeam(String teamId);
+	
+	/**
+	 * Accept user request to join a team.
+	 *
+	 * @param teamId
+	 * 		id of the requested team.
+	 * @param dto
+	 * 		dto containing member id and response status, ACCEPTED.
+	 */
+	void confirmTeamRequestSentFromUser(String teamId, UserDTO dto);
+	
+	/**
+	 * Refuse user request to join a team.
+	 *
+	 * @param teamId
+	 * 		id of the requested team.
+	 * @param dto
+	 * 		dto containing member id and response status, REFUSED.
+	 */
+	void refuseTeamRequestSentFromUser(String teamId, UserDTO dto);
 }

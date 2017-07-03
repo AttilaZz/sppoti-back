@@ -1,7 +1,5 @@
 package com.fr.versionning;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.servlet.mvc.condition.*;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -45,7 +43,7 @@ public class ApiVersionRequestMappingHandlerMapping extends RequestMappingHandle
 				info = createApiVersionInfo(typeAnnotation, typeCondition).combine(info);
 			}
 		}
-
+		
 		return info;
 	}
 	

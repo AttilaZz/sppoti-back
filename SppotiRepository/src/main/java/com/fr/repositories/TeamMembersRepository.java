@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by djenanewail on 2/4/17.
@@ -137,4 +138,19 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 																								 Long userId,
 																								 GlobalAppStatusEnum status,
 																								 Pageable pageable);
+	
+	/**
+	 * Get the request that user sent to join a team.
+	 *
+	 * @param teamId
+	 * 		team id which user asked to join.
+	 * @param userId
+	 * 		id of the user who asked to join.
+	 * @param pending
+	 * 		status of the request
+	 *
+	 * @return The team member entity of the request.
+	 */
+	Optional<TeamMemberEntity> findByTeamUuidAndUserUuidAndStatusAndRequestSentFromUserTrueAndTeamDeletedFalse(
+			String teamId, String userId, GlobalAppStatusEnum pending);
 }
