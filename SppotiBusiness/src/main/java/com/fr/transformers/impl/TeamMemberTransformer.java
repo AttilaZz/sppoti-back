@@ -83,7 +83,7 @@ public class TeamMemberTransformer
 					if (sppoter.getTeamMember().getId().equals(memberEntity.getId()) &&
 							sppoter.getSppoti().getId().equals(sppoti.getId()) &&
 							!sppoter.getStatus().equals(GlobalAppStatusEnum.DELETED)) {
-						userDTO.setSppotiStatus(sppoter.getStatus().getValue());
+						userDTO.setSppotiStatus(sppoter.getStatus());
 					}
 				}
 			}

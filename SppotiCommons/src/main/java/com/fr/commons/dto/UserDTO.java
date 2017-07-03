@@ -59,7 +59,7 @@ public class UserDTO extends AbstractCommonDTO
 	private Boolean myProfile;
 	
 	private Boolean sppotiAdmin;
-	private Integer sppotiStatus;
+	private GlobalAppStatusEnum sppotiStatus;
 	
 	//used in team response.
 	private String userId;
@@ -283,12 +283,12 @@ public class UserDTO extends AbstractCommonDTO
 		this.teamStatus = teamStatus;
 	}
 	
-	public Integer getSppotiStatus()
+	public GlobalAppStatusEnum getSppotiStatus()
 	{
 		return this.sppotiStatus;
 	}
 	
-	public void setSppotiStatus(final Integer sppotiStatus)
+	public void setSppotiStatus(final GlobalAppStatusEnum sppotiStatus)
 	{
 		this.sppotiStatus = sppotiStatus;
 	}
