@@ -81,11 +81,9 @@ class TeamUpdateController
 	 * Accept team invitation.
 	 */
 	@PutMapping("/accept")
-	ResponseEntity<Void> acceptTeam(@PathVariable final String teamId, final Authentication authentication)
+	ResponseEntity<Void> acceptTeam(@PathVariable final String teamId)
 	{
-		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-		
-		this.teamControllerService.acceptTeamRequestSentFromTeamAdmin(teamId, accountUserDetails.getUuid());
+		this.teamControllerService.acceptTeamRequestSentFromTeamAdmin(teamId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
@@ -94,12 +92,8 @@ class TeamUpdateController
 	 * Refuse team invitation.
 	 */
 	@PutMapping("/refuse")
-	ResponseEntity<Void> refuseTeam(@PathVariable final String teamId, final Authentication authentication)
+	ResponseEntity<Void> refuseTeam(@PathVariable final String teamId)
 	{
-		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-		
-		this.teamControllerService.refuseTeamRequestSentFromTeamAdmin(teamId, accountUserDetails.getUuid());
-		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 	

@@ -819,7 +819,7 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 						getConnectedUserUuid(), GlobalAppStatusEnum.PENDING);
 		
 		memberEntity.ifPresent(m -> {
-			m.setStatus(GlobalAppStatusEnum.CANCELED);
+			m.setStatus(GlobalAppStatusEnum.DELETED);
 			this.teamMembersRepository.save(m);
 		});
 		
