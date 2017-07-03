@@ -20,8 +20,10 @@ import java.util.Set;
 public class CommentEntity extends AbstractCommonEntity implements Comparable<CommentEntity>
 {
 	
+	@Column(length = 500)
 	@JsonProperty("text")
 	private String content;
+	
 	private String imageLink;
 	private String videoLink;
 	

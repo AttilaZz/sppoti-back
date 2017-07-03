@@ -1,6 +1,5 @@
 package com.fr.api.team.member;
 
-import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.service.TeamControllerService;
@@ -8,7 +7,6 @@ import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -78,7 +76,7 @@ public class MemberUpdateController
 	@PutMapping("/request/join")
 	ResponseEntity<TeamDTO> requestJoinTeam(@PathVariable final String teamId)
 	{
-		this.teamControllerService.requestJoinTeam(teamId);
+		this.teamControllerService.sendRequestToJoinTeam(teamId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
@@ -87,11 +85,10 @@ public class MemberUpdateController
 	 * Accept team invitation.
 	 */
 	@PutMapping("/accept/invitation")
-	ResponseEntity<Void> acceptTeam(@PathVariable final String teamId, final Authentication authentication)
+	ResponseEntity<Void> acceptTeam(@PathVariable final String teamId)
 	{
-		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		this.teamControllerService.acceptTeamRequestSentFromTeamAdmin(teamId, accountUserDetails.getUuid());
+		this.teamControllerService.acceptTeamRequestSentFromTeamAdmin(teamId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
@@ -100,11 +97,22 @@ public class MemberUpdateController
 	 * Refuse team invitation.
 	 */
 	@PutMapping("/refuse/invitation")
-	ResponseEntity<Void> refuseTeam(@PathVariable final String teamId, final Authentication authentication)
+	ResponseEntity<Void> refuseTeam(@PathVariable final String teamId)
 	{
-		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		
-		this.teamControllerService.refuseTeamRequestSentFromTeamAdmin(teamId, accountUserDetails.getUuid());
+		this.teamControllerService.refuseTeamRequestSentFromTeamAdmin(teamId);
+		
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
+	
+	/**
+	 * Cancel request sent to join a team.
+	 */
+	@PutMapping("/cancel/join/request")
+	ResponseEntity<Void> cancelJoinTeamRequest(@PathVariable final String teamId)
+	{
+		
+		this.teamControllerService.cancelJoinTeamRequest(teamId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}

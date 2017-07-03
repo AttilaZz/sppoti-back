@@ -77,7 +77,7 @@ class TeamGetController
 	@GetMapping("/all/challenge/pending/{teamId}/{page}")
 	ResponseEntity getAllChallengeRequests(@PathVariable final String teamId, @PathVariable final int page)
 	{
-		return new ResponseEntity<>(this.teamControllerService.getAllPendingChallenges(teamId, page), HttpStatus.OK);
+		return new ResponseEntity<>(this.teamControllerService.findAllPendingChallenges(teamId, page), HttpStatus.OK);
 	}
 	
 	/**
@@ -91,7 +91,7 @@ class TeamGetController
 		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 		
 		return new ResponseEntity<>(
-				this.teamControllerService.getAllAllowedTeamsToChallengeSppoti(userId, sppotiId, page), HttpStatus.OK);
+				this.teamControllerService.findAllAllowedTeamsToChallengeSppoti(userId, sppotiId, page), HttpStatus.OK);
 	}
 	
 	/**
@@ -101,7 +101,7 @@ class TeamGetController
 	ResponseEntity getAllTeamBySportType(@PathVariable final int page, @PathVariable final Long sportId)
 	{
 		
-		return new ResponseEntity<>(this.teamControllerService.getAllTeamsBySportType(sportId, page), HttpStatus.OK);
+		return new ResponseEntity<>(this.teamControllerService.findAllTeamsBySportType(sportId, page), HttpStatus.OK);
 	}
 	
 }

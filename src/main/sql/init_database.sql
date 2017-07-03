@@ -95,3 +95,7 @@ VALUES (1, 1750519340, 0, NULL, '2017-03-10 16:16:18', 'CONFIRMED', NULL, NULL, 
 
 INSERT INTO sppoti.sppoti_member (id, uuid, version, acceptation_date, invitation_date, status, x_position, y_position, sppoti_id, team_member_id)
 VALUES (2, 1856519340, 0, NULL, '2017-03-10 16:16:18', 'PENDING', NULL, NULL, 1, 2);
+
+-- Fix content utf8mb4 encoding
+
+ALTER DATABASE sppoti CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;

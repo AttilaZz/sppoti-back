@@ -38,6 +38,9 @@ public class AppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer
 		return container;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void configureMessageBroker(final MessageBrokerRegistry config)
 	{
@@ -46,12 +49,16 @@ public class AppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer
 		config.setUserDestinationPrefix("/user");
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void registerStompEndpoints(final StompEndpointRegistry registry)
 	{
 		//		registry.addEndpoint("/add").setAllowedOrigins(Origins.getValue()).withSockJS()
 		//				.setClientLibraryUrl(this.backOrigin + this.applicationName + "/assets/js/sockjs-client.js");
-		//
-		registry.addEndpoint("/trade").setAllowedOrigins(this.originFront).withSockJS();
+		final String[] origins = this.originFront.split(",");
+		
+		registry.addEndpoint("/trade").setAllowedOrigins(origins).withSockJS();
 	}
 }

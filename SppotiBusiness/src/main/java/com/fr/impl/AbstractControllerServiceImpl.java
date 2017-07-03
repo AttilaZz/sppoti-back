@@ -159,6 +159,32 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	}
 	
 	/**
+	 * @return connected user uuid.
+	 */
+	protected Long getConnectedUserId() {
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth.getPrincipal().equals("anonymousUser")) {
+			return null;
+		}
+		
+		return ((AccountUserDetails) auth.getPrincipal()).getId();
+	}
+	
+	/**
+	 * @return connected user uuid.
+	 */
+	protected String getConnectedUserUuid() {
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		if (auth.getPrincipal().equals("anonymousUser")) {
+			return null;
+		}
+		
+		return ((AccountUserDetails) auth.getPrincipal()).getUuid();
+	}
+	
+	/**
 	 * @return connected user entity
 	 */
 	protected UserEntity getConnectedUser()

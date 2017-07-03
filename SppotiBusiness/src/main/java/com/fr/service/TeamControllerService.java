@@ -61,20 +61,16 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @param teamId
 	 * 		team id.
-	 * @param uuid
-	 * 		user unique id.
 	 */
-	void acceptTeamRequestSentFromTeamAdmin(String teamId, String uuid);
+	void acceptTeamRequestSentFromTeamAdmin(String teamId);
 	
 	/**
 	 * Member can refuse team invitation
 	 *
 	 * @param teamId
 	 * 		team id.
-	 * @param uuid
-	 * 		user unique id.
 	 */
-	void refuseTeamRequestSentFromTeamAdmin(String teamId, String uuid);
+	void refuseTeamRequestSentFromTeamAdmin(String teamId);
 	
 	/**
 	 * Delete a memeber from a team.
@@ -202,7 +198,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return all pending sppoti challenge requests.
 	 */
-	List<SppotiDTO> getAllPendingChallenges(String teamId, int page);
+	List<SppotiDTO> findAllPendingChallenges(String teamId, int page);
 	
 	/**
 	 * @param sppotiId
@@ -228,7 +224,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return list of all founded teams.
 	 */
-	List<TeamDTO> getAllAllowedTeamsToChallengeSppoti(Long userId, String sppotiId, int page);
+	List<TeamDTO> findAllAllowedTeamsToChallengeSppoti(Long userId, String sppotiId, int page);
 	
 	/**
 	 * Get all teams by sport id.
@@ -240,7 +236,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return list of teams.
 	 */
-	List<TeamDTO> getAllTeamsBySportType(Long sportId, int page);
+	List<TeamDTO> findAllTeamsBySportType(Long sportId, int page);
 	
 	/**
 	 * Update team type to Public or Private
@@ -262,7 +258,7 @@ public interface TeamControllerService extends AbstractControllerService
 	 *
 	 * @return Joined team data.
 	 */
-	TeamDTO requestJoinTeam(String teamId);
+	TeamDTO sendRequestToJoinTeam(String teamId);
 	
 	/**
 	 * Accept user request to join a team.
@@ -283,4 +279,12 @@ public interface TeamControllerService extends AbstractControllerService
 	 * 		dto containing member id and response status, REFUSED.
 	 */
 	void refuseTeamRequestSentFromUser(String teamId, UserDTO dto);
+	
+	/**
+	 * Cancel request sent to join a team.
+	 *
+	 * @param teamId
+	 * 		requested team id.
+	 */
+	void cancelJoinTeamRequest(String teamId);
 }
