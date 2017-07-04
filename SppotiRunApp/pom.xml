@@ -95,6 +95,7 @@
             </plugin>
         </plugins>
         <filters>
+            <!-- Read properties from external file -->
             <filter>
                 ../src/main/filters/filter-${environment}.properties
             </filter>

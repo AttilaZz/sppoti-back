@@ -271,6 +271,14 @@ public interface TeamControllerService extends AbstractControllerService
 	void confirmTeamRequestSentFromUser(String teamId, UserDTO dto);
 	
 	/**
+	 * Cancel request sent to join a team.
+	 *
+	 * @param teamId
+	 * 		requested team id.
+	 */
+	void cancelJoinTeamRequest(String teamId);
+	
+	/**
 	 * Refuse user request to join a team.
 	 *
 	 * @param teamId
@@ -280,11 +288,4 @@ public interface TeamControllerService extends AbstractControllerService
 	 */
 	void refuseTeamRequestSentFromUser(String teamId, UserDTO dto);
 	
-	/**
-	 * Cancel request sent to join a team.
-	 *
-	 * @param teamId
-	 * 		requested team id.
-	 */
-	void cancelJoinTeamRequest(String teamId);
 }

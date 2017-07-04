@@ -1,0 +1,23 @@
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <servers>
+        <server>
+            <id>ssh-repository</id>
+            <username>ubuntu</username>
+            <privateKey>${user.home}/IdeaProjects/sppoti/src/main/p12/sp_temp.pem
+            </privateKey>
+            <filePermissions>664</filePermissions>
+            <directoryPermissions>775</directoryPermissions>
+            <configuration>
+                <!--<sshExecutable>plink</sshExecutable>-->
+                <!--<scpExecutable>pscp</scpExecutable>-->
+                <!--<fromDir>${user.home}/IdeaProjects/sppoti/SppotiRunApp/target/</fromDir>-->
+                <!--<includes>*.war</includes>-->
+            </configuration>
+        </server>
+    </servers>
+
+</settings>

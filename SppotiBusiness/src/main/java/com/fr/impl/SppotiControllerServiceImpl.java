@@ -12,6 +12,7 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.*;
 import com.fr.mail.SppotiMailer;
+import com.fr.repositories.SppotiRequestRepository;
 import com.fr.service.SppotiControllerService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.UserTransformer;
@@ -54,6 +55,9 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	/** Sppoti mailer. */
 	private final SppotiMailer sppotiMailer;
 	
+	/** Sppoti requests repository. */
+	private final SppotiRequestRepository sppotiRequestRepository;
+	
 	/** Returned sppoti list size. */
 	@Value("${key.sppotiesPerPage}")
 	private int sppotiSize;
@@ -65,13 +69,15 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	public SppotiControllerServiceImpl(final SportTransformer sportTransformer,
 									   final SppotiTransformer sppotiTransformer,
 									   final TeamMemberTransformer teamMemberTransformer,
-									   final UserTransformer userTransformer, final SppotiMailer sppotiMailer)
+									   final UserTransformer userTransformer, final SppotiMailer sppotiMailer,
+									   final SppotiRequestRepository sppotiRequestRepository)
 	{
 		this.sportTransformer = sportTransformer;
 		this.sppotiTransformer = sppotiTransformer;
 		this.teamMemberTransformer = teamMemberTransformer;
 		this.userTransformer = userTransformer;
 		this.sppotiMailer = sppotiMailer;
+		this.sppotiRequestRepository = sppotiRequestRepository;
 	}
 	
 	/**
@@ -973,6 +979,39 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		}
 		
 		throw new EntityNotFoundException(ErrorMessageEnum.SPPOTI_NOT_FOUND.getMessage());
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional
+	@Override
+	public void confirmTeamRequestSentFromUser(final String sppotiId, final UserDTO dto) {
+		
+		final Optional<SppotiRequest> request = this.sppotiRequestRepository
+				.findBySppotiUuidAndUserUuidAndStatus(sppotiId, dto.getId(), GlobalAppStatusEnum.PENDING);
+		
+		request.ifPresent(r -> {
+			r.setStatus(GlobalAppStatusEnum.CONFIRMED);
+			
+			//Check if user is already a member of the team
+			
+			//If member only add it as sppoter
+			
+			//if not add it as team member too
+			
+			//user is confirmed in both, team and sppoti
+			
+		});
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional
+	@Override
+	public void refuseTeamRequestSentFromUser(final String sppotiId, final UserDTO dto) {
+	
 	}
 	
 	/**

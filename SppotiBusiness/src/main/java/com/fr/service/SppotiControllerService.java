@@ -243,4 +243,24 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * @return joined sppoti.
 	 */
 	SppotiDTO requestJoinSppoti(String sppotiId);
+	
+	/**
+	 * Accept user request to join a team.
+	 *
+	 * @param sppotiId
+	 * 		id of the requested sppoti.
+	 * @param dto
+	 * 		dto containing user id and response status, ACCEPTED.
+	 */
+	void confirmTeamRequestSentFromUser(String sppotiId, UserDTO dto);
+	
+	/**
+	 * Refuse user request to join a team.
+	 *
+	 * @param sppotiId
+	 * 		id of the requested sppoti.
+	 * @param dto
+	 * 		dto containing user id and response status, REFUSED.
+	 */
+	void refuseTeamRequestSentFromUser(String sppotiId, UserDTO dto);
 }
