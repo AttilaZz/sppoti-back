@@ -160,13 +160,25 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>org.apache.maven.plugins</groupId>-->
-            <!--<artifactId>maven-deploy-plugin</artifactId>-->
-            <!--<configuration>-->
-            <!--<skip>true</skip>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>deploy-file</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <file>SppotiRunApp/target/sppoti-application-${environment}.war</file>
+                            <repositoryId>ssh-repository</repositoryId>
+                            <url>
+                                scp://ubuntu@ec2-34-253-168-21.eu-west-1.compute.amazonaws.com/home/ubuntu/sppoti/
+                            </url>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
         <extensions>
