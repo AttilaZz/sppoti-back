@@ -985,6 +985,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	/**
 	 * {@inheritDoc}
 	 */
+	//TODO: to implement
 	@Transactional
 	@Override
 	public void confirmTeamRequestSentFromUser(final String sppotiId, final UserDTO dto) {
@@ -1009,10 +1010,29 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	/**
 	 * {@inheritDoc}
 	 */
+	//TODO: to impement.
 	@Transactional
 	@Override
 	public void refuseTeamRequestSentFromUser(final String sppotiId, final UserDTO dto) {
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Transactional
+	@Override
+	public void leaveSppoti(final String sppotiId) {
+		final Optional<SppoterEntity> optional = Optional.ofNullable(this.sppoterRepository
+				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(getConnectedUserUuid(),
+						sppotiId, SppotiUtils.statusToFilter()));
+		
+		optional.ifPresent(s -> {
+			s.setStatus(GlobalAppStatusEnum.LEFT);
+			this.sppoterRepository.save(s);
+		});
+		
+		optional.orElseThrow(() -> new EntityNotFoundException("User not member of this sppoti"));
 	}
 	
 	/**

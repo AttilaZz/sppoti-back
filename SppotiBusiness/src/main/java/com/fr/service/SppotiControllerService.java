@@ -263,4 +263,13 @@ public interface SppotiControllerService extends AbstractControllerService
 	 * 		dto containing user id and response status, REFUSED.
 	 */
 	void refuseTeamRequestSentFromUser(String sppotiId, UserDTO dto);
+	
+	/**
+	 * Leave a sppoti.
+	 * This action will move out the user from the selected sppoti.
+	 *
+	 * @param sppotiId
+	 * 		id of the sppoti to leave.
+	 */
+	void leaveSppoti(String sppotiId);
 }

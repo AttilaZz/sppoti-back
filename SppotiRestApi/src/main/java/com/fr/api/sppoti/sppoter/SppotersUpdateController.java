@@ -57,7 +57,7 @@ class SppotersUpdateController
 	@PutMapping("/leave")
 	ResponseEntity<SppotiDTO> leaveSppoti(@PathVariable final String sppotiId)
 	{
-		this.sppotiControllerService.requestJoinSppoti(sppotiId);
+		this.sppotiControllerService.leaveSppoti(sppotiId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
