@@ -823,6 +823,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		optional.ifPresent(m -> {
 			final TeamMemberEntity memberEntity = optional.get();
 			memberEntity.setStatus(GlobalAppStatusEnum.LEFT);
+			memberEntity.getSppotiMembers().stream().filter(s -> !s.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
+					.forEach(s -> s.setStatus(GlobalAppStatusEnum.CANCELED));
 			this.teamMembersRepository.save(memberEntity);
 		});
 		

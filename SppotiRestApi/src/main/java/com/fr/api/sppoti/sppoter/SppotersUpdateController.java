@@ -53,4 +53,12 @@ class SppotersUpdateController
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
+	
+	@PutMapping("/leave")
+	ResponseEntity<SppotiDTO> leaveSppoti(@PathVariable final String sppotiId)
+	{
+		this.sppotiControllerService.requestJoinSppoti(sppotiId);
+		
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
 }
