@@ -816,17 +816,18 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 		
 		checkIfTeamExists(teamId);
 		
-		final List<TeamMemberEntity> list = this.teamMembersRepository
-				.findByTeamUuidAndStatusNotInAndTeamDeletedFalse(teamId, SppotiUtils.statusToFilter());
+		final Optional<TeamMemberEntity> optional = this.teamMembersRepository
+				.findByTeamUuidAndUserUuidAndStatusAndTeamDeletedFalse(teamId, getConnectedUserUuid(),
+						GlobalAppStatusEnum.CONFIRMED);
 		
-		if (!list.isEmpty()) {
-			final TeamMemberEntity memberEntity = list.get(0);
+		optional.ifPresent(m -> {
+			final TeamMemberEntity memberEntity = optional.get();
 			memberEntity.setStatus(GlobalAppStatusEnum.LEFT);
 			this.teamMembersRepository.save(memberEntity);
-			return;
-		}
+		});
 		
-		throw new EntityNotFoundException("You're not a member of this team.");
+		optional.orElseThrow(() -> new EntityNotFoundException("You're not a member of this team."));
+		
 	}
 	
 	/**

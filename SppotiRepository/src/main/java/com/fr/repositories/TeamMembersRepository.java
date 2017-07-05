@@ -172,4 +172,8 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 */
 	Optional<TeamMemberEntity> findByTeamUuidAndUserUuidAndStatusAndRequestSentFromUserTrueAndTeamDeletedFalse(
 			String teamId, String userId, GlobalAppStatusEnum pending);
+	
+	Optional<TeamMemberEntity> findByTeamUuidAndUserUuidAndStatusAndTeamDeletedFalse(String teamId,
+																					 String connectedUserUuid,
+																					 GlobalAppStatusEnum confirmed);
 }
