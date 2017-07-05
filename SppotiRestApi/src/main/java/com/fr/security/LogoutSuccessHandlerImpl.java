@@ -34,7 +34,7 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler
 		final String[] allowedHeaders = Origins.getValue().split(",");
 		
 		for (final String allowedHeader : allowedHeaders) {
-			if (request.getHeader("origin").equals(allowedHeader)) {
+			if (allowedHeader.equals(request.getHeader("origin"))) {
 				response.setHeader(ATTR_ORIGIN.getValue(), request.getHeader("origin"));
 			}
 		}
