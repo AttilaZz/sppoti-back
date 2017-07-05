@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,9 +16,9 @@ import java.util.List;
 public interface FriendShipRepository extends CrudRepository<FriendShipEntity, Long>
 {
 	
-	FriendShipEntity findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(String friendUuid,
-																						   String connectedUser,
-																						   GlobalAppStatusEnum status);
+	FriendShipEntity findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(String friendUuid,
+																							 String connectedUser,
+																							 Collection<GlobalAppStatusEnum> status);
 	
 	List<FriendShipEntity> findByUserUuidAndStatus(String uuid, GlobalAppStatusEnum name, Pageable pageable);
 	

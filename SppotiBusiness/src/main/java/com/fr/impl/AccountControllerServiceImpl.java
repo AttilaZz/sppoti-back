@@ -132,14 +132,14 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		final Set<RoleEntity> roles = new HashSet<>();
 		roles.add(profile);
 		newUser.setRoles(roles);
-
+		
 		//manage password
-
+		
 		final PasswordHistory p = new PasswordHistory();
 		p.setPassword(newUser.getPassword());
 		p.setUser(newUser);
 		newUser.getPasswordHistories().add(p);
-
+		
 		//save new user.
 		this.userRepository.save(newUser);
 		this.LOGGER.info("Account has been created for user : " + user.getEmail());
@@ -168,7 +168,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		if (!u.isConfirmed()) {
 			throw new AccountConfirmationLinkExpiredException("Account exist! Ask for another confirmation code.");
 		}
-
+		
 		return true;
 	}
 	
@@ -269,7 +269,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			
 			final String encodedPassword = this.passwordEncoder.encode(userDTO.getPassword());
 			connectedUser.setPassword(encodedPassword);
-
+			
 			final PasswordHistory p = new PasswordHistory();
 			p.setPassword(encodedPassword);
 			p.setUser(connectedUser);
@@ -471,13 +471,13 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 				FriendShipEntity friendShip;
 				
 				friendShip = this.friendShipRepository
-						.findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
-								targetUser.getUuid(), GlobalAppStatusEnum.DELETED);
+						.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(
+								connectedUser.getUuid(), targetUser.getUuid(), SppotiUtils.statusToFilter());
 				
 				if (friendShip == null) {
 					friendShip = this.friendShipRepository
-							.findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(targetUser.getUuid(),
-									connectedUser.getUuid(), GlobalAppStatusEnum.DELETED);
+							.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(
+									targetUser.getUuid(), connectedUser.getUuid(), SppotiUtils.statusToFilter());
 				}
 				
 				if (friendShip == null) {

@@ -5,6 +5,7 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.exception.BusinessGlobalException;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.FriendControllerService;
@@ -82,8 +83,8 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		Check if friendship exist
          */
 		final FriendShipEntity tempFriendShip = this.friendShipRepository
-				.findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(friend.getUuid(),
-						connectedUser.getUuid(), GlobalAppStatusEnum.DELETED);
+				.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(friend.getUuid(),
+						connectedUser.getUuid(), SppotiUtils.statusToFilter());
 		if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
 			throw new EntityExistsException("FriendShip already exists !");
 		}
@@ -124,8 +125,8 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		Check if i received a friend request from the USER in the request
          */
 		final FriendShipEntity tempFriendShip = this.friendShipRepository
-				.findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
-						friendUuid, GlobalAppStatusEnum.DELETED);
+				.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
+						friendUuid, SppotiUtils.statusToFilter());
 		if (tempFriendShip == null) {
 			this.LOGGER.error("UPDATE-FRIEND: FriendShipEntity not found !");
 			throw new EntityNotFoundException(

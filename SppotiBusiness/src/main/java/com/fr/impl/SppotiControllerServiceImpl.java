@@ -1039,7 +1039,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 * Map sppoti entity to DTO.
 	 *
 	 * @param sppoti
-	 * 		sppoti to retuen.
+	 * 		sppoti to return.
 	 *
 	 * @return sppoti DTO.
 	 */

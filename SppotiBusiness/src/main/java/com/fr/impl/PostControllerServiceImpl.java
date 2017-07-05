@@ -5,6 +5,7 @@ import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.post.PostRequestDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.service.PostControllerService;
 import com.fr.transformers.PostTransformer;
@@ -332,8 +333,8 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public boolean isTargetUserFriendOfMe(final String connectedUserUuid, final String friendId)
 	{
 		return this.friendShipRepository
-				.findLastByFriendUuidAndUserUuidAndStatusNotOrderByDatetimeCreatedDesc(friendId, connectedUserUuid,
-						GlobalAppStatusEnum.DELETED) != null;
+				.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(friendId, connectedUserUuid,
+						SppotiUtils.statusToFilter()) != null;
 	}
 	
 	/**

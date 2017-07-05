@@ -19,6 +19,7 @@ public class SppotiUtils
 		final Collection<GlobalAppStatusEnum> collection = new ArrayList<>();
 		collection.add(GlobalAppStatusEnum.DELETED);
 		collection.add(GlobalAppStatusEnum.CANCELED);
+		collection.add(GlobalAppStatusEnum.REFUSED);
 		collection.add(GlobalAppStatusEnum.LEFT);
 		return collection;
 	}
