@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,11 +25,14 @@ public interface SppoterRepository extends JpaRepository<SppoterEntity, Long>
 	 * 		user id.
 	 * @param sppotiId
 	 * 		sppoti id.
+	 * @param status
+	 * 		status to filter from all rows.
 	 *
 	 * @return sppoter related to a defined team and a sppoti.
 	 */
-	SppoterEntity findByTeamMemberUserUuidAndSppotiUuidAndStatusNotAndSppotiDeletedFalse(String userId, String sppotiId,
-																						 GlobalAppStatusEnum status);
+	SppoterEntity findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(String userId,
+																						   String sppotiId,
+																						   Collection<GlobalAppStatusEnum> status);
 	
 	/**
 	 * Find sppoter by team and sport.
@@ -38,11 +42,14 @@ public interface SppoterRepository extends JpaRepository<SppoterEntity, Long>
 	 * 		user id.
 	 * @param id
 	 * 		sport id.
+	 * @param status
+	 * 		status to filter from all rows.
 	 *
 	 * @return all joined sppoties for a particular sport.
 	 */
-	List<SppoterEntity> findByTeamMemberUserUuidAndSppotiSportIdAndStatusNotAndSppotiDeletedFalse(String uuid, Long id,
-																								  GlobalAppStatusEnum status);
+	List<SppoterEntity> findByTeamMemberUserUuidAndSppotiSportIdAndStatusNotInAndSppotiDeletedFalse(String uuid,
+																									Long id,
+																									Collection<GlobalAppStatusEnum> status);
 	
 	/**
 	 * Find sppoter by his global user id.
@@ -50,14 +57,16 @@ public interface SppoterRepository extends JpaRepository<SppoterEntity, Long>
 	 *
 	 * @param userId
 	 * 		user id.
+	 * @param status
+	 * 		status to filter from all rows.
 	 * @param pageable
 	 * 		page number.
 	 *
 	 * @return return all joined sppoties, unless refused ones.
 	 */
-	List<SppoterEntity> findByTeamMemberUserUuidAndStatusNotAndSppotiDeletedFalse(String userId,
-																				  GlobalAppStatusEnum status,
-																				  Pageable pageable);
+	List<SppoterEntity> findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(String userId,
+																					Collection<GlobalAppStatusEnum> status,
+																					Pageable pageable);
 	
 	/**
 	 * Find all upcomming sppoties:

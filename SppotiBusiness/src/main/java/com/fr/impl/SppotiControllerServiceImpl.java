@@ -10,6 +10,7 @@ import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.enumeration.SppotiStatus;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.mail.SppotiMailer;
 import com.fr.repositories.SppotiRequestRepository;
@@ -156,8 +157,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			team.getTeamMembers().forEach(m -> {
 				if (!m.getAdmin().equals(Boolean.TRUE)) {
 					sendJoinTeamEmail(team, getUserById(m.getUser().getId()), this.teamMembersRepository
-							.findByTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(team.getUuid(),
-									GlobalAppStatusEnum.DELETED));
+							.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(team.getUuid(),
+									SppotiUtils.statusToFilter()));
 				}
 			});
 		}
@@ -340,8 +341,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	{
 		
 		final Optional<SppoterEntity> optional = Optional.ofNullable(this.sppoterRepository
-				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotAndSppotiDeletedFalse(userId, sppotiId,
-						GlobalAppStatusEnum.DELETED));
+				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(userId, sppotiId,
+						SppotiUtils.statusToFilter()));
 		
 		optional.ifPresent(sm -> {
 			//update sppoter status.
@@ -361,8 +362,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			
 			//Send notification to team admin.
 			final UserEntity teamAdmin = this.teamMembersRepository
-					.findByTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(teamMembers.getTeam().getUuid(),
-							GlobalAppStatusEnum.DELETED).getUser();
+					.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(teamMembers.getTeam().getUuid(),
+							SppotiUtils.statusToFilter()).getUser();
 			
 			addNotification(NotificationTypeEnum.X_ACCEPTED_THE_SPPOTI_INVITATION, sm.getTeamMember().getUser(),
 					teamAdmin, teamMembers.getTeam(), sm.getSppoti(), null, null, null, null);
@@ -381,8 +382,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	{
 		
 		final SppoterEntity sppotiMembers = this.sppoterRepository
-				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotAndSppotiDeletedFalse(sppotiId, userId,
-						GlobalAppStatusEnum.DELETED);
+				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(sppotiId, userId,
+						SppotiUtils.statusToFilter());
 		
 		if (sppotiMembers == null) {
 			throw new EntityNotFoundException("Sppoter not found");
@@ -434,7 +435,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		//check if user has rights to send challenge. (team adverse admin)
 		if (!connectedUserId.equals(this.teamMembersRepository
-				.findByTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(teamId, GlobalAppStatusEnum.DELETED)
+				.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(teamId, SppotiUtils.statusToFilter())
 				.getUser().getId())) {
 			throw new NotAdminException("You have to be the admin of the team to send challenge");
 		}
@@ -598,8 +599,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			
 			return sppotiRatingDTO.stream().map(sppoter -> {
 				Optional<SppoterEntity> ratedSppoter = Optional.ofNullable(this.sppoterRepository
-						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotAndSppotiDeletedFalse(
-								sppoter.getSppoterRatedId(), se.getUuid(), GlobalAppStatusEnum.DELETED));
+						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(
+								sppoter.getSppoterRatedId(), se.getUuid(), SppotiUtils.statusToFilter()));
 				ratedSppoter.orElseThrow(
 						() -> new EntityNotFoundException("Sppoter (" + sppoter.getSppoterRatedId() + ") not found"));
 				
@@ -623,8 +624,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 				//Flag rated sppoter to true.
 				//This means that sppoti admin has rate this sppoter
 				SppoterEntity sppoterRaterEntity = this.sppoterRepository
-						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotAndSppotiDeletedFalse(connectUser.getUuid(),
-								sppotiId, GlobalAppStatusEnum.DELETED);
+						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(connectUser.getUuid(),
+								sppotiId, SppotiUtils.statusToFilter());
 				sppoterRaterEntity.setHasRateOtherSppoter(Boolean.TRUE);
 				this.sppoterRepository.save(sppoterRaterEntity);
 				
@@ -635,8 +636,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 				
 				//Get RATED SPPOTER.
 				SppoterEntity sppoterRatedEntity = this.sppoterRepository
-						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotAndSppotiDeletedFalse(
-								sppoter.getSppoterRatedId(), sppotiId, GlobalAppStatusEnum.DELETED);
+						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(
+								sppoter.getSppoterRatedId(), sppotiId, SppotiUtils.statusToFilter());
 				return this.teamMemberTransformer.modelToDto(sppoterRatedEntity.getTeamMember(), se);
 				
 			}).collect(Collectors.toList());
@@ -657,7 +658,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<SppoterEntity> sppotiMembers = this.sppoterRepository
-				.findByTeamMemberUserUuidAndStatusNotAndSppotiDeletedFalse(userId, GlobalAppStatusEnum.DELETED,
+				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, SppotiUtils.statusToFilter(),
 						pageable);
 		
 		return sppotiMembers.stream().filter(s -> !Objects.equals(s.getSppoti().getUserSppoti().getUuid(), userId))
@@ -677,7 +678,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		return this.sppoterRepository
-				.findByTeamMemberUserUuidAndStatusNotAndSppotiDeletedFalse(userId, GlobalAppStatusEnum.DELETED,
+				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, SppotiUtils.statusToFilter(),
 						pageable).stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
@@ -695,7 +696,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		return this.sppoterRepository
-				.findByTeamMemberUserUuidAndStatusNotAndSppotiDeletedFalse(userId, GlobalAppStatusEnum.DELETED,
+				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, SppotiUtils.statusToFilter(),
 						pageable).stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.REFUSED))
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
@@ -731,7 +732,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		//Get all user teams.
 		final List<TeamMemberEntity> teamMemberEntities = this.teamMembersRepository
-				.findByUserUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(userId, GlobalAppStatusEnum.DELETED,
+				.findByUserUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(userId, SppotiUtils.statusToFilter(),
 						pageable);
 		
 		//Check if one of this teams has received a challenge request.
@@ -778,12 +779,12 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			final List<Long> existingSppoter = new ArrayList<>();
 			
 			sp.getAdverseTeams().forEach(ad -> existingSppoter.addAll(ad.getTeam().getTeamMembers().stream().filter(m ->
-					m.getSppotiMembers().stream().noneMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.DELETED)) &&
+					m.getSppotiMembers().stream().noneMatch(s -> s.getStatus().equals(SppotiUtils.statusToFilter())) &&
 							!m.getSppotiMembers().isEmpty()).map(a -> a.getUser().getId())
 					.collect(Collectors.toList())));
 			
 			existingSppoter.addAll(sp.getTeamHostEntity().getTeamMembers().stream().filter(m ->
-					m.getSppotiMembers().stream().noneMatch(s -> s.getStatus().equals(GlobalAppStatusEnum.DELETED)) &&
+					m.getSppotiMembers().stream().noneMatch(s -> s.getStatus().equals(SppotiUtils.statusToFilter())) &&
 							!m.getSppotiMembers().isEmpty()).map(m -> m.getUser().getId())
 					.collect(Collectors.toList()));
 			
@@ -916,8 +917,8 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		
 		//Find sppoter and delete it.
 		final Optional<SppoterEntity> sppoter = Optional.ofNullable(this.sppoterRepository
-				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotAndSppotiDeletedFalse(userId, sppotiId,
-						GlobalAppStatusEnum.DELETED));
+				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(userId, sppotiId,
+						SppotiUtils.statusToFilter()));
 		
 		sppoter.ifPresent(s -> {
 			if (!s.getTeamMember().getAdmin()) {
@@ -1011,7 +1012,7 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	@Transactional
 	@Override
 	public void refuseTeamRequestSentFromUser(final String sppotiId, final UserDTO dto) {
-	
+		
 	}
 	
 	/**
@@ -1039,16 +1040,17 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 		sppotiDTO.setRelatedSport(this.sportTransformer.modelToDto(sppoti.getSport()));
 		
 		final List<SppoterEntity> sppotiMembers = this.sppoterRepository
-				.findByTeamMemberUserUuidAndSppotiSportIdAndStatusNotAndSppotiDeletedFalse(
-						sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId(), GlobalAppStatusEnum.DELETED);
+				.findByTeamMemberUserUuidAndSppotiSportIdAndStatusNotInAndSppotiDeletedFalse(
+						sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId(), SppotiUtils.statusToFilter());
 		
 		sppotiDTO.setSppotiCounter(sppotiMembers.size());
 		sppotiDTO.setMySppoti(Objects.equals(getConnectedUser().getUuid(), sppoti.getUserSppoti().getUuid()));
 		
 		//if user is member of a team, get admin of the tem and other informations.
 		final TeamMemberEntity teamAdmin = this.teamMembersRepository
-				.findByUserUuidAndTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(sppoti.getUserSppoti().getUuid(),
-						sppoti.getTeamHostEntity().getUuid(), GlobalAppStatusEnum.DELETED);
+				.findByUserUuidAndTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(
+						sppoti.getUserSppoti().getUuid(), sppoti.getTeamHostEntity().getUuid(),
+						SppotiUtils.statusToFilter());
 		if (teamAdmin != null) {
 			sppotiDTO.setAdminTeamId(teamAdmin.getUuid());
 			sppotiDTO.setAdminUserId(sppoti.getUserSppoti().getUuid());

@@ -1,5 +1,6 @@
 package com.fr.commons.utils;
 
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.exception.BusinessGlobalException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.codec.Base64;
@@ -14,6 +15,14 @@ import java.util.*;
  */
 public class SppotiUtils
 {
+	public static Collection<GlobalAppStatusEnum> statusToFilter() {
+		final Collection<GlobalAppStatusEnum> collection = new ArrayList<>();
+		collection.add(GlobalAppStatusEnum.DELETED);
+		collection.add(GlobalAppStatusEnum.CANCELED);
+		collection.add(GlobalAppStatusEnum.LEFT);
+		return collection;
+	}
+	
 	/**
 	 * Coder une chaine de caractères en 64 bit
 	 *

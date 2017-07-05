@@ -4,6 +4,7 @@ import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.enumeration.SppotiStatus;
+import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.ScoreEntity;
 import com.fr.entities.SppotiAdverseEntity;
 import com.fr.entities.TeamEntity;
@@ -63,8 +64,8 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 					.findFirst();
 			
 			addNotification(typeEnum, this.teamMembersRepository
-							.findByTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(challengedTeam.get().getUuid(),
-									GlobalAppStatusEnum.DELETED).getUser(), s.getSppotiEntity().getUserSppoti(),
+							.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(challengedTeam.get().getUuid(),
+									SppotiUtils.statusToFilter()).getUser(), s.getSppotiEntity().getUserSppoti(),
 					challengedTeam.get(), s.getSppotiEntity(), null, null, s, null);
 			
 			s.setScoreStatus(GlobalAppStatusEnum.valueOf(scoreDTO.getStatus()));
@@ -92,8 +93,8 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 		
 		addNotification(NotificationTypeEnum.SCORE_SET_AND_WAITING_FOR_APPROVAL,
 				scoreEntity.getSppotiEntity().getUserSppoti(), this.teamMembersRepository
-						.findByTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(challengedTeam.get().getUuid(),
-								GlobalAppStatusEnum.DELETED).getUser(),
+						.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(challengedTeam.get().getUuid(),
+								SppotiUtils.statusToFilter()).getUser(),
 				scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), null, null,
 				scoreEntity, null);
 		

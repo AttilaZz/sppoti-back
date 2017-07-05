@@ -288,4 +288,11 @@ public interface TeamControllerService extends AbstractControllerService
 	 */
 	void refuseTeamRequestSentFromUser(String teamId, UserDTO dto);
 	
+	/**
+	 * Leave a team.
+	 *
+	 * @param teamId
+	 * 		team id to leave.
+	 */
+	void leaveTeam(String teamId);
 }

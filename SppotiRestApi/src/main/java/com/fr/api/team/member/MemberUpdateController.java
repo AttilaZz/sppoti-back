@@ -116,4 +116,16 @@ public class MemberUpdateController
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
+	
+	/**
+	 * Leave a team.
+	 */
+	@PutMapping("/leave")
+	ResponseEntity<Void> leaveTeam(@PathVariable final String teamId)
+	{
+		
+		this.teamControllerService.leaveTeam(teamId);
+		
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+	}
 }

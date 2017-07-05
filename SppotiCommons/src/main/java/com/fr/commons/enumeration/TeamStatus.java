@@ -5,7 +5,7 @@ package com.fr.commons.enumeration;
  */
 public enum TeamStatus
 {
-	PRIVATE(1), PUBLIC(0);
+	PUBLIC(0), PRIVATE(1);
 	
 	private final int status;
 	

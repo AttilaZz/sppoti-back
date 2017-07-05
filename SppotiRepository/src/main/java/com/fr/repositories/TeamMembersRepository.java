@@ -5,6 +5,7 @@ import com.fr.entities.TeamMemberEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,58 +20,68 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 * 		member team id.
 	 * @param teamId
 	 * 		team id.
+	 * @param status
+	 * 		status that should be filtered from response
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByUserUuidAndTeamUuidAndStatusNotAndTeamDeletedFalse(String memberId, String teamId,
-																			  GlobalAppStatusEnum status);
+	TeamMemberEntity findByUserUuidAndTeamUuidAndStatusNotInAndTeamDeletedFalse(String memberId, String teamId,
+																				Collection<GlobalAppStatusEnum> status);
 	
 	/**
 	 * @param userId
 	 * 		user id.
+	 * @param status
+	 * 		status that should be filtered from response.
 	 * @param pageable
 	 * 		page number.
 	 *
 	 * @return list of found team.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(String userId,
-																					 GlobalAppStatusEnum status,
-																					 Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(String userId,
+																					   Collection<GlobalAppStatusEnum> status,
+																					   Pageable pageable);
 	
 	/**
 	 * @param memberId
 	 * 		member id.
 	 * @param teamId
 	 * 		team id.
+	 * @param status
+	 * 		status that should be filtered from response.
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByUserUuidAndTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(String memberId,
-																						  String teamId,
-																						  GlobalAppStatusEnum status);
+	TeamMemberEntity findByUserUuidAndTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(String memberId,
+																							String teamId,
+																							Collection<GlobalAppStatusEnum> status);
 	
 	/**
 	 * @param id
 	 * 		user id.
 	 * @param team
 	 * 		team id.
+	 * @param status
+	 * 		status that should be filtered from response.
 	 * @param pageable
 	 * 		page number.
 	 *
 	 * @return list of teams.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndTeamNameContainingAndStatusNotAndTeamDeletedFalse(String id, String team,
-																							  GlobalAppStatusEnum status,
-																							  Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndTeamNameContainingAndStatusNotInAndTeamDeletedFalse(String id, String team,
+																								Collection<GlobalAppStatusEnum> status,
+																								Pageable pageable);
 	
 	/**
 	 * @param teamId
 	 * 		team id.
+	 * @param status
+	 * 		status that should be filtered from response.
 	 *
 	 * @return found team.
 	 */
-	TeamMemberEntity findByTeamUuidAndStatusNotAndAdminTrueAndTeamDeletedFalse(String teamId,
-																			   GlobalAppStatusEnum status);
+	TeamMemberEntity findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(String teamId,
+																				 Collection<GlobalAppStatusEnum> status);
 	
 	/**
 	 * @param sport
@@ -79,48 +90,54 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 * 		user id.
 	 * @param team
 	 * 		team id.
+	 * @param status
+	 * 		status that should be filtered from response.
 	 * @param pageable
 	 * 		page number.
 	 *
 	 * @return list of teams.
 	 */
-	List<TeamMemberEntity> findByTeamSportIdAndUserUuidAndTeamNameContainingAndStatusNotAndTeamDeletedFalse(Long sport,
-																											String user,
-																											String team,
-																											GlobalAppStatusEnum status,
-																											Pageable pageable);
+	List<TeamMemberEntity> findByTeamSportIdAndUserUuidAndTeamNameContainingAndStatusNotInAndTeamDeletedFalse(
+			Long sport, String user, String team, Collection<GlobalAppStatusEnum> status, Pageable pageable);
 	
 	/**
 	 * @param teamId
-	 * 		team id;
+	 * 		team id.
+	 * @param status
+	 * 		status that should be filtered from response.
 	 *
 	 * @return all team members.
 	 */
-	List<TeamMemberEntity> findByTeamUuidAndStatusNotAndTeamDeletedFalse(String teamId, GlobalAppStatusEnum status);
+	List<TeamMemberEntity> findByTeamUuidAndStatusNotInAndTeamDeletedFalse(String teamId,
+																		   Collection<GlobalAppStatusEnum> status);
 	
 	/**
 	 * @param userId
 	 * 		user id.
+	 * @param status
+	 * 		status that should be filtered from response.
 	 * @param pageable
 	 * 		page number.
 	 *
 	 * @return all confirmed teams.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndStatusNotAndAdminFalseAndTeamDeletedFalse(String userId,
-																					  GlobalAppStatusEnum status,
-																					  Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndStatusNotInAndAdminFalseAndTeamDeletedFalse(String userId,
+																						Collection<GlobalAppStatusEnum> status,
+																						Pageable pageable);
 	
 	/**
 	 * @param uuid
 	 * 		user unique id.
+	 * @param status
+	 * 		status that should be filtered from response.
 	 * @param pageable
 	 * 		page number.
 	 *
 	 * @return all deleted teams.
 	 */
-	List<TeamMemberEntity> findByUserUuidAndStatusNotAndTeamDeletedFalseAndTeamDeletedFalse(String uuid,
-																							GlobalAppStatusEnum status,
-																							Pageable pageable);
+	List<TeamMemberEntity> findByUserUuidAndStatusNotInAndTeamDeletedFalseAndTeamDeletedFalse(String uuid,
+																							  Collection<GlobalAppStatusEnum> status,
+																							  Pageable pageable);
 	
 	/**
 	 * Find all user's teams by sport and admin true.
@@ -129,15 +146,17 @@ public interface TeamMembersRepository extends JpaRepository<TeamMemberEntity, L
 	 * 		sppoti sport id.
 	 * @param userId
 	 * 		connected user id.
+	 * @param status
+	 * 		status that should be filtered from response.
 	 * @param pageable
 	 * 		page number.
 	 *
 	 * @return list of {@link TeamMemberEntity}
 	 */
-	List<TeamMemberEntity> findByTeamSportIdAndUserIdAndStatusNotAndAdminTrueAndTeamDeletedFalse(Long sportId,
-																								 Long userId,
-																								 GlobalAppStatusEnum status,
-																								 Pageable pageable);
+	List<TeamMemberEntity> findByTeamSportIdAndUserIdAndStatusNotInAndAdminTrueAndTeamDeletedFalse(Long sportId,
+																								   Long userId,
+																								   Collection<GlobalAppStatusEnum> status,
+																								   Pageable pageable);
 	
 	/**
 	 * Get the request that user sent to join a team.
