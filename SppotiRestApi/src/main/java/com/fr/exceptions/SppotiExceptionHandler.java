@@ -128,7 +128,7 @@ public class SppotiExceptionHandler
 	public ResponseEntity otherRuntimeExceptions(final RuntimeException e)
 	{
 		this.LOGGER.error(e.getMessage(), e);
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
 	}
 	
 	/**
