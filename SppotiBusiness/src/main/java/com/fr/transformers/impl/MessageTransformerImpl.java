@@ -3,7 +3,7 @@ package com.fr.transformers.impl;
 import com.fr.commons.dto.message.MessageDTO;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.entities.MessageEntity;
-import com.fr.transformers.MessageTranformer;
+import com.fr.transformers.MessageTransformer;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MessageTransformerImpl extends AbstractTransformerImpl<MessageDTO, MessageEntity> implements
-		MessageTranformer
+		MessageTransformer
 {
 	
 	/**

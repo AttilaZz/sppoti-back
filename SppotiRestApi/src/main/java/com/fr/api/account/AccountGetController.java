@@ -60,8 +60,7 @@ class AccountGetController
 	 */
 	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@GetMapping("/other/{username}/**")
-	ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") final String username,
-										  final Authentication authentication)
+	ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") final String username)
 	{
 		
 		//        String path = (String) httpServletRequest.getAttribute(
@@ -70,10 +69,7 @@ class AccountGetController
 		//        String bestMatchPattern = (String ) httpServletRequest.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 		//        String finalPath = apm.extractPathWithinPattern(bestMatchPattern, path);
 		
-		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-		
-		return new ResponseEntity<>(
-				this.accountControllerService.handleFriendShip(username, accountUserDetails.getId()), HttpStatus.OK);
+		return new ResponseEntity<>(this.accountControllerService.getAnyUserProfileData(username), HttpStatus.OK);
 		
 	}
 }

@@ -5,7 +5,7 @@ import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.MessageEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.MessageControllerService;
-import com.fr.transformers.MessageTranformer;
+import com.fr.transformers.MessageTransformer;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ class MessageController
 	
 	/** Message transformer. */
 	@Autowired
-	private MessageTranformer messageTranformer;
+	private MessageTransformer messageTransformer;
 	
 	/** Init class. */
 	@Autowired
@@ -101,7 +101,7 @@ class MessageController
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
-		newMsg = new MessageEntity(this.messageTranformer.dtoToModel(newMessage.getMsg()));
+		newMsg = new MessageEntity(this.messageTransformer.dtoToModel(newMessage.getMsg()));
 		newMsg.setUserMessage(user);
 		
 		if (newMessage.getReceivedId() == null) {

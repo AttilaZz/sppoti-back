@@ -6,6 +6,6 @@ import com.fr.entities.MessageEntity;
 /**
  * Created by djenanewail on 5/25/17.
  */
-public interface MessageTranformer extends CommonTransformer<MessageDTO, MessageEntity>
+public interface MessageTransformer extends CommonTransformer<MessageDTO, MessageEntity>
 {
 }

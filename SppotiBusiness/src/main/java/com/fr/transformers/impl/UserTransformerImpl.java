@@ -5,10 +5,14 @@ import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GenderEnum;
+import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.commons.utils.SppotiUtils;
+import com.fr.entities.FriendShipEntity;
 import com.fr.entities.ResourcesEntity;
 import com.fr.entities.UserEntity;
+import com.fr.repositories.FriendShipRepository;
+import com.fr.repositories.UserRepository;
 import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,18 +29,23 @@ import java.util.stream.Collectors;
 @Component
 public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEntity> implements UserTransformer
 {
+	private final PasswordEncoder passwordEncoder;
 	
-	/**
-	 * Sprig security crypt password.
-	 */
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final SportTransformer sportTransformer;
 	
-	/**
-	 * Sport transformer.
-	 */
+	private final UserRepository userRepository;
+	
+	private final FriendShipRepository friendShipRepository;
+	
 	@Autowired
-	private SportTransformer sportTransformer;
+	public UserTransformerImpl(final PasswordEncoder passwordEncoder, final SportTransformer sportTransformer,
+							   final UserRepository userRepository, final FriendShipRepository friendShipRepository)
+	{
+		this.passwordEncoder = passwordEncoder;
+		this.sportTransformer = sportTransformer;
+		this.userRepository = userRepository;
+		this.friendShipRepository = friendShipRepository;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -86,6 +95,11 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 			final List<SportDTO> sportDTOs = entity.getRelatedSports().stream().map(this.sportTransformer::modelToDto)
 					.collect(Collectors.toList());
 			dto.setSportDTOs(sportDTOs);
+		}
+		
+		if (entity.getConnectedUserId() != null) {
+			dto.setMyProfile(entity.getId().equals(entity.getConnectedUserId()));
+			dto.setFriendStatus(this.getFriendShipStatus(entity.getUuid(), entity.getConnectedUserId()));
 		}
 		
 		return dto;
@@ -153,7 +167,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		entity.setPassword(this.passwordEncoder.encode(dto.getPassword()));
 		entity.setUsername(dto.getUsername().trim());
 		entity.setFirstConnexion(false);
-
+		
 		return entity;
 	}
 	
@@ -185,5 +199,54 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		final List<UserDTO> dtos = super.iterableModelsToDtos(models);
 		dtos.forEach(u -> u.setPassword(null));
 		return dtos;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	private Integer getFriendShipStatus(final String targetUserId, final Long connectedUserId) {
+		
+		final UserEntity connectedUser = this.userRepository.findOne(connectedUserId);
+		
+		if (!connectedUser.getUuid().equals(targetUserId)) {
+				/* manage requests sent to me. */
+			FriendShipEntity friendShip;
+			
+			friendShip = this.friendShipRepository
+					.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
+							targetUserId, SppotiUtils.statusToFilter());
+			
+			if (friendShip == null) {
+				friendShip = this.friendShipRepository
+						.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(targetUserId,
+								connectedUser.getUuid(), SppotiUtils.statusToFilter());
+			}
+			
+			if (friendShip == null) {
+				return GlobalAppStatusEnum.PUBLIC_RELATION.getValue();
+			} else {
+				
+				//We are friend.
+				if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+					return GlobalAppStatusEnum.CONFIRMED.getValue();
+					
+					//Friend request waiting to be accepted by me.
+				} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
+					return GlobalAppStatusEnum.PENDING.getValue();
+					
+					//Friend request refused by me.
+				} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
+					return GlobalAppStatusEnum.REFUSED.getValue();
+					
+				}
+			}
+				/*  Manage request sent by me. */
+			if (!this.friendShipRepository.findByUserUuidAndFriendUuidAndStatus(targetUserId, connectedUser.getUuid(),
+					GlobalAppStatusEnum.PENDING).isEmpty()) {
+				return GlobalAppStatusEnum.PENDING_SENT.getValue();
+			}
+		}
+		
+		return GlobalAppStatusEnum.PUBLIC_RELATION.getValue();
 	}
 }

@@ -4,7 +4,10 @@ import com.fr.commons.dto.ConnexionHistoryDto;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.enumeration.*;
+import com.fr.commons.enumeration.ErrorMessageEnum;
+import com.fr.commons.enumeration.LanguageEnum;
+import com.fr.commons.enumeration.TypeAccountValidation;
+import com.fr.commons.enumeration.UserRoleTypeEnum;
 import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.ConflictEmailException;
@@ -452,63 +455,17 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserDTO handleFriendShip(final String username, final Long connectedUserId)
+	public UserDTO getAnyUserProfileData(final String username)
 	{
 		
 		final UserEntity targetUser = this.getUserByLogin(username, true);
 		if (targetUser == null) {
 			throw new EntityNotFoundException("Target user id not found");
 		}
-		final UserEntity connectedUser = this.getUserById(connectedUserId);
 		
 		targetUser.setPassword(null);//do not return password
+		targetUser.setConnectedUserId(getConnectedUserId());
 		final UserDTO user = this.userTransformer.modelToDto(targetUser);
-		user.setFriendStatus(GlobalAppStatusEnum.PUBLIC_RELATION.getValue());
-		
-		if (connectedUser != null) {
-			if (!connectedUser.getId().equals(targetUser.getId())) {
-				/* manage requests sent to me. */
-				FriendShipEntity friendShip;
-				
-				friendShip = this.friendShipRepository
-						.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(
-								connectedUser.getUuid(), targetUser.getUuid(), SppotiUtils.statusToFilter());
-				
-				if (friendShip == null) {
-					friendShip = this.friendShipRepository
-							.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(
-									targetUser.getUuid(), connectedUser.getUuid(), SppotiUtils.statusToFilter());
-				}
-				
-				if (friendShip == null) {
-					user.setFriendStatus(GlobalAppStatusEnum.PUBLIC_RELATION.getValue());
-				} else {
-					
-					//We are friend.
-					if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
-						user.setFriendStatus(GlobalAppStatusEnum.CONFIRMED.getValue());
-						
-						//Friend request waiting to be accepted by me.
-					} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
-						user.setFriendStatus(GlobalAppStatusEnum.PENDING.getValue());
-						
-						//Friend request refused by me.
-					} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
-						user.setFriendStatus(GlobalAppStatusEnum.REFUSED.getValue());
-						
-					}
-				}
-				/*  Manage request sent by me. */
-				if (!this.friendShipRepository
-						.findByUserUuidAndFriendUuidAndStatus(targetUser.getUuid(), connectedUser.getUuid(),
-								GlobalAppStatusEnum.PENDING).isEmpty()) {
-					user.setFriendStatus(GlobalAppStatusEnum.PENDING_SENT.getValue());
-				}
-			}
-			user.setMyProfile(connectedUser.getId().equals(targetUser.getId()));
-		} else {
-			user.setMyProfile(true);
-		}
 		
 		//Map all user sports
 		final List<SportDTO> sportDTOs = targetUser.getRelatedSports().stream().map(this.sportTransformer::modelToDto)

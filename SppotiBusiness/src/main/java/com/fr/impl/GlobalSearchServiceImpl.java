@@ -8,6 +8,7 @@ import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.QSppotiEntity;
 import com.fr.entities.QTeamEntity;
 import com.fr.entities.QUserEntity;
+import com.fr.entities.UserEntity;
 import com.fr.service.GlobalSearchService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.TeamTransformer;
@@ -85,8 +86,11 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 				.and(QUserEntity.userEntity.confirmed.eq(true)).and(QUserEntity.userEntity.deleted.eq(false))
 				.and(predicate1).and(predicate2).and(predicate3);
 		
-		result.getUsers().addAll(this.userTransformer
-				.iterableModelsToDtos(this.userRepository.findAll(predicate, getPage(page)).getContent()));
+		final List<UserEntity> users = this.userRepository.findAll(predicate, getPage(page)).getContent();
+		users.forEach(u -> {
+			u.setConnectedUserId(getConnectedUserId());
+			result.getUsers().add(this.userTransformer.modelToDto(u));
+		});
 		
 		return result;
 	}
