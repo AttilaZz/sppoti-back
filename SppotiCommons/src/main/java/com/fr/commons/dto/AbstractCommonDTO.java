@@ -3,11 +3,13 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.io.Serializable;
+
 /**
  * Created by djenanewail on 2/24/17.
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AbstractCommonDTO
+public class AbstractCommonDTO implements Serializable
 {
 	
 	protected Integer version;
@@ -32,12 +34,12 @@ public class AbstractCommonDTO
 	{
 		this.version = version;
 	}
-
+	
 	public String getId() {
-		return id;
+		return this.id;
 	}
-
-	public void setId(String id) {
+	
+	public void setId(final String id) {
 		this.id = id;
 	}
 }
