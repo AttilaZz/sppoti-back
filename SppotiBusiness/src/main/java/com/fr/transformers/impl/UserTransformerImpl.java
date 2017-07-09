@@ -204,46 +204,40 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 	/**
 	 * {@inheritDoc}
 	 */
+	//TODO: optimize this code
 	private Integer getFriendShipStatus(final String targetUserId, final Long connectedUserId) {
 		
 		final UserEntity connectedUser = this.userRepository.findOne(connectedUserId);
 		
 		if (!connectedUser.getUuid().equals(targetUserId)) {
-				/* manage requests sent to me. */
-			FriendShipEntity friendShip;
-			
-			friendShip = this.friendShipRepository
+			/* manage requests sent to me. */
+			final FriendShipEntity friendShip = this.friendShipRepository
 					.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
 							targetUserId, SppotiUtils.statusToFilter());
 			
 			if (friendShip == null) {
-				friendShip = this.friendShipRepository
+				//Y RECEIVED REQUEST FROM X
+				final FriendShipEntity entity = this.friendShipRepository
 						.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(targetUserId,
 								connectedUser.getUuid(), SppotiUtils.statusToFilter());
-			}
-			
-			if (friendShip == null) {
-				return GlobalAppStatusEnum.PUBLIC_RELATION.getValue();
+				if (entity != null) {
+					if (GlobalAppStatusEnum.PENDING.equals(entity.getStatus())) {
+						return GlobalAppStatusEnum.PENDING.getValue();
+					} else if (GlobalAppStatusEnum.CONFIRMED.equals(entity.getStatus())) {
+						return GlobalAppStatusEnum.CONFIRMED.getValue();
+					} else if (GlobalAppStatusEnum.REFUSED.equals(entity.getStatus())) {
+						return GlobalAppStatusEnum.REFUSED.getValue();
+					}
+				}
 			} else {
-				
-				//We are friend.
+				//X SEND REQUEST TO Y
 				if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
 					return GlobalAppStatusEnum.CONFIRMED.getValue();
-					
-					//Friend request waiting to be accepted by me.
 				} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
-					return GlobalAppStatusEnum.PENDING.getValue();
-					
-					//Friend request refused by me.
+					return GlobalAppStatusEnum.PENDING_SENT.getValue();
 				} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
 					return GlobalAppStatusEnum.REFUSED.getValue();
-					
 				}
-			}
-				/*  Manage request sent by me. */
-			if (!this.friendShipRepository.findByUserUuidAndFriendUuidAndStatus(targetUserId, connectedUser.getUuid(),
-					GlobalAppStatusEnum.PENDING).isEmpty()) {
-				return GlobalAppStatusEnum.PENDING_SENT.getValue();
 			}
 		}
 		

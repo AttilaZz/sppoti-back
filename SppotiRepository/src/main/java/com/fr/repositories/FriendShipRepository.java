@@ -24,8 +24,9 @@ public interface FriendShipRepository extends CrudRepository<FriendShipEntity, L
 	
 	List<FriendShipEntity> findByFriendUuidAndStatus(String friend, GlobalAppStatusEnum name, Pageable pageable);
 	
-	List<FriendShipEntity> findByUserUuidAndFriendUuidAndStatus(String connectedUser, String uuid,
-																GlobalAppStatusEnum status);
+	List<FriendShipEntity> findByUserUuidAndFriendUuidAndStatusNotInOrderByDatetimeCreatedDesc(String connectedUser,
+																							   String uuid,
+																							   Collection<GlobalAppStatusEnum> status);
 	
 	//    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
 	@Query(value = "SELECT f FROM FriendShipEntity f WHERE (f.friend.firstName LIKE CONCAT('%',:part1,'%') " +

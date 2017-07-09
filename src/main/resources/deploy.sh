@@ -16,7 +16,7 @@ mvn clean package deploy:deploy-file \
                      -Dfile=SppotiRunApp/target/sppoti-application-test.war \
                      -DuniqueVersion=false \
                      -Dversion=$1 \
-                     -Dpackaging=jar \
+                     -Dpackaging=war \
                      -DpomFile=SppotiRunApp/pom.xml \
                      -DgroupId=sppoti \
                      -DartifactId=sppoti-application \
