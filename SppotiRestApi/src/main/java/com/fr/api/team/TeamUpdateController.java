@@ -2,6 +2,7 @@ package com.fr.api.team;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
+import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.TeamStatus;
@@ -98,7 +99,7 @@ class TeamUpdateController
 	}
 	
 	/**
-	 * Accept / Refuse sppoti admin challenge.
+	 * Change team privacy type.
 	 */
 	@PutMapping("/type")
 	ResponseEntity<TeamDTO> acceptOrRefuseSppotiAdminChallenge(@PathVariable final String teamId,
@@ -139,5 +140,32 @@ class TeamUpdateController
 		}
 		
 		return ResponseEntity.accepted().build();
+	}
+	
+	/**
+	 * Respond to sppoti admin challenge request.
+	 */
+	@PutMapping("/respond/to/sppoti/admin/challenge/request")
+	ResponseEntity<TeamDTO> requestChallenge(@PathVariable final String teamId, @RequestBody final SppotiDTO dto)
+	{
+		
+		if (dto.getId() == null || !StringUtils.hasText(dto.getTeamAdverseStatus())) {
+			throw new BusinessGlobalException("Sppoti id or team status missing");
+		}
+		
+		boolean statusExist = false;
+		for (final GlobalAppStatusEnum status : GlobalAppStatusEnum.values()) {
+			if (status.name().equals(dto.getTeamAdverseStatus())) {
+				statusExist = true;
+			}
+		}
+		if (!statusExist) {
+			throw new BusinessGlobalException("Status must be (CONFIRMED) or (REFUSED)");
+		}
+		
+		final TeamDTO adverseTeam = this.teamControllerService.responseToSppotiAdminChallenge(dto, teamId);
+		
+		return new ResponseEntity<>(adverseTeam, HttpStatus.ACCEPTED);
+		
 	}
 }

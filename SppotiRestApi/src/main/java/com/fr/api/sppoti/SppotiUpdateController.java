@@ -38,12 +38,7 @@ class SppotiUpdateController
 	}
 	
 	/**
-	 * @param sppotiId
-	 * 		sppotiId of sppoti.
-	 * @param sppotiRequest
-	 * 		data to update.
-	 *
-	 * @return 200 status with the updated sppoti, 400 status otherwise.
+	 * Update sppoti information.
 	 */
 	@PutMapping("/{sppotiId}")
 	ResponseEntity<SppotiDTO> updateSppoti(@PathVariable final String sppotiId,
@@ -95,10 +90,7 @@ class SppotiUpdateController
 	}
 	
 	/**
-	 * @param sppotiId
-	 * 		id of the challenged sppoti.
-	 * @param teamId
-	 * 		team id to add in the challenge.
+	 * Send a challenge.
 	 */
 	@PutMapping("/challenge/send/{sppotiId}/{teamId}")
 	ResponseEntity<SppotiDTO> sendChallenge(@PathVariable final String sppotiId, @PathVariable final String teamId,
@@ -114,13 +106,6 @@ class SppotiUpdateController
 	
 	/**
 	 * Accept/Refuse a challenge.
-	 *
-	 * @param sppotiId
-	 * 		sppoti id.
-	 * @param teamDTO
-	 * 		team DTO containing the id of the accepted team.
-	 *
-	 * @return 202 if update done correctly, 400 if not
 	 */
 	@PutMapping("/challenge/answer/{sppotiId}")
 	ResponseEntity<Void> sendChallenge(@PathVariable final String sppotiId, @RequestBody final TeamDTO teamDTO)
@@ -136,12 +121,7 @@ class SppotiUpdateController
 	}
 	
 	/**
-	 * Update sppoti type to private or public.
-	 *
-	 * @param dto
-	 * 		dto containing sppoti id and type to set.
-	 *
-	 * @return 202 status with sppoti data if update success.
+	 * Update sppoti privacy type PRIVATE / PUBLIC.
 	 */
 	@PutMapping("/type")
 	ResponseEntity<SppotiDTO> updateType(@RequestBody final SppotiDTO dto) {
