@@ -8,5 +8,9 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @EnableRedisHttpSession(redisNamespace = "sppoti", maxInactiveIntervalInSeconds = -1)
 public class HttpSessionConfig
 {
-
+	//	@Bean
+	//	public LettuceConnectionFactory connectionFactory() {
+	//		return new LettuceConnectionFactory();
+	//	}
+	
 }

@@ -6,8 +6,6 @@ import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
 import com.fr.transformers.UserTransformer;
 import com.google.gson.Gson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -28,9 +26,6 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 {
-	
-	/** Class logger. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthSuccess.class);
 	
 	/** USer repository. */
 	private final UserRepository userRepository;
@@ -79,12 +74,9 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 			this.userRepository.save(user);
 		}
 		
-		//Convert data to json.
 		final Gson gson = new Gson();
 		response.getWriter().write(gson.toJson(userDTO));
 		
-		//Return OK status.
 		response.setStatus(HttpServletResponse.SC_OK);
 	}
-	
 }

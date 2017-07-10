@@ -13,7 +13,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -80,17 +79,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void configure(final WebSecurity web) throws Exception
-	{
-		web.ignoring().antMatchers("/webjars/**");
-		web.ignoring().antMatchers("/app.js");
-		web.ignoring().antMatchers("/main.css");
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	protected void configure(final HttpSecurity http) throws Exception
 	{
 		
@@ -99,8 +87,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 				.ignoringAntMatchers("/trade/**").csrfTokenRepository(csrfTokenRepository()).and().formLogin()
 				.successHandler(savedRequestAwareAuthenticationSuccessHandler()).usernameParameter("username")
 				.passwordParameter("password").successHandler(this.authSuccess).failureHandler(this.authFailure)
-				.permitAll().and().rememberMe().rememberMeParameter("remember-me").tokenRepository(this.tokenRepository)
-				.tokenValiditySeconds(86400).and().authorizeRequests()
+				.permitAll()
+				//				.and().rememberMe().rememberMeParameter("remember-me").tokenRepository(this.tokenRepository)
+				//				.tokenValiditySeconds(86400)
+				.and().authorizeRequests()
 				.antMatchers("/**/account/**", "/**/sport/**", "/**/contact/**", "/**/version/**").permitAll()
 				.antMatchers("/**/profile/**")
 				.hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(), UserRoleTypeEnum.ADMIN.getUserProfileType())
@@ -113,8 +103,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	
 	/**
 	 * Configure CSRF token.
-	 *
-	 * @return configured token.
 	 */
 	private CsrfTokenRepository csrfTokenRepository()
 	{
@@ -135,18 +123,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		return auth;
 	}
 	
-	/**
-	 * Init password encoder bean.
-	 */
+	/** Init password encoder bean. */
 	@Bean
 	public PasswordEncoder passwordEncoder()
 	{
 		return new BCryptPasswordEncoder();
 	}
 	
-	/**
-	 * Init auth provider.
-	 */
+	/** Init auth provider. */
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider()
 	{
@@ -156,9 +140,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		return authenticationProvider;
 	}
 	
-	/**
-	 * Init remember me token service.
-	 */
+	/** Init remember me token service. */
 	@Bean
 	public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices()
 	{
@@ -167,13 +149,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		return tokenBasedService;
 	}
 	
-	/**
-	 * Init auth trust resolver.
-	 */
+	/** Init auth trust resolver. */
 	@Bean
 	public AuthenticationTrustResolver getAuthenticationTrustResolver()
 	{
 		return new AuthenticationTrustResolverImpl();
 	}
-	
 }

@@ -65,7 +65,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		final UserDTO dto = new UserDTO();
 		SppotiBeanUtils.copyProperties(dto, entity);
 		dto.setId(entity.getUuid());
-		//		dto.setTechId(entity.getId());
+		dto.setTechId(entity.getId());
 		dto.setLanguage(entity.getLanguageEnum().name());
 		
 		dto.setLastName(entity.getLastName());
