@@ -216,7 +216,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 							targetUserId, SppotiUtils.statusToFilter());
 			
 			if (friendShip == null) {
-				//Y RECEIVED REQUEST FROM X
+				//When receiving friend request
 				final FriendShipEntity entity = this.friendShipRepository
 						.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(targetUserId,
 								connectedUser.getUuid(), SppotiUtils.statusToFilter());
@@ -230,7 +230,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 					}
 				}
 			} else {
-				//X SEND REQUEST TO Y
+				//When sending friend request
 				if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
 					return GlobalAppStatusEnum.CONFIRMED.getValue();
 				} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
