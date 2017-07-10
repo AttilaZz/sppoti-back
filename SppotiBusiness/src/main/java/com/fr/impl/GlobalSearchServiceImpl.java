@@ -89,6 +89,8 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 		final List<UserEntity> users = this.userRepository.findAll(predicate, getPage(page)).getContent();
 		users.forEach(u -> {
 			u.setConnectedUserId(getConnectedUserId());
+			u.setPassword(null);
+			u.setEmail(null);
 			result.getUsers().add(this.userTransformer.modelToDto(u));
 		});
 		

@@ -65,7 +65,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		final UserDTO dto = new UserDTO();
 		SppotiBeanUtils.copyProperties(dto, entity);
 		dto.setId(entity.getUuid());
-		dto.setTechId(entity.getId());
+		//		dto.setTechId(entity.getId());
 		dto.setLanguage(entity.getLanguageEnum().name());
 		
 		dto.setLastName(entity.getLastName());
@@ -97,7 +97,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 			dto.setSportDTOs(sportDTOs);
 		}
 		
-		if (entity.getConnectedUserId() != null) {
+		if (entity.getConnectedUserId() != null && entity.getId() != null) {
 			dto.setMyProfile(entity.getId().equals(entity.getConnectedUserId()));
 			dto.setFriendStatus(this.getFriendShipStatus(entity.getUuid(), entity.getConnectedUserId()));
 		}
