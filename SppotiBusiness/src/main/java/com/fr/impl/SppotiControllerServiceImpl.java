@@ -263,6 +263,12 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 			editNotification = true;
 		}
 		
+		if (sppotiRequest.getType() != null && (SppotiStatus.PRIVATE.equals(sppotiRequest.getType()) ||
+				SppotiStatus.PUBLIC.equals(sppotiRequest.getType()))) {
+			sppoti.setType(sppotiRequest.getType());
+			editNotification = true;
+		}
+		
 		if (sppotiRequest.getVsTeam() != null && !StringUtils.isEmpty(sppotiRequest.getVsTeam())) {
 			final List<TeamEntity> adverseTeam = this.teamRepository
 					.findByUuidAndDeletedFalse(sppotiRequest.getVsTeam());

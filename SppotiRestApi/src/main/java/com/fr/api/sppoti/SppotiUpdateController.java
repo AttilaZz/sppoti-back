@@ -76,6 +76,11 @@ class SppotiUpdateController
 			canUpdate = true;
 		}
 		
+		if (sppotiRequest.getType() != null && (SppotiStatus.PRIVATE.equals(sppotiRequest.getType()) ||
+				SppotiStatus.PUBLIC.equals(sppotiRequest.getType()))) {
+			canUpdate = true;
+		}
+		
 		if (sppotiRequest.getMaxTeamCount() != null && sppotiRequest.getMaxTeamCount() != 0) {
 			canUpdate = true;
 		}

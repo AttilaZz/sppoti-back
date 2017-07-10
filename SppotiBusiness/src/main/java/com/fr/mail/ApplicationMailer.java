@@ -50,9 +50,11 @@ abstract class ApplicationMailer
 	protected final TemplateEngine templateEngine;
 	/** Mail properties. */
 	final MailProperties mailProperties;
+	
 	/** Front app path. */
 	@Value("${spring.app.originFront}")
 	protected String frontRootPath;
+	
 	/** Global email texts - for translation. */
 	@Value("${spring.app.mail.intended.for}")
 	String emailIntendedForMessage;
