@@ -386,6 +386,11 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 			teamEntity.setColor(TeamDTO.getColor());
 		}
 		
+		if (TeamDTO.getType() != null &&
+				(TeamStatus.PRIVATE.equals(TeamDTO.getType()) || TeamStatus.PUBLIC.equals(TeamDTO.getType()))) {
+			teamEntity.setType(TeamDTO.getType());
+		}
+		
 		return this.teamTransformer.modelToDto(this.teamRepository.save(teamEntity));
 	}
 	

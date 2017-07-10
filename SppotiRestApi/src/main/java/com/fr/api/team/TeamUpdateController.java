@@ -47,23 +47,24 @@ class TeamUpdateController
 		
 		boolean canUpdate = false;
 		
-		//Update team name.
 		if (StringUtils.hasText(teamRequestDTO.getName())) {
 			canUpdate = true;
 		}
 		
-		//Update team logos.
 		if (StringUtils.hasText(teamRequestDTO.getLogoPath())) {
 			canUpdate = true;
 		}
 		
-		//Update team cover.
 		if (StringUtils.hasText(teamRequestDTO.getCoverPath())) {
 			canUpdate = true;
 		}
 		
-		//Update team color.
 		if (StringUtils.hasText(teamRequestDTO.getColor())) {
+			canUpdate = true;
+		}
+		
+		if (teamRequestDTO.getType() != null && (TeamStatus.PRIVATE.equals(teamRequestDTO.getType()) ||
+				TeamStatus.PUBLIC.equals(teamRequestDTO.getType()))) {
 			canUpdate = true;
 		}
 		
