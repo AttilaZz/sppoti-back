@@ -60,22 +60,24 @@ public class TeamMemberTransformer
 		
 		final String sppotiId = sppoti != null ? sppoti.getUuid() : "";
 		
-		final UserDTO userDTO = new UserDTO();
-		userDTO.setUserId(memberEntity.getUser().getUuid());
-		userDTO.setFirstName(memberEntity.getUser().getFirstName());
-		userDTO.setLastName(memberEntity.getUser().getLastName());
-		userDTO.setUsername(memberEntity.getUser().getUsername());
-		userDTO.setAvatar(userCoverAndAvatar.getAvatar());
-		userDTO.setCover(userCoverAndAvatar.getCover());
-		userDTO.setCoverType(userCoverAndAvatar.getCoverType());
-		userDTO.setWaitConfirmation(memberEntity.getRequestSentFromUser());
+		final UserDTO dto = new UserDTO();
+		dto.setUserId(memberEntity.getUser().getUuid());
+		dto.setFirstName(memberEntity.getUser().getFirstName());
+		dto.setLastName(memberEntity.getUser().getLastName());
+		dto.setUsername(memberEntity.getUser().getUsername());
+		dto.setAvatar(userCoverAndAvatar.getAvatar());
+		dto.setCover(userCoverAndAvatar.getCover());
+		dto.setCoverType(userCoverAndAvatar.getCoverType());
+		dto.setWaitConfirmation(memberEntity.getRequestSentFromUser());
 		
-		userDTO.setId(memberEntity.getUuid());
-		userDTO.setTeamAdmin(memberEntity.getAdmin());
-		userDTO.setTeamStatus(memberEntity.getStatus());
-		userDTO.setTeamCaptain(memberEntity.getTeamCaptain());
-		userDTO.setxPosition(memberEntity.getxPosition());
-		userDTO.setyPosition(memberEntity.getyPosition());
+		dto.setId(memberEntity.getUuid());
+		dto.setTeamAdmin(memberEntity.getAdmin());
+		dto.setTeamStatus(memberEntity.getStatus());
+		dto.setTeamCaptain(memberEntity.getTeamCaptain());
+		dto.setxPosition(memberEntity.getxPosition());
+		dto.setyPosition(memberEntity.getyPosition());
+		
+		dto.setSportDTOs(null);
 		
 		if (sppoti != null) {
 			//get status for the selected sppoti
@@ -84,28 +86,28 @@ public class TeamMemberTransformer
 					if (sppoter.getTeamMember().getId().equals(memberEntity.getId()) &&
 							sppoter.getSppoti().getId().equals(sppoti.getId()) &&
 							!sppoter.getStatus().equals(GlobalAppStatusEnum.DELETED)) {
-						userDTO.setSppotiStatus(sppoter.getStatus());
+						dto.setSppotiStatus(sppoter.getStatus());
 					}
 				}
 			}
 			
 			//Is sppoti admin.
 			if (memberEntity.getUser().getId().equals(sppoti.getUserSppoti().getId())) {
-				userDTO.setSppotiAdmin(Boolean.TRUE);
+				dto.setSppotiAdmin(Boolean.TRUE);
 			} else {
-				userDTO.setSppotiAdmin(Boolean.FALSE);
+				dto.setSppotiAdmin(Boolean.FALSE);
 			}
 			
-			userDTO.setRating(getRatingStars(memberEntity.getUser().getUuid(), sppotiId));
+			dto.setRating(getRatingStars(memberEntity.getUser().getUuid(), sppotiId));
 			
 			final Optional<SppoterEntity> optional = Optional.ofNullable(this.sppoterRepository
 					.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(
 							memberEntity.getUser().getUuid(), sppotiId, SppotiUtils.statusToFilter()));
-			optional.ifPresent(sm -> userDTO.setHasRateOtherSppoters(sm.getHasRateOtherSppoter()));
+			optional.ifPresent(sm -> dto.setHasRateOtherSppoters(sm.getHasRateOtherSppoter()));
 			
 		}
 		
-		return userDTO;
+		return dto;
 	}
 	
 	/**

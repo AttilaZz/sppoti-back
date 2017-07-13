@@ -13,7 +13,6 @@ import java.util.List;
  */
 public class UserDTO extends AbstractCommonDTO
 {
-	
 	private String firstName;
 	private String lastName;
 	private String username;

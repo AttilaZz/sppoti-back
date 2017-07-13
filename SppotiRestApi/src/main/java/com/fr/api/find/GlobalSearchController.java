@@ -39,7 +39,7 @@ public class GlobalSearchController
 														  @RequestParam final String sex,
 														  @RequestParam("age_max") final Integer ageMax,
 														  @RequestParam("age_min") final Integer ageMin,
-														  @RequestParam final Long sport,
+														  @RequestParam final Long[] sport,
 														  @RequestParam("start_date") final String startDate,
 														  @RequestParam final String query,
 														  @RequestParam final int page)

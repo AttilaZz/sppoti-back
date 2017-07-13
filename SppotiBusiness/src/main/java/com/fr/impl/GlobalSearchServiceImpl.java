@@ -101,7 +101,7 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GlobalSearchResultDTO findAllTeamsFromCriteria(final String query, final Long sport, final Integer page) {
+	public GlobalSearchResultDTO findAllTeamsFromCriteria(final String query, final Long[] sport, final Integer page) {
 		
 		final GlobalSearchResultDTO result = new GlobalSearchResultDTO();
 		
@@ -109,7 +109,7 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 		Predicate predicate1 = null;
 		
 		if (sport != null) {
-			predicate1 = QTeamEntity.teamEntity.sport.eq(this.sportRepository.findOne(sport))
+			predicate1 = QTeamEntity.teamEntity.sport.in(this.sportRepository.findByIdIn(sport))
 					.and(QTeamEntity.teamEntity.type.eq(TeamStatus.PUBLIC));
 		}
 		
@@ -125,7 +125,7 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 	 * {@inheritDoc}
 	 */
 	@Override
-	public GlobalSearchResultDTO findAllSppotisFromCriteria(final String query, final Long sport,
+	public GlobalSearchResultDTO findAllSppotisFromCriteria(final String query, final Long[] sport,
 															final String startDate, final Integer page)
 	{
 		final GlobalSearchResultDTO result = new GlobalSearchResultDTO();
@@ -135,7 +135,7 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 		Predicate predicate2 = null;
 		
 		if (sport != null) {
-			predicate1 = QSppotiEntity.sppotiEntity.sport.eq(this.sportRepository.findOne(sport));
+			predicate1 = QSppotiEntity.sppotiEntity.sport.in(this.sportRepository.findByIdIn(sport));
 		}
 		
 		if (StringUtils.hasText(startDate)) {

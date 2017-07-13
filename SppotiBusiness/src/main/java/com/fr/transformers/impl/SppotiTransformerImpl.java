@@ -87,38 +87,40 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 	@Override
 	public SppotiDTO modelToDto(final SppotiEntity model)
 	{
-		final SppotiDTO sppotiDTO = new SppotiDTO();
-		SppotiBeanUtils.copyProperties(sppotiDTO, model);
+		final SppotiDTO dto = new SppotiDTO();
+		SppotiBeanUtils.copyProperties(dto, model);
 		
-		sppotiDTO.setId(model.getUuid());
-		sppotiDTO.setDatetimeCreated(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), model.getTimeZone()));
+		dto.setId(model.getUuid());
+		dto.setDatetimeCreated(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), model.getTimeZone()));
 		
 		if (model.getConnectedUserId() != null)
-			sppotiDTO.setConnectedUserId(this.userRepository.findOne(model.getConnectedUserId()).getUuid());
+			dto.setConnectedUserId(this.userRepository.findOne(model.getConnectedUserId()).getUuid());
 		
 		if (model.getSport() != null) {
-			sppotiDTO.setRelatedSport(this.sportTransformer.modelToDto(model.getSport()));
+			dto.setRelatedSport(this.sportTransformer.modelToDto(model.getSport()));
 		}
 		
 		if (model.getScoreEntity() != null) {
-			sppotiDTO.setScore(this.scoreTransformer.modelToDto(model.getScoreEntity()));
+			dto.setScore(this.scoreTransformer.modelToDto(model.getScoreEntity()));
 		}
 		
 		if (model.getTeamHostEntity() != null) {
-			sppotiDTO.setTeamHost(this.teamTransformer.modelToDto(model.getTeamHostEntity()));
+			dto.setTeamHost(this.teamTransformer.modelToDto(model.getTeamHostEntity()));
 		}
 		
 		if (model.getAdverseTeams() != null && model.getConnectedUserId() != null) {
-			sppotiDTO.setTeamAdverse(model.getAdverseTeams().stream().map(t -> {
+			dto.setTeamAdverse(model.getAdverseTeams().stream().map(t -> {
 				t.getTeam().setRelatedSppotiId(model.getId());
-				TeamDTO dto = this.teamTransformer.modelToDto(t.getTeam());
-				dto.setTeamAdverseStatus(t.getStatus().name());
-				dto.setSentFromSppotiAdmin(t.getFromSppotiAdmin());
-				return dto;
+				TeamDTO teamDTO = this.teamTransformer.modelToDto(t.getTeam());
+				teamDTO.setTeamAdverseStatus(t.getStatus().name());
+				teamDTO.setSentFromSppotiAdmin(t.getFromSppotiAdmin());
+				return teamDTO;
 			}).collect(Collectors.toList()));
 		}
 		
-		return sppotiDTO;
+		dto.setMySppoti(model.getUserSppoti().getId().equals(model.getConnectedUserId()));
+		
+		return dto;
 	}
 	
 }
