@@ -39,12 +39,15 @@ public class GlobalSearchController
 														  @RequestParam final String sex,
 														  @RequestParam("age_max") final Integer ageMax,
 														  @RequestParam("age_min") final Integer ageMin,
-														  @RequestParam final Long[] sport,
+														  @RequestParam Long[] sport,
 														  @RequestParam("start_date") final String startDate,
 														  @RequestParam final String query,
 														  @RequestParam final int page)
 	{
 		
+		if (sport.length == 0) {
+			sport = new Long[] {1L, 2L, 3L};
+		}
 		
 		final GlobalSearchResultDTO search = new GlobalSearchResultDTO();
 		Long t1;
