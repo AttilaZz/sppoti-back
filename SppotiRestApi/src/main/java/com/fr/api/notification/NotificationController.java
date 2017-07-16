@@ -1,4 +1,4 @@
-package com.fr.api.notifications;
+package com.fr.api.notification;
 
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationListDTO;

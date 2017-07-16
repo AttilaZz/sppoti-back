@@ -4,7 +4,6 @@ import com.fr.commons.dto.RoleDTO;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.enumeration.GenderEnum;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.commons.utils.SppotiUtils;
@@ -76,7 +75,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		dto.setId(entity.getUuid());
 		dto.setLanguage(entity.getLanguageEnum().name());
 		dto.setBirthDate(entity.getDateBorn());
-		dto.setGender(entity.getGender().name());
+		dto.setGender(entity.getGender());
 		
 		dto.getUserRoles().addAll(entity.getRoles().stream().map(r -> {
 			RoleDTO roleDTO = new RoleDTO();
@@ -159,7 +158,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 	{
 		final UserEntity entity = new UserEntity();
 		SppotiBeanUtils.copyProperties(entity, dto);
-		entity.setGender(GenderEnum.valueOf(dto.getGenderType()));
+		entity.setGender(dto.getGenderType());
 		
 		final String confirmationCode = SppotiUtils.generateConfirmationKey();
 		entity.setConfirmationCode(confirmationCode);

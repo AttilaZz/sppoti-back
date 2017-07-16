@@ -2,6 +2,7 @@ package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.commons.enumeration.GenderEnum;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -22,10 +23,8 @@ public class SignUpDTO extends AbstractCommonDTO
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dateBorn;
 	
-	@NotEmpty
-	//TODO: check genderType type (MALE, FEMALE) and reject others
 	@JsonProperty("gender")
-	private String genderType;
+	private GenderEnum genderType;
 	
 	@NotEmpty
 	@Email
@@ -76,12 +75,12 @@ public class SignUpDTO extends AbstractCommonDTO
 		this.dateBorn = dateBorn;
 	}
 	
-	public String getGenderType()
+	public GenderEnum getGenderType()
 	{
 		return this.genderType;
 	}
 	
-	public void setGenderType(final String genderType)
+	public void setGenderType(final GenderEnum genderType)
 	{
 		this.genderType = genderType;
 	}

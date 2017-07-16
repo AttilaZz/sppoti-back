@@ -62,10 +62,10 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 		notificationDTO.setDatetime(SppotiUtils.dateWithTimeZone(notification.getCreationDate(), getTimeZone()));
 		
 		if (notification.getFrom() != null) {
-			notificationDTO.setFrom(notificationUserEntityToDto(notification.getFrom()));
+			notificationDTO.setFrom(this.notificationUserEntityToDto(notification.getFrom()));
 		}
 		if (notification.getTo() != null) {
-			notificationDTO.setTo(notificationUserEntityToDto(notification.getTo()));
+			notificationDTO.setTo(this.notificationUserEntityToDto(notification.getTo()));
 		}
 		notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
 		notificationDTO.setStatus(notification.getStatus());
@@ -93,27 +93,25 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 	}
 	
 	/**
-	 * @param userEntity
+	 * @param model
 	 * 		user entity to map.
 	 *
 	 * @return user DTO used in notifications.
 	 */
-	public UserDTO notificationUserEntityToDto(final UserEntity userEntity)
+	public UserDTO notificationUserEntityToDto(final UserEntity model)
 	{
-		final UserDTO userDTO = new UserDTO();
-		final UserDTO resourceUserDto = this.userTransformer.getUserCoverAndAvatar(userEntity);
-		userDTO.setFirstName(userEntity.getFirstName());
-		userDTO.setLastName(userEntity.getLastName());
-		userDTO.setEmail(userDTO.getEmail());
-		userDTO.setUsername(userEntity.getUsername());
+		final UserDTO dto = new UserDTO();
+		final UserDTO resourceUserDto = this.userTransformer.getUserCoverAndAvatar(model);
+		dto.setFirstName(model.getFirstName());
+		dto.setLastName(model.getLastName());
+		dto.setUsername(model.getUsername());
+		dto.setGender(model.getGender());
 		
-		userDTO.setAvatar(resourceUserDto.getAvatar());
-		userDTO.setCover(resourceUserDto.getCover());
-		userDTO.setCoverType(resourceUserDto.getCover() != null ? resourceUserDto.getCoverType() : null);
+		dto.setAvatar(resourceUserDto.getAvatar());
+		dto.setCover(resourceUserDto.getCover());
+		dto.setCoverType(resourceUserDto.getCover() != null ? resourceUserDto.getCoverType() : null);
 		
-		//        userDTO.setBirthDate(userEntity.getDateBorn());
-		
-		return userDTO;
+		return dto;
 	}
 	
 }

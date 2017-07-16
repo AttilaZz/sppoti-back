@@ -3,6 +3,7 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fr.commons.dto.post.PostDTO;
+import com.fr.commons.enumeration.GenderEnum;
 
 import java.util.List;
 import java.util.Set;
@@ -17,7 +18,7 @@ public class ProfilePageDTO extends AbstractCommonDTO
 	private String lastName;
 	private String firstName;
 	private String birthDate;
-	private String sexe;
+	private GenderEnum gender;
 	private String telephone;
 	private String email;
 	private String username;
@@ -70,6 +71,11 @@ public class ProfilePageDTO extends AbstractCommonDTO
 		return this.allowPost;
 	}
 	
+	public void setAllowPost(final boolean allowPost)
+	{
+		this.allowPost = allowPost;
+	}
+	
 	public boolean isMyFriend()
 	{
 		return this.isMyFriend;
@@ -78,11 +84,6 @@ public class ProfilePageDTO extends AbstractCommonDTO
 	public void setMyFriend(final boolean isMyFriend)
 	{
 		this.isMyFriend = isMyFriend;
-	}
-	
-	public void setAllowPost(final boolean allowPost)
-	{
-		this.allowPost = allowPost;
 	}
 	
 	public String getLastName()
@@ -105,14 +106,12 @@ public class ProfilePageDTO extends AbstractCommonDTO
 		this.firstName = firstName;
 	}
 	
-	public String getSexe()
-	{
-		return this.sexe;
+	public GenderEnum getGender() {
+		return this.gender;
 	}
 	
-	public void setSexe(final String sexe)
-	{
-		this.sexe = sexe;
+	public void setGender(final GenderEnum gender) {
+		this.gender = gender;
 	}
 	
 	public String getTelephone()

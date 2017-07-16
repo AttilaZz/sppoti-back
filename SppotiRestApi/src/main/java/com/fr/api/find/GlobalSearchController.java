@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Add class description.
+ * Search controller
  *
  * Created by wdjenane on 23/06/2017.
  */

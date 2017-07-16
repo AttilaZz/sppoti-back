@@ -2,6 +2,7 @@ package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fr.commons.enumeration.GenderEnum;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import java.util.ArrayList;
@@ -13,11 +14,12 @@ import java.util.List;
  */
 public class UserDTO extends AbstractCommonDTO
 {
+	
 	private String firstName;
 	private String lastName;
 	private String username;
 	private String address;
-	private String gender;
+	private GenderEnum gender;
 	
 	//team admin decision about user request to join team
 	private Boolean waitConfirmation;
@@ -342,13 +344,11 @@ public class UserDTO extends AbstractCommonDTO
 		this.hasRateOtherSppoters = hasRateOtherSppoters;
 	}
 	
-	public String getGender()
-	{
+	public GenderEnum getGender() {
 		return this.gender;
 	}
 	
-	public void setGender(final String gender)
-	{
+	public void setGender(final GenderEnum gender) {
 		this.gender = gender;
 	}
 	
