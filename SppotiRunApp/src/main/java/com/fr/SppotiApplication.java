@@ -11,6 +11,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.session.data.redis.RedisFlushMode;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -29,6 +31,8 @@ import javax.servlet.ServletException;
 		@PropertySource(value = "classpath:email/email_en.properties", ignoreResourceNotFound = true,
 				encoding = "UTF-8")
 })
+@EnableRedisHttpSession(redisNamespace = "sppoti", maxInactiveIntervalInSeconds = -1,
+		redisFlushMode = RedisFlushMode.IMMEDIATE)
 public class SppotiApplication extends WebMvcConfigurationSupport implements ServletContextInitializer
 {
 	

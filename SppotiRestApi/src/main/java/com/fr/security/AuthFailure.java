@@ -32,10 +32,10 @@ public class AuthFailure extends SimpleUrlAuthenticationFailureHandler
 	 */
 	@Override
 	public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
-										final AuthenticationException exception) throws IOException, ServletException
+										final AuthenticationException e) throws IOException, ServletException
 	{
 		
-		this.LOGGER.info("Failed to log user :-(");
+		this.LOGGER.info("Failed to log user :-(", e);
 		
 		final String[] allowedHeaders = Origins.getValue().split(",");
 		

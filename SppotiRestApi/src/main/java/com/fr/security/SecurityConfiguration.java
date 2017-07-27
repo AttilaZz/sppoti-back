@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -67,14 +66,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	@Autowired
 	private CsrfProperties filterProperties;
 	
-	/** Configure authentication provider. */
-	@Autowired
-	public void configureGlobalSecurity(final AuthenticationManagerBuilder auth) throws Exception
-	{
-		auth.userDetailsService(this.userDetailService);
-		auth.authenticationProvider(authenticationProvider());
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -130,26 +121,33 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		return new BCryptPasswordEncoder();
 	}
 	
-	/** Init auth provider. */
-	@Bean
-	public DaoAuthenticationProvider authenticationProvider()
+	/** Configure authentication provider. */
+	@Autowired
+	public void configureGlobalSecurity(final AuthenticationManagerBuilder auth) throws Exception
 	{
-		final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-		authenticationProvider.setUserDetailsService(this.userDetailService);
-		authenticationProvider.setPasswordEncoder(passwordEncoder());
-		return authenticationProvider;
+		//		auth.authenticationProvider(authenticationProvider());
+		auth.userDetailsService(this.userDetailService).passwordEncoder(passwordEncoder());
 	}
+	
+	//	/** Init auth provider. */
+	//	@Bean
+	//	public DaoAuthenticationProvider authenticationProvider()
+	//	{
+	//		final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+	//		authenticationProvider.setUserDetailsService(this.userDetailService);
+	//		authenticationProvider.setPasswordEncoder(passwordEncoder());
+	//
+	//		return authenticationProvider;
+	//	}
 	
 	/** Init remember me token service. */
 	@Bean
 	public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices()
 	{
-		final PersistentTokenBasedRememberMeServices tokenBasedService = new PersistentTokenBasedRememberMeServices(
-				"remember-me", this.userDetailService, this.tokenRepository);
-		return tokenBasedService;
+		return new PersistentTokenBasedRememberMeServices("remember-me", this.userDetailService, this.tokenRepository);
 	}
 	
-	/** Init auth trust resolver. */
+	/** Init auth trust resolver. for remember me */
 	@Bean
 	public AuthenticationTrustResolver getAuthenticationTrustResolver()
 	{
