@@ -17,6 +17,7 @@ public class AccountUserDetails implements MyUserDetails
 {
 	/** Class logger. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountUserDetails.class);
+	
 	/** account entity. */
 	private final UserDTO account;
 	
@@ -32,7 +33,6 @@ public class AccountUserDetails implements MyUserDetails
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities()
 	{
-		
 		final ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		
 		for (final RoleDTO userRole : this.account.getUserRoles()) {

@@ -29,6 +29,15 @@ public class AppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer
 	@Value("${spring.app.originFront}")
 	private String originFront;
 	
+	@Value("${spring.app.socket.endpoint}")
+	private String socketEndPoint;
+	
+	@Value("${spring.app.socket.version}")
+	private String socketEndPointVersion;
+	
+	@Value("${server.contextPath}")
+	private String contextPath;
+	
 	@Bean
 	public ServletServerContainerFactoryBean createWebSocketContainer()
 	{
@@ -59,6 +68,7 @@ public class AppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer
 		//				.setClientLibraryUrl(this.backOrigin + this.applicationName + "/assets/js/sockjs-client.js");
 		final String[] origins = this.originFront.split(",");
 		
-		registry.addEndpoint("/trade").setAllowedOrigins(origins).withSockJS();
+		final String endPoint = this.contextPath + this.socketEndPoint;
+		registry.addEndpoint(endPoint).setAllowedOrigins(origins).withSockJS();
 	}
 }
