@@ -68,7 +68,7 @@ public class AppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer
 		//				.setClientLibraryUrl(this.backOrigin + this.applicationName + "/assets/js/sockjs-client.js");
 		final String[] origins = this.originFront.split(",");
 		
-		final String endPoint = this.contextPath + this.socketEndPoint;
+		final String endPoint = this.socketEndPoint;
 		registry.addEndpoint(endPoint).setAllowedOrigins(origins).withSockJS();
 	}
 }
