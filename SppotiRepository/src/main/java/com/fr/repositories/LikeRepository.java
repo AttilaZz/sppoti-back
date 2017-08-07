@@ -12,7 +12,7 @@ import java.util.List;
 public interface LikeRepository extends CrudRepository<LikeContentEntity, Long>
 {
 	
-	LikeContentEntity getByPostId(Long id);
+	LikeContentEntity findByPostIdAndUserId(Long poostId, Long userId);
 	
 	List<LikeContentEntity> getByPostUuidOrderByDatetimeCreatedDesc(String id, Pageable pageable1);
 	

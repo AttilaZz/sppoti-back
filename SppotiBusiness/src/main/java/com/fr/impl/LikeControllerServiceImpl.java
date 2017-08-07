@@ -48,7 +48,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public void unLikePost(final String postId)
 	{
 		
-		final List<PostEntity> postToUnlike = this.postRepository.getByUuidAndDeletedFalse(postId);
+		final List<PostEntity> postToUnlike = this.postRepository.findFirstByUuidAndDeletedFalse(postId);
 		
 		final UserEntity connectedUser = getConnectedUser();
 		
@@ -60,7 +60,8 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 		//post must be liked before unlike
 		if (this.isPostAlreadyLikedByUser(postId, connectedUser.getId())) {
 			
-			final LikeContentEntity likeContent = this.likeRepository.getByPostId(postToUnlike.get(0).getId());
+			final LikeContentEntity likeContent = this.likeRepository
+					.findByPostIdAndUserId(postToUnlike.get(0).getId(), connectedUser.getId());
 			this.likeRepository.delete(likeContent);
 			
 		}
