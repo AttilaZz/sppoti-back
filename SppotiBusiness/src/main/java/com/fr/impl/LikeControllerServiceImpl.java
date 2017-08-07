@@ -156,6 +156,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	@Transactional
 	private LikeContentEntity likeContent(final LikeContentEntity likeContent)
 	{
+		final Long connectedUserId = getConnectedUser().getId();
 		
 		if (likeContent != null) {
 			
@@ -167,10 +168,13 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 						likeContent.getComment(), null, null);
 				
 			} else if (likeContent.getPost() != null &&
-					!likeContent.getPost().getUser().getId().equals(getConnectedUser().getId())) {
-				//like post
-				addNotification(NotificationTypeEnum.X_LIKED_YOUR_POST, likeContent.getUser(),
-						likeContent.getPost().getUser(), null, null, likeContent.getPost(), null, null, null);
+					!likeContent.getPost().getUser().getId().equals(connectedUserId)) {
+				
+				if (!this.isPostAlreadyLikedByUser(likeContent.getPost().getUuid(), connectedUserId)) {
+					//like post
+					addNotification(NotificationTypeEnum.X_LIKED_YOUR_POST, likeContent.getUser(),
+							likeContent.getPost().getUser(), null, null, likeContent.getPost(), null, null, null);
+				}
 			}
 			
 		}
