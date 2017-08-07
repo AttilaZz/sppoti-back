@@ -48,7 +48,7 @@ class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements
 	public void unLikePost(final String postId)
 	{
 		
-		final List<PostEntity> postToUnlike = this.postRepository.findFirstByUuidAndDeletedFalse(postId);
+		final List<PostEntity> postToUnlike = this.postRepository.getByUuidAndDeletedFalse(postId);
 		
 		final UserEntity connectedUser = getConnectedUser();
 		
