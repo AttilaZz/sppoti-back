@@ -131,7 +131,17 @@ public class UserEntity extends AbstractCommonEntity
 	@OrderBy("dateTime DESC")
 	private SortedSet<AddressEntity> addresses;
 	
+	private boolean readPrivacy;
+	
 	private transient Long connectedUserId;
+	
+	public boolean isReadPrivacy() {
+		return this.readPrivacy;
+	}
+	
+	public void setReadPrivacy(final boolean readPrivacy) {
+		this.readPrivacy = readPrivacy;
+	}
 	
 	public boolean isDeleted()
 	{
@@ -475,6 +485,8 @@ public class UserEntity extends AbstractCommonEntity
 			return false;
 		if (this.confirmed != entity.confirmed)
 			return false;
+		if (this.readPrivacy != entity.readPrivacy)
+			return false;
 		if (this.lastName != null ? !this.lastName.equals(entity.lastName) : entity.lastName != null)
 			return false;
 		if (this.firstName != null ? !this.firstName.equals(entity.firstName) : entity.firstName != null)
@@ -536,6 +548,7 @@ public class UserEntity extends AbstractCommonEntity
 		result = 31 * result + (this.password != null ? this.password.hashCode() : 0);
 		result = 31 * result + (this.deleted ? 1 : 0);
 		result = 31 * result + (this.firstConnexion ? 1 : 0);
+		result = 31 * result + (this.readPrivacy ? 1 : 0);
 		result = 31 * result + (this.confirmed ? 1 : 0);
 		result = 31 * result + (this.job != null ? this.job.hashCode() : 0);
 		result = 31 * result + (this.description != null ? this.description.hashCode() : 0);

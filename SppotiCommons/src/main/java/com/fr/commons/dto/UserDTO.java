@@ -80,6 +80,16 @@ public class UserDTO extends AbstractCommonDTO
 		return this.firstConnexion;
 	}
 	
+	private boolean readPrivacy;
+	
+	public boolean isReadPrivacy() {
+		return this.readPrivacy;
+	}
+	
+	public void setReadPrivacy(final boolean readPrivacy) {
+		this.readPrivacy = readPrivacy;
+	}
+	
 	public void setFirstConnexion(final boolean firstConnexion) {
 		this.firstConnexion = firstConnexion;
 	}

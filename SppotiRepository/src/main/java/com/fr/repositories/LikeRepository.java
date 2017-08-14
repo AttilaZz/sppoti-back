@@ -2,14 +2,14 @@ package com.fr.repositories;
 
 import com.fr.entities.LikeContentEntity;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 /**
  * Created by djenanewail on 12/15/16.
  */
-public interface LikeRepository extends CrudRepository<LikeContentEntity, Long>
+public interface LikeRepository extends JpaRepository<LikeContentEntity, Long>
 {
 	
 	LikeContentEntity findByPostIdAndUserId(Long poostId, Long userId);

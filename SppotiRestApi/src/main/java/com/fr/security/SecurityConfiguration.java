@@ -74,22 +74,30 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	{
 		
 		http.
-				cors().and().addFilterAfter(new CsrfHeaderFilter(this.filterProperties), CsrfFilter.class).csrf()
-				.ignoringAntMatchers("/trade/**").csrfTokenRepository(csrfTokenRepository()).and().formLogin()
-				.successHandler(savedRequestAwareAuthenticationSuccessHandler()).usernameParameter("username")
-				.passwordParameter("password").successHandler(this.authSuccess).failureHandler(this.authFailure)
-				.permitAll()
-				//				.and().rememberMe().rememberMeParameter("remember-me").tokenRepository(this.tokenRepository)
-				//				.tokenValiditySeconds(86400)
+			cors()
+				.and()
+					.addFilterAfter(new CsrfHeaderFilter(this.filterProperties), CsrfFilter.class)
+					.csrf().ignoringAntMatchers("/trade/**").csrfTokenRepository(csrfTokenRepository())
+				.and()
+					.formLogin()
+					.successHandler(savedRequestAwareAuthenticationSuccessHandler()).usernameParameter("username")
+					.passwordParameter("password").successHandler(this.authSuccess).failureHandler(this.authFailure)
+					.permitAll()
+					//				.and().rememberMe().rememberMeParameter("remember-me").tokenRepository(this.tokenRepository)
+					//				.tokenValiditySeconds(86400)
 				.and().authorizeRequests()
-				.antMatchers("/**/account/**", "/**/sport/**", "/**/contact/**", "/**/version/**").permitAll()
-				.antMatchers("/**/profile/**")
-				.hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(), UserRoleTypeEnum.ADMIN.getUserProfileType())
-				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and().logout()
-				.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessHandler(this.logoutSuccessHandler).and().exceptionHandling()
-				.authenticationEntryPoint(this.pointUnAthorisedHandler).and().headers().xssProtection()
-				.xssProtectionEnabled(true);
+					.antMatchers("/**/account/**", "/**/sport/**", "/**/contact/**", "/**/init/token").permitAll()
+					.antMatchers("/**/profile/**")
+					.hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(), UserRoleTypeEnum.ADMIN.getUserProfileType())
+					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated()
+				.and().logout()
+					.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+					.logoutSuccessHandler(this.logoutSuccessHandler)
+				.and().exceptionHandling()
+					.authenticationEntryPoint(this.pointUnAthorisedHandler)
+				.and().headers()
+					.xssProtection()
+					.xssProtectionEnabled(true);
 	}
 	
 	/**

@@ -515,4 +515,15 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 				this.connexionHistoryRepository.save(this.connexionHistoryTransformer.dtoToModel(historyDto)));
 		
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	@Transactional
+	public void readPrivacySheetStatus() {
+		final UserEntity connectedUser = getConnectedUser();
+		connectedUser.setReadPrivacy(true);
+		this.userRepository.save(connectedUser);
+	}
 }

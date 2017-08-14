@@ -7,7 +7,7 @@ import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("accountService")
 public interface AccountControllerService extends AbstractControllerService
 {
 	
@@ -92,8 +92,6 @@ public interface AccountControllerService extends AbstractControllerService
 	/**
 	 * @param username
 	 * 		target user username.
-	 * @param connectedUserId
-	 * 		connected user id.
 	 *
 	 * @return user DTO.
 	 */
@@ -116,4 +114,9 @@ public interface AccountControllerService extends AbstractControllerService
 	 * @return saved details.
 	 */
 	ConnexionHistoryDto saveConnexionHistory(ConnexionHistoryDto historyDto);
+	
+	/**
+	 * User must accept sppoti privacy to access.
+	 */
+	void readPrivacySheetStatus();
 }
