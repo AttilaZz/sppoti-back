@@ -3,7 +3,6 @@
  */
 package com.fr.commons.dto.security;
 
-import com.fr.commons.dto.UserDTO;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -24,13 +23,6 @@ public interface MyUserDetails extends UserDetails
 	 * @return user unique id.
 	 */
 	String getUuid();
-	
-	/**
-	 * Get user account details.
-	 *
-	 * @return user details.
-	 */
-	UserDTO getConnectedUserDetails();
 	
 	/**
 	 * Get user timezone.

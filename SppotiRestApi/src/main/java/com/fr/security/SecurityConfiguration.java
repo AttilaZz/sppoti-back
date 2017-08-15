@@ -24,6 +24,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -76,13 +77,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		http.
 			cors()
 				.and()
-					.addFilterAfter(new CsrfHeaderFilter(this.filterProperties), CsrfFilter.class)
-					.csrf().ignoringAntMatchers("/trade/**").csrfTokenRepository(csrfTokenRepository())
+					.csrf().disable()
+					.requestCache()
+					.requestCache(new NullRequestCache())
 				.and()
+					.httpBasic()
+				.and()
+//					.addFilterAfter(new CsrfHeaderFilter(this.filterProperties), CsrfFilter.class)
+//					.csrf().ignoringAntMatchers("/trade/**").csrfTokenRepository(csrfTokenRepository())
+//				.and()
 					.formLogin()
-					.successHandler(savedRequestAwareAuthenticationSuccessHandler()).usernameParameter("username")
-					.passwordParameter("password").successHandler(this.authSuccess).failureHandler(this.authFailure)
-					.permitAll()
+					.successHandler(savedRequestAwareAuthenticationSuccessHandler())
+					.usernameParameter("username")
+					.passwordParameter("password")
+					.successHandler(this.authSuccess).failureHandler(this.authFailure)
+
 					//				.and().rememberMe().rememberMeParameter("remember-me").tokenRepository(this.tokenRepository)
 					//				.tokenValiditySeconds(86400)
 				.and().authorizeRequests()
@@ -93,9 +102,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 				.and().logout()
 					.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 					.logoutSuccessHandler(this.logoutSuccessHandler)
-				.and().exceptionHandling()
+				.and()
+					.exceptionHandling()
 					.authenticationEntryPoint(this.pointUnAthorisedHandler)
-				.and().headers()
+				.and()
+					.headers()
 					.xssProtection()
 					.xssProtectionEnabled(true);
 	}
@@ -119,6 +130,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		
 		final SavedRequestAwareAuthenticationSuccessHandler auth = new SavedRequestAwareAuthenticationSuccessHandler();
 		auth.setTargetUrlParameter("/");
+		
 		return auth;
 	}
 	
@@ -135,6 +147,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	{
 		//		auth.authenticationProvider(authenticationProvider());
 		auth.userDetailsService(this.userDetailService).passwordEncoder(passwordEncoder());
+		
+		auth.inMemoryAuthentication()
+				.withUser("user").password("password").roles("USER");
 	}
 	
 	//	/** Init auth provider. */

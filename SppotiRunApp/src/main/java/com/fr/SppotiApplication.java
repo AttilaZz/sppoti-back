@@ -9,10 +9,13 @@ import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.session.data.redis.RedisFlushMode;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+import org.springframework.session.web.http.HeaderHttpSessionStrategy;
+import org.springframework.session.web.http.HttpSessionStrategy;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -68,30 +71,13 @@ public class SppotiApplication extends WebMvcConfigurationSupport implements Ser
 		return new ApiVersionRequestMappingHandlerMapping("v");
 	}
 	
-	//
-	//	/**
-	//	 * {@inheritDoc}
-	//	 */
-	//	@Override
-	//	protected SpringApplicationBuilder configure(final SpringApplicationBuilder application)
-	//	{
-	//		return application.sources(SppotiApplication.class);
-	//	}
+	@Bean
+	public LettuceConnectionFactory connectionFactory() {
+		return new LettuceConnectionFactory();
+	}
 	
-	//	/**
-	//	 * CROSS origin configuration
-	//	 */
-	//	@Bean
-	//	public WebMvcConfigurer corsConfigurer()
-	//	{
-	//		return new WebMvcConfigurerAdapter()
-	//		{
-	//			@Override
-	//			public void addCorsMappings(final CorsRegistry registry)
-	//			{
-	//				registry.addMapping("/**").allowedOrigins(Origins.getValue().split(",")).allowCredentials(true)
-	//						.allowedHeaders(Allowed_Headers.getValue()).allowedMethods(AllMethods.getValue());
-	//			}
-	//		};
-	//	}
+	@Bean
+	public HttpSessionStrategy httpSessionStrategy() {
+		return new HeaderHttpSessionStrategy();
+	}
 }

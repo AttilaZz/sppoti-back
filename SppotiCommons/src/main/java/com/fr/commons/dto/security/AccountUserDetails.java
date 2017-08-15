@@ -135,15 +135,6 @@ public class AccountUserDetails implements MyUserDetails
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserDTO getConnectedUserDetails()
-	{
-		return this.account;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public String getTimeZone() {
 		return this.account.getTimeZone();
 	}
