@@ -42,6 +42,7 @@ public class CORSFilter implements Filter
 		response.setHeader(ATTR_METHODS.getValue(), AllMethods.getValue());
 		response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
 		response.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
+		response.setHeader(ATTR_EXPOSE_HEADERS.getValue(), AccessControlExposeHeaders.getValue());
 		
 		if (!Objects.equals(request.getMethod(), "OPTIONS")) {
 			chain.doFilter(req, res);

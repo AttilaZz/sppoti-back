@@ -13,7 +13,7 @@ public enum HeadersValues
 {
 	
 	Origins, AllowCredentials, DenyCredentials, GetMethods, PostMethods, DeleteMethods, PutMethods, OptionsMethods,
-	AllMethods, Max_Age, Allowed_Headers;
+	AllMethods, Max_Age, Allowed_Headers, AccessControlExposeHeaders;
 	
 	private static final String PATH = "/headerConfig.properties";
 	
