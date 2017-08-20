@@ -75,15 +75,15 @@ public class UserDTO extends AbstractCommonDTO
 	private String language;
 	private String timeZone;
 	
-	private boolean firstConnexion;
+	private Boolean firstConnexion;
 	private boolean isProfileComplete;
 	private boolean readPrivacy;
 	
-	public boolean isFirstConnexion() {
+	public Boolean isFirstConnexion() {
 		return this.firstConnexion;
 	}
 	
-	public void setFirstConnexion(final boolean firstConnexion) {
+	public void setFirstConnexion(final Boolean firstConnexion) {
 		this.firstConnexion = firstConnexion;
 	}
 	

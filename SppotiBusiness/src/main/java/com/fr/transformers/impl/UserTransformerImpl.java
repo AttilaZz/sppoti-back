@@ -173,7 +173,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		entity.setUsername(dto.getUsername().trim());
 		
 		entity.setGender(GenderEnum.MALE);
-		entity.setFirstConnexion(false);
+		entity.setFirstConnexion(true);
 		entity.setConfirmed(true);
 		
 		return entity;

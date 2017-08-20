@@ -20,13 +20,13 @@ class AccountUpdateController
 {
 	
 	/** Account controller service. */
-	private AccountControllerService accountControllerService;
+	private AccountControllerService accountService;
 	
 	/** Init account service. */
 	@Autowired
-	void setAccountControllerService(final AccountControllerService accountControllerService)
+	void setAccountService(final AccountControllerService accountService)
 	{
-		this.accountControllerService = accountControllerService;
+		this.accountService = accountService;
 	}
 	
 	/**
@@ -46,51 +46,45 @@ class AccountUpdateController
 		if (StringUtils.hasText(user.getAvatar()) ||
 				(StringUtils.hasText(user.getCover()) && user.getCoverType() != null)) {
 			
-			this.accountControllerService.updateAvatarAndCover(user);
+			this.accountService.updateAvatarAndCover(user);
 			
 			return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
 		} else {
-			//first name
 			if (StringUtils.hasText(user.getFirstName())) {
 				update = true;
 			}
-			//last name
 			if (StringUtils.hasText(user.getLastName())) {
 				update = true;
 			}
-			//address
 			if (StringUtils.hasText(user.getAddress())) {
 				update = true;
 			}
-			//username
 			if (StringUtils.hasText(user.getUsername())) {
 				update = true;
 			}
-			//phone
 			if (StringUtils.hasText(user.getPhone())) {
 				update = true;
 			}
-			//password
 			if (StringUtils.hasText(user.getPassword())) {
 				update = true;
 			}
-			//email
 			if (StringUtils.hasText(user.getEmail())) {
 				update = true;
 			}
-			//language
 			if (StringUtils.hasText(user.getLanguage())) {
 				update = true;
 			}
-			//language
 			if (StringUtils.hasText(user.getTimeZone())) {
+				update = true;
+			}
+			if (user.isFirstConnexion() != null && !user.isFirstConnexion()) {
 				update = true;
 			}
 			
 			//TODO: Update sports
 			
 			if (update) {
-				this.accountControllerService.updateUser(user);
+				this.accountService.updateUser(user);
 				return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
 			}
 			
@@ -110,7 +104,7 @@ class AccountUpdateController
 	@PutMapping("/deactivate/{userId}")
 	ResponseEntity<Void> deactivateAccount(@PathVariable final String userId)
 	{
-		this.accountControllerService.deactivateAccount(userId);
+		this.accountService.deactivateAccount(userId);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 	

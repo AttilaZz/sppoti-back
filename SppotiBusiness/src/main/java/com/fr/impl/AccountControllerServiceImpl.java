@@ -234,28 +234,24 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		if (StringUtils.hasText(userDTO.getFirstName())) {
 			connectedUser.setFirstName(userDTO.getFirstName());
 		}
-		//last name
 		if (StringUtils.hasText(userDTO.getLastName())) {
 			connectedUser.setLastName(userDTO.getLastName());
 		}
-		//address
 		if (StringUtils.hasText(userDTO.getAddress())) {
 			connectedUser.getAddresses().add(new AddressEntity(userDTO.getAddress()));
 		}
-		//username
 		if (StringUtils.hasText(userDTO.getUsername())) {
 			connectedUser.setUsername(userDTO.getUsername());
 		}
-		//phone
 		if (StringUtils.hasText(userDTO.getPhone())) {
 			connectedUser.setTelephone(userDTO.getPhone());
 		}
-		//timeZone
 		if (StringUtils.hasText(userDTO.getTimeZone())) {
 			connectedUser.setTimeZone(userDTO.getTimeZone());
 		}
-		//password
-		else if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
+		if (userDTO.isFirstConnexion() != null) {
+			connectedUser.setFirstConnexion(false);
+		} else if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
 				StringUtils.hasText(userDTO.getOldPassword())) {
 			
 			//Check that old password is correct

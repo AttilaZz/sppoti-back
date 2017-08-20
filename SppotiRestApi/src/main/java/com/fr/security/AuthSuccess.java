@@ -69,11 +69,6 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 		final UserDTO userDTO = this.userTransformer.modelToDto(user);
 		userDTO.setPassword(null);
 		
-		if (!user.isFirstConnexion()) {
-			user.setFirstConnexion(true);
-			this.userRepository.save(user);
-		}
-		
 		final Gson gson = new Gson();
 		response.getWriter().write(gson.toJson(userDTO));
 		
