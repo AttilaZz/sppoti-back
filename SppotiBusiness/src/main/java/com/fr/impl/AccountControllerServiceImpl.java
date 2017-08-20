@@ -91,8 +91,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	@Override
 	public void saveNewUser(final SignUpDTO user)
 	{
-
-        /*
+		/*
 			if username or email exist, account valid:
              - reject sign_up
              - delete old account
@@ -120,8 +119,9 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		 * Save user.
 		 */
 		final UserEntity newUser = this.userTransformer.signUpDtoToEntity(user);
-		newUser.setFirstName(SppotiUtils.normaliser(newUser.getFirstName()));
-		newUser.setLastName(SppotiUtils.normaliser(newUser.getLastName()));
+		
+		//		newUser.setFirstName(SppotiUtils.normaliser(newUser.getFirstName()));
+		//		newUser.setLastName(SppotiUtils.normaliser(newUser.getLastName()));
 		
 		newUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(this.daysBeforeExpiration));
 		
@@ -136,22 +136,15 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		roles.add(profile);
 		newUser.setRoles(roles);
 		
-		//manage password
-		
 		final PasswordHistory p = new PasswordHistory();
 		p.setPassword(newUser.getPassword());
 		p.setUser(newUser);
 		newUser.getPasswordHistories().add(p);
 		
-		//save new user.
 		this.userRepository.save(newUser);
 		this.LOGGER.info("Account has been created for user : " + user.getEmail());
-
-        /*
-		 * Send email to confirm account
-         */
-		SendEmailToActivateAccount(newUser, TypeAccountValidation.signup);
 		
+		//		SendEmailToActivateAccount(newUser, TypeAccountValidation.signup);
 	}
 	
 	/** Send Email to activate new account. */

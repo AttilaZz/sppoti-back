@@ -4,6 +4,7 @@ import com.fr.commons.dto.RoleDTO;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.GenderEnum;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.commons.utils.SppotiUtils;
@@ -16,6 +17,7 @@ import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +103,11 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 			dto.setFriendStatus(this.getFriendShipStatus(entity.getUuid(), entity.getConnectedUserId()));
 		}
 		
+		//TODO: Find another way to init first-name, last-name and gender in sign-up, this condition in fact is considering just birth-date because others are already initialized on signup to avoid errors in front.
+		dto.setProfileComplete(
+				StringUtils.hasText(entity.getFirstName()) && StringUtils.hasText(entity.getLastName()) &&
+						entity.getGender() != null && entity.getDateBorn() != null);
+		
 		return dto;
 	}
 	
@@ -158,14 +165,15 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 	{
 		final UserEntity entity = new UserEntity();
 		SppotiBeanUtils.copyProperties(entity, dto);
-		entity.setGender(dto.getGenderType());
 		
 		final String confirmationCode = SppotiUtils.generateConfirmationKey();
 		entity.setConfirmationCode(confirmationCode);
 		
 		entity.setPassword(this.passwordEncoder.encode(dto.getPassword()));
 		entity.setUsername(dto.getUsername().trim());
-		entity.setFirstConnexion(false);
+		
+		entity.setGender(GenderEnum.MALE);
+		entity.setFirstConnexion(true);
 		
 		return entity;
 	}

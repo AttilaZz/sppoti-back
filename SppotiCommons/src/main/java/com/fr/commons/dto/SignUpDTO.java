@@ -14,10 +14,8 @@ import java.util.Date;
 public class SignUpDTO extends AbstractCommonDTO
 {
 	
-	@NotEmpty
 	private String lastName;
 	
-	@NotEmpty
 	private String firstName;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
@@ -26,8 +24,8 @@ public class SignUpDTO extends AbstractCommonDTO
 	@JsonProperty("gender")
 	private GenderEnum genderType;
 	
-	@NotEmpty
 	@Email
+	@NotEmpty
 	private String email;
 	
 	@NotEmpty

@@ -74,13 +74,18 @@ public class UserDTO extends AbstractCommonDTO
 	
 	private String language;
 	private String timeZone;
+	
 	private boolean firstConnexion;
+	private boolean isProfileComplete;
+	private boolean readPrivacy;
 	
 	public boolean isFirstConnexion() {
 		return this.firstConnexion;
 	}
 	
-	private boolean readPrivacy;
+	public void setFirstConnexion(final boolean firstConnexion) {
+		this.firstConnexion = firstConnexion;
+	}
 	
 	public boolean isReadPrivacy() {
 		return this.readPrivacy;
@@ -88,10 +93,6 @@ public class UserDTO extends AbstractCommonDTO
 	
 	public void setReadPrivacy(final boolean readPrivacy) {
 		this.readPrivacy = readPrivacy;
-	}
-	
-	public void setFirstConnexion(final boolean firstConnexion) {
-		this.firstConnexion = firstConnexion;
 	}
 	
 	public String getFirstName()
@@ -422,5 +423,13 @@ public class UserDTO extends AbstractCommonDTO
 	
 	public void setWaitConfirmation(final Boolean waitConfirmation) {
 		this.waitConfirmation = waitConfirmation;
+	}
+	
+	public boolean isProfileComplete() {
+		return this.isProfileComplete;
+	}
+	
+	public void setProfileComplete(final boolean profileComplete) {
+		this.isProfileComplete = profileComplete;
 	}
 }

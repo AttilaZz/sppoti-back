@@ -22,13 +22,13 @@ class AccountAddController
 {
 	
 	/** Account service. */
-	private AccountControllerService accountControllerService;
+	private AccountControllerService accountService;
 	
 	/** Init account service. */
 	@Autowired
-	void setAccountControllerService(final AccountControllerService accountControllerService)
+	void setAccountService(final AccountControllerService accountService)
 	{
-		this.accountControllerService = accountControllerService;
+		this.accountService = accountService;
 	}
 	
 	/**
@@ -42,7 +42,7 @@ class AccountAddController
 	ResponseEntity createUser(@RequestBody @Valid final SignUpDTO user)
 	{
 		
-		this.accountControllerService.saveNewUser(user);
+		this.accountService.saveNewUser(user);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 		
@@ -61,7 +61,7 @@ class AccountAddController
 	ResponseEntity addConnexionHistory(@RequestBody final ConnexionHistoryDto historyDto)
 	{
 		
-		this.accountControllerService.saveConnexionHistory(historyDto);
+		this.accountService.saveConnexionHistory(historyDto);
 		
 		return ResponseEntity.status(HttpStatus.OK).build();
 		
