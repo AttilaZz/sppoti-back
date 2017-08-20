@@ -239,7 +239,7 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	public UserDTO getUserByUsernameForLogin(final String username) {
 		final UserEntity entity = getUserByLogin(username, false);
 		//if account is deactivated and suppress date is less than 90 days reactivate account.
-		UserEntity temp = null;
+		final UserEntity temp;
 		if (entity != null) {
 			if (entity.getDeactivationDate() != null &&
 					!SppotiUtils.isAccountReadyToBeCompletlyDeleted(entity.getDeactivationDate(), 90)) {
