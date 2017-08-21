@@ -251,6 +251,9 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		}
 		if (userDTO.isFirstConnexion() != null) {
 			connectedUser.setFirstConnexion(false);
+		}
+		if (userDTO.isProfileComplete() != null) {
+			connectedUser.setProfileComplete(userDTO.isProfileComplete());
 		} else if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
 				StringUtils.hasText(userDTO.getOldPassword())) {
 			

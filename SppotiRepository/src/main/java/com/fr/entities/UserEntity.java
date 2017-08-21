@@ -63,7 +63,10 @@ public class UserEntity extends AbstractCommonEntity
 	private boolean deleted;
 	
 	@Column(name = "first_connexion")
-	private boolean firstConnexion = false;
+	private Boolean firstConnexion = Boolean.FALSE;
+	
+	@Column(name = "profile_complete")
+	private Boolean isProfileComplete = Boolean.FALSE;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "deactivate_date")
@@ -134,6 +137,22 @@ public class UserEntity extends AbstractCommonEntity
 	private boolean readPrivacy;
 	
 	private transient Long connectedUserId;
+	
+	public Boolean getFirstConnexion() {
+		return this.firstConnexion;
+	}
+	
+	public void setFirstConnexion(final Boolean firstConnexion) {
+		this.firstConnexion = firstConnexion;
+	}
+	
+	public Boolean getProfileComplete() {
+		return this.isProfileComplete;
+	}
+	
+	public void setProfileComplete(final Boolean profileComplete) {
+		this.isProfileComplete = profileComplete;
+	}
 	
 	public boolean isReadPrivacy() {
 		return this.readPrivacy;
@@ -437,14 +456,6 @@ public class UserEntity extends AbstractCommonEntity
 	
 	public void setConnexionHistory(final List<ConnexionHistoryEntity> connexionHistory) {
 		this.connexionHistory = connexionHistory;
-	}
-	
-	public boolean isFirstConnexion() {
-		return this.firstConnexion;
-	}
-	
-	public void setFirstConnexion(final boolean firstConnexion) {
-		this.firstConnexion = firstConnexion;
 	}
 	
 	public List<PasswordHistory> getPasswordHistories() {

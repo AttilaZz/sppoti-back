@@ -80,6 +80,9 @@ class AccountUpdateController
 			if (user.isFirstConnexion() != null && !user.isFirstConnexion()) {
 				update = true;
 			}
+			if (user.isProfileComplete() != null) {
+				update = true;
+			}
 			
 			//TODO: Update sports
 			

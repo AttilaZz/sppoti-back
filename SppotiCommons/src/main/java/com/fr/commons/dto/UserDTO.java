@@ -76,7 +76,7 @@ public class UserDTO extends AbstractCommonDTO
 	private String timeZone;
 	
 	private Boolean firstConnexion;
-	private boolean isProfileComplete;
+	private Boolean isProfileComplete;
 	private boolean readPrivacy;
 	
 	public Boolean isFirstConnexion() {
@@ -425,11 +425,11 @@ public class UserDTO extends AbstractCommonDTO
 		this.waitConfirmation = waitConfirmation;
 	}
 	
-	public boolean isProfileComplete() {
+	public Boolean isProfileComplete() {
 		return this.isProfileComplete;
 	}
 	
-	public void setProfileComplete(final boolean profileComplete) {
+	public void setProfileComplete(final Boolean profileComplete) {
 		this.isProfileComplete = profileComplete;
 	}
 }
