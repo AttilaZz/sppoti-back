@@ -1,7 +1,5 @@
 package com.fr.security;
 
-import com.fr.commons.enumeration.UserRoleTypeEnum;
-import com.fr.filter.CsrfHeaderFilter;
 import com.fr.filter.CsrfProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +19,6 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.savedrequest.NullRequestCache;
@@ -94,10 +91,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 
 					//				.and().rememberMe().rememberMeParameter("remember-me").tokenRepository(this.tokenRepository)
 					//				.tokenValiditySeconds(86400)
-				.and().authorizeRequests()
-					.antMatchers("/**/account/**", "/**/sport/**", "/**/contact/**", "/**/init/token").permitAll()
-					.antMatchers("/**/profile/**")
-					.hasAnyRole(UserRoleTypeEnum.USER.getUserProfileType(), UserRoleTypeEnum.ADMIN.getUserProfileType())
+				.and().authorizeRequests().antMatchers(HttpMethod.GET, "/**").permitAll()
+				.antMatchers(HttpMethod.POST, "/**/account/create").permitAll()
+				.antMatchers(HttpMethod.POST, "/**/account/connexion/endpoint").permitAll()
 					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated()
 				.and().logout()
 					.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
