@@ -38,6 +38,7 @@ public class SignUpDTO extends AbstractCommonDTO
 	
 	@JsonProperty("new_password")
 	private String newPassword;
+	
 	@JsonProperty("old_password")
 	private String oldPassword;
 	

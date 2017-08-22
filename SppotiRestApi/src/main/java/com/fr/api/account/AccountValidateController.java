@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.*;
 class AccountValidateController
 {
 	/** Account service. */
-	private AccountControllerService accountControllerService;
+	private AccountControllerService accountService;
 	
 	/** Init service. */
 	@Autowired
-	void setAccountControllerService(final AccountControllerService accountControllerService)
+	void setAccountService(final AccountControllerService accountService)
 	{
-		this.accountControllerService = accountControllerService;
+		this.accountService = accountService;
 	}
 	
 	/**
@@ -48,7 +48,7 @@ class AccountValidateController
 		}
 		
 		// if given code exist in database confirm registration
-		this.accountControllerService.tryActivateAccount(code, type);
+		this.accountService.tryActivateAccount(code, type);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		
 	}
@@ -69,7 +69,7 @@ class AccountValidateController
 			throw new BusinessGlobalException("Email is required !");
 		}
 		
-		this.accountControllerService.generateNewConfirmationEmail(userDTO);
+		this.accountService.generateNewConfirmationEmail(userDTO);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
 }

@@ -114,9 +114,4 @@ public interface AccountControllerService extends AbstractControllerService
 	 * @return saved details.
 	 */
 	ConnexionHistoryDto saveConnexionHistory(ConnexionHistoryDto historyDto);
-	
-	/**
-	 * User must accept sppoti privacy to access.
-	 */
-	void readPrivacySheetStatus();
 }

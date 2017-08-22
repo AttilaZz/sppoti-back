@@ -77,7 +77,6 @@ public class UserDTO extends AbstractCommonDTO
 	
 	private Boolean firstConnexion;
 	private Boolean isProfileComplete;
-	private boolean readPrivacy;
 	
 	public Boolean isFirstConnexion() {
 		return this.firstConnexion;
@@ -85,14 +84,6 @@ public class UserDTO extends AbstractCommonDTO
 	
 	public void setFirstConnexion(final Boolean firstConnexion) {
 		this.firstConnexion = firstConnexion;
-	}
-	
-	public boolean isReadPrivacy() {
-		return this.readPrivacy;
-	}
-	
-	public void setReadPrivacy(final boolean readPrivacy) {
-		this.readPrivacy = readPrivacy;
 	}
 	
 	public String getFirstName()
