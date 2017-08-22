@@ -17,7 +17,6 @@ import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,11 +101,6 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 			dto.setMyProfile(entity.getId().equals(entity.getConnectedUserId()));
 			dto.setFriendStatus(this.getFriendShipStatus(entity.getUuid(), entity.getConnectedUserId()));
 		}
-		
-		//TODO: Find another way to init first-name, last-name and gender in sign-up, this condition in fact is considering just birth-date because others are already initialized on signup to avoid errors in front.
-		dto.setProfileComplete(
-				StringUtils.hasText(entity.getFirstName()) && StringUtils.hasText(entity.getLastName()) &&
-						entity.getGender() != null && entity.getDateBorn() != null);
 		
 		return dto;
 	}
