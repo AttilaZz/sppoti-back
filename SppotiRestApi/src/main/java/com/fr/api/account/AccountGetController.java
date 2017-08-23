@@ -26,13 +26,13 @@ class AccountGetController
 {
 	
 	/** Account controller service. */
-	private AccountControllerService accountControllerService;
+	private AccountControllerService accountService;
 	
 	/** Init account service. */
 	@Autowired
-	void setAccountControllerService(final AccountControllerService accountControllerService)
+	void setAccountService(final AccountControllerService accountService)
 	{
-		this.accountControllerService = accountControllerService;
+		this.accountService = accountService;
 	}
 	
 	/**
@@ -44,9 +44,9 @@ class AccountGetController
 	{
 		
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-		final UserEntity targetUser = this.accountControllerService.getUserById(accountUserDetails.getId());
+		final UserEntity targetUser = this.accountService.getUserById(accountUserDetails.getId());
 		
-		return new ResponseEntity<>(this.accountControllerService.fillAccountResponse(targetUser), HttpStatus.OK);
+		return new ResponseEntity<>(this.accountService.fillAccountResponse(targetUser), HttpStatus.OK);
 		
 	}
 	
@@ -58,18 +58,9 @@ class AccountGetController
 	 *
 	 * @return user data.
 	 */
-	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
 	@GetMapping("/other/{username}/**")
 	ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") final String username)
 	{
-		
-		//        String path = (String) httpServletRequest.getAttribute(
-		//                HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-		//        AntPathMatcher apm = new AntPathMatcher();
-		//        String bestMatchPattern = (String ) httpServletRequest.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-		//        String finalPath = apm.extractPathWithinPattern(bestMatchPattern, path);
-		
-		return new ResponseEntity<>(this.accountControllerService.getAnyUserProfileData(username), HttpStatus.OK);
-		
+		return new ResponseEntity<>(this.accountService.getAnyUserProfileData(username), HttpStatus.OK);
 	}
 }
