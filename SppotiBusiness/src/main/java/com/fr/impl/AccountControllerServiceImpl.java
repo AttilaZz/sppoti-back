@@ -254,6 +254,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		}
 		if (userDTO.isProfileComplete() != null) {
 			connectedUser.setProfileComplete(userDTO.isProfileComplete());
+			connectedUser.setDateBorn(userDTO.getBirthDate());
 		} else if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
 				StringUtils.hasText(userDTO.getOldPassword())) {
 			
