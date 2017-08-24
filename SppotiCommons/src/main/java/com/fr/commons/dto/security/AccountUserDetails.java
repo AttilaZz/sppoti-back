@@ -42,7 +42,7 @@ public class AccountUserDetails implements MyUserDetails
 		
 		for (final GrantedAuthority grantedAuthority : authorities) {
 			
-			LOGGER.info("authorities : {}" + grantedAuthority.getAuthority());
+			LOGGER.info("authorities : {}", grantedAuthority.getAuthority());
 			
 		}
 		return authorities;

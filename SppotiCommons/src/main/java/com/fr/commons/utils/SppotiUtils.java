@@ -250,6 +250,7 @@ public class SppotiUtils
 	 */
 	public static Date dateWithTimeZone(final Date originDate, final String timeZone) {
 		
+		assert timeZone != null;
 		String[] timeZoneString = timeZone.split("\\+");
 		boolean timeZonePlus = true;
 		LocalDateTime correctDate = originDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();

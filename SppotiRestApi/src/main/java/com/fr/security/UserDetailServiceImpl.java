@@ -49,7 +49,7 @@ public class UserDetailServiceImpl implements UserDetailsService
 		//		final Date date = new Date();
 		//		final DateFormat mediumDateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 		
-		LOGGER.info("Trying to log user : " + loginUser + " with id=" + account.getId());
+		LOGGER.info("Trying to log user : ", loginUser);
 		return new AccountUserDetails(account);
 	}
 	

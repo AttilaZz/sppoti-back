@@ -89,8 +89,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 				.antMatchers(HttpMethod.POST, "/**/account/create").permitAll()
 				.antMatchers(HttpMethod.POST, "/**/account/connexion/endpoint").permitAll()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and().logout()
-					.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-					.logoutSuccessHandler(this.logoutSuccessHandler)
+				.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+				.logoutSuccessHandler(this.logoutSuccessHandler)
 				.and()
 					.exceptionHandling()
 					.authenticationEntryPoint(this.pointUnAthorisedHandler)
@@ -119,7 +119,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		
 		final SavedRequestAwareAuthenticationSuccessHandler auth = new SavedRequestAwareAuthenticationSuccessHandler();
 		auth.setTargetUrlParameter("/");
-		
 		return auth;
 	}
 	
@@ -134,23 +133,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	@Autowired
 	public void configureGlobalSecurity(final AuthenticationManagerBuilder auth) throws Exception
 	{
-		//		auth.authenticationProvider(authenticationProvider());
 		auth.userDetailsService(this.userDetailService).passwordEncoder(passwordEncoder());
-		
-		auth.inMemoryAuthentication()
-				.withUser("user").password("password").roles("USER");
 	}
-	
-	//	/** Init auth provider. */
-	//	@Bean
-	//	public DaoAuthenticationProvider authenticationProvider()
-	//	{
-	//		final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-	//		authenticationProvider.setUserDetailsService(this.userDetailService);
-	//		authenticationProvider.setPasswordEncoder(passwordEncoder());
-	//
-	//		return authenticationProvider;
-	//	}
 	
 	/** Init remember me token service. */
 	@Bean
