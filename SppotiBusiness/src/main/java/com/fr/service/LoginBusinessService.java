@@ -1,12 +1,10 @@
 package com.fr.service;
 
 import com.fr.commons.dto.UserDTO;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by djenanewail on 1/22/17.
  */
-@Component
 public interface LoginBusinessService extends AbstractBusinessService
 {
 	/**

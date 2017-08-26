@@ -10,7 +10,8 @@ public enum ErrorMessageEnum
 	SPPOTI_NOT_FOUND("Sppoti not found"), TEAM_NOT_FOUND("Team not found"),
 	FACEBOOK_ID_ALREADY_EXISTS("Facebook id already associated with an account"),
 	GOOGLE_ID_ALREADY_EXISTS("Google id id already associated with an account"),
-	TWITTER_ID_ALREADY_EXISTS("Twitter id already associated with an account");
+	TWITTER_ID_ALREADY_EXISTS("Twitter id already associated with an account"),
+	SOCIAL_USER_ID_NOT_FOUND("Social ID not found");
 	
 	private final String message;
 	

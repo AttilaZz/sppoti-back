@@ -50,9 +50,9 @@ public class UserDTO extends AbstractCommonDTO
 	//	private Date deactivationDate;
 	
 	private String cover;
-	private String avatar;
-	
 	private Integer coverType;
+	
+	private String avatar;
 	
 	@JsonProperty("friend_id")
 	private String friendUuid;

@@ -67,7 +67,7 @@ public class SppotiExceptionHandler
 			value = {EntityNotFoundException.class, IllegalArgumentException.class, SocialUserIdNotFound.class})
 	public ResponseEntity globalException(final EntityNotFoundException e)
 	{
-		this.LOGGER.error(e.getMessage(), e);
+		this.LOGGER.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 	}
 	

@@ -1,6 +1,6 @@
 package com.fr.security;
 
-import com.fr.aop.TraceAuthentification;
+import com.fr.commons.enumeration.ErrorMessageEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -22,10 +22,8 @@ import static com.fr.filter.HeadersValues.*;
 public class AuthFailure extends SimpleUrlAuthenticationFailureHandler
 {
 	
-	/**
-	 * Class logger.
-	 */
-	private final Logger LOGGER = LoggerFactory.getLogger(TraceAuthentification.class);
+	/** Class logger. */
+	private final Logger LOGGER = LoggerFactory.getLogger(AuthFailure.class);
 	
 	/**
 	 * {@inheritDoc}
@@ -34,8 +32,6 @@ public class AuthFailure extends SimpleUrlAuthenticationFailureHandler
 	public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
 										final AuthenticationException e) throws IOException, ServletException
 	{
-		
-		this.LOGGER.info("Failed to log user :-(", e);
 		
 		final String[] allowedHeaders = Origins.getValue().split(",");
 		
@@ -50,7 +46,13 @@ public class AuthFailure extends SimpleUrlAuthenticationFailureHandler
 		response.setHeader(ATTR_AGE.getValue(), Max_Age.getValue());
 		response.setHeader(ATTR_HEADER.getValue(), Allowed_Headers.getValue());
 		
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		if (ErrorMessageEnum.SOCIAL_USER_ID_NOT_FOUND.getMessage().equals(e.getMessage())) {
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		} else {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		}
+		
+		this.LOGGER.info("Failed to log user :-(", e.getMessage());
 	}
 	
 }

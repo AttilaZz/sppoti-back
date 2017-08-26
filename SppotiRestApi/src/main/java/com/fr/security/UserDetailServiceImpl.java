@@ -2,6 +2,7 @@ package com.fr.security;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
+import com.fr.commons.enumeration.ErrorMessageEnum;
 import com.fr.exceptions.SocialUserIdNotFound;
 import com.fr.service.LoginBusinessService;
 import org.slf4j.Logger;
@@ -27,6 +28,10 @@ public class UserDetailServiceImpl implements UserDetailsService
 	/** Login service. */
 	private LoginBusinessService loginService;
 	
+	private static boolean isAttributeEmpty(final String param) {
+		return StringUtils.isEmpty(param) || "null".equals(param);
+	}
+	
 	/** Init login service. */
 	@Autowired
 	public void setLoginService(final LoginBusinessService loginService)
@@ -43,11 +48,13 @@ public class UserDetailServiceImpl implements UserDetailsService
 	 *
 	 * @return AccountUserDetails
 	 *
-	 * @throws UsernameNotFoundException if username not found.
-	 * @throws SocialUserIdNotFound if social id not found.
+	 * @throws UsernameNotFoundException
+	 * 		if username not found.
+	 * @throws SocialUserIdNotFound
+	 * 		if social id not found.
 	 */
 	@Override
-	public UserDetails loadUserByUsername(final String loginUser) throws UsernameNotFoundException
+	public UserDetails loadUserByUsername(final String loginUser) throws UsernameNotFoundException, SocialUserIdNotFound
 	{
 		
 		final String[] loginAttributes = loginUser.split(",");
@@ -60,29 +67,37 @@ public class UserDetailServiceImpl implements UserDetailsService
 		
 		UserDTO account = null;
 		boolean isSocial = false;
-		if (StringUtils.hasText(username)) {
+		
+		if (isAttributeEmpty(username) && isAttributeEmpty(facebookId) && isAttributeEmpty(googleId) &&
+				isAttributeEmpty(twitterId)) {
+			throw new UsernameNotFoundException("AT least one parameter must be assigned");
+		}
+		
+		if (!isAttributeEmpty(username)) {
+			LOGGER.info("Trying to log user : ", username);
 			account = this.loginService.getUserByUsernameForLogin(username);
-		} else if (StringUtils.hasText(facebookId)) {
+		} else if (!isAttributeEmpty(facebookId)) {
+			LOGGER.info("Trying to log user with facebook-id: ", facebookId);
 			account = this.loginService.getUserByFacebookId(facebookId);
 			isSocial = true;
-		} else if (StringUtils.hasText(googleId)) {
+		} else if (!isAttributeEmpty(googleId)) {
+			LOGGER.info("Trying to log user with google-id: ", googleId);
 			account = this.loginService.getUserByGoogleId(googleId);
 			isSocial = true;
-		} else if (StringUtils.hasText(twitterId)) {
+		} else if (!isAttributeEmpty(twitterId)) {
+			LOGGER.info("Trying to log user with twitter-id: ", twitterId);
 			account = this.loginService.getUserByTwitterId(twitterId);
 			isSocial = true;
 		}
 		
 		if (account == null) {
-			LOGGER.info("The given login (" + loginUser + " was not found: " + ")");
 			if (isSocial) {
-				throw new SocialUserIdNotFound("Social id is not valid");
+				throw new SocialUserIdNotFound(ErrorMessageEnum.SOCIAL_USER_ID_NOT_FOUND.getMessage());
 			} else {
-				throw new UsernameNotFoundException("no user found with: " + loginUser);
+				throw new UsernameNotFoundException("No user found with: " + loginUser);
 			}
 		}
 		
-		LOGGER.info("Trying to log user : ", username);
 		return new AccountUserDetails(account);
 	}
 	

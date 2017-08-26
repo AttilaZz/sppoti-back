@@ -1,6 +1,7 @@
 package com.fr.security;
 
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,11 +22,18 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
 	 */
 	@Override
 	protected String obtainUsername(final HttpServletRequest request) {
-		final String username = super.obtainUsername(request);
-		final String facebookId = request.getParameter(SPRING_SECURITY_FORM_FACEBOOK_KEY);
-		final String googleId = request.getParameter(SPRING_SECURITY_FORM_GOOGLE_KEY);
-		final String twitterId = request.getParameter(SPRING_SECURITY_FORM_TWITTER_KEY);
+		final String username = buildParameter(super.obtainUsername(request));
+		final String facebookId = buildParameter(request.getParameter(SPRING_SECURITY_FORM_FACEBOOK_KEY));
+		final String googleId = buildParameter(request.getParameter(SPRING_SECURITY_FORM_GOOGLE_KEY));
+		final String twitterId = buildParameter(request.getParameter(SPRING_SECURITY_FORM_TWITTER_KEY));
 		
 		return String.join(",", username, facebookId, googleId, twitterId);
+	}
+	
+	private String buildParameter(final String param) {
+		if (!StringUtils.isEmpty(param) && !"undefined".equals(param)) {
+			return param;
+		}
+		return null;
 	}
 }
