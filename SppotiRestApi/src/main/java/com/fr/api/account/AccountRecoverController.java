@@ -2,7 +2,7 @@ package com.fr.api.account;
 
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.service.AccountControllerService;
+import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.*;
 public class AccountRecoverController
 {
 	/** Account service. */
-	private AccountControllerService accountControllerService;
+	private AccountBusinessService accountControllerService;
 	
 	/** Init account service. */
 	@Autowired
-	void setAccountControllerService(final AccountControllerService accountControllerService)
+	void setAccountControllerService(final AccountBusinessService accountControllerService)
 	{
 		this.accountControllerService = accountControllerService;
 	}

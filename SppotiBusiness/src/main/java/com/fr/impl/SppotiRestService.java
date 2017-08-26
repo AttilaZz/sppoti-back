@@ -14,7 +14,7 @@ import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.mail.SppotiMailer;
 import com.fr.repositories.SppotiRequestRepository;
-import com.fr.service.SppotiControllerService;
+import com.fr.service.SppotiBusinessService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.SportTransformer;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  */
 
 @Component
-class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implements SppotiControllerService
+class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements SppotiBusinessService
 {
 	
 	/** {@link SportEntity} transformer. */
@@ -67,11 +67,10 @@ class SppotiControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	 * Init services.
 	 */
 	@Autowired
-	public SppotiControllerServiceImpl(final SportTransformer sportTransformer,
-									   final SppotiTransformer sppotiTransformer,
-									   final TeamMemberTransformer teamMemberTransformer,
-									   final UserTransformer userTransformer, final SppotiMailer sppotiMailer,
-									   final SppotiRequestRepository sppotiRequestRepository)
+	public SppotiBusinessServiceImpl(final SportTransformer sportTransformer, final SppotiTransformer sppotiTransformer,
+									 final TeamMemberTransformer teamMemberTransformer,
+									 final UserTransformer userTransformer, final SppotiMailer sppotiMailer,
+									 final SppotiRequestRepository sppotiRequestRepository)
 	{
 		this.sportTransformer = sportTransformer;
 		this.sppotiTransformer = sppotiTransformer;

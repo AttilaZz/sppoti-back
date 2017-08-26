@@ -2,7 +2,7 @@ package com.fr.api.score;
 
 import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
-import com.fr.service.ScoreControllerService;
+import com.fr.service.ScoreBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,11 +25,11 @@ public class ScoreUpdateController
 {
 	
 	/** Score controller service. */
-	private final ScoreControllerService scoreControllerService;
+	private final ScoreBusinessService scoreControllerService;
 	
 	/** Init score service. */
 	@Autowired
-	public ScoreUpdateController(final ScoreControllerService scoreControllerService)
+	public ScoreUpdateController(final ScoreBusinessService scoreControllerService)
 	{
 		this.scoreControllerService = scoreControllerService;
 	}

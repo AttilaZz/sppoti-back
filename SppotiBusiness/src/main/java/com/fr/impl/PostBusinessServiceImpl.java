@@ -7,7 +7,7 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
-import com.fr.service.PostControllerService;
+import com.fr.service.PostBusinessService;
 import com.fr.transformers.PostTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 
 @Component
-class PostControllerServiceImpl extends AbstractControllerServiceImpl implements PostControllerService
+class PostBusinessServiceImpl extends AbstractControllerServiceImpl implements PostBusinessService
 {
 	
 	/** Post transformer. */
@@ -38,7 +38,7 @@ class PostControllerServiceImpl extends AbstractControllerServiceImpl implements
 	
 	/** Init dependencies. */
 	@Autowired
-	public PostControllerServiceImpl(final PostTransformer postTransformer)
+	public PostBusinessServiceImpl(final PostTransformer postTransformer)
 	{
 		this.postTransformer = postTransformer;
 	}

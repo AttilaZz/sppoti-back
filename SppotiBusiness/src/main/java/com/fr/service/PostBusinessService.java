@@ -5,7 +5,6 @@ import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.post.PostRequestDTO;
 import com.fr.entities.*;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -14,7 +13,7 @@ import java.util.SortedSet;
  * Created by: Wail DJENANE on Jun 13, 2016
  */
 
-public interface PostControllerService extends AbstractControllerService
+public interface PostBusinessService extends AbstractBusinessService
 {
 
 	PostDTO savePost(PostRequestDTO postRequestDTO);

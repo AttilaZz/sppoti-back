@@ -4,7 +4,7 @@ import com.fr.commons.dto.message.MessageRequestDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.MessageEntity;
 import com.fr.entities.UserEntity;
-import com.fr.service.MessageControllerService;
+import com.fr.service.MessageBusinessService;
 import com.fr.transformers.MessageTransformer;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.List;
 class MessageController
 {
 	/** message service. */
-	private final MessageControllerService messageControllerService;
+	private final MessageBusinessService messageControllerService;
 	
 	/** Message transformer. */
 	@Autowired
@@ -32,7 +32,7 @@ class MessageController
 	
 	/** Init class. */
 	@Autowired
-	MessageController(final MessageControllerService messageControllerService)
+	MessageController(final MessageBusinessService messageControllerService)
 	{
 		this.messageControllerService = messageControllerService;
 	}

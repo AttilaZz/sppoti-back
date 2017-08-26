@@ -15,14 +15,11 @@ public class SignUpDTO extends AbstractCommonDTO
 {
 	
 	private String lastName;
-	
 	private String firstName;
+	private GenderEnum gender;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dateBorn;
-	
-	@JsonProperty("gender")
-	private GenderEnum genderType;
 	
 	@Email
 	@NotEmpty
@@ -34,8 +31,6 @@ public class SignUpDTO extends AbstractCommonDTO
 	@NotEmpty
 	private String username;
 	
-	private Long[] sportId;
-	
 	@JsonProperty("new_password")
 	private String newPassword;
 	
@@ -44,44 +39,44 @@ public class SignUpDTO extends AbstractCommonDTO
 	
 	private String timeZone;
 	
-	public String getLastName()
-	{
+	private String facebookId;
+	private String googleId;
+	private String twitterId;
+	
+	private String cover;
+	private Integer coverType;
+	private String avatar;
+	
+	public String getLastName() {
 		return this.lastName;
 	}
 	
-	public void setLastName(final String lastName)
-	{
+	public void setLastName(final String lastName) {
 		this.lastName = lastName;
 	}
 	
-	public String getFirstName()
-	{
+	public String getFirstName() {
 		return this.firstName;
 	}
 	
-	public void setFirstName(final String firstName)
-	{
+	public void setFirstName(final String firstName) {
 		this.firstName = firstName;
 	}
 	
-	public Date getDateBorn()
-	{
+	public Date getDateBorn() {
 		return this.dateBorn;
 	}
 	
-	public void setDateBorn(final Date dateBorn)
-	{
+	public void setDateBorn(final Date dateBorn) {
 		this.dateBorn = dateBorn;
 	}
 	
-	public GenderEnum getGenderType()
-	{
-		return this.genderType;
+	public GenderEnum getGender() {
+		return this.gender;
 	}
 	
-	public void setGenderType(final GenderEnum genderType)
-	{
-		this.genderType = genderType;
+	public void setGender(final GenderEnum gender) {
+		this.gender = gender;
 	}
 	
 	public String getEmail()
@@ -114,16 +109,6 @@ public class SignUpDTO extends AbstractCommonDTO
 		this.username = username;
 	}
 	
-	public Long[] getSportId()
-	{
-		return this.sportId;
-	}
-	
-	public void setSportId(final Long[] sportId)
-	{
-		this.sportId = sportId;
-	}
-	
 	public String getNewPassword()
 	{
 		return this.newPassword;
@@ -150,5 +135,53 @@ public class SignUpDTO extends AbstractCommonDTO
 	
 	public void setTimeZone(final String timeZone) {
 		this.timeZone = timeZone;
+	}
+	
+	public String getFacebookId() {
+		return this.facebookId;
+	}
+	
+	public void setFacebookId(final String facebookId) {
+		this.facebookId = facebookId;
+	}
+	
+	public String getGoogleId() {
+		return this.googleId;
+	}
+	
+	public void setGoogleId(final String googleId) {
+		this.googleId = googleId;
+	}
+	
+	public String getTwitterId() {
+		return this.twitterId;
+	}
+	
+	public void setTwitterId(final String twitterId) {
+		this.twitterId = twitterId;
+	}
+	
+	public String getCover() {
+		return this.cover;
+	}
+	
+	public void setCover(final String cover) {
+		this.cover = cover;
+	}
+	
+	public Integer getCoverType() {
+		return this.coverType;
+	}
+	
+	public void setCoverType(final Integer coverType) {
+		this.coverType = coverType;
+	}
+	
+	public String getAvatar() {
+		return this.avatar;
+	}
+	
+	public void setAvatar(final String avatar) {
+		this.avatar = avatar;
 	}
 }

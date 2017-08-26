@@ -8,7 +8,7 @@ import java.util.List;
  * Created by djenanewail on 1/22/17.
  */
 
-public interface SportControllerService extends AbstractControllerService
+public interface SportBusinessService extends AbstractBusinessService
 {
 	
 	List<SportEntity> getAllSports();

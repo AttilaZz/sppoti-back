@@ -7,15 +7,13 @@ import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
  */
-public interface CommentControllerService extends AbstractControllerService
+public interface CommentBusinessService extends AbstractBusinessService
 {
 
     CommentDTO saveComment(CommentEntity newCommentEntity, Long userId, String postId);

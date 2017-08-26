@@ -2,7 +2,7 @@ package com.fr.api.friend;
 
 import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.service.FriendControllerService;
+import com.fr.service.FriendBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,11 +25,11 @@ class FriendGetController
 {
 	
 	/** Friend service. */
-	private final FriendControllerService friendControllerService;
+	private final FriendBusinessService friendControllerService;
 	
 	/** Init services. */
 	@Autowired
-	FriendGetController(final FriendControllerService friendControllerService)
+	FriendGetController(final FriendBusinessService friendControllerService)
 	{
 		this.friendControllerService = friendControllerService;
 	}

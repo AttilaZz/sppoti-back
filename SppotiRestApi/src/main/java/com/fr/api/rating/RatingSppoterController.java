@@ -3,7 +3,7 @@ package com.fr.api.rating;
 import com.fr.commons.dto.SppotiRatingDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.service.SppotiControllerService;
+import com.fr.service.SppotiBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +22,11 @@ class RatingSppoterController
 {
 	
 	/** Sppoti controller service. */
-	private SppotiControllerService sppotiControllerService;
+	private SppotiBusinessService sppotiControllerService;
 	
 	/** Init services. */
 	@Autowired
-	void setSppotiControllerService(final SppotiControllerService sppotiControllerService)
+	void setSppotiControllerService(final SppotiBusinessService sppotiControllerService)
 	{
 		this.sppotiControllerService = sppotiControllerService;
 	}

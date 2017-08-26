@@ -2,7 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.ContactDTO;
 import com.fr.mail.ContactMailer;
-import com.fr.service.ContactControllerService;
+import com.fr.service.ContactRestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,20 +13,20 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class ContactControllerServiceImpl extends AbstractControllerServiceImpl implements ContactControllerService
+public class ContactRestServiceImpl extends AbstractControllerServiceImpl implements ContactRestService
 {
 	
 	/** Contact mailer. */
 	private final ContactMailer contactMailer;
 	
 	/** Class logger. */
-	private final Logger LOGGER = LoggerFactory.getLogger(ContactControllerServiceImpl.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(ContactRestServiceImpl.class);
 	
 	/**
 	 * Init class dependencies.
 	 */
 	@Autowired
-	public ContactControllerServiceImpl(final ContactMailer contactMailer)
+	public ContactRestServiceImpl(final ContactMailer contactMailer)
 	{
 		this.contactMailer = contactMailer;
 	}

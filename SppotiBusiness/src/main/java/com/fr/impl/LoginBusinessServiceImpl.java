@@ -3,7 +3,7 @@ package com.fr.impl;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.UserEntity;
-import com.fr.service.LoginService;
+import com.fr.service.LoginBusinessService;
 import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by djenanewail on 1/22/17.
  */
 @Component
-class LoginServiceImpl extends AbstractControllerServiceImpl implements LoginService
+class LoginBusinessServiceImpl extends AbstractControllerServiceImpl implements LoginBusinessService
 {
 	@Autowired
 	private UserTransformer userTransformer;

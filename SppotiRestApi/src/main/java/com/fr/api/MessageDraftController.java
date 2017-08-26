@@ -4,7 +4,7 @@
 package com.fr.api;
 
 import com.fr.entities.MessageEntity;
-import com.fr.service.MessageControllerService;
+import com.fr.service.MessageBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ class MessageDraftController
 {
 	
 	@Autowired
-	private MessageControllerService messageControllerService;
+	private MessageBusinessService messageControllerService;
 	
 	@PutMapping(value = "/update/{id}")
 	ResponseEntity<MessageEntity> updateUser(@PathVariable("id") final Long id, @RequestBody final MessageEntity newMsg)

@@ -6,7 +6,7 @@ import com.fr.entities.CommentEntity;
 import com.fr.entities.LikeContentEntity;
 import com.fr.entities.PostEntity;
 import com.fr.entities.UserEntity;
-import com.fr.service.LikeControllerService;
+import com.fr.service.LikeBusinessService;
 import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * Created by djenanewail on 12/24/16.
  */
 @Component
-class LikeControllerServiceImpl extends AbstractControllerServiceImpl implements LikeControllerService
+class LikeBusinessServiceImpl extends AbstractControllerServiceImpl implements LikeBusinessService
 {
 	/** User transformer. */
 	@Autowired

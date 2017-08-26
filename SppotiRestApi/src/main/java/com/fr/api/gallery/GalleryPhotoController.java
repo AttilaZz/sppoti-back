@@ -1,7 +1,7 @@
 package com.fr.api.gallery;
 
 import com.fr.commons.dto.post.PostDTO;
-import com.fr.service.PostControllerService;
+import com.fr.service.PostBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,11 +24,11 @@ class GalleryPhotoController
 {
 	
 	/** Post service. */
-	private PostControllerService postControllerService;
+	private PostBusinessService postControllerService;
 	
 	/** Init post service. */
 	@Autowired
-	void setPostControllerService(final PostControllerService postControllerService)
+	void setPostControllerService(final PostBusinessService postControllerService)
 	{
 		this.postControllerService = postControllerService;
 	}

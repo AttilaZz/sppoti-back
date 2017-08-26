@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
  * Created by djenanewail on 1/22/17.
  */
 @Component
-public interface LoginService extends AbstractControllerService
+public interface LoginBusinessService extends AbstractBusinessService
 {
 	/**
 	 * Find user by username.

@@ -2,13 +2,12 @@ package com.fr.api.sppoti;
 
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.service.SppotiControllerService;
+import com.fr.service.SppotiBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +26,11 @@ class SppotiAddController
 {
 	
 	/** Sppoti service. */
-	private SppotiControllerService sppotiControllerService;
+	private SppotiBusinessService sppotiControllerService;
 	
 	/** Init service. */
 	@Autowired
-	void setSppotiControllerService(final SppotiControllerService sppotiControllerService)
+	void setSppotiControllerService(final SppotiBusinessService sppotiControllerService)
 	{
 		this.sppotiControllerService = sppotiControllerService;
 	}

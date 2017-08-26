@@ -61,19 +61,21 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>, QueryDs
 	
 	Optional<UserEntity> getByUuidAndConfirmedTrueAndDeletedFalseAndConfirmedTrue(String userId);
 	
-	UserEntity findByEmail(String username);
-	
 	UserEntity findByTelephone(String username);
 	
+	UserEntity findByEmail(String username);
 	UserEntity findByUsername(String username);
-	
-	UserEntity getByEmailAndDeletedFalse(String email);
-	
-	UserEntity getByUsernameAndDeletedFalse(String username);
-	
 	UserEntity findByFacebookId(String facebookId);
-	
 	UserEntity findByGoogleId(String googleId);
-	
 	UserEntity findByTwitterId(String twitterId);
+	
+	UserEntity findByEmailAndDeletedFalse(String email);
+	
+	UserEntity findByUsernameAndDeletedFalse(String username);
+	
+	UserEntity findByFacebookIdAndDeletedFalse(String username);
+	
+	UserEntity findByGoogleIdAndDeletedFalse(String username);
+	
+	UserEntity findByTwitterIdAndDeletedFalse(String username);
 }

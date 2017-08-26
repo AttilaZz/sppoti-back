@@ -1,6 +1,6 @@
 package com.fr.api;
 
-import com.fr.service.AccountControllerService;
+import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class InitController
 {
 	@Autowired
-	private AccountControllerService accountService;
+	private AccountBusinessService accountService;
 	
 	@GetMapping("/token")
 	ResponseEntity<Void> initTokens() {

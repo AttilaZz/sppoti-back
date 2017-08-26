@@ -5,7 +5,7 @@ import com.fr.entities.AddressEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
 import com.fr.entities.SportEntity;
-import com.fr.service.PostControllerService;
+import com.fr.service.PostBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,13 +26,13 @@ public class PostUpdateController
 {
 	
 	/** Post controller service. */
-	private final PostControllerService postDataService;
+	private final PostBusinessService postDataService;
 	
 	/**
 	 * Init services.
 	 */
 	@Autowired
-	public PostUpdateController(final PostControllerService postDataService)
+	public PostUpdateController(final PostBusinessService postDataService)
 	{
 		this.postDataService = postDataService;
 	}

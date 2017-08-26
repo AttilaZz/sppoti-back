@@ -5,7 +5,6 @@ import com.fr.entities.CommentEntity;
 import com.fr.entities.LikeContentEntity;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -13,7 +12,7 @@ import java.util.List;
  */
 
 @Service
-public interface LikeControllerService extends AbstractControllerService
+public interface LikeBusinessService extends AbstractBusinessService
 {
 	
 	LikeContentEntity likePost(LikeContentEntity likeToSave);

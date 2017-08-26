@@ -3,9 +3,9 @@ package com.fr.api.comment.like;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.UserEntity;
-import com.fr.service.CommentControllerService;
-import com.fr.service.LikeControllerService;
-import com.fr.service.PostControllerService;
+import com.fr.service.CommentBusinessService;
+import com.fr.service.LikeBusinessService;
+import com.fr.service.PostBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,17 +27,17 @@ class UnlikeCommentController
 {
 	
 	/** Post service. */
-	private final PostControllerService postDataService;
+	private final PostBusinessService postDataService;
 	/** Comment service. */
-	private final CommentControllerService commentControllerService;
+	private final CommentBusinessService commentControllerService;
 	/** Like service. */
-	private final LikeControllerService likeControllerService;
+	private final LikeBusinessService likeControllerService;
 	
 	/** Init services. */
 	@Autowired
-	UnlikeCommentController(final PostControllerService postDataService,
-							final CommentControllerService commentControllerService,
-							final LikeControllerService likeControllerService)
+	UnlikeCommentController(final PostBusinessService postDataService,
+							final CommentBusinessService commentControllerService,
+							final LikeBusinessService likeControllerService)
 	{
 		this.postDataService = postDataService;
 		this.commentControllerService = commentControllerService;

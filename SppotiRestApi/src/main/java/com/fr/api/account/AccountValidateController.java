@@ -3,7 +3,7 @@ package com.fr.api.account;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.service.AccountControllerService;
+import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.*;
 class AccountValidateController
 {
 	/** Account service. */
-	private AccountControllerService accountService;
+	private AccountBusinessService accountService;
 	
 	/** Init service. */
 	@Autowired
-	void setAccountService(final AccountControllerService accountService)
+	void setAccountService(final AccountBusinessService accountService)
 	{
 		this.accountService = accountService;
 	}

@@ -1,7 +1,7 @@
 package com.fr.api.contact;
 
 import com.fr.commons.dto.ContactDTO;
-import com.fr.service.ContactControllerService;
+import com.fr.service.ContactRestService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,11 +25,11 @@ public class ContactAddController
 {
 	
 	/** Contact service. */
-	private final ContactControllerService contactControllerService;
+	private final ContactRestService contactControllerService;
 	
 	/** Init contact service. */
 	@Autowired
-	public ContactAddController(final ContactControllerService contactControllerService)
+	public ContactAddController(final ContactRestService contactControllerService)
 	{
 		this.contactControllerService = contactControllerService;
 	}

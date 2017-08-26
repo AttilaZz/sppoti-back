@@ -2,7 +2,7 @@ package com.fr.api.team.member;
 
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
-import com.fr.service.TeamControllerService;
+import com.fr.service.TeamBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,11 +20,11 @@ public class MemberUpdateController
 {
 	
 	/** Team controller service. */
-	private TeamControllerService teamControllerService;
+	private TeamBusinessService teamControllerService;
 	
 	/** Init services. */
 	@Autowired
-	void setTeamControllerService(final TeamControllerService teamControllerService)
+	void setTeamControllerService(final TeamBusinessService teamControllerService)
 	{
 		this.teamControllerService = teamControllerService;
 	}

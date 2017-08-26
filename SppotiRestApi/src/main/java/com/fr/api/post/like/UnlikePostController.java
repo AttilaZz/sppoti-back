@@ -1,6 +1,6 @@
 package com.fr.api.post.like;
 
-import com.fr.service.LikeControllerService;
+import com.fr.service.LikeBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,11 +21,11 @@ class UnlikePostController
 {
 	
 	/** Like service. */
-	private final LikeControllerService likeControllerService;
+	private final LikeBusinessService likeControllerService;
 	
 	/** Init services. */
 	@Autowired
-	public UnlikePostController(final LikeControllerService likeControllerService)
+	public UnlikePostController(final LikeBusinessService likeControllerService)
 	{
 		this.likeControllerService = likeControllerService;
 	}

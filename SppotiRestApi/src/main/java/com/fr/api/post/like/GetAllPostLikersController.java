@@ -3,8 +3,8 @@ package com.fr.api.post.like;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.PostEntity;
-import com.fr.service.LikeControllerService;
-import com.fr.service.PostControllerService;
+import com.fr.service.LikeBusinessService;
+import com.fr.service.PostBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +29,9 @@ class GetAllPostLikersController
 {
 
 	/** Posts Controller service. */
-	private final PostControllerService postDataService;
+	private final PostBusinessService postDataService;
 	/** Likes Controller service. */
-	private final LikeControllerService likeControllerService;
+	private final LikeBusinessService likeControllerService;
 	/** Class logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(GetAllPostLikersController.class);
 	
@@ -39,8 +39,8 @@ class GetAllPostLikersController
 	 * Init services.
 	 */
 	@Autowired
-	public GetAllPostLikersController(final PostControllerService postDataService,
-									  final LikeControllerService likeControllerService)
+	public GetAllPostLikersController(final PostBusinessService postDataService,
+									  final LikeBusinessService likeControllerService)
 	{
 		this.postDataService = postDataService;
 		this.likeControllerService = likeControllerService;

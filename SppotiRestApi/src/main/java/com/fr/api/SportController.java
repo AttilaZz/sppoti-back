@@ -1,7 +1,7 @@
 package com.fr.api;
 
 import com.fr.entities.SportEntity;
-import com.fr.service.SportControllerService;
+import com.fr.service.SportBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ class SportController
 	
 	/** Sport service. */
 	@Autowired
-	private SportControllerService sportService;
+	private SportBusinessService sportService;
 	
 	@GetMapping(value = "/all")
 	ResponseEntity<Object> getAllSports()

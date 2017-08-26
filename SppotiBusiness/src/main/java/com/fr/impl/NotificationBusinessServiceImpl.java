@@ -5,7 +5,7 @@ import com.fr.commons.dto.notification.NotificationListDTO;
 import com.fr.commons.enumeration.NotificationStatus;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.NotificationEntity;
-import com.fr.service.NotificationControllerService;
+import com.fr.service.NotificationBusinessService;
 import com.fr.transformers.impl.NotificationTransformerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * Created by djenanewail on 2/11/17.
  */
 @Component
-class NotificationControllerServiceImpl extends AbstractControllerServiceImpl implements NotificationControllerService
+class NotificationBusinessServiceImpl extends AbstractControllerServiceImpl implements NotificationBusinessService
 {
 	
 	/** Notification list size. */

@@ -1,7 +1,7 @@
 package com.fr.api.find;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.service.SppotiControllerService;
+import com.fr.service.SppotiBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,11 +23,11 @@ import java.util.List;
 public class FindSppoterController
 {
 	/** Sppoti controller service. */
-	private final SppotiControllerService sppotiControllerService;
+	private final SppotiBusinessService sppotiControllerService;
 	
 	/** Init service. */
 	@Autowired
-	public FindSppoterController(final SppotiControllerService sppotiControllerService)
+	public FindSppoterController(final SppotiBusinessService sppotiControllerService)
 	{
 		this.sppotiControllerService = sppotiControllerService;
 	}

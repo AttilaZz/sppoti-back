@@ -3,7 +3,7 @@ package com.fr.security;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.exceptions.SocialUserIdNotFound;
-import com.fr.service.LoginService;
+import com.fr.service.LoginBusinessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +25,11 @@ public class UserDetailServiceImpl implements UserDetailsService
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailServiceImpl.class);
 	
 	/** Login service. */
-	private LoginService loginService;
+	private LoginBusinessService loginService;
 	
 	/** Init login service. */
 	@Autowired
-	public void setLoginService(final LoginService loginService)
+	public void setLoginService(final LoginBusinessService loginService)
 	{
 		this.loginService = loginService;
 	}

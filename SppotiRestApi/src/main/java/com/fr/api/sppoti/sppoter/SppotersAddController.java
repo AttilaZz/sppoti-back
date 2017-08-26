@@ -2,7 +2,7 @@ package com.fr.api.sppoti.sppoter;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppoterDTO;
-import com.fr.service.SppotiControllerService;
+import com.fr.service.SppotiBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,11 +24,11 @@ import javax.validation.Valid;
 public class SppotersAddController {
 
     /** Sppoti service. */
-    private SppotiControllerService sppotiControllerService;
+    private SppotiBusinessService sppotiControllerService;
 
     /** Init service. */
     @Autowired
-    void setSppotiControllerService(final SppotiControllerService sppotiControllerService) {
+    void setSppotiControllerService(final SppotiBusinessService sppotiControllerService) {
         this.sppotiControllerService = sppotiControllerService;
     }
 

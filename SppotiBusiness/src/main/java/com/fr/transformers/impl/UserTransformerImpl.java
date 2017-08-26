@@ -4,7 +4,6 @@ import com.fr.commons.dto.RoleDTO;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.SportDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.enumeration.GenderEnum;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.commons.utils.SppotiUtils;
@@ -164,9 +163,12 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		entity.setConfirmationCode(confirmationCode);
 		
 		entity.setPassword(this.passwordEncoder.encode(dto.getPassword()));
-		entity.setUsername(dto.getUsername().trim());
 		
-		entity.setGender(GenderEnum.MALE);
+		entity.setUsername(dto.getUsername().trim());
+		entity.setFacebookId(dto.getFacebookId().trim());
+		entity.setGoogleId(dto.getGoogleId().trim());
+		entity.setTwitterId(dto.getTwitterId().trim());
+		
 		entity.setFirstConnexion(true);
 		entity.setConfirmed(true);
 		

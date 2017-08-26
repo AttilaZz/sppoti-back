@@ -1,7 +1,7 @@
 package com.fr.api.find;
 
 import com.fr.commons.dto.team.TeamDTO;
-import com.fr.service.TeamControllerService;
+import com.fr.service.TeamBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,13 +30,13 @@ class FindTeamController
 	/**
 	 * Team controller service.
 	 */
-	private final TeamControllerService teamControllerService;
+	private final TeamBusinessService teamControllerService;
 	
 	/**
 	 * Init team service.
 	 */
 	@Autowired
-	public FindTeamController(final TeamControllerService teamControllerService)
+	public FindTeamController(final TeamBusinessService teamControllerService)
 	{
 		this.teamControllerService = teamControllerService;
 	}

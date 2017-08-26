@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
  * Created by djenanewail on 4/8/17.
  */
 @Service
-public interface ContactControllerService extends AbstractControllerService
+public interface ContactRestService extends AbstractBusinessService
 {
 	
 	/**

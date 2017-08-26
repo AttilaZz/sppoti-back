@@ -1,7 +1,7 @@
 package com.fr.api.comment;
 
 import com.fr.entities.CommentEntity;
-import com.fr.service.CommentControllerService;
+import com.fr.service.CommentBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 class CommentDeleteController
 {
 	/** Comment service. */
-	private CommentControllerService commentDataService;
+	private CommentBusinessService commentDataService;
 	
 	/** Init comment service. */
 	@Autowired
-	void setCommentDataService(final CommentControllerService commentDataService)
+	void setCommentDataService(final CommentBusinessService commentDataService)
 	{
 		this.commentDataService = commentDataService;
 	}

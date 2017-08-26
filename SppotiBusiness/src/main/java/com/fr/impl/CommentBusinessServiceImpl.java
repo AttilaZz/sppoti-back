@@ -6,7 +6,7 @@ import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
-import com.fr.service.CommentControllerService;
+import com.fr.service.CommentBusinessService;
 import com.fr.transformers.impl.CommentTransformerImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -27,11 +27,11 @@ import java.util.Optional;
  * Created by: Wail DJENANE on Aug 12, 2016
  */
 @Component
-class CommentControllerServiceImpl extends AbstractControllerServiceImpl implements CommentControllerService
+class CommentBusinessServiceImpl extends AbstractControllerServiceImpl implements CommentBusinessService
 {
 	
 	/** Class logger. */
-	private final Logger LOGGER = LoggerFactory.getLogger(CommentControllerServiceImpl.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(CommentBusinessServiceImpl.class);
 	
 	/** Comment list size. */
 	@Value("${key.commentsPerPage}")

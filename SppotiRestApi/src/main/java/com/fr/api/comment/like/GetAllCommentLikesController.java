@@ -3,8 +3,8 @@ package com.fr.api.comment.like;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.entities.CommentEntity;
-import com.fr.service.CommentControllerService;
-import com.fr.service.LikeControllerService;
+import com.fr.service.CommentBusinessService;
+import com.fr.service.LikeBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +26,13 @@ class GetAllCommentLikesController
 {
 	
 	/** Comment service. */
-	private final CommentControllerService commentControllerService;
+	private final CommentBusinessService commentControllerService;
 	/** Like service. */
-	private final LikeControllerService likeControllerService;
+	private final LikeBusinessService likeControllerService;
 	
 	/** Init services. */
-	GetAllCommentLikesController(final CommentControllerService commentControllerService,
-								 final LikeControllerService likeControllerService)
+	GetAllCommentLikesController(final CommentBusinessService commentControllerService,
+								 final LikeBusinessService likeControllerService)
 	{
 		this.commentControllerService = commentControllerService;
 		this.likeControllerService = likeControllerService;

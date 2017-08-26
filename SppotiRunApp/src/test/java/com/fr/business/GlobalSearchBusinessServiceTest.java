@@ -1,6 +1,6 @@
 package com.fr.business;
 
-import com.fr.impl.GlobalSearchServiceImpl;
+import com.fr.impl.GlobalSearchBusinessServiceImpl;
 import com.fr.repositories.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,13 +17,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class GlobalSearchServiceTest
+public class GlobalSearchBusinessServiceTest
 {
 	@Mock
 	private UserRepository userRepository;
 	
 	@InjectMocks
-	private GlobalSearchServiceImpl globalSearchService;
+	private GlobalSearchBusinessServiceImpl globalSearchService;
 	
 	@Before
 	public void setUp() throws Exception {

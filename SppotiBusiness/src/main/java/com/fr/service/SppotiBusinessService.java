@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 @Service
-public interface SppotiControllerService extends AbstractControllerService
+public interface SppotiBusinessService extends AbstractBusinessService
 {
 	
 	

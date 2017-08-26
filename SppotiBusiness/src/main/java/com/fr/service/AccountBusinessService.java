@@ -8,7 +8,7 @@ import com.fr.entities.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component("accountService")
-public interface AccountControllerService extends AbstractControllerService
+public interface AccountBusinessService extends AbstractBusinessService
 {
 	
 	/**

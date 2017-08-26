@@ -8,7 +8,7 @@ import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.SppotiStatus;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
-import com.fr.service.SppotiControllerService;
+import com.fr.service.SppotiBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,11 +28,11 @@ class SppotiUpdateController
 {
 	
 	/** Sppoti controller service. */
-	private SppotiControllerService sppotiControllerService;
+	private SppotiBusinessService sppotiControllerService;
 	
 	/** Init service. */
 	@Autowired
-	void setSppotiControllerService(final SppotiControllerService sppotiControllerService)
+	void setSppotiControllerService(final SppotiBusinessService sppotiControllerService)
 	{
 		this.sppotiControllerService = sppotiControllerService;
 	}

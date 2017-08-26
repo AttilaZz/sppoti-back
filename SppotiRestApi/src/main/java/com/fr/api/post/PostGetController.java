@@ -3,7 +3,7 @@ package com.fr.api.post;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
-import com.fr.service.PostControllerService;
+import com.fr.service.PostBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,11 +27,11 @@ class PostGetController
 {
 	
 	/** Post controller service. */
-	private PostControllerService postDataService;
+	private PostBusinessService postDataService;
 	
 	/** Init services. */
 	@Autowired
-	void setPostDataService(final PostControllerService postDataService)
+	void setPostDataService(final PostBusinessService postDataService)
 	{
 		this.postDataService = postDataService;
 	}

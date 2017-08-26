@@ -4,7 +4,7 @@
 package com.fr.impl;
 
 import com.fr.entities.MessageEntity;
-import com.fr.service.MessageControllerService;
+import com.fr.service.MessageBusinessService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 @Component
-class MessageControllerServiceImpl extends AbstractControllerServiceImpl implements MessageControllerService
+class MessageBusinessServiceImpl extends AbstractControllerServiceImpl implements MessageBusinessService
 {
 	
 	/**

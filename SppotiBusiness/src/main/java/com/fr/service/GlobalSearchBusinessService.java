@@ -8,7 +8,7 @@ import com.fr.commons.dto.search.GlobalSearchResultDTO;
  *
  * Created by wdjenane on 22/06/2017.
  */
-public interface GlobalSearchService extends AbstractControllerService
+public interface GlobalSearchBusinessService extends AbstractBusinessService
 {
 	
 	GlobalSearchResultDTO findAllUsersFromCriteria(String query, String sexe, Integer ageMax, Integer ageMin,

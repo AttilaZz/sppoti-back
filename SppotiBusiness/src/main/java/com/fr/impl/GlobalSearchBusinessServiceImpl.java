@@ -9,7 +9,7 @@ import com.fr.entities.QSppotiEntity;
 import com.fr.entities.QTeamEntity;
 import com.fr.entities.QUserEntity;
 import com.fr.entities.UserEntity;
-import com.fr.service.GlobalSearchService;
+import com.fr.service.GlobalSearchBusinessService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
@@ -29,7 +29,8 @@ import java.util.stream.Collectors;
  * Created by wdjenane on 22/06/2017.
  */
 @Component
-public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl implements GlobalSearchService
+public class GlobalSearchBusinessServiceImpl extends AbstractControllerServiceImpl implements
+		GlobalSearchBusinessService
 {
 	
 	private final UserTransformer userTransformer;
@@ -41,8 +42,8 @@ public class GlobalSearchServiceImpl extends AbstractControllerServiceImpl imple
 	private Integer searchListSize;
 	
 	@Autowired
-	public GlobalSearchServiceImpl(final UserTransformer userTransformer, final TeamTransformer teamTransformer,
-								   final SppotiTransformer sppotiTransformer)
+	public GlobalSearchBusinessServiceImpl(final UserTransformer userTransformer, final TeamTransformer teamTransformer,
+										   final SppotiTransformer sppotiTransformer)
 	{
 		this.userTransformer = userTransformer;
 		this.teamTransformer = teamTransformer;

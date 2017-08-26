@@ -1,7 +1,7 @@
 package com.fr.impl;
 
 import com.fr.entities.SportEntity;
-import com.fr.service.SportControllerService;
+import com.fr.service.SportBusinessService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 @Component
-class SportControllerServiceImpl extends AbstractControllerServiceImpl implements SportControllerService
+class SportBusinessServiceImpl extends AbstractControllerServiceImpl implements SportBusinessService
 {
 	
 	/**

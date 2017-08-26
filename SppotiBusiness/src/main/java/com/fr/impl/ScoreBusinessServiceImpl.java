@@ -9,7 +9,7 @@ import com.fr.entities.ScoreEntity;
 import com.fr.entities.SppotiAdverseEntity;
 import com.fr.entities.TeamEntity;
 import com.fr.repositories.ScoreRepository;
-import com.fr.service.ScoreControllerService;
+import com.fr.service.ScoreBusinessService;
 import com.fr.transformers.ScoreTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ import java.util.Optional;
  * Created by djenanewail on 4/7/17.
  */
 @Component
-public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl implements ScoreControllerService
+public class ScoreBusinessServiceImpl extends AbstractControllerServiceImpl implements ScoreBusinessService
 {
 	
 	/** Score transformer. */
@@ -32,7 +32,7 @@ public class ScoreControllerServiceImpl extends AbstractControllerServiceImpl im
 	
 	/** Init all dependencies. */
 	@Autowired
-	public ScoreControllerServiceImpl(final ScoreTransformer scoreTransformer, final ScoreRepository scoreRepository)
+	public ScoreBusinessServiceImpl(final ScoreTransformer scoreTransformer, final ScoreRepository scoreRepository)
 	{
 		this.scoreTransformer = scoreTransformer;
 		this.scoreRepository = scoreRepository;

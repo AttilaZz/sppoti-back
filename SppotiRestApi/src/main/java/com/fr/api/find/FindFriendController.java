@@ -4,7 +4,7 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.FriendShipEntity;
 import com.fr.repositories.FriendShipRepository;
-import com.fr.service.AccountControllerService;
+import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ class FindFriendController
 	/** Friend repository. */
 	private final FriendShipRepository friendShipRepository;
 	/** Account controller service. */
-	private final AccountControllerService accountControllerService;
+	private final AccountBusinessService accountControllerService;
 	/** Friend list size. */
 	@Value("${key.friendShipPerPage}")
 	private int friend_size;
@@ -40,7 +40,7 @@ class FindFriendController
 	/** Init services. */
 	@Autowired
 	public FindFriendController(final FriendShipRepository friendShipRepository,
-								final AccountControllerService accountControllerService)
+								final AccountBusinessService accountControllerService)
 	{
 		this.friendShipRepository = friendShipRepository;
 		this.accountControllerService = accountControllerService;

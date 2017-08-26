@@ -15,7 +15,7 @@ import com.fr.entities.*;
 import com.fr.mail.SppotiMailer;
 import com.fr.mail.TeamMailer;
 import com.fr.repositories.*;
-import com.fr.service.AbstractControllerService;
+import com.fr.service.AbstractBusinessService;
 import com.fr.transformers.NotificationTransformer;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Component("abstractService")
-abstract class AbstractControllerServiceImpl implements AbstractControllerService
+abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 {
 	
 	@Autowired

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by djenanewail on 2/11/17.
  */
-public interface NotificationControllerService
+public interface NotificationBusinessService extends AbstractBusinessService
 {
 	
 	/**

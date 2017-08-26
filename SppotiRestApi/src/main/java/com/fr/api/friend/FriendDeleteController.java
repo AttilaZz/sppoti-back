@@ -1,6 +1,6 @@
 package com.fr.api.friend;
 
-import com.fr.service.FriendControllerService;
+import com.fr.service.FriendBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,11 +21,11 @@ class FriendDeleteController
 {
 	
 	/** Friend service. */
-	private FriendControllerService friendControllerService;
+	private FriendBusinessService friendControllerService;
 	
 	/** Init friend service. */
 	@Autowired
-	void setFriendControllerService(final FriendControllerService friendControllerService)
+	void setFriendControllerService(final FriendBusinessService friendControllerService)
 	{
 		this.friendControllerService = friendControllerService;
 	}

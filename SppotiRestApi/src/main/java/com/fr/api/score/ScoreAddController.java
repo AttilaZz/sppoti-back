@@ -1,7 +1,7 @@
 package com.fr.api.score;
 
 import com.fr.commons.dto.ScoreDTO;
-import com.fr.service.ScoreControllerService;
+import com.fr.service.ScoreBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,11 +24,11 @@ public class ScoreAddController
 {
 	
 	/** Service des scores. */
-	private ScoreControllerService scoreControllerService;
+	private ScoreBusinessService scoreControllerService;
 	
 	/** Init score service. */
 	@Autowired
-	public void setScoreControllerService(final ScoreControllerService scoreControllerService)
+	public void setScoreControllerService(final ScoreBusinessService scoreControllerService)
 	{
 		this.scoreControllerService = scoreControllerService;
 	}

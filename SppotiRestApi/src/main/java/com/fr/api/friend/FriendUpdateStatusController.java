@@ -3,7 +3,7 @@ package com.fr.api.friend;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.service.FriendControllerService;
+import com.fr.service.FriendBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +28,11 @@ class FriendUpdateStatusController
 {
 	
 	/** Friend service. */
-	private FriendControllerService friendControllerService;
+	private FriendBusinessService friendControllerService;
 	
 	/** Init service. */
 	@Autowired
-	void setFriendControllerService(final FriendControllerService friendControllerService)
+	void setFriendControllerService(final FriendBusinessService friendControllerService)
 	{
 		this.friendControllerService = friendControllerService;
 	}

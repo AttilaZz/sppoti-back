@@ -4,8 +4,8 @@ import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.LikeContentEntity;
 import com.fr.entities.PostEntity;
 import com.fr.entities.UserEntity;
-import com.fr.service.LikeControllerService;
-import com.fr.service.PostControllerService;
+import com.fr.service.LikeBusinessService;
+import com.fr.service.PostBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,17 +29,17 @@ class LikePostController
 {
 	
 	/** Post service. */
-	private final PostControllerService postDataService;
+	private final PostBusinessService postDataService;
 	
 	/** like service. */
-	private final LikeControllerService likeControllerService;
+	private final LikeBusinessService likeControllerService;
 
 	private final Logger LOGGER = LoggerFactory.getLogger(LikePostController.class);
 
 	/** Init services. */
 	@Autowired
-	public LikePostController(final PostControllerService postDataService,
-							  final LikeControllerService likeControllerService)
+	public LikePostController(final PostBusinessService postDataService,
+							  final LikeBusinessService likeControllerService)
 	{
 		this.postDataService = postDataService;
 		this.likeControllerService = likeControllerService;

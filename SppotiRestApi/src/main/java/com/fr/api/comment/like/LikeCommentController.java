@@ -4,8 +4,8 @@ import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.LikeContentEntity;
 import com.fr.entities.UserEntity;
-import com.fr.service.CommentControllerService;
-import com.fr.service.LikeControllerService;
+import com.fr.service.CommentBusinessService;
+import com.fr.service.LikeBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,13 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 class LikeCommentController
 {
 	/** Comment servcie. */
-	private final CommentControllerService commentControllerService;
+	private final CommentBusinessService commentControllerService;
 	/** like servcie. */
-	private final LikeControllerService likeControllerService;
+	private final LikeBusinessService likeControllerService;
 	
 	/** Init services. */
-	LikeCommentController(final CommentControllerService commentControllerService,
-						  final LikeControllerService likeControllerService)
+	LikeCommentController(final CommentBusinessService commentControllerService,
+						  final LikeBusinessService likeControllerService)
 	{
 		this.commentControllerService = commentControllerService;
 		this.likeControllerService = likeControllerService;

@@ -2,7 +2,7 @@ package com.fr.api.find;
 
 import com.fr.commons.dto.search.GlobalSearchResultDTO;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.service.GlobalSearchService;
+import com.fr.service.GlobalSearchBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +27,10 @@ import java.util.List;
 public class GlobalSearchController
 {
 	
-	private final GlobalSearchService globalSearchService;
+	private final GlobalSearchBusinessService globalSearchService;
 	
 	@Autowired
-	public GlobalSearchController(final GlobalSearchService globalSearchService) {
+	public GlobalSearchController(final GlobalSearchBusinessService globalSearchService) {
 		this.globalSearchService = globalSearchService;
 	}
 	

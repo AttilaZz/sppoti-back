@@ -12,7 +12,7 @@ import com.fr.commons.exception.MemberNotInAdminTeamException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
-import com.fr.service.TeamControllerService;
+import com.fr.service.TeamBusinessService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.impl.TeamTransformerImpl;
 import com.fr.transformers.impl.UserTransformerImpl;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  */
 
 @Component
-class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements TeamControllerService
+class TeamBusinessServiceImpl extends AbstractControllerServiceImpl implements TeamBusinessService
 {
 	
 	/** User transformer. */
@@ -51,9 +51,8 @@ class TeamControllerServiceImpl extends AbstractControllerServiceImpl implements
 	
 	/** Init dependencies. */
 	@Autowired
-	public TeamControllerServiceImpl(final UserTransformerImpl userTransformer,
-									 final TeamTransformerImpl teamTransformer,
-									 final SppotiTransformer sppotiTransformer)
+	public TeamBusinessServiceImpl(final UserTransformerImpl userTransformer, final TeamTransformerImpl teamTransformer,
+								   final SppotiTransformer sppotiTransformer)
 	{
 		this.userTransformer = userTransformer;
 		this.teamTransformer = teamTransformer;

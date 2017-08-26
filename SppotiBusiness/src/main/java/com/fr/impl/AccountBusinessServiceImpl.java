@@ -17,7 +17,7 @@ import com.fr.entities.*;
 import com.fr.enums.CoverType;
 import com.fr.mail.AccountMailer;
 import com.fr.repositories.ConnexionHistoryRepository;
-import com.fr.service.AccountControllerService;
+import com.fr.service.AccountBusinessService;
 import com.fr.transformers.ConnexionHistoryTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.SportTransformer;
@@ -40,11 +40,11 @@ import java.util.stream.Collectors;
  */
 
 @Component
-class AccountControllerServiceImpl extends AbstractControllerServiceImpl implements AccountControllerService
+class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implements AccountBusinessService
 {
 	
 	/** Class logger. */
-	private final Logger LOGGER = LoggerFactory.getLogger(AccountControllerServiceImpl.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(AccountBusinessServiceImpl.class);
 	
 	/** Spring security Password encoder. */
 	private final PasswordEncoder passwordEncoder;
@@ -70,11 +70,11 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	
 	/** Init dependencies. */
 	@Autowired
-	public AccountControllerServiceImpl(final AccountMailer accountMailer, final PasswordEncoder passwordEncoder,
-										final UserTransformerImpl userTransformer,
-										final SportTransformer sportTransformer,
-										final ConnexionHistoryRepository connexionHistoryRepository,
-										final ConnexionHistoryTransformer connexionHistoryTransformer)
+	public AccountBusinessServiceImpl(final AccountMailer accountMailer, final PasswordEncoder passwordEncoder,
+									  final UserTransformerImpl userTransformer,
+									  final SportTransformer sportTransformer,
+									  final ConnexionHistoryRepository connexionHistoryRepository,
+									  final ConnexionHistoryTransformer connexionHistoryTransformer)
 	{
 		this.accountMailer = accountMailer;
 		this.passwordEncoder = passwordEncoder;
@@ -91,37 +91,10 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	@Override
 	public void saveNewUser(final SignUpDTO user)
 	{
-		/*
-			if username or email exist, account valid:
-             - reject sign_up
-             - delete old account
-         */
-		final Optional<UserEntity> checkUsernameConfirmedAccount = Optional
-				.ofNullable(this.userRepository.getByUsernameAndDeletedFalse(user.getUsername()));
-		final Optional<UserEntity> checkEmailConfirmedAccount = Optional
-				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(user.getEmail()));
 		
-		/**
-		 * Confirmed account
-		 */
-		checkEmailConfirmedAccount.ifPresent(e -> {
-			if (accountExist(e)) {
-				throw new ConflictEmailException(ErrorMessageEnum.EMAIL_ALREADY_EXISTS.getMessage());
-			}
-		});
-		checkUsernameConfirmedAccount.ifPresent(e -> {
-			if (accountExist(e)) {
-				throw new ConflictUsernameException(ErrorMessageEnum.USERNAME_ALREADY_EXISTS.getMessage());
-			}
-		});
+		checkRequiredAttributeUniqueness(user);
 		
-		/**
-		 * Save user.
-		 */
 		final UserEntity newUser = this.userTransformer.signUpDtoToEntity(user);
-		
-		//		newUser.setFirstName(SppotiUtils.normaliser(newUser.getFirstName()));
-		//		newUser.setLastName(SppotiUtils.normaliser(newUser.getLastName()));
 		
 		newUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(this.daysBeforeExpiration));
 		
@@ -129,7 +102,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		final RoleEntity profile = this.roleRepository.getByName(UserRoleTypeEnum.USER);
 		
 		if (profile == null) {
-			throw new EntityNotFoundException("Profile name <" + UserRoleTypeEnum.USER.name() + "> not found !!");
+			throw new EntityNotFoundException("Profile <" + UserRoleTypeEnum.USER.name() + "> not found !!");
 		}
 		
 		final Set<RoleEntity> roles = new HashSet<>();
@@ -142,9 +115,61 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		newUser.getPasswordHistories().add(p);
 		
 		this.userRepository.save(newUser);
-		this.LOGGER.info("Account has been created for user : " + user.getEmail());
+		this.LOGGER.info("Account has been created for user : " + user);
 		
 		//		SendEmailToActivateAccount(newUser, TypeAccountValidation.signup);
+	}
+	
+	/** Check if account exists, and throw the appropriate exception. */
+	private void checkRequiredAttributeUniqueness(final SignUpDTO user) {
+		
+		final Optional<UserEntity> userFoundByUsername = Optional
+				.ofNullable(this.userRepository.findByUsernameAndDeletedFalse(user.getUsername()));
+		final Optional<UserEntity> userFoundByEmail = Optional
+				.ofNullable(this.userRepository.findByEmailAndDeletedFalse(user.getEmail()));
+		
+		final Optional<UserEntity> userFoundByFacebookId = Optional
+				.ofNullable(this.userRepository.findByFacebookIdAndDeletedFalse(user.getUsername()));
+		final Optional<UserEntity> userFoundByGoogleId = Optional
+				.ofNullable(this.userRepository.findByGoogleIdAndDeletedFalse(user.getEmail()));
+		final Optional<UserEntity> userFoundByTwitterId = Optional
+				.ofNullable(this.userRepository.findByTwitterIdAndDeletedFalse(user.getEmail()));
+		
+		userFoundByEmail.ifPresent(e -> {
+			if (accountExist(e)) {
+				throw new ConflictEmailException(ErrorMessageEnum.EMAIL_ALREADY_EXISTS.getMessage());
+			}
+		});
+		userFoundByUsername.ifPresent(e -> {
+			if (accountExist(e)) {
+				throw new ConflictUsernameException(ErrorMessageEnum.USERNAME_ALREADY_EXISTS.getMessage());
+			}
+		});
+		
+		userFoundByFacebookId.ifPresent(e -> {
+			if (accountExist(e)) {
+				throw new ConflictUsernameException(ErrorMessageEnum.FACEBOOK_ID_ALREADY_EXISTS.getMessage());
+			}
+		});
+		userFoundByGoogleId.ifPresent(e -> {
+			if (accountExist(e)) {
+				throw new ConflictUsernameException(ErrorMessageEnum.GOOGLE_ID_ALREADY_EXISTS.getMessage());
+			}
+		});
+		userFoundByTwitterId.ifPresent(e -> {
+			if (accountExist(e)) {
+				throw new ConflictUsernameException(ErrorMessageEnum.TWITTER_ID_ALREADY_EXISTS.getMessage());
+			}
+		});
+	}
+	
+	/** Test if account exists. */
+	private boolean accountExist(final UserEntity u)
+	{
+		if (!u.isConfirmed()) {
+			throw new AccountConfirmationLinkExpiredException("Account exist! Ask for another confirmation code.");
+		}
+		return true;
 	}
 	
 	/** Send Email to activate new account. */
@@ -156,16 +181,6 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 			this.LOGGER.info("Confirmation email has been sent successfully !");
 		});
 		thread.start();
-	}
-	
-	/** Test if account exists. */
-	private boolean accountExist(final UserEntity u)
-	{
-		if (!u.isConfirmed()) {
-			throw new AccountConfirmationLinkExpiredException("Account exist! Ask for another confirmation code.");
-		}
-		
-		return true;
 	}
 	
 	/**
@@ -356,7 +371,7 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 	{
 		
 		final Optional<UserEntity> optional = Optional
-				.ofNullable(this.userRepository.getByEmailAndDeletedFalse(userDTO.getEmail()));
+				.ofNullable(this.userRepository.findByEmailAndDeletedFalse(userDTO.getEmail()));
 		
 		optional.ifPresent(u -> {
 			

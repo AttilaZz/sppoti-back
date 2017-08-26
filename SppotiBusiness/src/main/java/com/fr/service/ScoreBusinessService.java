@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
  * Created by djenanewail on 4/7/17.
  */
 @Service
-public interface ScoreControllerService extends AbstractControllerService
+public interface ScoreBusinessService extends AbstractBusinessService
 {
 	
 	/**

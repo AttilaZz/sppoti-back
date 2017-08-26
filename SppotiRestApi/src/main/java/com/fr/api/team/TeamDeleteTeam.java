@@ -1,6 +1,6 @@
 package com.fr.api.team;
 
-import com.fr.service.TeamControllerService;
+import com.fr.service.TeamBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +23,10 @@ class TeamDeleteTeam
 	/**
 	 * Team service.
 	 */
-	private TeamControllerService teamControllerService;
+	private TeamBusinessService teamControllerService;
 	
 	@Autowired
-	void setTeamControllerService(final TeamControllerService teamControllerService)
+	void setTeamControllerService(final TeamBusinessService teamControllerService)
 	{
 		this.teamControllerService = teamControllerService;
 	}

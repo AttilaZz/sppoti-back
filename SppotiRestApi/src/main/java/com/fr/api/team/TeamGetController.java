@@ -2,7 +2,7 @@ package com.fr.api.team;
 
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.team.TeamDTO;
-import com.fr.service.TeamControllerService;
+import com.fr.service.TeamBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,11 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 class TeamGetController
 {
 	/** Team service. */
-	private TeamControllerService teamControllerService;
+	private TeamBusinessService teamControllerService;
 	
 	/** Init service. */
 	@Autowired
-	void setTeamControllerService(final TeamControllerService teamControllerService)
+	void setTeamControllerService(final TeamBusinessService teamControllerService)
 	{
 		this.teamControllerService = teamControllerService;
 	}

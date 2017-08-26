@@ -7,7 +7,7 @@ import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.TeamStatus;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.service.TeamControllerService;
+import com.fr.service.TeamBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,11 +27,11 @@ class TeamUpdateController
 {
 	
 	/** Team controller service. */
-	private TeamControllerService teamControllerService;
+	private TeamBusinessService teamControllerService;
 	
 	/** Init controller services. */
 	@Autowired
-	void setTeamControllerService(final TeamControllerService teamControllerService)
+	void setTeamControllerService(final TeamBusinessService teamControllerService)
 	{
 		this.teamControllerService = teamControllerService;
 	}

@@ -8,7 +8,7 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
-import com.fr.service.FriendControllerService;
+import com.fr.service.FriendBusinessService;
 import com.fr.transformers.UserTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +31,11 @@ import java.util.stream.Collectors;
  * Created by djenanewail on 1/22/17.
  */
 @Component
-class FriendControllerServiceImpl extends AbstractControllerServiceImpl implements FriendControllerService
+class FriendBusinessServiceImpl extends AbstractControllerServiceImpl implements FriendBusinessService
 {
 	
 	/** Class logger. */
-	private final Logger LOGGER = LoggerFactory.getLogger(FriendControllerServiceImpl.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(FriendBusinessServiceImpl.class);
 	
 	/** {@link UserEntity} transformer. */
 	private final UserTransformer userTransformer;
@@ -46,7 +46,7 @@ class FriendControllerServiceImpl extends AbstractControllerServiceImpl implemen
 	
 	/** Init services. */
 	@Autowired
-	public FriendControllerServiceImpl(final UserTransformer userTransformer)
+	public FriendBusinessServiceImpl(final UserTransformer userTransformer)
 	{
 		this.userTransformer = userTransformer;
 	}

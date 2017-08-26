@@ -5,7 +5,7 @@ import com.fr.commons.dto.notification.NotificationListDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.enumeration.NotificationStatus;
 import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.service.NotificationControllerService;
+import com.fr.service.NotificationBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,11 +25,11 @@ class NotificationController
 {
 	
 	/** Notification service. */
-	private NotificationControllerService notificationControllerService;
+	private NotificationBusinessService notificationControllerService;
 	
 	/** Init notif service. */
 	@Autowired
-	void setNotificationControllerService(final NotificationControllerService notificationControllerService)
+	void setNotificationControllerService(final NotificationBusinessService notificationControllerService)
 	{
 		this.notificationControllerService = notificationControllerService;
 	}

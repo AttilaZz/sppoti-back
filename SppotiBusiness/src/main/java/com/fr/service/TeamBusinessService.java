@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 @Service
-public interface TeamControllerService extends AbstractControllerService
+public interface TeamBusinessService extends AbstractBusinessService
 {
 	
 	/**

@@ -3,7 +3,7 @@ package com.fr.api.find;
 import com.fr.commons.dto.UserDTO;
 import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
-import com.fr.service.AccountControllerService;
+import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +34,7 @@ class FindUsersController
 	/** USer repository. */
 	private final UserRepository userRepository;
 	/** Account service. */
-	private final AccountControllerService accountControllerService;
+	private final AccountBusinessService accountControllerService;
 
 	/** Friend list size. */
 	@Value("${key.friendShipPerPage}")
@@ -43,7 +43,7 @@ class FindUsersController
 	/** Init service. */
 	@Autowired
 	public FindUsersController(final UserRepository userRepository,
-							   final AccountControllerService accountControllerService)
+							   final AccountBusinessService accountControllerService)
 	{
 		this.userRepository = userRepository;
 		this.accountControllerService = accountControllerService;
