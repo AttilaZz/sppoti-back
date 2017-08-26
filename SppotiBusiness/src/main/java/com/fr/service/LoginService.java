@@ -1,6 +1,6 @@
 package com.fr.service;
 
-import com.fr.entities.UserEntity;
+import com.fr.commons.dto.UserDTO;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,34 +9,43 @@ import org.springframework.stereotype.Component;
 @Component
 public interface LoginService extends AbstractControllerService
 {
-	
 	/**
-	 * Find user by email.
+	 * Find user by username.
 	 *
 	 * @param username
-	 * 		user email.
-	 *
-	 * @return User data.
-	 */
-	UserEntity getByEmail(String username);
-	
-	/**
-	 * Find user by his phone number.
-	 *
-	 * @param username
-	 * 		user phone number.
+	 * 		of the user.
 	 *
 	 * @return user data.
 	 */
-	UserEntity getByTelephone(String username);
+	UserDTO getUserByUsernameForLogin(String username);
 	
 	/**
-	 * Find user by his username.
+	 * Find user by facebook id.
 	 *
-	 * @param username
-	 * 		user username.
+	 * @param facebookId
+	 * 		facebook id.
 	 *
 	 * @return user data.
 	 */
-	UserEntity getByUsername(String username);
+	UserDTO getUserByFacebookId(String facebookId);
+	
+	/**
+	 * find user by google id.
+	 *
+	 * @param googleId
+	 * 		user id in google api.
+	 *
+	 * @return user data.
+	 */
+	UserDTO getUserByGoogleId(String googleId);
+	
+	/**
+	 * find user by twitter id.
+	 *
+	 * @param twitterId
+	 * 		user id in twitter api.
+	 *
+	 * @return user data.
+	 */
+	UserDTO getUserByTwitterId(String twitterId);
 }

@@ -73,8 +73,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 					.requestCache(new NullRequestCache())
 				.and()
 					.httpBasic()
-				.and()
-					.formLogin().successHandler(this.authSuccess).failureHandler(this.authFailure).and()
+				.and().formLogin().successHandler(this.authSuccess).failureHandler(this.authFailure).and()
 				.addFilterBefore(customUsernamePasswordAuthenticationFilter(),
 						UsernamePasswordAuthenticationFilter.class).authorizeRequests().antMatchers("/trade/**")
 				.permitAll().antMatchers("/**/sport/**", "/**/contact/**", "/**/init/token").permitAll()

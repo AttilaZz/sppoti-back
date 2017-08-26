@@ -232,29 +232,6 @@ abstract class AbstractControllerServiceImpl implements AbstractControllerServic
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 */
-	@Transactional
-	@Override
-	public UserDTO getUserByUsernameForLogin(final String username) {
-		final UserEntity entity = getUserByLogin(username, false);
-		//if account is deactivated and suppress date is less than 90 days reactivate account.
-		final UserEntity temp;
-		if (entity != null) {
-			if (entity.getDeactivationDate() != null &&
-					!SppotiUtils.isAccountReadyToBeCompletlyDeleted(entity.getDeactivationDate(), 90)) {
-				entity.setDeleted(false);
-				temp = this.userRepository.saveAndFlush(entity);
-				return this.userTransformer.modelToDto(temp);
-			}
-			return this.userTransformer.modelToDto(entity);
-			
-		}
-		
-		return null;
-	}
-	
-	/**
 	 * @param dbCommentEntityList
 	 * 		like entity.
 	 * @param userId

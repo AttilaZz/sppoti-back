@@ -1,6 +1,5 @@
 package com.fr.security;
 
-import com.fr.aop.TraceControllers;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.service.LoginService;
@@ -11,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class UserDetailServiceImpl implements UserDetailsService
 {
 	/** Class logger. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(TraceControllers.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailServiceImpl.class);
 	
 	/** Login service. */
 	private LoginService loginService;
@@ -47,16 +47,23 @@ public class UserDetailServiceImpl implements UserDetailsService
 	{
 		
 		final String[] loginAttributes = loginUser.split(",");
+		LOGGER.info("received data from login form: ", loginAttributes.toString());
 		
 		final String username = loginAttributes[0];
 		final String facebookId = loginAttributes[1];
 		final String googleId = loginAttributes[2];
 		final String twitterId = loginAttributes[3];
 		
-		// database request
-		final UserDTO account = this.loginService.getUserByUsernameForLogin(username);
-		
-		if (account == null) {
+		final UserDTO account;
+		if (StringUtils.hasText(username)) {
+			account = this.loginService.getUserByUsernameForLogin(username);
+		} else if (StringUtils.hasText(facebookId)) {
+			account = this.loginService.getUserByFacebookId(facebookId);
+		} else if (StringUtils.hasText(googleId)) {
+			account = this.loginService.getUserByGoogleId(googleId);
+		} else if (StringUtils.hasText(twitterId)) {
+			account = this.loginService.getUserByTwitterId(twitterId);
+		} else {
 			LOGGER.info("The given login (" + loginUser + " was not found: " + ")");
 			throw new UsernameNotFoundException("no user found with: " + loginUser);
 		}
@@ -64,6 +71,5 @@ public class UserDetailServiceImpl implements UserDetailsService
 		LOGGER.info("Trying to log user : ", username);
 		return new AccountUserDetails(account);
 	}
-	
 	
 }

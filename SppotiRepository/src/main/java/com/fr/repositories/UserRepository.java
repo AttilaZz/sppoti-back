@@ -59,41 +59,21 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>, QueryDs
 	List<UserEntity> findAllAllowedSppoter(@Param("prefix") String prefix,
 										   @Param("existingSppoter") List existingSppoter, Pageable pageable);
 	
-	/**
-	 * Find user by id if account is confirmed and not deleted.
-	 *
-	 * @param userId
-	 * 		user id.
-	 *
-	 * @return user account data.
-	 */
 	Optional<UserEntity> getByUuidAndConfirmedTrueAndDeletedFalseAndConfirmedTrue(String userId);
 	
-	/**
-	 * Find user in login process by email.
-	 */
 	UserEntity findByEmail(String username);
 	
-	/**
-	 * Find user in login process by phone number.
-	 */
 	UserEntity findByTelephone(String username);
 	
-	/**
-	 * Find user in login process by username.
-	 */
 	UserEntity findByUsername(String username);
 	
-	/**
-	 * Find all existing users accounts by email.
-	 * Otherwise confirmed or not.
-	 *
-	 * @param email
-	 * 		user email.
-	 *
-	 * @return User account.
-	 */
 	UserEntity getByEmailAndDeletedFalse(String email);
 	
 	UserEntity getByUsernameAndDeletedFalse(String username);
+	
+	UserEntity findByFacebookId(String facebookId);
+	
+	UserEntity findByGoogleId(String googleId);
+	
+	UserEntity findByTwitterId(String twitterId);
 }
