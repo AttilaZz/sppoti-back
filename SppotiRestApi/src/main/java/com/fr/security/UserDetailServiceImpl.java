@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.EntityNotFoundException;
+
 /**
  * Created by: Wail DJENANE On May 22, 2016
  */
@@ -54,18 +56,28 @@ public class UserDetailServiceImpl implements UserDetailsService
 		final String googleId = loginAttributes[2];
 		final String twitterId = loginAttributes[3];
 		
-		final UserDTO account;
+		UserDTO account = null;
+		boolean isSocial = false;
 		if (StringUtils.hasText(username)) {
 			account = this.loginService.getUserByUsernameForLogin(username);
 		} else if (StringUtils.hasText(facebookId)) {
 			account = this.loginService.getUserByFacebookId(facebookId);
+			isSocial = true;
 		} else if (StringUtils.hasText(googleId)) {
 			account = this.loginService.getUserByGoogleId(googleId);
+			isSocial = true;
 		} else if (StringUtils.hasText(twitterId)) {
 			account = this.loginService.getUserByTwitterId(twitterId);
-		} else {
+			isSocial = true;
+		}
+		
+		if (account == null) {
 			LOGGER.info("The given login (" + loginUser + " was not found: " + ")");
-			throw new UsernameNotFoundException("no user found with: " + loginUser);
+			if (isSocial) {
+				throw new EntityNotFoundException("Social id is not valid");
+			} else {
+				throw new UsernameNotFoundException("no user found with: " + loginUser);
+			}
 		}
 		
 		LOGGER.info("Trying to log user : ", username);
