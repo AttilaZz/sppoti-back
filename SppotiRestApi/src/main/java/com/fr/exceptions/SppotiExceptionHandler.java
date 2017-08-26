@@ -63,7 +63,8 @@ public class SppotiExceptionHandler
 	 *
 	 * @return 404 http status if exception was catched.
 	 */
-	@ExceptionHandler(value = {EntityNotFoundException.class, IllegalArgumentException.class})
+	@ExceptionHandler(
+			value = {EntityNotFoundException.class, IllegalArgumentException.class, SocialUserIdNotFound.class})
 	public ResponseEntity globalException(final EntityNotFoundException e)
 	{
 		this.LOGGER.error(e.getMessage(), e);
