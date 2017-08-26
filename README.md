@@ -13,4 +13,4 @@ mcn clean install -DskipTests
 # DEPLOIMENT
 
 1. Move to project root
-2. execute: sh src/main/resources/deploy.sh <version>
+2. execute: sh src/main/resources/deploy.sh {version}
