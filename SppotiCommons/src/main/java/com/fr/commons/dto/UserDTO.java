@@ -14,19 +14,26 @@ import java.util.List;
  */
 public class UserDTO extends AbstractCommonDTO
 {
+	//user db id
+	private Long techId;
 	
 	private String firstName;
 	private String lastName;
 	private String username;
 	private String address;
 	private GenderEnum gender;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+	private Date birthDate;
+	
+	// Sowial networks login variables
+	private String facebookId;
+	private String googleId;
+	private String twitterId;
 	
 	//team admin decision about user request to join team
 	private Boolean waitConfirmation;
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-	private Date birthDate;
-	
+	//team member positin in the stadium
 	private Integer xPosition;
 	private Integer yPosition;
 	
@@ -38,7 +45,6 @@ public class UserDTO extends AbstractCommonDTO
 	private String phone;
 	private String email;
 	
-	private Long techId;
 	private boolean confirmed;
 	private List<RoleDTO> userRoles = new ArrayList<>();
 	//	private Date deactivationDate;
@@ -422,5 +428,29 @@ public class UserDTO extends AbstractCommonDTO
 	
 	public void setProfileComplete(final Boolean profileComplete) {
 		this.isProfileComplete = profileComplete;
+	}
+	
+	public String getFacebookId() {
+		return this.facebookId;
+	}
+	
+	public void setFacebookId(final String facebookId) {
+		this.facebookId = facebookId;
+	}
+	
+	public String getGoogleId() {
+		return this.googleId;
+	}
+	
+	public void setGoogleId(final String googleId) {
+		this.googleId = googleId;
+	}
+	
+	public String getTwitterId() {
+		return this.twitterId;
+	}
+	
+	public void setTwitterId(final String twitterId) {
+		this.twitterId = twitterId;
 	}
 }

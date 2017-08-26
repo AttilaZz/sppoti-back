@@ -252,12 +252,13 @@ class AccountControllerServiceImpl extends AbstractControllerServiceImpl impleme
 		if (userDTO.isFirstConnexion() != null) {
 			connectedUser.setFirstConnexion(false);
 		}
+		if (userDTO.getBirthDate() != null) {
+			connectedUser.setDateBorn(userDTO.getBirthDate());
+		}
 		if (userDTO.isProfileComplete() != null) {
-			if (userDTO.getBirthDate() != null) {
-				connectedUser.setDateBorn(userDTO.getBirthDate());
-			}
 			connectedUser.setProfileComplete(userDTO.isProfileComplete());
-		} else if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
+		}
+		if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
 				StringUtils.hasText(userDTO.getOldPassword())) {
 			
 			//Check that old password is correct

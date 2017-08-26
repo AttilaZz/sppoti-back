@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationTrustResolver;
-import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,12 +13,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -70,7 +65,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception
 	{
-		
 		http.
 			cors()
 				.and()
@@ -80,12 +74,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 				.and()
 					.httpBasic()
 				.and()
-					.formLogin()
-					.successHandler(savedRequestAwareAuthenticationSuccessHandler())
-					.usernameParameter("username")
-					.passwordParameter("password").successHandler(this.authSuccess).failureHandler(this.authFailure)
-				.and().authorizeRequests().antMatchers("/trade/**").permitAll()
-				.antMatchers("/**/sport/**", "/**/contact/**", "/**/init/token").permitAll()
+					.formLogin().successHandler(this.authSuccess).failureHandler(this.authFailure).and()
+				.addFilterBefore(customUsernamePasswordAuthenticationFilter(),
+						UsernamePasswordAuthenticationFilter.class).authorizeRequests().antMatchers("/trade/**")
+				.permitAll().antMatchers("/**/sport/**", "/**/contact/**", "/**/init/token").permitAll()
 				.antMatchers(HttpMethod.POST, "/**/account/create").permitAll()
 				.antMatchers(HttpMethod.POST, "/**/account/connexion/endpoint").permitAll()
 				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and().logout()
@@ -100,27 +92,42 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 					.xssProtectionEnabled(true);
 	}
 	
-	/**
-	 * Configure CSRF token.
-	 */
-	private CsrfTokenRepository csrfTokenRepository()
-	{
-		final HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-		repository.setHeaderName("X-XSRF-TOKEN");
-		return repository;
+	/** Init custom authentification filter. */
+	@Bean
+	CustomUsernamePasswordAuthenticationFilter customUsernamePasswordAuthenticationFilter() throws Exception {
+		final CustomUsernamePasswordAuthenticationFilter authenticationFilter
+				= new CustomUsernamePasswordAuthenticationFilter();
+		authenticationFilter.setAuthenticationManager(authenticationManagerBean());
+		authenticationFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/login", "POST"));
+		authenticationFilter.setUsernameParameter("username");
+		authenticationFilter.setPasswordParameter("password");
+		authenticationFilter.setFilterProcessesUrl("/auth/user");
+		authenticationFilter.setAuthenticationSuccessHandler(this.authSuccess);
+		authenticationFilter.setAuthenticationFailureHandler(this.authFailure);
+		return authenticationFilter;
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Bean
-	public SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler()
-	{
-		
-		final SavedRequestAwareAuthenticationSuccessHandler auth = new SavedRequestAwareAuthenticationSuccessHandler();
-		auth.setTargetUrlParameter("/");
-		return auth;
-	}
+	//	/**
+	//	 * Configure CSRF token.
+	//	 */
+	//	private CsrfTokenRepository csrfTokenRepository()
+	//	{
+	//		final HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
+	//		repository.setHeaderName("X-XSRF-TOKEN");
+	//		return repository;
+	//	}
+	
+	//	/**
+	//	 * {@inheritDoc}
+	//	 */
+	//	@Bean
+	//	public SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler()
+	//	{
+	//
+	//		final SavedRequestAwareAuthenticationSuccessHandler auth = new SavedRequestAwareAuthenticationSuccessHandler();
+	//		auth.setTargetUrlParameter("/");
+	//		return auth;
+	//	}
 	
 	/** Init password encoder bean. */
 	@Bean
@@ -129,6 +136,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		return new BCryptPasswordEncoder();
 	}
 	
+	//	/** Init auth provider. */
+	//	@Bean
+	//	public DaoAuthenticationProvider authenticationProvider()
+	//	{
+	//		final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+	//		authenticationProvider.setUserDetailsService(this.userDetailService);
+	//		authenticationProvider.setPasswordEncoder(passwordEncoder());
+	//		authenticationProvider.setPreAuthenticationChecks();
+	//
+	//		return authenticationProvider;
+	//	}
+	
 	/** Configure authentication provider. */
 	@Autowired
 	public void configureGlobalSecurity(final AuthenticationManagerBuilder auth) throws Exception
@@ -136,17 +155,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		auth.userDetailsService(this.userDetailService).passwordEncoder(passwordEncoder());
 	}
 	
-	/** Init remember me token service. */
-	@Bean
-	public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices()
-	{
-		return new PersistentTokenBasedRememberMeServices("remember-me", this.userDetailService, this.tokenRepository);
-	}
+	//	/** Init remember me token service. */
+	//	@Bean
+	//	public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices()
+	//	{
+	//		return new PersistentTokenBasedRememberMeServices("remember-me", this.userDetailService, this.tokenRepository);
+	//	}
 	
-	/** Init auth trust resolver. for remember me */
-	@Bean
-	public AuthenticationTrustResolver getAuthenticationTrustResolver()
-	{
-		return new AuthenticationTrustResolverImpl();
-	}
+	//	/** Init auth trust resolver. for remember me */
+	//	@Bean
+	//	public AuthenticationTrustResolver getAuthenticationTrustResolver()
+	//	{
+	//		return new AuthenticationTrustResolverImpl();
+	//	}
 }
