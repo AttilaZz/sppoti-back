@@ -34,4 +34,11 @@ public class PasswordEncodingTest
 		
 		Assert.assertTrue(this.passwordEncoder.matches(password64, encodedPassword));
 	}
+	
+	@Test
+	public void hashPassword() {
+		final String password = "piratusse+";
+		
+		System.out.println("password: " + this.passwordEncoder.encode(password));
+	}
 }

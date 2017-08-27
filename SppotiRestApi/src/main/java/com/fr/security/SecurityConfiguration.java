@@ -73,15 +73,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 					.requestCache(new NullRequestCache())
 				.and()
 					.httpBasic()
-				.and().formLogin().successHandler(this.authSuccess).failureHandler(this.authFailure).and()
-				.addFilterBefore(customUsernamePasswordAuthenticationFilter(),
-						UsernamePasswordAuthenticationFilter.class).authorizeRequests().antMatchers("/trade/**")
-				.permitAll().antMatchers("/**/sport/**", "/**/contact/**", "/**/init/token").permitAll()
-				.antMatchers(HttpMethod.POST, "/**/account/create").permitAll()
-				.antMatchers(HttpMethod.POST, "/**/account/connexion/endpoint").permitAll()
-				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll().anyRequest().authenticated().and().logout()
-				.addLogoutHandler(this.logoutHandler).logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-				.logoutSuccessHandler(this.logoutSuccessHandler)
+				.and()
+					.formLogin()
+				.and()
+					.addFilterBefore(customUsernamePasswordAuthenticationFilter(),
+							UsernamePasswordAuthenticationFilter.class)
+					.authorizeRequests()
+						.antMatchers("/trade/**").permitAll()
+						.antMatchers("/**/sport/**", "/**/contact/**", "/**/init/token").permitAll()
+						.antMatchers(HttpMethod.POST, "/**/account/create").permitAll()
+						.antMatchers(HttpMethod.POST, "/**/account/connexion/endpoint").permitAll()
+						.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+						.anyRequest().authenticated()
+				.and()
+					.logout()
+						.addLogoutHandler(this.logoutHandler)
+						.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+						.logoutSuccessHandler(this.logoutSuccessHandler)
 				.and()
 					.exceptionHandling()
 					.authenticationEntryPoint(this.pointUnAthorisedHandler)
@@ -116,36 +124,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	//		return repository;
 	//	}
 	
-	//	/**
-	//	 * {@inheritDoc}
-	//	 */
-	//	@Bean
-	//	public SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler()
-	//	{
-	//
-	//		final SavedRequestAwareAuthenticationSuccessHandler auth = new SavedRequestAwareAuthenticationSuccessHandler();
-	//		auth.setTargetUrlParameter("/");
-	//		return auth;
-	//	}
-	
 	/** Init password encoder bean. */
 	@Bean
 	public PasswordEncoder passwordEncoder()
 	{
 		return new BCryptPasswordEncoder();
 	}
-	
-	//	/** Init auth provider. */
-	//	@Bean
-	//	public DaoAuthenticationProvider authenticationProvider()
-	//	{
-	//		final DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-	//		authenticationProvider.setUserDetailsService(this.userDetailService);
-	//		authenticationProvider.setPasswordEncoder(passwordEncoder());
-	//		authenticationProvider.setPreAuthenticationChecks();
-	//
-	//		return authenticationProvider;
-	//	}
 	
 	/** Configure authentication provider. */
 	@Autowired
@@ -159,12 +143,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	//	public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices()
 	//	{
 	//		return new PersistentTokenBasedRememberMeServices("remember-me", this.userDetailService, this.tokenRepository);
-	//	}
-	
-	//	/** Init auth trust resolver. for remember me */
-	//	@Bean
-	//	public AuthenticationTrustResolver getAuthenticationTrustResolver()
-	//	{
-	//		return new AuthenticationTrustResolverImpl();
 	//	}
 }

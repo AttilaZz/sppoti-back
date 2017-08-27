@@ -1,5 +1,6 @@
 package com.fr.security;
 
+import com.fr.commons.utils.SppotiUtils;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.StringUtils;
 
@@ -28,6 +29,14 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
 		final String twitterId = buildParameter(request.getParameter(SPRING_SECURITY_FORM_TWITTER_KEY));
 		
 		return String.join(",", username, facebookId, googleId, twitterId);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected String obtainPassword(final HttpServletRequest request) {
+		return SppotiUtils.decode64ToString(super.obtainPassword(request));
 	}
 	
 	private String buildParameter(final String param) {

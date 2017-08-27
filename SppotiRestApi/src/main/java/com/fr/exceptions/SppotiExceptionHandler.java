@@ -21,7 +21,6 @@ import javax.persistence.NonUniqueResultException;
 @ControllerAdvice
 public class SppotiExceptionHandler
 {
-	
 	/** Class logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(SppotiExceptionHandler.class);
 	
@@ -221,6 +220,4 @@ public class SppotiExceptionHandler
 		this.LOGGER.error(e.getMessage());
 		return ResponseEntity.status(413).body(e.getMessage());
 	}
-	
-	
 }
