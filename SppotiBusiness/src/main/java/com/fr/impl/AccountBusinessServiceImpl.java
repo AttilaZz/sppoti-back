@@ -8,10 +8,7 @@ import com.fr.commons.enumeration.ErrorMessageEnum;
 import com.fr.commons.enumeration.LanguageEnum;
 import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.commons.enumeration.UserRoleTypeEnum;
-import com.fr.commons.exception.AccountConfirmationLinkExpiredException;
-import com.fr.commons.exception.BusinessGlobalException;
-import com.fr.commons.exception.ConflictEmailException;
-import com.fr.commons.exception.ConflictUsernameException;
+import com.fr.commons.exception.*;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.enums.CoverType;
@@ -130,12 +127,17 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 		final Optional<UserEntity> userFoundByEmail = Optional
 				.ofNullable(this.userRepository.findByEmailAndDeletedFalse(user.getEmail()));
 		
-		final Optional<UserEntity> userFoundByFacebookId = Optional
-				.ofNullable(this.userRepository.findByFacebookIdAndDeletedFalse(user.getUsername()));
-		final Optional<UserEntity> userFoundByGoogleId = Optional
-				.ofNullable(this.userRepository.findByGoogleIdAndDeletedFalse(user.getEmail()));
-		final Optional<UserEntity> userFoundByTwitterId = Optional
-				.ofNullable(this.userRepository.findByTwitterIdAndDeletedFalse(user.getEmail()));
+		final Optional<UserEntity> userFoundByFacebookId = user.getFacebookId() != null ?
+				Optional.ofNullable(this.userRepository.findByFacebookIdAndDeletedFalse(user.getFacebookId())) :
+				Optional.empty();
+		
+		final Optional<UserEntity> userFoundByGoogleId = user.getGoogleId() != null ?
+				Optional.ofNullable(this.userRepository.findByGoogleIdAndDeletedFalse(user.getGoogleId())) :
+				Optional.empty();
+		
+		final Optional<UserEntity> userFoundByTwitterId = user.getTwitterId() != null ?
+				Optional.ofNullable(this.userRepository.findByTwitterIdAndDeletedFalse(user.getTwitterId())) :
+				Optional.empty();
 		
 		userFoundByEmail.ifPresent(e -> {
 			if (accountExist(e)) {
@@ -150,17 +152,17 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 		
 		userFoundByFacebookId.ifPresent(e -> {
 			if (accountExist(e)) {
-				throw new ConflictUsernameException(ErrorMessageEnum.FACEBOOK_ID_ALREADY_EXISTS.getMessage());
+				throw new ConflictFacebookIdException(ErrorMessageEnum.FACEBOOK_ID_ALREADY_EXISTS.getMessage());
 			}
 		});
 		userFoundByGoogleId.ifPresent(e -> {
 			if (accountExist(e)) {
-				throw new ConflictUsernameException(ErrorMessageEnum.GOOGLE_ID_ALREADY_EXISTS.getMessage());
+				throw new ConflictGoogleIdException(ErrorMessageEnum.GOOGLE_ID_ALREADY_EXISTS.getMessage());
 			}
 		});
 		userFoundByTwitterId.ifPresent(e -> {
 			if (accountExist(e)) {
-				throw new ConflictUsernameException(ErrorMessageEnum.TWITTER_ID_ALREADY_EXISTS.getMessage());
+				throw new ConflictTwitterException(ErrorMessageEnum.TWITTER_ID_ALREADY_EXISTS.getMessage());
 			}
 		});
 	}

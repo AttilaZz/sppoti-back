@@ -36,7 +36,7 @@ public class SppotiExceptionHandler
 	@ExceptionHandler(value = NotAdminException.class)
 	public ResponseEntity notTeamAdmin(final NotAdminException e)
 	{
-		this.LOGGER.error(e.getMessage(), e);
+		this.LOGGER.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
 	}
 	
@@ -51,7 +51,7 @@ public class SppotiExceptionHandler
 	@ExceptionHandler(value = BusinessGlobalException.class)
 	public ResponseEntity globalException(final BusinessGlobalException e)
 	{
-		this.LOGGER.error(e.getMessage(), e);
+		this.LOGGER.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 	}
 	
@@ -83,7 +83,7 @@ public class SppotiExceptionHandler
 	public ResponseEntity conflictException(final DataIntegrityViolationException e)
 	{
 		
-		this.LOGGER.error(e.getMessage(), e);
+		this.LOGGER.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 	}
 	
@@ -98,7 +98,7 @@ public class SppotiExceptionHandler
 	@ExceptionHandler({EntityExistsException.class, NonUniqueResultException.class})
 	public ResponseEntity conflictExistException(final EntityExistsException e)
 	{
-		this.LOGGER.error(e.getMessage(), e);
+		this.LOGGER.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
 	}
 	
@@ -113,7 +113,7 @@ public class SppotiExceptionHandler
 	@ExceptionHandler(value = NoRightToAcceptOrRefuseChallenge.class)
 	public ResponseEntity globalException(final NoRightToAcceptOrRefuseChallenge e)
 	{
-		this.LOGGER.error(e.getMessage(), e);
+		this.LOGGER.error(e.getMessage());
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
 	}
 	
@@ -143,7 +143,7 @@ public class SppotiExceptionHandler
 	@ExceptionHandler(value = ConflictUsernameException.class)
 	public ResponseEntity conflictUsernameException(final ConflictUsernameException e)
 	{
-		this.LOGGER.error(e.getMessage(), e);
+		this.LOGGER.error(e.getMessage());
 		return ResponseEntity.status(411).body(e.getMessage());
 	}
 	
@@ -153,13 +153,58 @@ public class SppotiExceptionHandler
 	 * @param e
 	 * 		exception content.
 	 *
-	 * @return 409 hhtp status.
+	 * @return 409 http status.
 	 */
 	@ExceptionHandler(value = ConflictEmailException.class)
 	public ResponseEntity conflictEmailException(final ConflictEmailException e)
 	{
-		this.LOGGER.error(e.getMessage(), e);
+		this.LOGGER.error(e.getMessage());
 		return ResponseEntity.status(410).body(e.getMessage());
+	}
+	
+	/**
+	 * Catch all {@link ConflictFacebookIdException}
+	 *
+	 * @param e
+	 * 		exception content.
+	 *
+	 * @return 414 http status.
+	 */
+	@ExceptionHandler(value = ConflictFacebookIdException.class)
+	public ResponseEntity conflictFacebookIdException(final ConflictFacebookIdException e)
+	{
+		this.LOGGER.error(e.getMessage());
+		return ResponseEntity.status(414).body(e.getMessage());
+	}
+	
+	/**
+	 * Catch all {@link ConflictGoogleIdException}
+	 *
+	 * @param e
+	 * 		exception content.
+	 *
+	 * @return 415 http status.
+	 */
+	@ExceptionHandler(value = ConflictGoogleIdException.class)
+	public ResponseEntity conflictGoogleIdException(final ConflictGoogleIdException e)
+	{
+		this.LOGGER.error(e.getMessage());
+		return ResponseEntity.status(415).body(e.getMessage());
+	}
+	
+	/**
+	 * Catch all {@link ConflictTwitterException}
+	 *
+	 * @param e
+	 * 		exception content.
+	 *
+	 * @return 416 http status.
+	 */
+	@ExceptionHandler(value = ConflictTwitterException.class)
+	public ResponseEntity conflictTwitterIdException(final ConflictTwitterException e)
+	{
+		this.LOGGER.error(e.getMessage());
+		return ResponseEntity.status(416).body(e.getMessage());
 	}
 	
 	/**
@@ -173,7 +218,7 @@ public class SppotiExceptionHandler
 	@ExceptionHandler(value = AccountConfirmationLinkExpiredException.class)
 	public ResponseEntity accountConfirmationLinkExpired(final AccountConfirmationLinkExpiredException e)
 	{
-		this.LOGGER.error(e.getMessage(), e);
+		this.LOGGER.error(e.getMessage());
 		return ResponseEntity.status(413).body(e.getMessage());
 	}
 	
