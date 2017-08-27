@@ -109,10 +109,12 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 		roles.add(profile);
 		newUser.setRoles(roles);
 		
-		final PasswordHistory p = new PasswordHistory();
-		p.setPassword(newUser.getPassword());
-		p.setUser(newUser);
-		newUser.getPasswordHistories().add(p);
+		if (user.getPassword() != null) {
+			final PasswordHistory p = new PasswordHistory();
+			p.setPassword(newUser.getPassword());
+			p.setUser(newUser);
+			newUser.getPasswordHistories().add(p);
+		}
 		
 		this.userRepository.save(newUser);
 		this.LOGGER.info("Account has been created for user : " + user);

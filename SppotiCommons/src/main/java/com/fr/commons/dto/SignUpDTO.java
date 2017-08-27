@@ -17,6 +17,7 @@ public class SignUpDTO extends AbstractCommonDTO
 	private String lastName;
 	private String firstName;
 	private GenderEnum gender;
+	private String password;
 	
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date dateBorn;
@@ -24,9 +25,6 @@ public class SignUpDTO extends AbstractCommonDTO
 	@Email
 	@NotEmpty
 	private String email;
-	
-	@NotEmpty
-	private String password;
 	
 	@NotEmpty
 	private String username;

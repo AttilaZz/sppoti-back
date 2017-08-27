@@ -162,13 +162,13 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		final String confirmationCode = SppotiUtils.generateConfirmationKey();
 		entity.setConfirmationCode(confirmationCode);
 		
-		entity.setPassword(this.passwordEncoder.encode(dto.getPassword()));
+		entity.setPassword(dto.getPassword() != null ? this.passwordEncoder.encode(dto.getPassword()) : null);
+		
+		entity.setFacebookId(dto.getFacebookId() != null ? dto.getFacebookId().trim() : null);
+		entity.setGoogleId(dto.getGoogleId() != null ? dto.getGoogleId().trim() : null);
+		entity.setTwitterId(dto.getTwitterId() != null ? dto.getTwitterId().trim() : null);
 		
 		entity.setUsername(dto.getUsername().trim());
-		entity.setFacebookId(dto.getFacebookId().trim());
-		entity.setGoogleId(dto.getGoogleId().trim());
-		entity.setTwitterId(dto.getTwitterId().trim());
-		
 		entity.setFirstConnexion(true);
 		entity.setConfirmed(true);
 		

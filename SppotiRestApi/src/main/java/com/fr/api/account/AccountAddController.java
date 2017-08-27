@@ -2,11 +2,14 @@ package com.fr.api.account;
 
 import com.fr.commons.dto.ConnexionHistoryDto;
 import com.fr.commons.dto.SignUpDTO;
+import com.fr.commons.enumeration.ErrorMessageEnum;
+import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,6 +44,10 @@ class AccountAddController
 	@ResponseBody
 	ResponseEntity createUser(@RequestBody @Valid final SignUpDTO user)
 	{
+		if (StringUtils.isEmpty(user.getFacebookId()) && StringUtils.isEmpty(user.getGoogleId()) &&
+				StringUtils.isEmpty(user.getTwitterId()) && StringUtils.isEmpty(user.getPassword())) {
+			throw new BusinessGlobalException(ErrorMessageEnum.PASSWORD_REQUIRED.getMessage());
+		}
 		
 		this.accountService.saveNewUser(user);
 		

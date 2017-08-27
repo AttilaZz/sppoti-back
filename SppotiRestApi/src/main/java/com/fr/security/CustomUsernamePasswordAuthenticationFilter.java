@@ -32,7 +32,7 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
 	
 	private String buildParameter(final String param) {
 		if (!StringUtils.isEmpty(param) && !"undefined".equals(param)) {
-			return param;
+			return param.trim();
 		}
 		return null;
 	}
