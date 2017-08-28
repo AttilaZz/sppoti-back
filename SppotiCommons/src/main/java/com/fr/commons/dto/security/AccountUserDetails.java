@@ -40,11 +40,8 @@ public class AccountUserDetails implements MyUserDetails
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getName()));
 		}
 		
-		for (final GrantedAuthority grantedAuthority : authorities) {
-			
-			LOGGER.info("authorities : {}", grantedAuthority.getAuthority());
-			
-		}
+		LOGGER.info("logged user <" + this.account.getEmail() + "> with authorities : {}", authorities.toString());
+		
 		return authorities;
 	}
 	

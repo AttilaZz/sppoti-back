@@ -46,16 +46,9 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler
 		
 		if (authentication != null) {
 			System.out.println(authentication.getName());
-			// new SecurityContextLogoutHandler().logout( request, response,
-			// authentication);
 		}
-		/*
-		 * perform other required operation
-		 */
-		// String URL = request.getContextPath() + "/app";
-		response.setStatus(HttpStatus.OK.value());
-		// response.sendRedirect(URL);
 		
+		response.setStatus(HttpStatus.OK.value());
 	}
 	
 }
