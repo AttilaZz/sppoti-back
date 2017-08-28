@@ -168,6 +168,12 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		entity.setGoogleId(dto.getGoogleId() != null ? dto.getGoogleId().trim() : null);
 		entity.setTwitterId(dto.getTwitterId() != null ? dto.getTwitterId().trim() : null);
 		
+		if(dto.getFacebookId() != null || dto.getGoogleId() != null || dto.getTwitterId() != null){
+			entity.setProfileComplete(true);
+		}else{
+			entity.setProfileComplete(false);
+		}
+		
 		entity.setUsername(dto.getUsername().trim());
 		entity.setFirstConnexion(true);
 		entity.setConfirmed(true);
