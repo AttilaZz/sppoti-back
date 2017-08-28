@@ -36,7 +36,7 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
 	 */
 	@Override
 	protected String obtainPassword(final HttpServletRequest request) {
-		return SppotiUtils.decode64ToString(super.obtainPassword(request));
+		return !StringUtils.isEmpty(super.obtainPassword(request)) ? SppotiUtils.decode64ToString(super.obtainPassword(request)): null;
 	}
 	
 	private String buildParameter(final String param) {
