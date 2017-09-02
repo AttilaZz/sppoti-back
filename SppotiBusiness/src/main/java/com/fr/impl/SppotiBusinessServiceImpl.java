@@ -763,7 +763,10 @@ class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements
 		final Optional<SppotiAdverseEntity> adverseEntityOptional = this.sppotiAdverseRepository
 				.findBySppotiUserSppotiUuidAndStatusAndFromSppotiAdminFalse(userId, GlobalAppStatusEnum.PENDING,
 						pageable1).stream().findFirst();
-		adverseEntityOptional.ifPresent(a -> result.add(this.sppotiTransformer.modelToDto(a.getSppoti())));
+		adverseEntityOptional.ifPresent(a -> {
+			a.getSppoti().setConnectedUserId(getConnectedUserId());
+			result.add(this.sppotiTransformer.modelToDto(a.getSppoti()));
+		});
 		
 		return result;
 	}

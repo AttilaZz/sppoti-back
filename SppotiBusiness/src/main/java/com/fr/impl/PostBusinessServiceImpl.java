@@ -384,35 +384,29 @@ class PostBusinessServiceImpl extends AbstractControllerServiceImpl implements P
 		final Optional<UserEntity> optional = this.userRepository.getByUuidAndDeletedFalseAndConfirmedTrue(userId);
 		
 		if (optional.isPresent()) {
-			final List<PostEntity> returnedPostEntities = new ArrayList<>();
+			final List<Long> usersPostToReturn = new ArrayList<>();
+			//add connected user
+			usersPostToReturn.add(getConnectedUserId());
 			
-			//get recent posts from each friend
+			//add user's friend to the list
 			this.friendShipRepository
 					.findByUserUuidOrFriendUuidAndStatus(userId, userId, GlobalAppStatusEnum.CONFIRMED, pageable)
 					.forEach(f -> {
-						
 						if (!f.getFriend().getUuid().equals(userId)) {
-							returnedPostEntities.addAll(this.postRepository
-									.getByUserUuidAndDeletedFalse(f.getFriend().getUuid(), pageable));
+							usersPostToReturn.add(f.getFriend().getId());
 						} else if (!f.getUser().getUuid().equals(userId)) {
-							returnedPostEntities.addAll(this.postRepository
-									.getByUserUuidAndDeletedFalse(f.getUser().getUuid(), pageable));
+							usersPostToReturn.add(f.getUser().getId());
 						}
-						
 					});
 			
-			//add connected user posts
-			returnedPostEntities
-					.addAll(this.postRepository.getByUserUuidAndDeletedFalse(getConnectedUser().getUuid(), pageable));
+			final List<PostEntity> allUserAndFriendsPost = this.postRepository
+					.findByDeletedFalseAndUserIdIn(usersPostToReturn, pageable);
 			
 			//transform posts from entities to dto, with sorting by creation date.
-			return returnedPostEntities.stream().map(p -> this.fillPostToSend(p.getUuid(), accountUserId))
-					.sorted((u1, u2) -> u2.getDatetimeCreated().compareTo(u1.getDatetimeCreated()))
+			return allUserAndFriendsPost.stream().map(p -> this.fillPostToSend(p.getUuid(), accountUserId))
 					.collect(Collectors.toList());
-			
 		}
 		
 		throw new EntityNotFoundException("User (" + userId + ") not found");
-		
 	}
 }

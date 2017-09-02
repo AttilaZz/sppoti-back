@@ -14,14 +14,6 @@ import java.util.List;
  */
 public interface PostRepository extends JpaRepository<PostEntity, Long>
 {
-	/**
-	 * Get post by uuid.
-	 *
-	 * @param postId
-	 * 		post id.
-	 *
-	 * @return posts data.
-	 */
 	List<PostEntity> getByUuidAndDeletedFalse(String postId);
 	
 	/**
@@ -35,40 +27,14 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 			"|| filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend()))")
 	List<PostEntity> findAll();
 	
-	/**
-	 * Get all user's posts.
-	 *
-	 * @param posiUuid
-	 * 		post id.
-	 *
-	 * @return list of all user's posts.
-	 */
+
 	@PostFilter("filterObject.user.id == authentication.getPrincipal().getId()")
-	List<PostEntity> getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(String posiUuid);
+	List<PostEntity> getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(String postUuid);
 	
-	/**
-	 * Get all posts containing a picture.
-	 *
-	 * @param userId
-	 * 		user id.
-	 * @param pageable
-	 * 		page number.
-	 *
-	 * @return lists of {@link PostEntity}
-	 */
+	
 	List<PostEntity> getByAlbumIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(String userId,
 																							 Pageable pageable);
 	
-	/**
-	 * Get all videos posts.
-	 *
-	 * @param userId
-	 * 		user id.
-	 * @param pageable
-	 * 		page number.
-	 *
-	 * @return list of posts containing a video.
-	 */
 	List<PostEntity> getByVideoIsNotNullAndDeletedFalseAndUserUuidOrderByDatetimeCreatedDesc(String userId,
 																							 Pageable pageable);
 	
@@ -77,15 +43,5 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 	List<PostEntity> getAllPosts(@Param("userUuid") String userIntId, @Param("userId") Long userLongId,
 								 @Param("visibility") List visibility, Pageable pageable);
 	
-	/**
-	 * Get non deleted posts for a given user id.
-	 *
-	 * @param uuid
-	 * 		user id.
-	 * @param pageable
-	 * 		page number.
-	 *
-	 * @return list of {@link PostEntity}
-	 */
-	List<PostEntity> getByUserUuidAndDeletedFalse(String uuid, Pageable pageable);
+	List<PostEntity> findByDeletedFalseAndUserIdIn(List<Long> usersPostToReturn, Pageable pageable);
 }

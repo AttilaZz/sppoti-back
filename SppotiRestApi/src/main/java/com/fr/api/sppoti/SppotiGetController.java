@@ -145,7 +145,7 @@ class SppotiGetController
 	}
 	
 	/**
-	 * Get all sppoties where challenge has been sent and waiting for response.
+	 * Get all sppoties which received a challenge and a response is PENDING.
 	 *
 	 * @param userId
 	 * 		user id.

@@ -3,6 +3,7 @@ package com.fr.filter;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -30,11 +31,13 @@ public class CORSFilter implements Filter
 		final HttpServletResponse response = (HttpServletResponse) res;
 		final HttpServletRequest request = (HttpServletRequest) req;
 		
-		final String[] allowedHeaders = Origins.getValue().split(",");
-		
-		for (final String allowedHeader : allowedHeaders) {
-			if (allowedHeader.equals(request.getHeader("origin"))) {
-				response.setHeader(ATTR_ORIGIN.getValue(), request.getHeader("origin"));
+		if(StringUtils.hasText(Origins.getValue())){
+			final String[] allowedHeaders = Origins.getValue().split(",");
+			
+			for (final String allowedHeader : allowedHeaders) {
+				if (allowedHeader.equals(request.getHeader("origin"))) {
+					response.setHeader(ATTR_ORIGIN.getValue(), request.getHeader("origin"));
+				}
 			}
 		}
 		

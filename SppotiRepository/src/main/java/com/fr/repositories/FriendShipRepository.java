@@ -3,8 +3,8 @@ package com.fr.repositories;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.entities.FriendShipEntity;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by djenanewail on 12/31/16.
  */
-public interface FriendShipRepository extends CrudRepository<FriendShipEntity, Long>
+public interface FriendShipRepository extends JpaRepository<FriendShipEntity, Long>
 {
 	
 	FriendShipEntity findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(String friendUuid,
@@ -24,11 +24,6 @@ public interface FriendShipRepository extends CrudRepository<FriendShipEntity, L
 	
 	List<FriendShipEntity> findByFriendUuidAndStatus(String friend, GlobalAppStatusEnum name, Pageable pageable);
 	
-	List<FriendShipEntity> findByUserUuidAndFriendUuidAndStatusNotInOrderByDatetimeCreatedDesc(String connectedUser,
-																							   String uuid,
-																							   Collection<GlobalAppStatusEnum> status);
-	
-	//    @PostFilter("!filterObject.isDeleted() AND filterObject.isConfirmed()")
 	@Query(value = "SELECT f FROM FriendShipEntity f WHERE (f.friend.firstName LIKE CONCAT('%',:part1,'%') " +
 			"AND f.friend.lastName LIKE CONCAT('%',:part2,'%')) OR (f.friend.firstName LIKE CONCAT('%',:part2,'%') " +
 			"AND f.friend.lastName LIKE CONCAT('%',:part1,'%')) AND f.status = :status")
