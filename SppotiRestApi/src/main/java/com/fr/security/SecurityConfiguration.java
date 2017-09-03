@@ -1,6 +1,5 @@
 package com.fr.security;
 
-import com.fr.filter.CsrfProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -48,16 +46,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	@Autowired
 	private CustomLogoutHandler logoutHandler;
 	
-	/** Remember me token repository. */
-	@Autowired
-	private PersistentTokenRepository tokenRepository;
-	
 	/** Entry point filter. */
 	@Autowired
 	private EntryPointUnAthorisedHandler pointUnAthorisedHandler;
-	/** CSRf token properties. */
-	@Autowired
-	private CsrfProperties filterProperties;
 	
 	/**
 	 * {@inheritDoc}
@@ -80,6 +71,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 							UsernamePasswordAuthenticationFilter.class)
 					.authorizeRequests()
 						.antMatchers("/trade/**").permitAll()
+						//.antMatchers(HttpMethod.GET, "/**").permitAll()
 						.antMatchers("/**/sport/**", "/**/contact/**", "/**/init/token").permitAll()
 						.antMatchers(HttpMethod.POST, "/**/account/create").permitAll()
 						.antMatchers(HttpMethod.POST, "/**/account/connexion/endpoint").permitAll()
@@ -114,16 +106,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 		return authenticationFilter;
 	}
 	
-	//	/**
-	//	 * Configure CSRF token.
-	//	 */
-	//	private CsrfTokenRepository csrfTokenRepository()
-	//	{
-	//		final HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-	//		repository.setHeaderName("X-XSRF-TOKEN");
-	//		return repository;
-	//	}
-	
 	/** Init password encoder bean. */
 	@Bean
 	public PasswordEncoder passwordEncoder()
@@ -137,11 +119,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 	{
 		auth.userDetailsService(this.userDetailService).passwordEncoder(passwordEncoder());
 	}
-	
-	//	/** Init remember me token service. */
-	//	@Bean
-	//	public PersistentTokenBasedRememberMeServices getPersistentTokenBasedRememberMeServices()
-	//	{
-	//		return new PersistentTokenBasedRememberMeServices("remember-me", this.userDetailService, this.tokenRepository);
-	//	}
 }
