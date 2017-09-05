@@ -277,6 +277,9 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 		if (userDTO.isProfileComplete() != null) {
 			connectedUser.setProfileComplete(userDTO.isProfileComplete());
 		}
+		if (userDTO.getGender() != null) {
+			connectedUser.setGender(userDTO.getGender());
+		}
 		if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&
 				StringUtils.hasText(userDTO.getOldPassword())) {
 			

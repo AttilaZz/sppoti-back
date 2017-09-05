@@ -32,7 +32,7 @@ public class UserEntity extends AbstractCommonEntity
 	@Column(nullable = false, name = "date_born")
 	private Date dateBorn;
 	
-	@Column(nullable = false, name = "gender")
+	@Column(name = "gender")
 	@Enumerated(EnumType.STRING)
 	private GenderEnum gender;
 	

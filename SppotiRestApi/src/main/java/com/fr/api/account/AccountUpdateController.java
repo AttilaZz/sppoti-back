@@ -83,6 +83,9 @@ class AccountUpdateController
 			if (user.isProfileComplete() != null) {
 				update = true;
 			}
+			if (user.getGender() != null) {
+				update = true;
+			}
 			
 			//TODO: Update sports
 			
