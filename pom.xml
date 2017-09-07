@@ -48,7 +48,7 @@
     <distributionManagement>
         <repository>
             <id>ssh-repository</id>
-            <url>scpexe://ubuntu@ec2-34-253-168-21.eu-west-1.compute.amazonaws.com/home/ubuntu/sppoti/back/</url>
+            <url>scpexe://ubuntu@ec2-34-253-168-21.eu-west-1.compute.amazonaws.com/home/ubuntu/sppoti/</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
     </distributionManagement>
