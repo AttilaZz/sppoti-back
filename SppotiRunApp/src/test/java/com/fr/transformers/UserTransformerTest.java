@@ -42,7 +42,7 @@ public class UserTransformerTest
 		final UserDTO dto = this.userTransformer.modelToDto(entity);
 		
 		Assert.assertNotNull(dto);
-		Assert.assertEquals(entity.getGender().name(), dto.getGender());
+		Assert.assertEquals(entity.getGender(), dto.getGender());
 		Assert.assertEquals(entity.getUsername(), dto.getUsername());
 		Assert.assertEquals(entity.getLastName(), dto.getLastName());
 		Assert.assertEquals(entity.getFirstName(), dto.getFirstName());
