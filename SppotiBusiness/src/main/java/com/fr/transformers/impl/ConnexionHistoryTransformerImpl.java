@@ -6,12 +6,10 @@ import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
 import com.fr.transformers.ConnexionHistoryTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by djenanewail on 6/11/17.
  */
-@Component
 public class ConnexionHistoryTransformerImpl extends
 		AbstractTransformerImpl<ConnexionHistoryDto, ConnexionHistoryEntity> implements ConnexionHistoryTransformer
 {

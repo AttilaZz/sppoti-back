@@ -29,53 +29,66 @@ public class ScoreEntity
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private GlobalAppStatusEnum scoreStatus = GlobalAppStatusEnum.PENDING;
-
+    
+    /**
+     * to get trace of the connected user when using transformers.
+     */
+    private transient Long connectedUserId;
+    
     public SppotiEntity getSppotiEntity() {
-        return sppotiEntity;
+        return this.sppotiEntity;
     }
 
-    public void setSppotiEntity(SppotiEntity sppotiEntity) {
+    public void setSppotiEntity(final SppotiEntity sppotiEntity) {
         this.sppotiEntity = sppotiEntity;
     }
 
     public Integer getHost() {
-        return host;
+        return this.host;
     }
 
-    public void setHost(Integer host) {
+    public void setHost(final Integer host) {
         this.host = host;
     }
 
     public Integer getVisitor() {
-        return visitor;
+        return this.visitor;
     }
 
-    public void setVisitor(Integer visitor) {
+    public void setVisitor(final Integer visitor) {
         this.visitor = visitor;
     }
 
     public GlobalAppStatusEnum getScoreStatus() {
-        return scoreStatus;
+        return this.scoreStatus;
     }
 
-    public void setScoreStatus(GlobalAppStatusEnum scoreStatus) {
+    public void setScoreStatus(final GlobalAppStatusEnum scoreStatus) {
         this.scoreStatus = scoreStatus;
     }
-
+    
+    public Long getConnectedUserId() {
+        return this.connectedUserId;
+    }
+    
+    public void setConnectedUserId(final Long connectedUserId) {
+        this.connectedUserId = connectedUserId;
+    }
+    
     /**
      * {@inheritDoc}.
      */
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        ScoreEntity that = (ScoreEntity) o;
+        final ScoreEntity that = (ScoreEntity) o;
 
-        if (host != null ? !host.equals(that.host) : that.host != null) return false;
-        if (visitor != null ? !visitor.equals(that.visitor) : that.visitor != null) return false;
-        return scoreStatus == that.scoreStatus;
+        if (this.host != null ? !this.host.equals(that.host) : that.host != null) return false;
+        if (this.visitor != null ? !this.visitor.equals(that.visitor) : that.visitor != null) return false;
+        return this.scoreStatus == that.scoreStatus;
     }
 
     /**
@@ -84,9 +97,9 @@ public class ScoreEntity
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (host != null ? host.hashCode() : 0);
-        result = 31 * result + (visitor != null ? visitor.hashCode() : 0);
-        result = 31 * result + (scoreStatus != null ? scoreStatus.hashCode() : 0);
+        result = 31 * result + (this.host != null ? this.host.hashCode() : 0);
+        result = 31 * result + (this.visitor != null ? this.visitor.hashCode() : 0);
+        result = 31 * result + (this.scoreStatus != null ? this.scoreStatus.hashCode() : 0);
         return result;
     }
 }

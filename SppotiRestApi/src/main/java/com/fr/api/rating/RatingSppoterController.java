@@ -1,6 +1,6 @@
 package com.fr.api.rating;
 
-import com.fr.commons.dto.SppotiRatingDTO;
+import com.fr.commons.dto.RatingDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.SppotiBusinessService;
@@ -36,7 +36,7 @@ class RatingSppoterController
 	 */
 	@PostMapping("/sppoter/{sppotiId}")
 	ResponseEntity<List<UserDTO>> rateSppoter(@PathVariable final String sppotiId,
-											  @RequestBody final List<SppotiRatingDTO> sppotiRatingDTO)
+											  @RequestBody final List<RatingDTO> sppotiRatingDTO)
 	{
 		
 		sppotiRatingDTO.forEach(sp -> {

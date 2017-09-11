@@ -3,9 +3,9 @@ package com.fr.transformers.impl;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.utils.SppotiUtils;
+import com.fr.entities.RatingEntity;
 import com.fr.entities.SppoterEntity;
 import com.fr.entities.SppotiEntity;
-import com.fr.entities.SppotiRatingEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.repositories.RatingRepository;
 import com.fr.repositories.SppoterRepository;
@@ -122,14 +122,14 @@ public class TeamMemberTransformer
 	private Double getRatingStars(final String userId, final String sppotiId)
 	{
 		
-		final Optional<Set<SppotiRatingEntity>> sppotiRatingEntity = this.ratingRepository
+		final Optional<Set<RatingEntity>> sppotiRatingEntity = this.ratingRepository
 				.findByRatedSppoterUuidAndSppotiEntityUuid(userId, sppotiId);
 		
 		if (sppotiRatingEntity.isPresent()) {
-			final Set<SppotiRatingEntity> sppotiRatingEntities = new HashSet<>();
+			final Set<RatingEntity> sppotiRatingEntities = new HashSet<>();
 			sppotiRatingEntities.addAll(sppotiRatingEntity.get());
-			final OptionalDouble averageRating = sppotiRatingEntities.stream().filter(r -> r.getStarsCount() != 0)
-					.mapToDouble(SppotiRatingEntity::getStarsCount).average();
+			final OptionalDouble averageRating = sppotiRatingEntities.stream().filter(r -> r.getStars() != 0)
+					.mapToDouble(RatingEntity::getStars).average();
 			
 			if (averageRating.isPresent()) {
 				return averageRating.getAsDouble();

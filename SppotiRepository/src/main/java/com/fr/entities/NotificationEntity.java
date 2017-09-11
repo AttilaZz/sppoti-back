@@ -58,7 +58,7 @@ public class NotificationEntity extends AbstractCommonEntity
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "rating_id")
-	private SppotiRatingEntity rating;
+	private RatingEntity rating;
 	
 	public UserEntity getFrom()
 	{
@@ -154,11 +154,11 @@ public class NotificationEntity extends AbstractCommonEntity
 		this.score = score;
 	}
 	
-	public SppotiRatingEntity getRating() {
+	public RatingEntity getRating() {
 		return this.rating;
 	}
 	
-	public void setRating(final SppotiRatingEntity rating) {
+	public void setRating(final RatingEntity rating) {
 		this.rating = rating;
 	}
 	

@@ -9,7 +9,6 @@ import com.fr.repositories.UserRepository;
 import com.fr.transformers.CommentTransformer;
 import com.fr.transformers.PostTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 /**
  * Created by djenanewail on 6/10/17.
  */
-@Component
 public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEntity> implements PostTransformer
 {
 	/** history repo. */

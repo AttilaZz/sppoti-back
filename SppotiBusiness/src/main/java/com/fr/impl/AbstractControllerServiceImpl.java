@@ -38,6 +38,8 @@ import java.util.stream.Collectors;
 @Component("abstractService")
 abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 {
+	/** Spring security anonymous user. */
+	private static final String ANONYMOUS_USER = "anonymousUser";
 	
 	@Autowired
 	UserRepository userRepository;
@@ -143,7 +145,7 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 	 */
 	protected List<ContentEditedResponseDTO> fillEditContentResponse(final List<EditHistoryEntity> dsHistoryList)
 	{
-		final List<ContentEditedResponseDTO> editHistoryResponse = new ArrayList<ContentEditedResponseDTO>();
+		final List<ContentEditedResponseDTO> editHistoryResponse = new ArrayList<>();
 		editHistoryResponse.clear();
 		for (final EditHistoryEntity editContent : dsHistoryList) {
 			
@@ -164,7 +166,7 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 	protected Long getConnectedUserId() {
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
-		if (auth.getPrincipal().equals("anonymousUser")) {
+		if (auth.getPrincipal().equals(ANONYMOUS_USER)) {
 			return null;
 		}
 		
@@ -177,7 +179,7 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 	protected String getConnectedUserUuid() {
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
-		if (auth.getPrincipal().equals("anonymousUser")) {
+		if (auth.getPrincipal().equals(ANONYMOUS_USER)) {
 			return null;
 		}
 		
@@ -191,7 +193,7 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 	{
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
-		if (auth.getPrincipal().equals("anonymousUser")) {
+		if (auth.getPrincipal().equals(ANONYMOUS_USER)) {
 			return null;
 		}
 		
@@ -422,10 +424,10 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 	protected void addNotification(final NotificationTypeEnum notificationType, final UserEntity userFrom,
 								   final UserEntity userTo, final TeamEntity team, final SppotiEntity sppoti,
 								   final PostEntity post, final CommentEntity comment, final ScoreEntity score,
-								   final SppotiRatingEntity rating)
+								   final RatingEntity rating)
 	{
 		final NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, team, sppoti,
-				post, comment, score, null);
+				post, comment, score, rating);
 		
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
 		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
@@ -438,7 +440,7 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 	NotificationEntity getNotificationEntity(final NotificationTypeEnum notificationType, final UserEntity userFrom,
 											 final UserEntity userTo, final TeamEntity team, final SppotiEntity sppoti,
 											 final PostEntity post, final CommentEntity comment,
-											 final ScoreEntity score, final SppotiRatingEntity rating)
+											 final ScoreEntity score, final RatingEntity rating)
 	{
 		final NotificationEntity notification = new NotificationEntity();
 		notification.setNotificationType(notificationType);
@@ -447,22 +449,29 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 		notification.setTeam(team);
 		
 		if (sppoti != null) {
-			sppoti.setConnectedUserId(userTo.getId());
+			sppoti.setConnectedUserId(userFrom.getId());
 			notification.setSppoti(sppoti);
 		}
 		
 		if (post != null) {
-			post.setConnectedUserId(userTo.getId());
+			post.setConnectedUserId(userFrom.getId());
 			notification.setPost(post);
 		}
 		
 		if (comment != null) {
-			comment.setConnectedUserId(userTo.getId());
+			comment.setConnectedUserId(userFrom.getId());
 			notification.setComment(comment);
 		}
 		
-		notification.setScore(score);
-		notification.setRating(rating);
+		if (rating != null) {
+			rating.setConnectedUserId(userFrom.getId());
+			notification.setRating(rating);
+		}
+		
+		if (score != null) {
+			score.setConnectedUserId(userFrom.getId());
+			notification.setScore(score);
+		}
 		
 		return notification;
 	}

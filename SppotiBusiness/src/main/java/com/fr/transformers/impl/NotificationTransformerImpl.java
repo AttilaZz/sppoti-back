@@ -6,7 +6,6 @@ import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.transformers.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -15,7 +14,6 @@ import java.util.Optional;
  * Created by djenanewail on 2/19/17.
  */
 @Transactional(readOnly = true)
-@Component
 public class NotificationTransformerImpl extends AbstractTransformerImpl<NotificationDTO, NotificationEntity> implements
 		NotificationTransformer
 {
@@ -25,27 +23,31 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 	private final UserTransformer userTransformer;
 	/** Sppoti transformer. */
 	private final SppotiTransformer sppotiTransformer;
-	
 	/** Post transformer. */
 	private final PostTransformer postTransformer;
 	/** Comment transformer. */
 	private final CommentTransformer commentTransformer;
+	/** Score transformer. */
+	private final ScoreTransformer scoreTransformer;
+	/** Rating transformer. */
+	private final RatingTransformer ratingTransformer;
 	
-	/**
-	 * Init class transformers.
-	 */
 	@Autowired
 	public NotificationTransformerImpl(final TeamTransformerImpl teamTransformer,
 									   final UserTransformerImpl userTransformer,
 									   final SppotiTransformerImpl sppotiTransformer,
 									   final PostTransformer postTransformer,
-									   final CommentTransformer commentTransformer)
+									   final CommentTransformer commentTransformer,
+									   final ScoreTransformer scoreTransformer,
+									   final RatingTransformer ratingTransformer)
 	{
 		this.teamTransformer = teamTransformer;
 		this.userTransformer = userTransformer;
 		this.sppotiTransformer = sppotiTransformer;
 		this.postTransformer = postTransformer;
 		this.commentTransformer = commentTransformer;
+		this.scoreTransformer = scoreTransformer;
+		this.ratingTransformer = ratingTransformer;
 	}
 	
 	/**
@@ -72,22 +74,27 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 		
 		//POST
 		final Optional<PostEntity> optionalPost = Optional.ofNullable(notification.getPost());
-		optionalPost.ifPresent(t -> notificationDTO.setPost(this.postTransformer.modelToDto(notification.getPost())));
+		optionalPost.ifPresent(t -> notificationDTO.setPost(this.postTransformer.modelToDto(t)));
 		
 		//COMMENT
 		final Optional<CommentEntity> optionalComment = Optional.ofNullable(notification.getComment());
-		optionalComment.ifPresent(
-				t -> notificationDTO.setComment(this.commentTransformer.modelToDto(notification.getComment())));
+		optionalComment.ifPresent(t -> notificationDTO.setComment(this.commentTransformer.modelToDto(t)));
 		
 		//TEAM
 		final Optional<TeamEntity> optionalTeam = Optional.ofNullable(notification.getTeam());
-		optionalTeam.ifPresent(t -> notificationDTO.setTeam(this.teamTransformer.modelToDto(notification.getTeam())));
+		optionalTeam.ifPresent(t -> notificationDTO.setTeam(this.teamTransformer.modelToDto(t)));
 		
 		//SPPOTI
 		final Optional<SppotiEntity> optionalSppoti = Optional.ofNullable(notification.getSppoti());
-		optionalSppoti
-				.ifPresent(t -> notificationDTO.setSppoti(this.sppotiTransformer.modelToDto(notification.getSppoti())));
+		optionalSppoti.ifPresent(t -> notificationDTO.setSppoti(this.sppotiTransformer.modelToDto(t)));
 		
+		//RATING
+		final Optional<RatingEntity> ratingEntity = Optional.ofNullable(notification.getRating());
+		ratingEntity.ifPresent(t -> notificationDTO.setRating(this.ratingTransformer.modelToDto(t)));
+		
+		//SCORE
+		final Optional<ScoreEntity> scoreEntity = Optional.ofNullable(notification.getScore());
+		scoreEntity.ifPresent(t -> notificationDTO.setScore(this.scoreTransformer.modelToDto(t)));
 		
 		return notificationDTO;
 	}

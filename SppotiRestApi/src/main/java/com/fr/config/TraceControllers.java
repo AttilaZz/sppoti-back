@@ -85,7 +85,7 @@ import org.springframework.stereotype.Component;
 	
 	/*
 	 * http://docs.spring.io/spring/docs/current/spring-framework-reference/html
-	 * /aop.html
+	 * /config.html
 	 */
 	@Pointcut("execution(* com.dz.controllers.*.*(..))")
 	public void traceInvocationPointcut()

@@ -1,19 +1,16 @@
 package com.fr.service;
 
-import com.fr.commons.dto.SppotiRatingDTO;
+import com.fr.commons.dto.RatingDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.SppotiStatus;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
  */
-
-@Service
 public interface SppotiBusinessService extends AbstractBusinessService
 {
 	
@@ -126,7 +123,7 @@ public interface SppotiBusinessService extends AbstractBusinessService
 	 * @param sppotiId
 	 * 		sppoti id.
 	 */
-	List<UserDTO> rateSppoters(List<SppotiRatingDTO> sppotiRatingDTO, String sppotiId);
+	List<UserDTO> rateSppoters(List<RatingDTO> sppotiRatingDTO, String sppotiId);
 	
 	/**
 	 * Get all confirmed sppoties.

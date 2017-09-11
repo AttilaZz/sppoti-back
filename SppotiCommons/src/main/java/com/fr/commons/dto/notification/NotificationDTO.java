@@ -2,9 +2,7 @@ package com.fr.commons.dto.notification;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fr.commons.dto.AbstractCommonDTO;
-import com.fr.commons.dto.CommentDTO;
-import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.*;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
@@ -34,6 +32,8 @@ public class NotificationDTO extends AbstractCommonDTO
 	private SppotiDTO sppoti;
 	private PostDTO post;
 	private CommentDTO comment;
+	private RatingDTO rating;
+	private ScoreDTO score;
 	
 	@JsonSerialize(using = JsonDateSerializer.class)
 	private Date datetime;
@@ -146,6 +146,22 @@ public class NotificationDTO extends AbstractCommonDTO
 	
 	public void setComment(final CommentDTO comment) {
 		this.comment = comment;
+	}
+	
+	public RatingDTO getRating() {
+		return this.rating;
+	}
+	
+	public void setRating(final RatingDTO rating) {
+		this.rating = rating;
+	}
+	
+	public ScoreDTO getScore() {
+		return this.score;
+	}
+	
+	public void setScore(final ScoreDTO score) {
+		this.score = score;
 	}
 }
 

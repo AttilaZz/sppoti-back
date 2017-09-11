@@ -1,6 +1,6 @@
 package com.fr.impl;
 
-import com.fr.commons.dto.SppotiRatingDTO;
+import com.fr.commons.dto.RatingDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
@@ -595,55 +595,60 @@ class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	@Transactional
-	public List<UserDTO> rateSppoters(final List<SppotiRatingDTO> sppotiRatingDTO, final String sppotiId)
+	public List<UserDTO> rateSppoters(final List<RatingDTO> ratingDTOS, final String sppotiId)
 	{
 		
-		final Optional<SppotiEntity> sppotiEntity = Optional.ofNullable(this.sppotiRepository.findByUuid(sppotiId));
-		if (sppotiEntity.isPresent()) {
-			final SppotiEntity se = sppotiEntity.get();
+		final Optional<SppotiEntity> sppotiEntityOptional = Optional
+				.ofNullable(this.sppotiRepository.findByUuid(sppotiId));
+		if (sppotiEntityOptional.isPresent()) {
+			final SppotiEntity sppotiEntity = sppotiEntityOptional.get();
 			
-			return sppotiRatingDTO.stream().map(sppoter -> {
-				Optional<SppoterEntity> ratedSppoter = Optional.ofNullable(this.sppoterRepository
-						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(
-								sppoter.getSppoterRatedId(), se.getUuid(), SppotiUtils.statusToFilter()));
-				ratedSppoter.orElseThrow(
-						() -> new EntityNotFoundException("Sppoter (" + sppoter.getSppoterRatedId() + ") not found"));
+			return ratingDTOS.stream().map(rating -> {
 				
-				SppoterEntity rs = ratedSppoter.get();
-				//Deny rating of a sppoter who hasn't accepted sppoti yet !
-				if (rs.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
-					throw new BusinessGlobalException("Sppoter (" + sppoter.getId() + ") hasn't accepted sppoti yet");
+				Optional<SppoterEntity> optional = Optional.ofNullable(this.sppoterRepository
+						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(
+								rating.getSppoterRatedId(), sppotiEntity.getUuid(), SppotiUtils.statusToFilter()));
+				optional.orElseThrow(
+						() -> new EntityNotFoundException("Sppoter (" + rating.getSppoterRatedId() + ") not found"));
+				
+				SppoterEntity ratedSppoter = optional.get();
+				
+				//Deny rating of a sppoti who hasn't accepted sppoti yet !
+				if (ratedSppoter.getStatus().equals(GlobalAppStatusEnum.PENDING)) {
+					throw new BusinessGlobalException("Sppoter (" + rating.getId() + ") hasn't accepted sppoti yet");
 				}
 				
 				UserEntity connectUser = getConnectedUser();
 				
 				//FIXME: create transformer for rating
-				SppotiRatingEntity sppotiRatingEntity = new SppotiRatingEntity();
-				sppotiRatingEntity.setSppotiEntity(se);
-				sppotiRatingEntity.setRatedSppoter(rs.getTeamMember().getUser());
-				sppotiRatingEntity.setRatingDate(new Date());
-				sppotiRatingEntity.setRaterSppoter(connectUser);
-				sppotiRatingEntity.setStarsCount(sppoter.getStars());
-				this.ratingRepository.save(sppotiRatingEntity);
+				RatingEntity ratingEntity = new RatingEntity();
+				ratingEntity.setSppotiEntity(sppotiEntity);
+				ratingEntity.setRatedSppoter(ratedSppoter.getTeamMember().getUser());
+				ratingEntity.setRatingDate(new Date());
+				ratingEntity.setRaterSppoter(connectUser);
+				ratingEntity.setStars(rating.getStars());
 				
-				//Flag rated sppoter to true.
-				//This means that sppoti admin has rate this sppoter
+				this.ratingRepository.save(ratingEntity);
+				
+				//Flag rated rating to true.
+				//This means that sppoti admin has rate this rating
 				SppoterEntity sppoterRaterEntity = this.sppoterRepository
 						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(connectUser.getUuid(),
 								sppotiId, SppotiUtils.statusToFilter());
 				sppoterRaterEntity.setHasRateOtherSppoter(Boolean.TRUE);
 				this.sppoterRepository.save(sppoterRaterEntity);
 				
-				if (!connectUser.getId().equals(rs.getTeamMember().getUser().getId())) {
-					addNotification(NotificationTypeEnum.YOU_HAVE_BEEN_RATED, connectUser, rs.getTeamMember().getUser(),
-							null, rs.getSppoti(), null, null, null, sppotiRatingEntity);
+				if (!connectUser.getId().equals(ratedSppoter.getTeamMember().getUser().getId())) {
+					addNotification(NotificationTypeEnum.YOU_HAVE_BEEN_RATED, connectUser,
+							ratedSppoter.getTeamMember().getUser(), null, ratedSppoter.getSppoti(), null, null, null,
+							ratingEntity);
 				}
 				
 				//Get RATED SPPOTER.
 				SppoterEntity sppoterRatedEntity = this.sppoterRepository
 						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(
-								sppoter.getSppoterRatedId(), sppotiId, SppotiUtils.statusToFilter());
-				return this.teamMemberTransformer.modelToDto(sppoterRatedEntity.getTeamMember(), se);
+								rating.getSppoterRatedId(), sppotiId, SppotiUtils.statusToFilter());
+				return this.teamMemberTransformer.modelToDto(sppoterRatedEntity.getTeamMember(), sppotiEntity);
 				
 			}).collect(Collectors.toList());
 		}

@@ -11,7 +11,6 @@ import com.fr.repositories.SppotiRepository;
 import com.fr.repositories.TeamMembersRepository;
 import com.fr.transformers.TeamTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.stream.Collectors;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 /**
  * Created by djenanewail on 3/5/17.
  */
-@Component
 public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEntity> implements TeamTransformer
 {
 	
