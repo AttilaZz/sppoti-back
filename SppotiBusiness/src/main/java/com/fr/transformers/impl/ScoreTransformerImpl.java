@@ -7,6 +7,7 @@ import com.fr.entities.SppotiEntity;
 import com.fr.repositories.SppotiRepository;
 import com.fr.transformers.ScoreTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import java.util.Optional;
  * <p>
  * Created by wdjenane on 04/04/2017.
  */
+@Component
 public class ScoreTransformerImpl extends AbstractTransformerImpl<ScoreDTO, ScoreEntity> implements ScoreTransformer
 {
 	/** Sppoti repository. */

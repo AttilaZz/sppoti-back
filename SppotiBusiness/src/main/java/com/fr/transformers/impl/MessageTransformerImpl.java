@@ -4,10 +4,12 @@ import com.fr.commons.dto.message.MessageDTO;
 import com.fr.commons.utils.SppotiBeanUtils;
 import com.fr.entities.MessageEntity;
 import com.fr.transformers.MessageTransformer;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by djenanewail on 5/25/17.
  */
+@Component
 public class MessageTransformerImpl extends AbstractTransformerImpl<MessageDTO, MessageEntity> implements
 		MessageTransformer
 {

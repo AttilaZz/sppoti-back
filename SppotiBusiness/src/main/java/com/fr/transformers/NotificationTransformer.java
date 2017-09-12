@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
  *
  * Created by djenanewail on 5/27/17.
  */
-@Service
 public interface NotificationTransformer extends CommonTransformer<NotificationDTO, NotificationEntity>
 {
 }

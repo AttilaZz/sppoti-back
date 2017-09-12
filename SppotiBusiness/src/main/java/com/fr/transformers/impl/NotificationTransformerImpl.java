@@ -6,6 +6,7 @@ import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.transformers.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -14,6 +15,7 @@ import java.util.Optional;
  * Created by djenanewail on 2/19/17.
  */
 @Transactional(readOnly = true)
+@Component
 public class NotificationTransformerImpl extends AbstractTransformerImpl<NotificationDTO, NotificationEntity> implements
 		NotificationTransformer
 {

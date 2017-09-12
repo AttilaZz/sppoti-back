@@ -15,6 +15,7 @@ import com.fr.repositories.UserRepository;
 import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 /**
  * Created by djenanewail on 3/18/17.
  */
+@Component
 public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEntity> implements UserTransformer
 {
 	private final PasswordEncoder passwordEncoder;

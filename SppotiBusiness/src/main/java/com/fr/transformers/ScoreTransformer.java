@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
  *
  * Created by wdjenane on 04/04/2017.
  */
-@Service
 public interface ScoreTransformer extends CommonTransformer<ScoreDTO, ScoreEntity>
 {
 }

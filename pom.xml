@@ -33,6 +33,7 @@
         <redis.lettuce.version>sppoti-image</redis.lettuce.version>
         <docker.image.prefix>4.4.0.Final</docker.image.prefix>
         <spring.social.facebook.version>2.0.3.RELEASE</spring.social.facebook.version>
+        <docker.maven.plugin.version>0.2.3</docker.maven.plugin.version>
     </properties>
 
     <modules>
@@ -137,12 +138,6 @@
                 <artifactId>lettuce</artifactId>
                 <version>${docker.image.prefix}</version>
             </dependency>
-
-            <!--<dependency>-->
-                <!--<groupId>org.springframework.social</groupId>-->
-                <!--<artifactId>spring-social-facebook</artifactId>-->
-                <!--<version>${pring.social.facebook.version}</version>-->
-            <!--</dependency>-->
         </dependencies>
     </dependencyManagement>
     <dependencies>
@@ -180,8 +175,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <!--Deploy plugin-->
@@ -203,24 +198,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <!--Docker plugin-->
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>0.2.3</version>
-                <configuration>
-                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
-                    <dockerDirectory>src/main/docker</dockerDirectory>
-                    <resources>
-                        <resource>
-                            <targetPath>/</targetPath>
-                            <directory>${project.build.directory}</directory>
-                            <include>${project.build.finalName}.jar</include>
-                        </resource>
-                    </resources>
-                </configuration>
             </plugin>
         </plugins>
 
