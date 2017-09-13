@@ -386,13 +386,13 @@ class PostBusinessServiceImpl extends AbstractControllerServiceImpl implements P
 		if (optional.isPresent()) {
 			final List<Long> usersPostToReturn = new ArrayList<>();
 			//add connected user
-			if(page == 0){
+			if (page == 0) {
 				usersPostToReturn.add(getConnectedUserId());
 			}
 			
 			//add user's friend to the list
 			this.friendShipRepository
-					.findByUserUuidOrFriendUuidAndStatus(userId, userId, GlobalAppStatusEnum.CONFIRMED, pageable)
+					.findByUserUuidOrFriendUuidAndStatus(userId, userId, GlobalAppStatusEnum.CONFIRMED, null)
 					.forEach(f -> {
 						if (!f.getFriend().getUuid().equals(userId)) {
 							usersPostToReturn.add(f.getFriend().getId());
