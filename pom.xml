@@ -33,7 +33,7 @@
         <redis.lettuce.version>sppoti-image</redis.lettuce.version>
         <docker.image.prefix>4.4.0.Final</docker.image.prefix>
         <spring.social.facebook.version>2.0.3.RELEASE</spring.social.facebook.version>
-        <docker.maven.plugin.version>0.2.3</docker.maven.plugin.version>
+        <docker.maven.plugin.version>1.0.0</docker.maven.plugin.version>
     </properties>
 
     <modules>
@@ -132,7 +132,7 @@
                 <artifactId>spring-session</artifactId>
                 <version>${org.springframework.session.version}</version>
             </dependency>
-
+            <!-- redis -->
             <dependency>
                 <groupId>biz.paluch.redis</groupId>
                 <artifactId>lettuce</artifactId>
@@ -198,6 +198,27 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <!--Docker plugin-->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker.maven.plugin.version}</version>
+                <configuration>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <dockerDirectory>src/main/docker</dockerDirectory>
+                    <imageTags>
+                        <imageTag>${project.version}</imageTag>
+                        <!--<imageTag>latest</imageTag>-->
+                    </imageTags>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>SppotiRunApp/target</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
             </plugin>
         </plugins>
 
