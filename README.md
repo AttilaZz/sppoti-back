@@ -4,24 +4,46 @@
 
 ## To install all dependencies and runs tests
 
-mvn clean install
+<pre>
+
+  mvn clean install
+
+</pre>
 
 ### To skip tests
 
-mvn clean install -DskipTests
+<pre>
+
+  mvn clean install -DskipTests
+
+</pre>
 
 ## To create the package without installing in the local repository
 
-mvn clean package
+<pre>
+
+  mvn clean package
+
+</pre>
 
 ### To skip tests
 
-mvn clean package -DskipTests
+<pre>
+
+  mvn clean package -DskipTests
+
+</pre>
 
 # DEPLOIMENT
 
 1. Move to project root
-2. execute: sh src/main/resources/deploy.sh {version}
+2. execute: 
+
+<pre>
+
+  sh src/main/resources/deploy.sh {version}
+
+</pre>
 
 > The script will run mvn deploy with the needed parameters
 
@@ -29,12 +51,24 @@ mvn clean package -DskipTests
 
 ## CREATE the docker image
 
-mvn clean package docker:build
+<pre>
+
+  mvn clean package docker:build
+
+</pre>
 
 ## PUSH the image to the docker repository
 
-mvn clean package docker:build docker:push
+<pre>
+
+  mvn clean package docker:build docker:push
+
+</pre>
 
 ## RUN the image in the internal server of your machine
 
-mvn clean package docker:build docker:run
+<pre>
+
+  mvn clean package docker:build docker:run
+
+</pre>
