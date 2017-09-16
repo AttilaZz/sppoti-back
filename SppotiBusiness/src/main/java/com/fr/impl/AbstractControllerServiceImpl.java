@@ -3,11 +3,9 @@ package com.fr.impl;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
-import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.exception.TeamMemberNotFoundException;
 import com.fr.commons.utils.SppotiUtils;
@@ -30,8 +28,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -414,127 +410,6 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 		teamDTO.setMembers(teamUsers);
 		
 		return teamDTO;
-		
-	}
-	
-	/**
-	 * Prepare and send notification to users..
-	 */
-	@Transactional
-	protected void addNotification(final NotificationTypeEnum notificationType, final UserEntity userFrom,
-								   final UserEntity userTo, final TeamEntity team, final SppotiEntity sppoti,
-								   final PostEntity post, final CommentEntity comment, final ScoreEntity score,
-								   final RatingEntity rating)
-	{
-		final NotificationEntity notification = getNotificationEntity(notificationType, userFrom, userTo, team, sppoti,
-				post, comment, score, rating);
-		
-		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
-		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
-		this.notificationRepository.save(notification);
-	}
-	
-	/**
-	 * Init notif entity.
-	 */
-	NotificationEntity getNotificationEntity(final NotificationTypeEnum notificationType, final UserEntity userFrom,
-											 final UserEntity userTo, final TeamEntity team, final SppotiEntity sppoti,
-											 final PostEntity post, final CommentEntity comment,
-											 final ScoreEntity score, final RatingEntity rating)
-	{
-		final NotificationEntity notification = new NotificationEntity();
-		notification.setNotificationType(notificationType);
-		notification.setFrom(userFrom);
-		notification.setTo(userTo);
-		notification.setTeam(team);
-		
-		if (sppoti != null) {
-			sppoti.setConnectedUserId(userFrom.getId());
-			notification.setSppoti(sppoti);
-		}
-		
-		if (post != null) {
-			post.setConnectedUserId(userFrom.getId());
-			notification.setPost(post);
-		}
-		
-		if (comment != null) {
-			comment.setConnectedUserId(userFrom.getId());
-			notification.setComment(comment);
-		}
-		
-		if (rating != null) {
-			rating.setConnectedUserId(userFrom.getId());
-			notification.setRating(rating);
-		}
-		
-		if (score != null) {
-			score.setConnectedUserId(userFrom.getId());
-			notification.setScore(score);
-		}
-		
-		return notification;
-	}
-	
-	/**
-	 * Find tags in content and add notifications.
-	 *
-	 * @param commentEntity
-	 * 		like entity.
-	 * @param postEntity
-	 * 		post entity.
-	 */
-	@Transactional
-	public void addTagNotification(final PostEntity postEntity, final CommentEntity commentEntity)
-	{
-		
-		String content = null;
-		if (postEntity != null) {
-			content = postEntity.getContent();
-		} else if (commentEntity != null) {
-			content = commentEntity.getContent();
-		}
-		
-		if (content != null) {
-			/**
-			 * All words starting with @, followed by Letter or accented Letter.
-			 * and finishing with Letter, Number or Accented letter.
-			 */
-			final String patternString1 = "(\\$+)([a-z|A-Z|\\p{javaLetter}][a-z\\d|A-Z\\d|\\p{javaLetter}]*)";
-			
-			final Pattern pattern = Pattern.compile(patternString1);
-			final Matcher matcher = pattern.matcher(content);
-			
-			/**
-			 *  clean tags from @.
-			 */
-			final List<String> tags = new ArrayList<>();
-			while (matcher.find()) {
-				String s = matcher.group().trim();
-				s = s.replaceAll("[$]", "");
-				tags.add(s);
-			}
-			
-			/**
-			 * Process each tag.
-			 */
-			for (final String username : tags) {
-				final UserEntity userToNotify;
-				
-				userToNotify = this.userRepository.getByUsernameAndDeletedFalseAndConfirmedTrue(username);
-				
-				if (userToNotify != null) {
-					if (commentEntity != null) {
-						addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_COMMENT, commentEntity.getUser(),
-								userToNotify, null, null, commentEntity.getPost(), commentEntity, null, null);
-					} else {
-						addNotification(NotificationTypeEnum.X_TAGGED_YOU_IN_A_POST, postEntity.getUser(), userToNotify,
-								null, null, postEntity, null, null, null);
-					}
-					
-				}
-			}
-		}
 		
 	}
 	

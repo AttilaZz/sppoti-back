@@ -4,9 +4,9 @@ import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.post.PostRequestDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
-import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
+import com.fr.service.NotificationBusinessService;
 import com.fr.service.PostBusinessService;
 import com.fr.transformers.PostTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,9 @@ import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.fr.commons.enumeration.notification.NotificationObjectType.POST;
+import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_POSTED_ON_YOUR_PROFILE;
+
 /**
  * Created by: Wail DJENANE on Jun 13, 2016
  */
@@ -29,8 +32,8 @@ import java.util.stream.Collectors;
 class PostBusinessServiceImpl extends AbstractControllerServiceImpl implements PostBusinessService
 {
 	
-	/** Post transformer. */
 	private final PostTransformer postTransformer;
+	private final NotificationBusinessService notificationService;
 	
 	/** Post list size. */
 	@Value("${key.postsPerPage}")
@@ -38,9 +41,11 @@ class PostBusinessServiceImpl extends AbstractControllerServiceImpl implements P
 	
 	/** Init dependencies. */
 	@Autowired
-	public PostBusinessServiceImpl(final PostTransformer postTransformer)
+	public PostBusinessServiceImpl(final PostTransformer postTransformer,
+								   final NotificationBusinessService notificationService)
 	{
 		this.postTransformer = postTransformer;
+		this.notificationService = notificationService;
 	}
 	
 	/**
@@ -81,12 +86,13 @@ class PostBusinessServiceImpl extends AbstractControllerServiceImpl implements P
 		if (savedPost.getTargetUserProfile() != null &&
 				!savedPost.getTargetUserProfile().getId().equals(connectedUser.getId())) {
 			
-			addNotification(NotificationTypeEnum.X_POSTED_ON_YOUR_PROFILE, getConnectedUser(),
-					savedPost.getTargetUserProfile(), null, null, savedPost, null, null, null);
+			this.notificationService
+					.saveAndSendNotificationToUsers(getConnectedUser(), savedPost.getTargetUserProfile(), POST,
+							X_POSTED_ON_YOUR_PROFILE, savedPost);
 			
 			//Tag notification
 			if (savedPost.getContent() != null) {
-				addTagNotification(savedPost, null);
+				this.notificationService.addTagNotification(savedPost, null);
 			}
 			
 		}

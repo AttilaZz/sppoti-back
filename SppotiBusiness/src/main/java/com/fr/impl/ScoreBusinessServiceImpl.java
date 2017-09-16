@@ -2,13 +2,16 @@ package com.fr.impl;
 
 import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
-import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.commons.enumeration.SppotiStatus;
+import com.fr.commons.enumeration.notification.NotificationObjectType;
+import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.ScoreEntity;
 import com.fr.entities.SppotiAdverseEntity;
 import com.fr.entities.TeamEntity;
+import com.fr.entities.TeamMemberEntity;
 import com.fr.repositories.ScoreRepository;
+import com.fr.service.NotificationBusinessService;
 import com.fr.service.ScoreBusinessService;
 import com.fr.transformers.ScoreTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,17 +28,18 @@ import java.util.Optional;
 public class ScoreBusinessServiceImpl extends AbstractControllerServiceImpl implements ScoreBusinessService
 {
 	
-	/** Score transformer. */
 	private final ScoreTransformer scoreTransformer;
-	/** Score Repository. */
 	private final ScoreRepository scoreRepository;
+	private final NotificationBusinessService notificationService;
 	
 	/** Init all dependencies. */
 	@Autowired
-	public ScoreBusinessServiceImpl(final ScoreTransformer scoreTransformer, final ScoreRepository scoreRepository)
+	public ScoreBusinessServiceImpl(final ScoreTransformer scoreTransformer, final ScoreRepository scoreRepository,
+									final NotificationBusinessService notificationService)
 	{
 		this.scoreTransformer = scoreTransformer;
 		this.scoreRepository = scoreRepository;
+		this.notificationService = notificationService;
 	}
 	
 	/**
@@ -49,32 +53,32 @@ public class ScoreBusinessServiceImpl extends AbstractControllerServiceImpl impl
 		final Optional<ScoreEntity> scoreEntity = Optional
 				.ofNullable(this.scoreRepository.findBySppotiEntityUuid(scoreDTO.getSppotiId()));
 		
-		scoreEntity.ifPresent(s -> {
-			//            if(!s.getSppotiEntity().getUserSppoti().getId().equals(connectedUserId)){
-			//                throw new NotAdminException("You're not the sppoti admin");
-			//            }
+		scoreEntity.ifPresent(score -> {
 			
-			NotificationTypeEnum typeEnum = NotificationTypeEnum.SCORE_HAS_BEEN_APPROVED;
+			NotificationTypeEnum notificationType = NotificationTypeEnum.SCORE_HAS_BEEN_APPROVED;
 			if (scoreDTO.getStatus().equals(GlobalAppStatusEnum.REFUSED.name())) {
-				typeEnum = NotificationTypeEnum.SCORE_HAS_BEEN_REFUSED;
+				notificationType = NotificationTypeEnum.SCORE_HAS_BEEN_REFUSED;
 			}
 			
-			final Optional<TeamEntity> challengedTeam = s.getSppotiEntity().getAdverseTeams().stream()
+			final Optional<TeamEntity> challengedTeam = score.getSppotiEntity().getAdverseTeams().stream()
 					.filter(a -> a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)).map(SppotiAdverseEntity::getTeam)
 					.findFirst();
 			
-			addNotification(typeEnum, this.teamMembersRepository
-							.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(challengedTeam.get().getUuid(),
-									SppotiUtils.statusToFilter()).getUser(), s.getSppotiEntity().getUserSppoti(),
-					challengedTeam.get(), s.getSppotiEntity(), null, null, s, null);
+			final TeamMemberEntity sppotiTeamHost = this.teamMembersRepository
+					.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(challengedTeam.get().getUuid(),
+							SppotiUtils.statusToFilter());
 			
-			s.setScoreStatus(GlobalAppStatusEnum.valueOf(scoreDTO.getStatus()));
-			this.scoreRepository.save(s);
+			this.notificationService
+					.saveAndSendNotificationToUsers(sppotiTeamHost.getUser(), score.getSppotiEntity().getUserSppoti(),
+							NotificationObjectType.SCORE, notificationType, challengedTeam.get(),
+							score.getSppotiEntity(), score);
+			
+			score.setScoreStatus(GlobalAppStatusEnum.valueOf(scoreDTO.getStatus()));
+			this.scoreRepository.save(score);
 		});
 		
 		scoreEntity.orElseThrow(() -> new EntityNotFoundException("Sppoti has no score yet! "));
 	}
-	
 	
 	/**
 	 * {@inheritDoc}
@@ -91,12 +95,14 @@ public class ScoreBusinessServiceImpl extends AbstractControllerServiceImpl impl
 				.filter(a -> a.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)).map(SppotiAdverseEntity::getTeam)
 				.findFirst();
 		
-		addNotification(NotificationTypeEnum.SCORE_SET_AND_WAITING_FOR_APPROVAL,
-				scoreEntity.getSppotiEntity().getUserSppoti(), this.teamMembersRepository
-						.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(challengedTeam.get().getUuid(),
-								SppotiUtils.statusToFilter()).getUser(),
-				scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), null, null,
-				scoreEntity, null);
+		final TeamMemberEntity sppotiTeamHost = this.teamMembersRepository
+				.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(challengedTeam.get().getUuid(),
+						SppotiUtils.statusToFilter());
+		
+		this.notificationService
+				.saveAndSendNotificationToUsers(scoreEntity.getSppotiEntity().getUserSppoti(), sppotiTeamHost.getUser(),
+						NotificationObjectType.SCORE, NotificationTypeEnum.SCORE_SET_AND_WAITING_FOR_APPROVAL,
+						scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), scoreEntity);
 		
 		return this.scoreTransformer.modelToDto(this.scoreRepository.save(scoreEntity));
 	}

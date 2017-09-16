@@ -3,7 +3,7 @@ package com.fr.api.notification;
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationListDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
-import com.fr.commons.enumeration.NotificationStatus;
+import com.fr.commons.enumeration.notification.NotificationStatus;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.NotificationBusinessService;
 import com.fr.versionning.ApiVersion;

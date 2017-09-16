@@ -2,8 +2,8 @@ package com.fr.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fr.commons.enumeration.NotificationStatus;
-import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.commons.enumeration.notification.NotificationStatus;
+import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 
 import javax.persistence.*;
 import java.util.Date;

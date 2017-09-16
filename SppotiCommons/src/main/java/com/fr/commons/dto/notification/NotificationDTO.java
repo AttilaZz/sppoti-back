@@ -6,7 +6,7 @@ import com.fr.commons.dto.*;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
-import com.fr.commons.enumeration.NotificationStatus;
+import com.fr.commons.enumeration.notification.NotificationStatus;
 import com.fr.commons.utils.JsonDateSerializer;
 
 import java.util.Date;

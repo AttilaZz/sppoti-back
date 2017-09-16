@@ -2,12 +2,13 @@ package com.fr.impl;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
-import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
 import com.fr.service.CommentBusinessService;
-import com.fr.transformers.impl.CommentTransformerImpl;
+import com.fr.service.NotificationBusinessService;
+import com.fr.transformers.CommentTransformer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.fr.commons.enumeration.notification.NotificationObjectType.COMMENT;
+
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
  */
@@ -30,16 +33,22 @@ import java.util.Optional;
 class CommentBusinessServiceImpl extends AbstractControllerServiceImpl implements CommentBusinessService
 {
 	
-	/** Class logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(CommentBusinessServiceImpl.class);
+	
+	private final CommentTransformer commentTransformer;
+	private final NotificationBusinessService notificationService;
 	
 	/** Comment list size. */
 	@Value("${key.commentsPerPage}")
 	private int commentSize;
 	
-	/** Comment transformer. */
 	@Autowired
-	private CommentTransformerImpl commentTransformer;
+	CommentBusinessServiceImpl(final CommentTransformer commentTransformer,
+							   final NotificationBusinessService notificationService)
+	{
+		this.commentTransformer = commentTransformer;
+		this.notificationService = notificationService;
+	}
 	
 	/**
 	 * {@inheritDoc}
@@ -69,13 +78,14 @@ class CommentBusinessServiceImpl extends AbstractControllerServiceImpl implement
 				//like on other posts not mine
 				if (!Objects.equals(commentEntity.get().getUser().getUuid(),
 						commentEntity.get().getPost().getTargetUserProfile().getUuid())) {
-					addNotification(NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getUser(),
-							commentEntity.get().getPost().getTargetUserProfile(), null, null,
-							commentEntity.get().getPost(), commentEntity.get(), null, null);
+					this.notificationService.saveAndSendNotificationToUsers(commentEntity.get().getUser(),
+							commentEntity.get().getPost().getTargetUserProfile(), COMMENT,
+							NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getPost(),
+							commentEntity.get());
 					
 				}
 				
-				addTagNotification(null, commentEntity.get());
+				this.notificationService.addTagNotification(null, commentEntity.get());
 				
 			}
 			

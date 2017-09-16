@@ -1,6 +1,6 @@
 package com.fr.repositories;
 
-import com.fr.commons.enumeration.NotificationStatus;
+import com.fr.commons.enumeration.notification.NotificationStatus;
 import com.fr.entities.NotificationEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

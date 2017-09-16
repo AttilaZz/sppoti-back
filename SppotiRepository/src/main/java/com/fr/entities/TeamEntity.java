@@ -58,9 +58,22 @@ public class TeamEntity extends AbstractCommonEntity
 	private String timeZone;
 	
 	/**
+	 * to get trace of the connected user when using transformers.
+	 */
+	private transient Long connectedUserId;
+	
+	/**
 	 * Determine with sppoti is linked to the team when performing transformation of
 	 */
 	private transient Long relatedSppotiId;
+	
+	public Long getConnectedUserId() {
+		return this.connectedUserId;
+	}
+	
+	public void setConnectedUserId(final Long connectedUserId) {
+		this.connectedUserId = connectedUserId;
+	}
 	
 	public String getName() {
 		return this.name;

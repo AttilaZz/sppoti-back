@@ -1,12 +1,12 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.enumeration.NotificationTypeEnum;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.LikeContentEntity;
 import com.fr.entities.PostEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.LikeBusinessService;
+import com.fr.service.NotificationBusinessService;
 import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,19 +19,31 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.fr.commons.enumeration.notification.NotificationObjectType.FRIENDSHIP;
+import static com.fr.commons.enumeration.notification.NotificationObjectType.LIKE;
+import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_LIKED_YOUR_COMMENT;
+import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_LIKED_YOUR_POST;
+
 /**
  * Created by djenanewail on 12/24/16.
  */
 @Component
 class LikeBusinessServiceImpl extends AbstractControllerServiceImpl implements LikeBusinessService
 {
-	/** User transformer. */
-	@Autowired
-	private UserTransformer userTransformer;
+	private final UserTransformer userTransformer;
+	private final NotificationBusinessService notificationService;
 	
 	/** post likers list size. */
 	@Value("${key.likesPerPage}")
 	private int likeSize;
+	
+	@Autowired
+	LikeBusinessServiceImpl(final UserTransformer userTransformer,
+							final NotificationBusinessService notificationService)
+	{
+		this.userTransformer = userTransformer;
+		this.notificationService = notificationService;
+	}
 	
 	@Transactional
 	@Override
@@ -161,16 +173,18 @@ class LikeBusinessServiceImpl extends AbstractControllerServiceImpl implements L
 			
 			if (likeContent.getComment() != null &&
 					!likeContent.getComment().getUser().getId().equals(getConnectedUser().getId())) {
-				//Comment like
-				addNotification(NotificationTypeEnum.X_LIKED_YOUR_COMMENT, likeContent.getUser(),
-						likeContent.getComment().getUser(), null, null, likeContent.getComment().getPost(),
-						likeContent.getComment(), null, null);
+				//like comment
+				this.notificationService
+						.saveAndSendNotificationToUsers(likeContent.getUser(), likeContent.getComment().getUser(),
+								FRIENDSHIP, X_LIKED_YOUR_COMMENT, likeContent.getComment().getPost(),
+								likeContent.getComment());
 				
 			} else if (likeContent.getPost() != null &&
 					!likeContent.getPost().getUser().getId().equals(getConnectedUser().getId())) {
 				//like post
-				addNotification(NotificationTypeEnum.X_LIKED_YOUR_POST, likeContent.getUser(),
-						likeContent.getPost().getUser(), null, null, likeContent.getPost(), null, null, null);
+				this.notificationService
+						.saveAndSendNotificationToUsers(likeContent.getUser(), likeContent.getPost().getUser(), LIKE,
+								X_LIKED_YOUR_POST, likeContent.getPost());
 			}
 			
 		}

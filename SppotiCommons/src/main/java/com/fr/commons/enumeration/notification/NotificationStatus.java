@@ -1,4 +1,4 @@
-package com.fr.commons.enumeration;
+package com.fr.commons.enumeration.notification;
 
 /**
  * Created by djenanewail on 6/27/17.

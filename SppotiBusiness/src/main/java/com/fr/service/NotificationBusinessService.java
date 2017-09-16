@@ -2,8 +2,13 @@ package com.fr.service;
 
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationListDTO;
+import com.fr.commons.enumeration.notification.NotificationObjectType;
+import com.fr.commons.enumeration.notification.NotificationTypeEnum;
+import com.fr.entities.CommentEntity;
+import com.fr.entities.PostEntity;
+import com.fr.entities.UserEntity;
 
-import java.util.List;
+import javax.transaction.Transactional;
 
 /**
  * Created by djenanewail on 2/11/17.
@@ -11,31 +16,28 @@ import java.util.List;
 public interface NotificationBusinessService extends AbstractBusinessService
 {
 	
-	/**
-	 * @param userId
-	 * 		user id.
-	 * @param page
-	 * 		page number.
-	 *
-	 * @return All received notifications for a given user id
-	 */
-    NotificationListDTO getAllReceivedNotifications(String userId, int page);
-
-    /**
-	 * @param userId
-	 * 		user id.
-	 * @param page
-	 * 		page number.
-	 *
-	 * @return all sent notification by a given user id
-	 */
-	List<NotificationDTO> getAllSentNotifications(int userId, int page);
+	NotificationListDTO getAllReceivedNotifications(String userId, int page);
+	
+	void switchNotificationStatus(NotificationDTO notificationDTO);
 	
 	/**
-	 * Update open status to true
+	 * Send notification to a set of users.
 	 *
-	 * @param notificationDTO
-	 * 		notif status.
+	 * @param sender
+	 * 		user who trigged the notification.
+	 * @param userTo
+	 * 		notification receiver.
+	 * @param notificationObjectType
+	 * 		notification context.
+	 * @param notificationTypeEnum
+	 * 		notification type.
+	 * @param dataToSendInNotification
+	 * 		data to add inside notification.
 	 */
-	void switchNotificationStatus(NotificationDTO notificationDTO);
+	void saveAndSendNotificationToUsers(UserEntity sender, UserEntity userTo,
+										NotificationObjectType notificationObjectType,
+										NotificationTypeEnum notificationTypeEnum, Object... dataToSendInNotification);
+	
+	@Transactional
+	void addTagNotification(PostEntity postEntity, CommentEntity commentEntity);
 }

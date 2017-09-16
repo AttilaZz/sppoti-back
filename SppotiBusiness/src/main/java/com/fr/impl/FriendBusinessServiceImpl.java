@@ -3,12 +3,13 @@ package com.fr.impl;
 import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
-import com.fr.commons.enumeration.NotificationTypeEnum;
+import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.FriendBusinessService;
+import com.fr.service.NotificationBusinessService;
 import com.fr.transformers.UserTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.fr.commons.enumeration.notification.NotificationObjectType.FRIENDSHIP;
+
 /**
  * Created by djenanewail on 1/22/17.
  */
@@ -34,11 +37,10 @@ import java.util.stream.Collectors;
 class FriendBusinessServiceImpl extends AbstractControllerServiceImpl implements FriendBusinessService
 {
 	
-	/** Class logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(FriendBusinessServiceImpl.class);
 	
-	/** {@link UserEntity} transformer. */
 	private final UserTransformer userTransformer;
+	private final NotificationBusinessService notificationService;
 	
 	/** Friend list size. */
 	@Value("${key.friendShipPerPage}")
@@ -46,9 +48,11 @@ class FriendBusinessServiceImpl extends AbstractControllerServiceImpl implements
 	
 	/** Init services. */
 	@Autowired
-	public FriendBusinessServiceImpl(final UserTransformer userTransformer)
+	public FriendBusinessServiceImpl(final UserTransformer userTransformer,
+									 final NotificationBusinessService notificationService)
 	{
 		this.userTransformer = userTransformer;
+		this.notificationService = notificationService;
 	}
 	
 	/**
@@ -102,8 +106,9 @@ class FriendBusinessServiceImpl extends AbstractControllerServiceImpl implements
 		}
 		
 		if (this.friendShipRepository.save(friendShip) != null) {
-			addNotification(NotificationTypeEnum.FRIEND_REQUEST_SENT, friendShip.getUser(), friendShip.getFriend(),
-					null, null, null, null, null, null);
+			this.notificationService
+					.saveAndSendNotificationToUsers(friendShip.getUser(), friendShip.getFriend(), FRIENDSHIP,
+							NotificationTypeEnum.FRIEND_REQUEST_SENT);
 		}
 		
 	}
@@ -127,6 +132,7 @@ class FriendBusinessServiceImpl extends AbstractControllerServiceImpl implements
 		final FriendShipEntity tempFriendShip = this.friendShipRepository
 				.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
 						friendUuid, SppotiUtils.statusToFilter());
+		
 		if (tempFriendShip == null) {
 			this.LOGGER.error("UPDATE-FRIEND: FriendShipEntity not found !");
 			throw new EntityNotFoundException(
@@ -146,11 +152,13 @@ class FriendBusinessServiceImpl extends AbstractControllerServiceImpl implements
 		final FriendShipEntity friendShip = this.friendShipRepository.save(tempFriendShip);
 		if (friendShip != null) {
 			if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
-				addNotification(NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED, friendShip.getFriend(),
-						friendShip.getUser(), null, null, null, null, null, null);
+				this.notificationService
+						.saveAndSendNotificationToUsers(friendShip.getFriend(), friendShip.getUser(), FRIENDSHIP,
+								NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED);
 			} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
-				addNotification(NotificationTypeEnum.FRIEND_REQUEST_REFUSED, friendShip.getFriend(),
-						friendShip.getUser(), null, null, null, null, null, null);
+				this.notificationService
+						.saveAndSendNotificationToUsers(friendShip.getFriend(), friendShip.getUser(), FRIENDSHIP,
+								NotificationTypeEnum.FRIEND_REQUEST_REFUSED);
 			}
 		}
 		
