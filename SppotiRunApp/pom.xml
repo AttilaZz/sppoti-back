@@ -46,6 +46,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--Filter resources in application.properties-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -70,4 +71,63 @@
             </resource>
         </resources>
     </build>
+
+
+    <profiles>
+        <profile>
+            <id>developpement</id>
+            <properties>
+                <environment>developpement</environment>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>production</id>
+            <properties>
+                <environment>production</environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <environment>test</environment>
+            </properties>
+            <build>
+                <plugins>
+                    <!--Docker plugin-->
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker.maven.plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <imageName>${docker.image.prefix}</imageName>
+                            <dockerDirectory>src/main/docker</dockerDirectory>
+                            <imageTags>
+                                <imageTag>${project.version}</imageTag>
+                                <!--<imageTag>latest</imageTag>-->
+                            </imageTags>
+                            <resources>
+                                <!--INCLUDE-->
+                                <resource>
+                                    <targetPath>/</targetPath>
+                                    <directory>${project.basedir}/target</directory>
+                                    <include>${project.build.finalName}.war</include>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

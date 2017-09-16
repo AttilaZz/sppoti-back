@@ -1,5 +1,12 @@
 FROM java:8
+
+ENV SERVER_PORT 8080
+EXPOSE $SERVER_PORT
+
 VOLUME /tmp
-ADD gs-spring-boot-docker-0.1.0.jar sppoti-app.jar
-RUN bash -c 'touch /app.jar'
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/sppoti-app.jar"]
+
+ADD sppoti-application-test.war app.war
+
+RUN bash -c 'touch /app.war'
+
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.war"]
