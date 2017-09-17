@@ -200,6 +200,17 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--Filter resources in application.properties-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <delimiters>
+                        <delimiter>@</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
         </plugins>
 
         <extensions>
@@ -211,4 +222,28 @@
             </extension>
         </extensions>
     </build>
+
+    <profiles>
+        <profile>
+            <id>developpement</id>
+            <properties>
+                <environment>developpement</environment>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>production</id>
+            <properties>
+                <environment>production</environment>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <properties>
+                <environment>test</environment>
+            </properties>
+        </profile>
+    </profiles>
 </project>

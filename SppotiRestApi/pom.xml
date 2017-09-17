@@ -35,11 +35,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>net.minidev</groupId>-->
-        <!--<artifactId>json-smart</artifactId>-->
-        <!--<version>RELEASE</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -56,6 +51,27 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <filters>
+            <!-- Read properties from external file -->
+            <filter>
+                ../src/main/filters/filter-${environment}.properties
+            </filter>
+        </filters>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 
 </project>

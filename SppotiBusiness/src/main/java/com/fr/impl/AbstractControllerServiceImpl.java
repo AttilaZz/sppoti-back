@@ -14,13 +14,11 @@ import com.fr.mail.SppotiMailer;
 import com.fr.mail.TeamMailer;
 import com.fr.repositories.*;
 import com.fr.service.AbstractBusinessService;
-import com.fr.transformers.NotificationTransformer;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -94,14 +92,6 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 	/** Team transformer. */
 	@Autowired
 	private TeamTransformer teamTransformer;
-	
-	/** Socket messaging temples. */
-	@Autowired
-	private SimpMessagingTemplate messagingTemplate;
-	
-	/** Notification Transformer. */
-	@Autowired
-	private NotificationTransformer notificationTransformer;
 	
 	/**
 	 * {@inheritDoc}
@@ -237,7 +227,7 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 	 *
 	 * @return list of Comment DTO
 	 */
-	//TODO: Move it to the transformer
+	//TODO: Move it to the comment transformer
 	protected List<CommentDTO> fillCommentModelList(final List<CommentEntity> dbCommentEntityList, final Long userId)
 	{
 		final List<CommentDTO> myList = new ArrayList<>();
@@ -289,6 +279,7 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 	/**
 	 * {@inheritDoc}
 	 */
+	//FIXME: Move this method to team-member transformer
 	@Transactional
 	@Override
 	public Set<TeamMemberEntity> getTeamMembersEntityFromDto(final List<UserDTO> users, final TeamEntity team,

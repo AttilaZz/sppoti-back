@@ -46,24 +46,22 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--Filter resources in application.properties-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <delimiters>
-                        <delimiter>@</delimiter>
-                    </delimiters>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                </configuration>
-            </plugin>
         </plugins>
+
         <filters>
             <!-- Read properties from external file -->
             <filter>
                 ../src/main/filters/filter-${environment}.properties
             </filter>
         </filters>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -75,24 +73,9 @@
 
     <profiles>
         <profile>
-            <id>developpement</id>
-            <properties>
-                <environment>developpement</environment>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>production</id>
+            <id>docker</id>
             <properties>
                 <environment>production</environment>
-            </properties>
-        </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <environment>test</environment>
             </properties>
             <build>
                 <plugins>

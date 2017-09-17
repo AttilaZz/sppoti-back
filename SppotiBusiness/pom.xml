@@ -57,5 +57,26 @@
                 </configuration>
             </plugin>
         </plugins>
+
+        <filters>
+            <!-- Read properties from external file -->
+            <filter>
+                ../src/main/filters/filter-${environment}.properties
+            </filter>
+        </filters>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>

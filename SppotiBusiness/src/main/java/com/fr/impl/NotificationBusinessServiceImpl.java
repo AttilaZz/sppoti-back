@@ -33,7 +33,8 @@ import java.util.stream.Collectors;
  * Created by djenanewail on 2/11/17.
  */
 @Component
-class NotificationBusinessServiceImpl extends AbstractControllerServiceImpl implements NotificationBusinessService
+public class NotificationBusinessServiceImpl extends AbstractControllerServiceImpl implements
+		NotificationBusinessService
 {
 	private final Logger LOGGER = LoggerFactory.getLogger(NotificationBusinessServiceImpl.class);
 	
@@ -107,7 +108,6 @@ class NotificationBusinessServiceImpl extends AbstractControllerServiceImpl impl
 		});
 		
 		notification.orElseThrow(() -> new EntityNotFoundException("Notification not Found"));
-		
 	}
 	
 	/**
@@ -138,11 +138,10 @@ class NotificationBusinessServiceImpl extends AbstractControllerServiceImpl impl
 			throw new BusinessGlobalException("Notification type must be specified");
 		}
 		
-		throwExceptionIfParameterMissingInNotificationBuilder(objectType, dataToSendInNotification);
+		this.throwExceptionIfParameterMissingInNotificationBuilder(objectType, dataToSendInNotification);
 		
 		final NotificationEntity notification = buildNotificationEntity(notificationTypeEnum, sender, userTo,
 				dataToSendInNotification);
-		
 		
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
 		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
