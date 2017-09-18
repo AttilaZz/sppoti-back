@@ -63,8 +63,10 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 		
 		final NotificationListDTO notificationListDTO = new NotificationListDTO();
 		
-		notificationListDTO.setNotifications(
-				notifications.stream().map(this.notificationTransformer::modelToDto).collect(Collectors.toList()));
+		notificationListDTO.setNotifications(notifications.stream().map(n -> {
+			n.setConnectedUserId(getConnectedUserId());
+			return this.notificationTransformer.modelToDto(n);
+		}).collect(Collectors.toList()));
 		
 		notificationListDTO.setNotifCounter(this.notificationRepository.countByToUuid(userId));
 		

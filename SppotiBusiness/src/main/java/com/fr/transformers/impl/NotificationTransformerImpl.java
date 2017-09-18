@@ -76,27 +76,45 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 		
 		//POST
 		final Optional<PostEntity> optionalPost = Optional.ofNullable(notification.getPost());
-		optionalPost.ifPresent(t -> notificationDTO.setPost(this.postTransformer.modelToDto(t)));
+		optionalPost.ifPresent(t -> {
+			t.setConnectedUserId(notification.getConnectedUserId());
+			notificationDTO.setPost(this.postTransformer.modelToDto(t));
+		});
 		
 		//COMMENT
 		final Optional<CommentEntity> optionalComment = Optional.ofNullable(notification.getComment());
-		optionalComment.ifPresent(t -> notificationDTO.setComment(this.commentTransformer.modelToDto(t)));
+		optionalComment.ifPresent(t -> {
+			t.setConnectedUserId(notification.getConnectedUserId());
+			notificationDTO.setComment(this.commentTransformer.modelToDto(t));
+		});
 		
 		//TEAM
 		final Optional<TeamEntity> optionalTeam = Optional.ofNullable(notification.getTeam());
-		optionalTeam.ifPresent(t -> notificationDTO.setTeam(this.teamTransformer.modelToDto(t)));
+		optionalTeam.ifPresent(t -> {
+			t.setConnectedUserId(notification.getConnectedUserId());
+			notificationDTO.setTeam(this.teamTransformer.modelToDto(t));
+		});
 		
 		//SPPOTI
 		final Optional<SppotiEntity> optionalSppoti = Optional.ofNullable(notification.getSppoti());
-		optionalSppoti.ifPresent(t -> notificationDTO.setSppoti(this.sppotiTransformer.modelToDto(t)));
+		optionalSppoti.ifPresent(t -> {
+			t.setConnectedUserId(notification.getConnectedUserId());
+			notificationDTO.setSppoti(this.sppotiTransformer.modelToDto(t));
+		});
 		
 		//RATING
 		final Optional<RatingEntity> ratingEntity = Optional.ofNullable(notification.getRating());
-		ratingEntity.ifPresent(t -> notificationDTO.setRating(this.ratingTransformer.modelToDto(t)));
+		ratingEntity.ifPresent(t -> {
+			t.setConnectedUserId(notification.getConnectedUserId());
+			notificationDTO.setRating(this.ratingTransformer.modelToDto(t));
+		});
 		
 		//SCORE
 		final Optional<ScoreEntity> scoreEntity = Optional.ofNullable(notification.getScore());
-		scoreEntity.ifPresent(t -> notificationDTO.setScore(this.scoreTransformer.modelToDto(t)));
+		scoreEntity.ifPresent(t -> {
+			t.setConnectedUserId(notification.getConnectedUserId());
+			notificationDTO.setScore(this.scoreTransformer.modelToDto(t));
+		});
 		
 		return notificationDTO;
 	}

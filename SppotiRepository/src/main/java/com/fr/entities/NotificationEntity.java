@@ -60,6 +60,11 @@ public class NotificationEntity extends AbstractCommonEntity
 	@JoinColumn(name = "rating_id")
 	private RatingEntity rating;
 	
+	/**
+	 * to get trace of the connected user when using transformers.
+	 */
+	private transient Long connectedUserId;
+	
 	public UserEntity getFrom()
 	{
 		return this.from;
@@ -160,6 +165,14 @@ public class NotificationEntity extends AbstractCommonEntity
 	
 	public void setRating(final RatingEntity rating) {
 		this.rating = rating;
+	}
+	
+	public Long getConnectedUserId() {
+		return this.connectedUserId;
+	}
+	
+	public void setConnectedUserId(final Long connectedUserId) {
+		this.connectedUserId = connectedUserId;
 	}
 	
 	/**
