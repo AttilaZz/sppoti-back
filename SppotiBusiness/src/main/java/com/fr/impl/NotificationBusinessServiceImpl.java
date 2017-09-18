@@ -9,7 +9,7 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.*;
 import com.fr.service.NotificationBusinessService;
-import com.fr.transformers.impl.NotificationTransformerImpl;
+import com.fr.transformers.NotificationTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 	
 	/** Notification transformer. */
 	@Autowired
-	private NotificationTransformerImpl notificationTransformer;
+	private NotificationTransformer notificationTransformer;
 	
 	/** Socket messaging temples. */
 	@Autowired
@@ -59,21 +59,7 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 		
 		final Pageable pageable = new PageRequest(page, this.notificationSize, Sort.Direction.DESC, "creationDate");
 		
-		List<NotificationEntity> notifications = this.notificationRepository.findByToUuid(userId, pageable);
-		
-		notifications = notifications.stream().map(n -> {
-			NotificationEntity entity = this
-					.buildNotificationEntity(n.getNotificationType(), n.getFrom(), n.getTo(), n.getTeam(),
-							n.getSppoti(), n.getPost(), n.getComment());
-			
-			entity.setId(n.getId());
-			entity.setUuid(n.getUuid());
-			entity.setVersion(n.getVersion());
-			entity.setNotificationType(n.getNotificationType());
-			entity.setStatus(n.getStatus());
-			entity.setCreationDate(n.getCreationDate());
-			return entity;
-		}).collect(Collectors.toList());
+		final List<NotificationEntity> notifications = this.notificationRepository.findByToUuid(userId, pageable);
 		
 		final NotificationListDTO notificationListDTO = new NotificationListDTO();
 		
@@ -116,11 +102,11 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 	@Override
 	@Transactional
 	public void saveAndSendNotificationToUsers(final UserEntity sender, final UserEntity userTo,
-											   final NotificationObjectType objectType,
+											   final NotificationObjectType notifObjectType,
 											   final NotificationTypeEnum notificationTypeEnum,
 											   final Object... dataToSendInNotification)
 	{
-		if (dataToSendInNotification.length == 0 && objectType != NotificationObjectType.FRIENDSHIP) {
+		if (dataToSendInNotification.length == 0 && notifObjectType != NotificationObjectType.FRIENDSHIP) {
 			throw new BusinessGlobalException("At least one object must be added to send a notification");
 		}
 		
@@ -131,28 +117,24 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 		if (userTo == null) {
 			throw new BusinessGlobalException("Notification receivers must be added to notification");
 		}
-		if (objectType == null) {
+		if (notifObjectType == null) {
 			throw new BusinessGlobalException("Notification context must be specified, ex: SPPOTI, TEAM, ect..");
 		}
 		if (notificationTypeEnum == null) {
 			throw new BusinessGlobalException("Notification type must be specified");
 		}
 		
-		this.throwExceptionIfParameterMissingInNotificationBuilder(objectType, dataToSendInNotification);
-		
 		final NotificationEntity notification = buildNotificationEntity(notificationTypeEnum, sender, userTo,
-				dataToSendInNotification);
+				notifObjectType, dataToSendInNotification);
 		
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
 		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
 		this.notificationRepository.save(notification);
 	}
 	
-	/**
-	 * Init notif entity.
-	 */
 	public NotificationEntity buildNotificationEntity(final NotificationTypeEnum notificationType,
 													  final UserEntity sender, final UserEntity userTo,
+													  final NotificationObjectType objectType,
 													  final Object... objectToSend)
 	{
 		final NotificationEntity notification = new NotificationEntity();
@@ -161,130 +143,201 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 		notification.setTo(userTo);
 		
 		final Long connectedUser = sender.getId();
+		final SppotiEntity sppoti;
+		final TeamEntity team;
+		final CommentEntity comment;
+		final PostEntity post;
 		
-		//Initialize variables
-		final TeamEntity team = (TeamEntity) objectToSend[0];
-		final SppotiEntity sppoti = (SppotiEntity) objectToSend[1];
-		final PostEntity post = (PostEntity) objectToSend[2];
-		final CommentEntity comment = (CommentEntity) objectToSend[3];
-		final ScoreEntity score = (ScoreEntity) objectToSend[4];
-		final RatingEntity rating = (RatingEntity) objectToSend[5];
-		
-		if (team != null) {
-			team.setConnectedUserId(connectedUser);
-			notification.setTeam(team);
-		}
-		
-		if (sppoti != null) {
-			sppoti.setConnectedUserId(connectedUser);
-			notification.setSppoti(sppoti);
-		}
-		
-		if (post != null) {
-			post.setConnectedUserId(connectedUser);
-			notification.setPost(post);
-		}
-		
-		if (comment != null) {
-			comment.setConnectedUserId(connectedUser);
-			notification.setComment(comment);
-		}
-		
-		if (rating != null) {
-			rating.setConnectedUserId(connectedUser);
-			notification.setRating(rating);
-		}
-		
-		if (score != null) {
-			score.setConnectedUserId(connectedUser);
-			notification.setScore(score);
-		}
-		
-		return notification;
-	}
-	
-	public void throwExceptionIfParameterMissingInNotificationBuilder(final NotificationObjectType objectType,
-																	  final Object... objectToSend)
-	{
 		switch (objectType) {
 			case POST:
-				//post required(2
-				if (objectToSend[2] == null || !(objectToSend[2] instanceof PostEntity)) {
-					throw new EntityNotFoundException(
-							"POST is missing OR the passed object is not an instance of POST-ENTITY");
+				//post required(2)
+				if (objectToSend.length < 3) {
+					throw new IllegalArgumentException("Post Object is missing");
 				}
+				
+				if (objectToSend[2] == null) {
+					throw new EntityNotFoundException("POST is missing");
+				}
+				if (!(objectToSend[2] instanceof PostEntity)) {
+					throw new ClassCastException("POST-ENTITY is expected");
+				}
+				
+				post = (PostEntity) objectToSend[2];
+				post.setConnectedUserId(connectedUser);
+				notification.setPost(post);
+				
 				break;
 			case TEAM:
 				//Team and sppoti needed, but only team is required(0, 1)
-				if (objectToSend[0] == null || !(objectToSend[0] instanceof TeamEntity)) {
-					throw new EntityNotFoundException(
-							"TEAM is missing OR the passed object is not an instance of COMMENT-ENTITY");
+				if (objectToSend.length < 1) {
+					throw new IllegalArgumentException("TEAM Object is missing");
 				}
+				
+				if (objectToSend[0] == null) {
+					throw new EntityNotFoundException("TEAM is missing");
+				}
+				if (!(objectToSend[0] instanceof TeamEntity)) {
+					throw new ClassCastException("TEAM-ENTITY is expected");
+				}
+				
+				team = (TeamEntity) objectToSend[0];
+				team.setConnectedUserId(connectedUser);
+				notification.setTeam(team);
+				
+				if (objectToSend.length == 2) {
+					if (!(objectToSend[1] instanceof SppotiEntity)) {
+						throw new ClassCastException("SPPOTI-ENTITY is expected");
+					}
+					sppoti = (SppotiEntity) objectToSend[1];
+					sppoti.setConnectedUserId(connectedUser);
+					notification.setSppoti(sppoti);
+				}
+				
 				break;
 			case SPPOTI:
 				//Sppoti required
-				if (objectToSend[1] == null || !(objectToSend[1] instanceof SppotiEntity)) {
-					throw new BusinessGlobalException(
-							"SPPOTI is missing OR the passed object is not an instance of SPPOTI-ENTITY");
+				if (objectToSend.length < 2) {
+					throw new IllegalArgumentException("SPPOTI Object is missing");
 				}
+				
+				if (objectToSend[1] == null) {
+					throw new BusinessGlobalException("SPPOTI is missing");
+				}
+				
+				if (!(objectToSend[1] instanceof SppotiEntity)) {
+					throw new ClassCastException("SPPOTI-ENTITY is expected");
+				}
+				
+				sppoti = (SppotiEntity) objectToSend[1];
+				sppoti.setConnectedUserId(connectedUser);
+				notification.setSppoti(sppoti);
+				
 				break;
 			case SCORE:
 				//Sppoti, Team and score are required(0, 1, 4)
-				if (objectToSend[0] == null || !(objectToSend[0] instanceof TeamEntity)) {
+				if (objectToSend.length < 5) {
+					throw new IllegalArgumentException("(TEAM or SPPOTI or SCORE) Object is missing");
+				}
+				
+				//				team
+				if (objectToSend[0] == null) {
 					throw new EntityNotFoundException("TEAM is missing");
 				}
-				if (objectToSend[1] == null || !(objectToSend[1] instanceof SppotiEntity)) {
-					throw new BusinessGlobalException(
-							"SPPOTI is missing OR the passed object is not an instance of SPPOTI-ENTITY");
+				if (!(objectToSend[0] instanceof TeamEntity)) {
+					throw new ClassCastException("TEAM-ENTITY is expected");
 				}
-				if (objectToSend[4] == null || !(objectToSend[4] instanceof ScoreEntity)) {
+				team = (TeamEntity) objectToSend[0];
+				team.setConnectedUserId(connectedUser);
+				notification.setTeam(team);
+				
+				//				sppoti
+				if (objectToSend[1] == null) {
+					throw new BusinessGlobalException("SPPOTI is missing");
+				}
+				if (!(objectToSend[1] instanceof SppotiEntity)) {
+					throw new ClassCastException("SPPOTI-ENTITY is expected");
+				}
+				sppoti = (SppotiEntity) objectToSend[1];
+				sppoti.setConnectedUserId(connectedUser);
+				notification.setSppoti(sppoti);
+				
+				//				score
+				if (objectToSend[4] == null) {
 					throw new BusinessGlobalException(
 							"SCORE is missing OR the passed object is not an instance of SCORE-ENTITY");
 				}
+				if (!(objectToSend[4] instanceof ScoreEntity)) {
+					throw new ClassCastException("SCORE-ENTITY is expected");
+				}
+				final ScoreEntity score = (ScoreEntity) objectToSend[4];
+				score.setConnectedUserId(connectedUser);
+				notification.setScore(score);
+				
 				break;
 			case COMMENT:
-				//Sppoti and comment are required (1, 3)
-				if (objectToSend[1] == null || !(objectToSend[1] instanceof SppotiEntity)) {
-					throw new BusinessGlobalException(
-							"SPPOTI is missing OR the passed object is not an instance of SPPOTI-ENTITY");
+				//POSt and COMMENT are required (1, 3)
+				if (objectToSend.length < 4) {
+					throw new IllegalArgumentException("(COMMENT or POST) Object is missing");
 				}
-				if (objectToSend[3] == null || !(objectToSend[3] instanceof ScoreEntity)) {
+				
+				if (objectToSend[2] == null || !(objectToSend[2] instanceof PostEntity)) {
+					throw new BusinessGlobalException(
+							"POST is missing OR the passed object is not an instance of SPPOTI-ENTITY");
+				}
+				post = (PostEntity) objectToSend[2];
+				post.setConnectedUserId(connectedUser);
+				notification.setPost(post);
+				
+				if (objectToSend[3] == null || !(objectToSend[3] instanceof CommentEntity)) {
 					throw new BusinessGlobalException(
 							"COMMENT is missing OR the passed object is not an instance of COMMENT-ENTITY");
 				}
+				comment = (CommentEntity) objectToSend[3];
+				comment.setConnectedUserId(connectedUser);
+				notification.setComment(comment);
+				
 				break;
 			case RATING:
 				//Sppoti and rating are required (1, 5)
+				if (objectToSend.length < 6) {
+					throw new IllegalArgumentException("(SPPOTI or RATING) Object is missing");
+				}
+				
 				if (objectToSend[1] == null || !(objectToSend[1] instanceof SppotiEntity)) {
 					throw new BusinessGlobalException(
 							"SPPOTI is missing OR the passed object is not an instance of SPPOTI-ENTITY");
 				}
-				if (objectToSend[5] == null || !(objectToSend[5] instanceof ScoreEntity)) {
+				sppoti = (SppotiEntity) objectToSend[1];
+				sppoti.setConnectedUserId(connectedUser);
+				notification.setSppoti(sppoti);
+				
+				if (objectToSend[5] == null || !(objectToSend[5] instanceof RatingEntity)) {
 					throw new BusinessGlobalException(
 							"RATING is missing OR the passed object is not an instance of RATING-ENTITY");
 				}
+				final RatingEntity rating = (RatingEntity) objectToSend[5];
+				rating.setConnectedUserId(connectedUser);
+				notification.setRating(rating);
+				
 				break;
 			case FRIENDSHIP:
 				//No param is required
 				break;
 			case LIKE:
 				//POST or COMMENT are required
+				if (objectToSend.length < 4) {
+					throw new IllegalArgumentException("(COMMENT or POST) Object is missing");
+				}
+				
 				boolean hasComment = true;
 				boolean hasPost = true;
 				
 				if (objectToSend[2] == null || !(objectToSend[2] instanceof PostEntity)) {
 					hasPost = false;
 				}
-				if (objectToSend[3] == null || !(objectToSend[3] instanceof ScoreEntity)) {
+				if (objectToSend[3] == null || !(objectToSend[3] instanceof CommentEntity)) {
 					hasComment = false;
 				}
 				if (!hasComment && !hasPost) {
 					throw new BusinessGlobalException("At least COMMENT or POST are needed to send like notification");
 				}
+				
+				if (hasComment) {
+					comment = (CommentEntity) objectToSend[3];
+					comment.setConnectedUserId(connectedUser);
+					notification.setComment(comment);
+				} else {
+					post = (PostEntity) objectToSend[2];
+					post.setConnectedUserId(connectedUser);
+					notification.setPost(post);
+				}
+				
 				break;
 			default:
 				break;
 		}
+		
+		return notification;
 	}
 	
 	/**
@@ -343,6 +396,5 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 				}
 			}
 		}
-		
 	}
 }
