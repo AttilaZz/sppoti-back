@@ -3,6 +3,7 @@ package com.fr.commons.dto.post;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.CommentDTO;
@@ -46,45 +47,21 @@ public class PostDTO extends AbstractCommonDTO
 	
 	private int visibility;
 	
-	private String firstName;
-	private String lastName;
-	private String username;
-	private String avatar;
+	@JsonUnwrapped
+	private UserDTO sender;
 	
-	private TargetUser targetUser;
+	private UserDTO targetUser;
 	
 	private boolean myPost;
 	
 	private String timeZone;
 	
-	public String getFirstName()
-	{
-		return this.firstName;
+	public UserDTO getSender() {
+		return this.sender != null ? this.sender : new UserDTO();
 	}
 	
-	public void setFirstName(final String firstName)
-	{
-		this.firstName = firstName;
-	}
-	
-	public String getLastName()
-	{
-		return this.lastName;
-	}
-	
-	public void setLastName(final String lastName)
-	{
-		this.lastName = lastName;
-	}
-	
-	public String getUsername()
-	{
-		return this.username;
-	}
-	
-	public void setUsername(final String username)
-	{
-		this.username = username;
+	public void setSender(final UserDTO sender) {
+		this.sender = sender;
 	}
 	
 	public List<UserDTO> getLikers()
@@ -219,25 +196,6 @@ public class PostDTO extends AbstractCommonDTO
 		this.comment = comment;
 	}
 	
-	public TargetUser getTargetUser()
-	{
-		return this.targetUser;
-	}
-	
-	public void setTargetUser(final TargetUser targetUser)
-	{
-		this.targetUser = targetUser;
-	}
-	
-	public String getAvatar()
-	{
-		return this.avatar;
-	}
-	
-	public void setAvatar(final String avatar)
-	{
-		this.avatar = avatar;
-	}
 	
 	public String getTimeZone() {
 		return this.timeZone;
@@ -247,58 +205,11 @@ public class PostDTO extends AbstractCommonDTO
 		this.timeZone = timeZone;
 	}
 	
-	public void setTargetUser(final String firstName, final String lastName, final String username, final String id,
-							  final boolean myAccount)
-	{
-		this.targetUser = new TargetUser(firstName, lastName, username, id, myAccount);
+	public UserDTO getTargetUser() {
+		return this.targetUser;
 	}
 	
-	public class TargetUser
-	{
-		private String id;
-		private String firstName;
-		private String lastName;
-		private String username;
-		private boolean myAccount;
-		
-		public TargetUser()
-		{
-		}
-		
-		
-		public TargetUser(final String firstName, final String lastName, final String username, final String id,
-						  final boolean myAccount)
-		{
-			this.firstName = firstName;
-			this.lastName = lastName;
-			this.username = username;
-			this.id = id;
-			this.myAccount = myAccount;
-		}
-		
-		public String getFirstName()
-		{
-			return this.firstName;
-		}
-		
-		public String getLastName()
-		{
-			return this.lastName;
-		}
-		
-		public String getUsername()
-		{
-			return this.username;
-		}
-		
-		public String getId()
-		{
-			return this.id;
-		}
-		
-		public boolean isMyAccount()
-		{
-			return this.myAccount;
-		}
+	public void setTargetUser(final UserDTO targetUser) {
+		this.targetUser = targetUser;
 	}
 }

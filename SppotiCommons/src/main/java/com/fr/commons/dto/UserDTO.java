@@ -33,7 +33,7 @@ public class UserDTO extends AbstractCommonDTO
 	//team admin decision about user request to join team
 	private Boolean waitConfirmation;
 	
-	//team member positin in the stadium
+	//team member position in the stadium
 	private Integer xPosition;
 	private Integer yPosition;
 	

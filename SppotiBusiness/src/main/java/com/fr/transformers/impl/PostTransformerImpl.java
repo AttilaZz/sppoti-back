@@ -3,11 +3,14 @@ package com.fr.transformers.impl;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.commons.utils.SppotiUtils;
-import com.fr.entities.*;
+import com.fr.entities.CommentEntity;
+import com.fr.entities.EditHistoryEntity;
+import com.fr.entities.PostEntity;
+import com.fr.entities.UserEntity;
 import com.fr.repositories.EditHistoryRepository;
-import com.fr.repositories.UserRepository;
 import com.fr.transformers.CommentTransformer;
 import com.fr.transformers.PostTransformer;
+import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,25 +26,20 @@ import java.util.stream.Collectors;
 @Component
 public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEntity> implements PostTransformer
 {
-	/** history repo. */
 	private final EditHistoryRepository editHistoryRepository;
-	
-	/** Comment transformer. */
 	private final CommentTransformer commentTransformer;
-	
-	/** User repository. */
-	private final UserRepository userRepository;
+	private final UserTransformer userTransformer;
 	
 	/**
 	 * Init transformer.
 	 */
 	@Autowired
 	public PostTransformerImpl(final EditHistoryRepository editHistoryRepository,
-							   final CommentTransformer commentTransformer, final UserRepository userRepository)
+							   final CommentTransformer commentTransformer, final UserTransformer userTransformer)
 	{
 		this.editHistoryRepository = editHistoryRepository;
 		this.commentTransformer = commentTransformer;
-		this.userRepository = userRepository;
+		this.userTransformer = userTransformer;
 	}
 	
 	/**
@@ -58,24 +56,23 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 	@Override
 	public PostDTO modelToDto(final PostEntity model) {
 		
-		final PostDTO pres = new PostDTO();
+		final PostDTO post = new PostDTO();
 		
-		final UserEntity postEditor = model.getUser();
+		final UserEntity postSender = model.getUser();
 		final Long connectedUser = model.getConnectedUserId();
 		
-		pres.setId(model.getUuid());
-		pres.setContent(model.getContent());
-		pres.setImageLink(model.getAlbum());
-		pres.setVideoLink(model.getVideo());
-		pres.setVisibility(model.getVisibility());
+		post.setId(model.getUuid());
+		post.setContent(model.getContent());
+		post.setImageLink(model.getAlbum());
+		post.setVideoLink(model.getVideo());
+		post.setVisibility(model.getVisibility());
 		
-		pres.setFirstName(postEditor.getFirstName());
-		pres.setLastName(postEditor.getLastName());
-		pres.setUsername(postEditor.getUsername());
+		post.setSender(this.userTransformer.modelToDto(postSender));
+		post.getSender().setPassword(null);
 		
-		pres.setSportId(model.getSport().getId());
+		post.setSportId(model.getSport().getId());
 		
-		pres.setMyPost(connectedUser.equals(model.getUser().getId()));
+		post.setMyPost(connectedUser.equals(model.getUser().getId()));
 		
 		/*
 		 * Check if content has been modified or not
@@ -84,26 +81,26 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 				.getByPostUuidOrderByDatetimeEditedDesc(model.getUuid());
 		
 		if (!editHistory.isEmpty()) {
-			pres.setEdited(true);
+			post.setEdited(true);
 			final EditHistoryEntity ec = editHistory.get(0);
-			pres.setDatetimeCreated(SppotiUtils.dateWithTimeZone(ec.getDatetimeEdited(), model.getTimeZone()));
+			post.setDatetimeCreated(SppotiUtils.dateWithTimeZone(ec.getDatetimeEdited(), model.getTimeZone()));
 			if (ec.getText() != null) {
-				pres.setContent(ec.getText());
+				post.setContent(ec.getText());
 			}
 			
 			if (ec.getSport() != null) {
 				final Long spId = ec.getSport().getId();
-				pres.setSportId(spId);
+				post.setSportId(spId);
 			}
 		} else {
 			// post has not been edited - set initial params
 			if (model.getContent() != null) {
-				pres.setContent(model.getContent());
+				post.setContent(model.getContent());
 			}
 			if (model.getSport() != null && model.getSport().getId() != null) {
-				pres.setSportId(model.getSport().getId());
+				post.setSportId(model.getSport().getId());
 			}
-			pres.setDatetimeCreated(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), model.getTimeZone()));
+			post.setDatetimeCreated(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), model.getTimeZone()));
 		}
 
 		/*
@@ -111,7 +108,7 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		 */
 		final Set<CommentEntity> commentEntities = new TreeSet<>();
 		commentEntities.addAll(model.getCommentEntities());
-		pres.setCommentsCount(commentEntities.size());
+		post.setCommentsCount(commentEntities.size());
 		
 		final List<CommentEntity> commentsListTemp = new ArrayList<>();
 		commentsListTemp.addAll(commentEntities);
@@ -129,38 +126,22 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 			
 			commentList.add(commentModelDTO);
 		}
-		pres.setComment(commentList);
+		post.setComment(commentList);
 		
 		/*
 		 * Has connected user liked this post or not.
 		 */
-		pres.setLikeCount(model.getLikes().size());
-		pres.setLikedByUser(model.getLikes().stream().anyMatch(l -> l.getUser().getId().equals(connectedUser)));
-		
-		/*
-		 * Set post editor avatar and cover.
-		 */
-		final List<ResourcesEntity> resources = new ArrayList<>();
-		resources.addAll(postEditor.getResources());
-		if (!resources.isEmpty()) {
-			if (resources.get(0) != null && resources.get(0).getType() == 1) {
-				pres.setAvatar(resources.get(0).getUrl());
-			} else if (resources.size() > 1 && resources.get(1) != null && resources.get(1).getType() == 1) {
-				pres.setAvatar(resources.get(1).getUrl());
-			}
-		}
+		post.setLikeCount(model.getLikes().size());
+		post.setLikedByUser(model.getLikes().stream().anyMatch(l -> l.getUser().getId().equals(connectedUser)));
 
 		/*
 		 * Check if post has been posted on a friend profile -- default value for integer is ZERO (UUID can never be a zero)
 		 */
 		
-		final UserEntity t = model.getTargetUserProfile();
-		pres.setTargetUser(t.getFirstName(), t.getLastName(), t.getUsername(), t.getUuid(),
-				connectedUser.equals(t.getId()));
+		post.setTargetUser(this.userTransformer.modelToDto(model.getTargetUserProfile()));
+		post.getTargetUser().setPassword(null);
 		
-		
-		return pres;
-		
+		return post;
 	}
 	
 	/**
