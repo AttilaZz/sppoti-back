@@ -157,10 +157,14 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 		
 		//Notify mobiles with fire-base
 		final JSONObject body = new JSONObject();
+		final JSONObject data = new JSONObject();
 		try {
 			body.put("to", "/topics/" + this.TOPIC);
 			body.put("priority", "high");
-			body.put("notification", notificationDTO);
+			
+			data.put("notification", notificationDTO);
+			body.put("data", data);
+			
 		} catch (final JSONException e) {
 			this.LOGGER.error(ErrorMessageEnum.SERIALIZE_FIREBASE_NOTIF_MESSAGE_FAILURE.getMessage(), e);
 		}

@@ -15,8 +15,9 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class AndroidPushNotificationsService
 {
-	private static final String FIREBASE_SERVER_KEY = "AIzaSyCdipI1ajRjO8ZN2Ukz4YTaRAWhM4F5pTc";
-	private static final String FIREBASE_API_URL = "https://fcm.googleapis.com/fcm/send";
+	private static final String FIREBASE_SERVER_KEY
+			= "AAAAeuyMDEQ:APA91bHXO-6U-9UlFu--_itD1i54YZh5DTKtRj2tZpEa0POLgXs7gheX-zxK_itM-pSZijFwK5S8DQSem4IxNzBrxiNW44T3X4DTIygTWLz1XWTGflD0WsB45svexizshmEpC5ne3IW5";
+	private static final String FIREBASE_API_URL = "https://gcm-http.googleapis.com/gcm/send";
 	
 	@Async
 	public CompletableFuture<String> send(final HttpEntity<String> entity) {
