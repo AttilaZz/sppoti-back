@@ -1,6 +1,7 @@
 package com.fr.transformers.impl;
 
 import com.fr.commons.dto.CommentDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.UserEntity;
@@ -43,6 +44,8 @@ public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, 
 	{
 		final CommentDTO commentDTO = new CommentDTO();
 		final UserEntity userEntity = model.getUser();
+		
+		commentDTO.setAuthorId(userEntity.getUuid());
 		commentDTO.setAuthorFirstName(userEntity.getFirstName());
 		commentDTO.setAuthorLastName(userEntity.getLastName());
 		commentDTO.setAuthorUsername(userEntity.getUsername());
@@ -54,7 +57,9 @@ public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, 
 		commentDTO.setVideoLink(model.getVideoLink());
 		commentDTO.setCreationDate(SppotiUtils.dateWithTimeZone(model.getDatetimeCreated(), model.getTimeZone()));
 		
-		commentDTO.setAuthorAvatar(this.userTransformer.getUserCoverAndAvatar(userEntity).getAvatar());
+		final UserDTO temp = this.userTransformer.getUserCoverAndAvatar(userEntity);
+		commentDTO.setAuthorAvatar(temp.getAvatar());
+		commentDTO.setAuthorCover(temp.getCover());
 		
 		return commentDTO;
 	}

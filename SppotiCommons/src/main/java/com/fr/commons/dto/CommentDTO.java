@@ -17,10 +17,12 @@ public class CommentDTO extends AbstractCommonDTO
 	
 	private String postId;
 	
+	private String authorId;
 	private String authorFirstName;
 	private String authorLastName;
 	private String authorUsername;
 	private String authorAvatar;
+	private String authorCover;
 	
 	@JsonSerialize(using = JsonDateSerializer.class)
 	private Date creationDate;
@@ -186,5 +188,21 @@ public class CommentDTO extends AbstractCommonDTO
 	
 	public void setTimeZone(final String timeZone) {
 		this.timeZone = timeZone;
+	}
+	
+	public String getAuthorCover() {
+		return this.authorCover;
+	}
+	
+	public void setAuthorCover(final String authorCover) {
+		this.authorCover = authorCover;
+	}
+	
+	public String getAuthorId() {
+		return this.authorId;
+	}
+	
+	public void setAuthorId(final String authorId) {
+		this.authorId = authorId;
 	}
 }
