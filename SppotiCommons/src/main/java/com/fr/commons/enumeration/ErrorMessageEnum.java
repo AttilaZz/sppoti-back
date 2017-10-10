@@ -11,7 +11,8 @@ public enum ErrorMessageEnum
 	FACEBOOK_ID_ALREADY_EXISTS("Facebook id already associated with an account"),
 	GOOGLE_ID_ALREADY_EXISTS("Google id id already associated with an account"),
 	TWITTER_ID_ALREADY_EXISTS("Twitter id already associated with an account"),
-	SOCIAL_USER_ID_NOT_FOUND("Social ID not found"), PASSWORD_REQUIRED("Password is required");
+	SOCIAL_USER_ID_NOT_FOUND("Social ID not found"), PASSWORD_REQUIRED("Password is required"),
+	SERIALIZE_FIREBASE_NOTIF_MESSAGE_FAILURE("Cannot serialize firebase notification object");
 	
 	private final String message;
 	

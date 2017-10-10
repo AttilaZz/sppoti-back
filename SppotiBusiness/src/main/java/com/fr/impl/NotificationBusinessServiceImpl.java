@@ -2,14 +2,18 @@ package com.fr.impl;
 
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationListDTO;
+import com.fr.commons.enumeration.ErrorMessageEnum;
 import com.fr.commons.enumeration.notification.NotificationObjectType;
 import com.fr.commons.enumeration.notification.NotificationStatus;
 import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.*;
+import com.fr.impl.notification.AndroidPushNotificationsService;
 import com.fr.service.NotificationBusinessService;
 import com.fr.transformers.NotificationTransformer;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +30,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -49,6 +56,12 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 	/** Socket messaging temples. */
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
+	
+	@Autowired
+	private AndroidPushNotificationsService androidPushNotificationsService;
+	
+	private final String TOPIC = "notify";
+	
 	
 	/**
 	 * {@inheritDoc}
@@ -130,8 +143,40 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 				notifObjectType, dataToSendInNotification);
 		
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
-		this.messagingTemplate.convertAndSendToUser(userTo.getEmail(), "/queue/notify", notificationDTO);
+		
+		
+		sendNotificationToSubscribedUsers(userTo.getEmail(), notificationDTO);
+		
 		this.notificationRepository.save(notification);
+	}
+	
+	private void sendNotificationToSubscribedUsers(final String email, final NotificationDTO notificationDTO) {
+		
+		//Notify web socket
+		this.messagingTemplate.convertAndSendToUser(email, "/queue/" + this.TOPIC, notificationDTO);
+		
+		//Notify mobiles with fire-base
+		final JSONObject body = new JSONObject();
+		try {
+			body.put("to", "/topics/" + this.TOPIC);
+			body.put("priority", "high");
+			body.put("notification", notificationDTO);
+		} catch (final JSONException e) {
+			this.LOGGER.error(ErrorMessageEnum.SERIALIZE_FIREBASE_NOTIF_MESSAGE_FAILURE.getMessage(), e);
+		}
+		
+		final HttpEntity<String> request = new HttpEntity<>(body.toString());
+		final CompletableFuture<String> pushNotification = this.androidPushNotificationsService.send(request);
+		CompletableFuture.allOf(pushNotification).join();
+		
+		try {
+			final String firebaseResponse = pushNotification.get();
+			this.LOGGER.info("Notification {} has been fired successfully, under reference {}", body, firebaseResponse);
+			
+		} catch (final InterruptedException | ExecutionException e) {
+			this.LOGGER.error("Failed to send notif to firebase", e);
+		}
+		
 	}
 	
 	public NotificationEntity buildNotificationEntity(final NotificationTypeEnum notificationType,
