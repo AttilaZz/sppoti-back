@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class AndroidPushNotificationsService
 {
-	private static final String FIREBASE_SERVER_KEY = "Your Server Key here!";
+	private static final String FIREBASE_SERVER_KEY = "AIzaSyCdipI1ajRjO8ZN2Ukz4YTaRAWhM4F5pTc";
 	private static final String FIREBASE_API_URL = "https://fcm.googleapis.com/fcm/send";
 	
 	@Async
