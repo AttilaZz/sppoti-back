@@ -29,6 +29,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -61,7 +62,6 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 	private AndroidPushNotificationsService androidPushNotificationsService;
 	
 	private final String TOPIC = "notify";
-	
 	
 	/**
 	 * {@inheritDoc}
@@ -155,32 +155,33 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 		//Notify web socket
 		this.messagingTemplate.convertAndSendToUser(email, "/queue/" + this.TOPIC, notificationDTO);
 		
-		//Notify mobiles with fire-base
-		final JSONObject body = new JSONObject();
-		final JSONObject data = new JSONObject();
-		try {
-			body.put("to", "/topics/" + this.TOPIC);
-			body.put("priority", "high");
+		if(!"dev".equals(originServerBack)){
+			//Notify mobiles with fire-base
+			final JSONObject body = new JSONObject();
+			final JSONObject data = new JSONObject();
+			try {
+				body.put("to", "/topics/" + this.TOPIC);
+				body.put("priority", "high");
+				
+				data.put("notification", notificationDTO);
+				body.put("data", data);
+				
+			} catch (final JSONException e) {
+				this.LOGGER.error(ErrorMessageEnum.SERIALIZE_FIREBASE_NOTIF_MESSAGE_FAILURE.getMessage(), e);
+			}
 			
-			data.put("notification", notificationDTO);
-			body.put("data", data);
+			final HttpEntity<String> request = new HttpEntity<>(body.toString());
+			final CompletableFuture<String> pushNotification = this.androidPushNotificationsService.send(request);
+			CompletableFuture.allOf(pushNotification).join();
 			
-		} catch (final JSONException e) {
-			this.LOGGER.error(ErrorMessageEnum.SERIALIZE_FIREBASE_NOTIF_MESSAGE_FAILURE.getMessage(), e);
+			try {
+				final String firebaseResponse = pushNotification.get();
+				this.LOGGER.info("Notification {} has been fired successfully, under reference {}", body, firebaseResponse);
+				
+			} catch (final InterruptedException | ExecutionException e) {
+				this.LOGGER.error("Failed to send notif to firebase", e);
+			}
 		}
-		
-		final HttpEntity<String> request = new HttpEntity<>(body.toString());
-		final CompletableFuture<String> pushNotification = this.androidPushNotificationsService.send(request);
-		CompletableFuture.allOf(pushNotification).join();
-		
-		try {
-			final String firebaseResponse = pushNotification.get();
-			this.LOGGER.info("Notification {} has been fired successfully, under reference {}", body, firebaseResponse);
-			
-		} catch (final InterruptedException | ExecutionException e) {
-			this.LOGGER.error("Failed to send notif to firebase", e);
-		}
-		
 	}
 	
 	public NotificationEntity buildNotificationEntity(final NotificationTypeEnum notificationType,
