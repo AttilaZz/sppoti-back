@@ -6,7 +6,6 @@ import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
-import com.fr.entities.UserEntity;
 import com.fr.repositories.EditHistoryRepository;
 import com.fr.transformers.CommentTransformer;
 import com.fr.transformers.PostTransformer;
@@ -58,7 +57,6 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		
 		final PostDTO post = new PostDTO();
 		
-		final UserEntity postSender = model.getUser();
 		final Long connectedUser = model.getConnectedUserId();
 		
 		post.setId(model.getUuid());
@@ -67,8 +65,7 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		post.setVideoLink(model.getVideo());
 		post.setVisibility(model.getVisibility());
 		
-		post.setSender(this.userTransformer.modelToDto(postSender));
-		post.getSender().setPassword(null);
+		post.setSender(this.userTransformer.modelToDto(model.getUser()));
 		
 		post.setSportId(model.getSport().getId());
 		
@@ -128,18 +125,11 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		}
 		post.setComment(commentList);
 		
-		/*
-		 * Has connected user liked this post or not.
-		 */
 		post.setLikeCount(model.getLikes().size());
+		
 		post.setLikedByUser(model.getLikes().stream().anyMatch(l -> l.getUser().getId().equals(connectedUser)));
-
-		/*
-		 * Check if post has been posted on a friend profile -- default value for integer is ZERO (UUID can never be a zero)
-		 */
 		
 		post.setTargetUser(this.userTransformer.modelToDto(model.getTargetUserProfile()));
-		post.getTargetUser().setPassword(null);
 		
 		return post;
 	}

@@ -141,6 +141,7 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 		final NotificationEntity notification = buildNotificationEntity(notificationTypeEnum, sender, userTo,
 				notifObjectType, dataToSendInNotification);
 		
+		notification.setConnectedUserId(getConnectedUserId());
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
 		
 		
@@ -203,18 +204,18 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 		switch (objectType) {
 			case POST:
 				//post required(2)
-				if (objectToSend.length < 3) {
+				if (objectToSend.length != 1) {
 					throw new IllegalArgumentException("Post Object is missing");
 				}
 				
-				if (objectToSend[2] == null) {
+				if (objectToSend[0] == null) {
 					throw new EntityNotFoundException("POST is missing");
 				}
-				if (!(objectToSend[2] instanceof PostEntity)) {
+				if (!(objectToSend[0] instanceof PostEntity)) {
 					throw new ClassCastException("POST-ENTITY is expected");
 				}
 				
-				post = (PostEntity) objectToSend[2];
+				post = (PostEntity) objectToSend[0];
 				post.setConnectedUserId(connectedUser);
 				notification.setPost(post);
 				
@@ -308,23 +309,23 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 				break;
 			case COMMENT:
 				//POSt and COMMENT are required (1, 3)
-				if (objectToSend.length < 4) {
+				if (objectToSend.length < 2) {
 					throw new IllegalArgumentException("(COMMENT or POST) Object is missing");
 				}
 				
-				if (objectToSend[2] == null || !(objectToSend[2] instanceof PostEntity)) {
+				if (objectToSend[0] == null || !(objectToSend[0] instanceof PostEntity)) {
 					throw new BusinessGlobalException(
 							"POST is missing OR the passed object is not an instance of SPPOTI-ENTITY");
 				}
-				post = (PostEntity) objectToSend[2];
+				post = (PostEntity) objectToSend[0];
 				post.setConnectedUserId(connectedUser);
 				notification.setPost(post);
 				
-				if (objectToSend[3] == null || !(objectToSend[3] instanceof CommentEntity)) {
+				if (objectToSend[1] == null || !(objectToSend[1] instanceof CommentEntity)) {
 					throw new BusinessGlobalException(
 							"COMMENT is missing OR the passed object is not an instance of COMMENT-ENTITY");
 				}
-				comment = (CommentEntity) objectToSend[3];
+				comment = (CommentEntity) objectToSend[1];
 				comment.setConnectedUserId(connectedUser);
 				notification.setComment(comment);
 				

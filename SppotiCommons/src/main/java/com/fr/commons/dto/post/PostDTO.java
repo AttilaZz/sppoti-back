@@ -48,21 +48,13 @@ public class PostDTO extends AbstractCommonDTO
 	private int visibility;
 	
 	@JsonUnwrapped
-	private UserDTO sender;
+	private UserInside sender;
 	
-	private UserDTO targetUser;
+	private UserInside targetUser;
 	
 	private boolean myPost;
 	
 	private String timeZone;
-	
-	public UserDTO getSender() {
-		return this.sender != null ? this.sender : new UserDTO();
-	}
-	
-	public void setSender(final UserDTO sender) {
-		this.sender = sender;
-	}
 	
 	public List<UserDTO> getLikers()
 	{
@@ -205,11 +197,80 @@ public class PostDTO extends AbstractCommonDTO
 		this.timeZone = timeZone;
 	}
 	
-	public UserDTO getTargetUser() {
-		return this.targetUser;
+	public UserInside getSender() {
+		return this.sender != null ? this.sender : new UserInside();
 	}
 	
-	public void setTargetUser(final UserDTO targetUser) {
-		this.targetUser = targetUser;
+	public void setSender(final UserDTO user) {
+		final UserInside ui = this.getSender();
+		ui.setFirstName(user.getFirstName());
+		ui.setLastName(user.getLastName());
+		ui.setUsername(user.getUsername());
+		ui.setAvatar(user.getAvatar());
+		ui.setCover(user.getCover());
+		this.sender = ui;
+	}
+	
+	public UserInside getTargetUser() {
+		return this.targetUser != null ? this.targetUser : new UserInside();
+	}
+	
+	public void setTargetUser(final UserDTO user) {
+		final UserInside ui = this.getTargetUser();
+		ui.setFirstName(user.getFirstName());
+		ui.setLastName(user.getLastName());
+		ui.setUsername(user.getUsername());
+		ui.setAvatar(user.getAvatar());
+		ui.setCover(user.getCover());
+		this.sender = ui;
+	}
+	
+	class UserInside
+	{
+		private String firstName;
+		private String lastName;
+		private String username;
+		private String avatar;
+		private String cover;
+		
+		public String getFirstName() {
+			return this.firstName;
+		}
+		
+		public void setFirstName(final String firstName) {
+			this.firstName = firstName;
+		}
+		
+		public String getLastName() {
+			return this.lastName;
+		}
+		
+		public void setLastName(final String lastName) {
+			this.lastName = lastName;
+		}
+		
+		public String getUsername() {
+			return this.username;
+		}
+		
+		public void setUsername(final String username) {
+			this.username = username;
+		}
+		
+		public String getAvatar() {
+			return this.avatar;
+		}
+		
+		public void setAvatar(final String avatar) {
+			this.avatar = avatar;
+		}
+		
+		public String getCover() {
+			return this.cover;
+		}
+		
+		public void setCover(final String cover) {
+			this.cover = cover;
+		}
 	}
 }
