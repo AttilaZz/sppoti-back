@@ -29,7 +29,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -155,7 +154,7 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 		//Notify web socket
 		this.messagingTemplate.convertAndSendToUser(email, "/queue/" + this.TOPIC, notificationDTO);
 		
-		if(!"dev".equals(originServerBack)){
+		if (!"dev".equals(this.originServerBack)) {
 			//Notify mobiles with fire-base
 			final JSONObject body = new JSONObject();
 			final JSONObject data = new JSONObject();
@@ -176,7 +175,8 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 			
 			try {
 				final String firebaseResponse = pushNotification.get();
-				this.LOGGER.info("Notification {} has been fired successfully, under reference {}", body, firebaseResponse);
+				this.LOGGER.info("Notification {} has been fired successfully, under reference {}", body,
+						firebaseResponse);
 				
 			} catch (final InterruptedException | ExecutionException e) {
 				this.LOGGER.error("Failed to send notif to firebase", e);

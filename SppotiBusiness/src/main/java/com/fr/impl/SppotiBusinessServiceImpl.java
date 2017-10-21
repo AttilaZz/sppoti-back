@@ -126,17 +126,16 @@ class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements
 			}
 			
 			//Convert team members to sppoters.
-			final Set<SppoterEntity> sppotiMembers = hostTeam.getTeamMembers().stream().map(sm -> {
+			final Set<SppoterEntity> sppotiMembers = hostTeam.getTeamMembers().stream()
+					.filter(tm -> !tm.getStatus().equals(GlobalAppStatusEnum.DELETED)).map(tm -> {
 						SppoterEntity sppotiMember = new SppoterEntity();
-						sppotiMember.setTeamMember(sm);
+						sppotiMember.setTeamMember(tm);
 						sppotiMember.setSppoti(sppoti);
-						if (getConnectedUser().getId().equals(sm.getUser().getId())) {
+						if (getConnectedUser().getId().equals(tm.getUser().getId())) {
 							sppotiMember.setStatus(GlobalAppStatusEnum.CONFIRMED);
 						}
 						return sppotiMember;
-					}
-			
-			).collect(Collectors.toSet());
+					}).collect(Collectors.toSet());
 			sppoti.setSppotiMembers(sppotiMembers);
 			
 		} else {
@@ -170,7 +169,7 @@ class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements
 				//Notification
 				this.notificationService
 						.saveAndSendNotificationToUsers(savedSppoti.getUserSppoti(), m.getUser(), SPPOTI,
-								X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, savedSppoti);
+								X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, null, savedSppoti);
 				
 			}
 		});
