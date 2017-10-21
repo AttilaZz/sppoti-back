@@ -331,23 +331,23 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 				break;
 			case RATING:
 				//Sppoti and rating are required (1, 5)
-				if (objectToSend.length < 6) {
+				if (objectToSend.length < 2) {
 					throw new IllegalArgumentException("(SPPOTI or RATING) Object is missing");
 				}
 				
-				if (objectToSend[1] == null || !(objectToSend[1] instanceof SppotiEntity)) {
+				if (objectToSend[0] == null || !(objectToSend[0] instanceof SppotiEntity)) {
 					throw new BusinessGlobalException(
 							"SPPOTI is missing OR the passed object is not an instance of SPPOTI-ENTITY");
 				}
-				sppoti = (SppotiEntity) objectToSend[1];
+				sppoti = (SppotiEntity) objectToSend[0];
 				sppoti.setConnectedUserId(connectedUser);
 				notification.setSppoti(sppoti);
 				
-				if (objectToSend[5] == null || !(objectToSend[5] instanceof RatingEntity)) {
+				if (objectToSend[1] == null || !(objectToSend[1] instanceof RatingEntity)) {
 					throw new BusinessGlobalException(
 							"RATING is missing OR the passed object is not an instance of RATING-ENTITY");
 				}
-				final RatingEntity rating = (RatingEntity) objectToSend[5];
+				final RatingEntity rating = (RatingEntity) objectToSend[1];
 				rating.setConnectedUserId(connectedUser);
 				notification.setRating(rating);
 				
