@@ -102,7 +102,8 @@ public class ScoreBusinessServiceImpl extends AbstractControllerServiceImpl impl
 		this.notificationService
 				.saveAndSendNotificationToUsers(scoreEntity.getSppotiEntity().getUserSppoti(), sppotiTeamHost.getUser(),
 						NotificationObjectType.SCORE, NotificationTypeEnum.SCORE_SET_AND_WAITING_FOR_APPROVAL,
-						scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), scoreEntity);
+						scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), null, null,
+						scoreEntity);
 		
 		return this.scoreTransformer.modelToDto(this.scoreRepository.save(scoreEntity));
 	}

@@ -328,7 +328,7 @@ class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements
 		if (editNotification) {
 			usersToNotify.stream().filter(m -> !m.getAdmin()).forEach(m -> this.notificationService
 					.saveAndSendNotificationToUsers(updatedSppoti.getUserSppoti(), m.getUser(), SPPOTI,
-							NotificationTypeEnum.SPPOTI_HAS_BEEN_EDITED, updatedSppoti));
+							NotificationTypeEnum.SPPOTI_HAS_BEEN_EDITED, null, updatedSppoti));
 		}
 		
 		return getSppotiResponse(updatedSppoti);
