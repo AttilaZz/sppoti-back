@@ -20,14 +20,17 @@ public class HikariCPConfig
 	/** Databse poolsize. */
 	private int poolSize;
 	
-	/** Datasource url. */
-	private String url;
-	
 	/** Database username. */
 	private String username;
 	
 	/** Database password. */
 	private String password;
+	
+	/** Mysql host name. */
+	private String host;
+	
+	/** Database name. */
+	private String dbName;
 	
 	/** is datasource for production or developpement. */
 	private Boolean production;
@@ -40,28 +43,15 @@ public class HikariCPConfig
 	{
 		final HikariDataSource ds = new HikariDataSource();
 		
-		final String dbName, userName, password, hostname, port, jdbcUrl;
-		if (this.production) {
-			//Get Configuration From System in prod environment
-			dbName = System.getProperty("RDS_DB_NAME");
-			userName = System.getProperty("RDS_USERNAME");
-			password = System.getProperty("RDS_PASSWORD");
-			hostname = System.getProperty("RDS_HOSTNAME");
-			port = System.getProperty("RDS_PORT");
-			jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" +
-					password;
-		} else {
-			userName = this.username;
-			password = this.password;
-			jdbcUrl = this.url;
-		}
+		final String url = "jdbc:mysql://" + this.host + ":3306/" + this.dbName;
 		
 		ds.setMaximumPoolSize(this.poolSize);
 		ds.setDriverClassName(this.driverClassName);
 		
-		ds.setJdbcUrl(jdbcUrl);
-		ds.setUsername(userName);
-		ds.setPassword(password);
+		ds.setUsername(this.username);
+		ds.setPassword(this.password);
+		ds.setJdbcUrl(url);
+		
 		return ds;
 	}
 	
@@ -83,16 +73,6 @@ public class HikariCPConfig
 	public void setPoolSize(final int poolSize)
 	{
 		this.poolSize = poolSize;
-	}
-	
-	public String getUrl()
-	{
-		return this.url;
-	}
-	
-	public void setUrl(final String url)
-	{
-		this.url = url;
 	}
 	
 	public String getUsername()
@@ -123,5 +103,21 @@ public class HikariCPConfig
 	public void setProduction(final Boolean production)
 	{
 		this.production = production;
+	}
+	
+	public String getHost() {
+		return this.host;
+	}
+	
+	public void setHost(final String host) {
+		this.host = host;
+	}
+	
+	public String getDbName() {
+		return this.dbName;
+	}
+	
+	public void setDbName(final String dbName) {
+		this.dbName = dbName;
 	}
 }

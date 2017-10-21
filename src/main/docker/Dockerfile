@@ -1,12 +1,14 @@
+#FROM nginx
+#
+#COPY nginx.conf /etc/nginx/nginx.conf
+
 FROM java:8
 
-ENV SERVER_PORT 8080
-EXPOSE $SERVER_PORT
+EXPOSE 8080
 
-VOLUME /tmp
+#VOLUME /tmp
 
-ADD sppoti-application-test.war app.war
+ADD sppoti-app.war app.war
 
-RUN bash -c 'touch /app.war'
-
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.war"]
+RUN bash -c 'touch /app.jar'
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=container","-jar","/app.war"]

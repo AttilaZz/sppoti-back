@@ -33,7 +33,7 @@
     </dependencies>
 
     <build>
-        <finalName>sppoti-application-${environment}</finalName>
+        <finalName>sppoti-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -45,6 +45,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <profiles>
+                        <profile>container</profile>
+                        <profile>test</profile>
+                        <profile>dev</profile>
+                    </profiles>
+                </configuration>
             </plugin>
         </plugins>
 
@@ -73,9 +80,9 @@
 
     <profiles>
         <profile>
-            <id>docker</id>
+            <id>container</id>
             <properties>
-                <environment>production</environment>
+                <environment>developpement</environment>
             </properties>
             <build>
                 <plugins>
@@ -96,8 +103,7 @@
                             <imageName>${docker.image.prefix}</imageName>
                             <dockerDirectory>src/main/docker</dockerDirectory>
                             <imageTags>
-                                <imageTag>${project.version}</imageTag>
-                                <!--<imageTag>latest</imageTag>-->
+                                <!--<imageTag>${project.version}</imageTag>-->
                             </imageTags>
                             <resources>
                                 <!--INCLUDE-->

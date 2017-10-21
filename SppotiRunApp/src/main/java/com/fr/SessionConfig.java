@@ -1,5 +1,6 @@
 package com.fr;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.session.data.redis.RedisFlushMode;
@@ -13,10 +14,14 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 		redisFlushMode = RedisFlushMode.IMMEDIATE)
 public class SessionConfig
 {
+	@Value("${spring.redis.host}")
+	private String redisHostName;
 	
 	@Bean
 	public LettuceConnectionFactory connectionFactory() {
-		return new LettuceConnectionFactory();
+		final LettuceConnectionFactory connection = new LettuceConnectionFactory();
+		connection.setHostName(this.redisHostName);
+		return connection;
 	}
 	
 	//	@Bean
