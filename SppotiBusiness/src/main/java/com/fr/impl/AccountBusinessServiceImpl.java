@@ -297,8 +297,7 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 			connectedUser.getPasswordHistories().add(p);
 		}
 		/*
-			email --
-            User must confirm new email address to login next time.
+			email -- User must confirm new email address to login next time.
          */
 		else if (StringUtils.hasText(userDTO.getEmail()) && StringUtils.hasText(userDTO.getPassword())) {
 			
@@ -308,12 +307,12 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 			}
 			
 			connectedUser.setEmail(userDTO.getEmail());
-			connectedUser.setConfirmed(false);
-			connectedUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(1));
-			final String confirmationCode = SppotiUtils.generateConfirmationKey();
-			connectedUser.setConfirmationCode(confirmationCode);
+			//			connectedUser.setConfirmed(false);
+			//			connectedUser.setAccountMaxActivationDate(SppotiUtils.generateExpiryDate(1));
+			//			final String confirmationCode = SppotiUtils.generateConfirmationKey();
+			//			connectedUser.setConfirmationCode(confirmationCode);
 			
-			sendConfirmationEmail(userDTO, confirmationCode, TypeAccountValidation.preference_edit_email);
+			//			sendConfirmationEmail(userDTO, confirmationCode, TypeAccountValidation.preference_edit_email);
 		} else if (StringUtils.hasText(userDTO.getLanguage())) {
 			connectedUser.setLanguageEnum(LanguageEnum.valueOf(userDTO.getLanguage()));
 		}
