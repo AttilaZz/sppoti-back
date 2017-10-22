@@ -18,22 +18,6 @@
 
 </pre>
 
-## To create the package without installing in the local repository
-
-<pre>
-
-  mvn clean package
-
-</pre>
-
-### To skip tests
-
-<pre>
-
-  mvn clean package -DskipTests
-
-</pre>
-
 # DEPLOIMENT
 
 1. Move to project root
@@ -53,22 +37,22 @@
 
 <pre>
 
-  mvn clean package docker:build
+  mvn clean package -Pcontainer
 
 </pre>
 
-## PUSH the image to the docker repository
+# PROFILES
 
-<pre>
+> Both: maven profiles and spring profiles are used in the application
 
-  mvn clean package docker:build docker:push
+1. If no profile has been specified the default one is triggered (developpement)
 
-</pre>
+2. To trigger production profile:
 
-## RUN the image in the internal server of your machine
-
-<pre>
-
-  mvn clean package docker:build docker:run
-
-</pre>
+  <pre>
+    Build: mvn clean install -Pproduction / container / test
+  </pre>
+  
+  <pre>
+    Run: java -jar <file> -Dspring.profiles.name=production / container / test
+  </pre>
