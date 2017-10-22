@@ -33,7 +33,7 @@
         <redis.lettuce.version>sppoti-image</redis.lettuce.version>
         <redis.lettuce.version>4.4.1.Final</redis.lettuce.version>
         <spring.social.facebook.version>2.0.3.RELEASE</spring.social.facebook.version>
-        <docker.image.prefix>sppoti</docker.image.prefix>
+        <docker.image.prefix>sppoti-back</docker.image.prefix>
         <docker.maven.plugin.version>1.0.0</docker.maven.plugin.version>
     </properties>
 

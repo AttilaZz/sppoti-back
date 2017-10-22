@@ -2,13 +2,19 @@ version: '3'
 
 services:
 
-  nginx:
-      image: nginx
+  reverseproxy:
+      image: reverseproxy
+      container_name: reverseproxy
+      depends_on:
+          - sppoti
       ports:
-        - "80:80"
-      container_name: nginx
-      env_file:
-        - ./common.env
+        - 80:80
+
+  nginx:
+      image: sppoti-front
+      container_name: sppoti-front
+      depends_on:
+          - reverseproxy
 
   db:
       image: mysql
@@ -23,9 +29,11 @@ services:
 
   sppoti:
       build: .
-      image: sppoti
+      image: sppoti-back
+      ports:
+        - 8080:8080
       depends_on:
-#            - redis
+            - redis
             - db
       env_file:
         - ./common.env

@@ -1,7 +1,3 @@
-#FROM nginx
-#
-#COPY nginx.conf /etc/nginx/nginx.conf
-
 FROM java:8
 
 EXPOSE 8080
