@@ -1,10 +1,12 @@
-package com.fr.mail;
+package com.fr.impl.email;
 
+import com.fr.commons.dto.MailResourceContent;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.commons.utils.SppotiUtils;
+import com.fr.service.email.AccountMailerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -21,7 +23,7 @@ import java.util.Date;
  * 3- Confirm email reset.
  **/
 @Component
-public class AccountMailer extends ApplicationMailer
+public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl implements AccountMailerService
 {
 	
 	// Password recover
@@ -46,13 +48,11 @@ public class AccountMailer extends ApplicationMailer
 	@Value("${spring.app.mail.account.confirmation.button}")
 	private String confirmationAccountButtonText;
 	
-	/**
-	 * Init email params.
-	 */
-	public AccountMailer(final JavaMailSender sender, final MailProperties mailProperties,
-						 final TemplateEngine templateEngine)
-	{
-		super(sender, mailProperties, templateEngine);
+	private final TemplateEngine templateEngine;
+	
+	@Autowired
+	public AccountMailerImplServiceImpl(final TemplateEngine templateEngine) {
+		this.templateEngine = templateEngine;
 	}
 	
 	/**
@@ -63,6 +63,7 @@ public class AccountMailer extends ApplicationMailer
 	 * @param type
 	 * 		activation type.
 	 */
+	@Override
 	public void sendCreateAccountConfirmationEmail(final UserDTO to, final String confirmationCode,
 												   final TypeAccountValidation type)
 	{
@@ -81,6 +82,7 @@ public class AccountMailer extends ApplicationMailer
 	 * @param currentDate
 	 * 		link expiry date.
 	 */
+	@Override
 	public void sendRecoverPasswordEmail(final UserDTO to, final String confirmationCode, final Date currentDate)
 	{
 		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
@@ -99,6 +101,7 @@ public class AccountMailer extends ApplicationMailer
 	 * @param confirmationCode
 	 * 		send email to user to confirm the new email.
 	 */
+	@Override
 	public void sendEmailUpdateConfirmation(final String to, final String confirmationCode)
 	{
 	
@@ -118,11 +121,11 @@ public class AccountMailer extends ApplicationMailer
 	 * @param activateLinkTag
 	 * 		activation link.
 	 */
-	public void prepareAndSendEmail(final UserDTO to, final String subject, final String message,
-									final String buttonText, final String activateLinkTag, final int op)
+	private void prepareAndSendEmail(final UserDTO to, final String subject, final String message,
+									 final String buttonText, final String activateLinkTag, final int op)
 	{
 		
-		final ResourceContent resourceContent = new ResourceContent();
+		final MailResourceContent resourceContent = new MailResourceContent();
 		resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
 		resourceContent.setResourceName(logoResourceName);
 		

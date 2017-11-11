@@ -40,8 +40,7 @@ import java.util.stream.Collectors;
  * Created by djenanewail on 2/11/17.
  */
 @Component
-public class NotificationBusinessServiceImpl extends AbstractControllerServiceImpl implements
-		NotificationBusinessService
+public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl implements NotificationBusinessService
 {
 	private final Logger LOGGER = LoggerFactory.getLogger(NotificationBusinessServiceImpl.class);
 	
@@ -268,7 +267,7 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 				break;
 			case SCORE:
 				//Sppoti, Team and score are required(0, 1, 4)
-				if (objectToSend.length < 5) {
+				if (objectToSend.length < 3) {
 					throw new IllegalArgumentException("(TEAM or SPPOTI or SCORE) Object is missing");
 				}
 				
@@ -295,11 +294,11 @@ public class NotificationBusinessServiceImpl extends AbstractControllerServiceIm
 				notification.setSppoti(sppoti);
 				
 				//				score
-				if (objectToSend[4] == null) {
+				if (objectToSend[2] == null) {
 					throw new BusinessGlobalException(
 							"SCORE is missing OR the passed object is not an instance of SCORE-ENTITY");
 				}
-				if (!(objectToSend[4] instanceof ScoreEntity)) {
+				if (!(objectToSend[2] instanceof ScoreEntity)) {
 					throw new ClassCastException("SCORE-ENTITY is expected");
 				}
 				final ScoreEntity score = (ScoreEntity) objectToSend[4];

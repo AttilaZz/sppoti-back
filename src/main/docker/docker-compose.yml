@@ -1,48 +1,76 @@
-version: '3'
+version: '3.1'
 
 services:
 
-  reverseproxy:
-      image: reverseproxy
-      container_name: reverseproxy
-      depends_on:
-          - sppoti
-      ports:
-        - 80:80
+#  reverseproxy:
+#      image: reverseproxy
+#      build:
+#        context: <path_to_proxy>
+#      container_name: reverseproxy
+#      depends_on:
+#          - nginx
+#      ports:
+#          - 80:80
+#      volumes:
+#          - nginx_data:/var/log/nginx
 
   nginx:
-      image: sppoti-front
-      container_name: sppoti-front
+      image: cocoda/sppoti-front
       depends_on:
-          - reverseproxy
-      volume:
+          - sppoti
+#      build:
+#        context: <path_to_front>
+      container_name: sppoti-front
+      ports:
+          - 80:80
+      volumes:
         - nginx_data:/var/log/nginx
 
   db:
-      image: mysql
+      image: mysql:5.7
       container_name: mysql
-      volumes:
-            - db_data:/var/lib/mysql
-      env_file:
-        - ./common.env
+#      volumes:
+#            - db_data:/var/lib/mysql
+      environment:
+#        MYSQL_ROOT_PASSWORD: root
+#        MYSQL_PASSWORD: sppoti2017!!
+        MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+        MYSQL_PASSWORD_FILE: /run/secrets/db_password
+        MYSQL_USER: sppoti
+        MYSQL_DATABASE: sppoti
+      secrets:
+             - db_root_password
+             - db_password
 
   redis:
     image: redis
-    volume:
-        - redis_data:/data
+#    volumes:
+#        - redis_data:/data
 
   sppoti:
-      build: .
-      image: sppoti-back
+      image: wdjenane/sppoti
       ports:
         - 8080:8080
       depends_on:
             - redis
             - db
-      env_file:
-        - ./common.env
-      volume:
-        - sppoti_data:/var/log/sppoti
+      environment:
+        REDIS_HOST_SERVICE: redis
+        MYSQL_HOST_SERVICE: db
+        MYSQL_USER: sppoti
+        MYSQL_PASSWORD: aaaaaaa
+        MYSQL_PASSWORD_FILE: /run/secrets/db_password
+        MYSQL_DATABASE: sppoti
+#      volumes:
+#            - sppoti_data:/var/log/sppoti
+      secrets:
+            - db_password
+
+secrets:
+   db_password:
+     file: ./secrets/db_password.txt
+   db_root_password:
+     file: ./secrets/db_root_password.txt
 
 volumes:
   db_data:

@@ -10,10 +10,9 @@ import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.exception.TeamMemberNotFoundException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
-import com.fr.mail.SppotiMailer;
-import com.fr.mail.TeamMailer;
 import com.fr.repositories.*;
 import com.fr.service.AbstractBusinessService;
+import com.fr.service.email.TeamMailerService;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Component("abstractService")
-abstract class AbstractControllerServiceImpl implements AbstractBusinessService
+abstract class CommonControllerServiceImpl implements AbstractBusinessService
 {
 	/** Spring security anonymous user. */
 	private static final String ANONYMOUS_USER = "anonymousUser";
@@ -66,31 +65,22 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 	NotificationRepository notificationRepository;
 	@Autowired
 	RatingRepository ratingRepository;
-	@Autowired
-	ScoreRepository scoreRepository;
+	
 	@Autowired
 	SppotiAdverseRepository sppotiAdverseRepository;
 	
-	/** Team mailer. */
 	@Autowired
-	TeamMailer teamMailer;
-	
-	/** Sppoti mailer. */
-	@Autowired
-	SppotiMailer sppotiMailer;
+	private TeamMailerService teamMailerService;
 	
 	@Autowired
 	private Environment environment;
 	
-	/** Team member controller. */
 	@Autowired
 	private TeamMemberTransformer teamMemberTransformer;
 	
-	/** User transformer. */
 	@Autowired
 	private UserTransformer userTransformer;
 	
-	/** Team transformer. */
 	@Autowired
 	private TeamTransformer teamTransformer;
 	
@@ -439,7 +429,7 @@ abstract class AbstractControllerServiceImpl implements AbstractBusinessService
 		final UserDTO admin = this.teamMemberTransformer.modelToDto(from, null);
 		final TeamDTO teamDto = this.teamTransformer.modelToDto(team);
 		
-		final Thread thread = new Thread(() -> this.teamMailer.sendJoinTeamEmail(teamDto, member, admin));
+		final Thread thread = new Thread(() -> this.teamMailerService.sendJoinTeamEmail(teamDto, member, admin));
 		thread.start();
 	}
 	

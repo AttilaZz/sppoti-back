@@ -1,0 +1,17 @@
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <servers>
+        <server>
+            <id>docker-hub</id>
+            <username>wdjenane</username>
+            <password>{hL94NmXhjz0HDE1sgTccbp/ExP6MfrLBS75/9ZAPn+Q=}</password>
+            <configuration>
+                <email>wail.djenane@gmail.com</email>
+            </configuration>
+        </server>
+    </servers>
+
+</settings>

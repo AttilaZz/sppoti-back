@@ -39,7 +39,7 @@ import static com.fr.commons.enumeration.notification.NotificationObjectType.TEA
  */
 
 @Component
-class TeamBusinessServiceImpl extends AbstractControllerServiceImpl implements TeamBusinessService
+class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements TeamBusinessService
 {
 	
 	private final UserTransformerImpl userTransformer;

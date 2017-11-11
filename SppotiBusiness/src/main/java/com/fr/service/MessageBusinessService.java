@@ -4,7 +4,6 @@
 package com.fr.service;
 
 import com.fr.entities.MessageEntity;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -12,13 +11,12 @@ import java.util.List;
  * Created by: Wail DJENANE on Jun 25, 2016
  */
 
-@Service
 public interface MessageBusinessService extends AbstractBusinessService
 {
 	
-	List<MessageEntity> getSentUserMessages(Long userId,int page);
+	List<MessageEntity> getSentUserMessages(Long userId, int page);
 	
-	List<MessageEntity> getReceivedUserMessages(Long userId,int page);
+	List<MessageEntity> getReceivedUserMessages(Long userId, int page);
 	
 	Boolean saveMessage(MessageEntity msg);
 	

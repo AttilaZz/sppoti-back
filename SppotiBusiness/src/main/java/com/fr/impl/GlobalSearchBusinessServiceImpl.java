@@ -29,8 +29,7 @@ import java.util.stream.Collectors;
  * Created by wdjenane on 22/06/2017.
  */
 @Component
-public class GlobalSearchBusinessServiceImpl extends AbstractControllerServiceImpl implements
-		GlobalSearchBusinessService
+public class GlobalSearchBusinessServiceImpl extends CommonControllerServiceImpl implements GlobalSearchBusinessService
 {
 	
 	private final UserTransformer userTransformer;

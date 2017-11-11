@@ -101,6 +101,11 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 			dto.setFriendStatus(this.getFriendShipStatus(entity.getUuid(), entity.getConnectedUserId()));
 		}
 		
+		if (entity.getParamEntity() != null) {
+			dto.setCanReceiveEmails(entity.getParamEntity().isCanReceiveEmail());
+			dto.setCanReceiveNotifications(entity.getParamEntity().isCanReceiveNotification());
+		}
+		
 		return dto;
 	}
 	

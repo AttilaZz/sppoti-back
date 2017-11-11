@@ -28,7 +28,7 @@ import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_LIK
  * Created by djenanewail on 12/24/16.
  */
 @Component
-class LikeBusinessServiceImpl extends AbstractControllerServiceImpl implements LikeBusinessService
+class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements LikeBusinessService
 {
 	private final UserTransformer userTransformer;
 	private final NotificationBusinessService notificationService;

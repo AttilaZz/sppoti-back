@@ -6,7 +6,7 @@
 
     <groupId>com.sppoti</groupId>
     <artifactId>sppoti</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${sppoti.project.version}</version>
 
     <description>Sppoti server web application</description>
     <url>https://www.sppoti.com</url>
@@ -17,6 +17,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <sppoti.project.version>SPPOTI-SNAPSHOT-1.0</sppoti.project.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <org.apache.commons.version>3.5</org.apache.commons.version>
@@ -33,7 +34,7 @@
         <redis.lettuce.version>sppoti-image</redis.lettuce.version>
         <redis.lettuce.version>4.4.1.Final</redis.lettuce.version>
         <spring.social.facebook.version>2.0.3.RELEASE</spring.social.facebook.version>
-        <docker.image.prefix>sppoti-back</docker.image.prefix>
+        <docker.image.prefix>wdjenane/sppoti</docker.image.prefix>
         <docker.maven.plugin.version>1.0.0</docker.maven.plugin.version>
     </properties>
 

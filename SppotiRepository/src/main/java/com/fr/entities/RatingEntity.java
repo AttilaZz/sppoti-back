@@ -28,7 +28,7 @@ public class RatingEntity extends AbstractCommonEntity
 	private Date ratingDate;
 	
 	@Column(nullable = false)
-	private Integer stars;
+	private Integer stars = 0;
 	
 	/**
 	 * to get trace of the connected user when using transformers.

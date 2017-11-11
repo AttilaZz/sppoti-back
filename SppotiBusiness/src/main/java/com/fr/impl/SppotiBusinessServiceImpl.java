@@ -12,10 +12,10 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
-import com.fr.mail.SppotiMailer;
 import com.fr.repositories.SppotiRequestRepository;
 import com.fr.service.NotificationBusinessService;
 import com.fr.service.SppotiBusinessService;
+import com.fr.service.email.SppotiMailerService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.SportTransformer;
@@ -42,7 +42,7 @@ import static com.fr.commons.enumeration.notification.NotificationTypeEnum.*;
  */
 
 @Component
-class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements SppotiBusinessService
+class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements SppotiBusinessService
 {
 	
 	private final SportTransformer sportTransformer;
@@ -50,7 +50,7 @@ class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements
 	private final TeamMemberTransformer teamMemberTransformer;
 	private final UserTransformer userTransformer;
 	private final SppotiRequestRepository sppotiRequestRepository;
-	private final SppotiMailer sppotiMailer;
+	private final SppotiMailerService sppotiMailerService;
 	
 	private final NotificationBusinessService notificationService;
 	
@@ -64,7 +64,8 @@ class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements
 	@Autowired
 	public SppotiBusinessServiceImpl(final SportTransformer sportTransformer, final SppotiTransformer sppotiTransformer,
 									 final TeamMemberTransformer teamMemberTransformer,
-									 final UserTransformer userTransformer, final SppotiMailer sppotiMailer,
+									 final UserTransformer userTransformer,
+									 final SppotiMailerService sppotiMailerService,
 									 final SppotiRequestRepository sppotiRequestRepository,
 									 final NotificationBusinessService notificationService)
 	{
@@ -72,7 +73,7 @@ class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements
 		this.sppotiTransformer = sppotiTransformer;
 		this.teamMemberTransformer = teamMemberTransformer;
 		this.userTransformer = userTransformer;
-		this.sppotiMailer = sppotiMailer;
+		this.sppotiMailerService = sppotiMailerService;
 		this.sppotiRequestRepository = sppotiRequestRepository;
 		this.notificationService = notificationService;
 	}
@@ -163,7 +164,7 @@ class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements
 			//exclude sppoti admin from the email.
 			if (!m.getUser().getId().equals(sppoti.getUserSppoti().getId())) {
 				//Email
-				new Thread(() -> this.sppotiMailer
+				new Thread(() -> this.sppotiMailerService
 						.sendJoinSppotiEmail(sppotiDTO, this.userTransformer.modelToDto(m.getUser()),
 								this.userTransformer.modelToDto(sppoti.getUserSppoti()))).start();
 				//Notification
@@ -902,7 +903,7 @@ class SppotiBusinessServiceImpl extends AbstractControllerServiceImpl implements
 			final TeamMemberEntity savedMember = this.teamMembersRepository.save(teamMembers);
 			
 			//Email sppoter
-			new Thread(() -> this.sppotiMailer.sendJoinSppotiEmail(this.sppotiTransformer.modelToDto(sppoti),
+			new Thread(() -> this.sppotiMailerService.sendJoinSppotiEmail(this.sppotiTransformer.modelToDto(sppoti),
 					this.userTransformer.modelToDto(userSppoter),
 					this.userTransformer.modelToDto(sppoti.getUserSppoti()))).start();
 			

@@ -30,7 +30,7 @@ import static com.fr.commons.enumeration.notification.NotificationObjectType.COM
  * Created by: Wail DJENANE on Aug 12, 2016
  */
 @Component
-class CommentBusinessServiceImpl extends AbstractControllerServiceImpl implements CommentBusinessService
+class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements CommentBusinessService
 {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(CommentBusinessServiceImpl.class);

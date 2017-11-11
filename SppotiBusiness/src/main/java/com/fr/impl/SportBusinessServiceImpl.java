@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 @Component
-class SportBusinessServiceImpl extends AbstractControllerServiceImpl implements SportBusinessService
+class SportBusinessServiceImpl extends CommonControllerServiceImpl implements SportBusinessService
 {
 	
 	/**

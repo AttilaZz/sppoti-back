@@ -30,4 +30,14 @@ public interface MyUserDetails extends UserDetails
 	 * @return timezone.
 	 */
 	String getTimeZone();
+	
+	/**
+	 * @return true if user can receive emails, false otherwise.
+	 */
+	boolean hasActivatedEmails();
+	
+	/**
+	 * @return true if user can receive notifications, false otherwise.
+	 */
+	boolean hasActivatedNotifications();
 }

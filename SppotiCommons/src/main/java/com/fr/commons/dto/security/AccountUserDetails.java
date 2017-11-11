@@ -135,4 +135,20 @@ public class AccountUserDetails implements MyUserDetails
 	public String getTimeZone() {
 		return this.account.getTimeZone();
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean hasActivatedEmails() {
+		return this.account.getCanReceiveEmails();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean hasActivatedNotifications() {
+		return this.account.getCanReceiveNotifications();
+	}
 }

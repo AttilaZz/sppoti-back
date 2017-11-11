@@ -1,8 +1,10 @@
-package com.fr.mail;
+package com.fr.impl.email;
 
 import com.fr.commons.dto.ContactDTO;
+import com.fr.commons.dto.MailResourceContent;
+import com.fr.service.email.ContactMailerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -11,24 +13,19 @@ import org.thymeleaf.context.Context;
  * Created by djenanewail on 4/8/17.
  */
 @Component
-public class ContactMailer extends ApplicationMailer
+public class ContactMailerImpl extends ApplicationMailerServiceImpl implements ContactMailerService
 {
-	
-	
-	/** Admins email. */
 	@Value("${spring.app.contact.email}")
 	private String emailContact;
 	
-	/** Email contact subject. */
 	@Value("${spring.app.contact.subject}")
 	private String emailContactSubject;
 	
+	private final TemplateEngine templateEngine;
 	
-	/** Init contact mailer. */
-	public ContactMailer(final JavaMailSender sender, final MailProperties mailProperties,
-						 final TemplateEngine templateEngine)
-	{
-		super(sender, mailProperties, templateEngine);
+	@Autowired
+	public ContactMailerImpl(final TemplateEngine templateEngine) {
+		this.templateEngine = templateEngine;
 	}
 	
 	/**
@@ -37,6 +34,7 @@ public class ContactMailer extends ApplicationMailer
 	 * @param contactDTO
 	 * 		contact data.
 	 */
+	@Override
 	public void sendContactEmail(final ContactDTO contactDTO)
 	{
 		this.prepareAndSendEmail(contactDTO, this.emailContactSubject, this.emailContact);
@@ -50,9 +48,9 @@ public class ContactMailer extends ApplicationMailer
 	 * @param subject
 	 * 		email subject.
 	 */
-	public void prepareAndSendEmail(final ContactDTO contactDTO, final String subject, final String emailContact)
+	private void prepareAndSendEmail(final ContactDTO contactDTO, final String subject, final String emailContact)
 	{
-		final ResourceContent resourceContent = new ResourceContent();
+		final MailResourceContent resourceContent = new MailResourceContent();
 		resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
 		resourceContent.setResourceName(logoResourceName);
 		

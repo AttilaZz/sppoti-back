@@ -1,61 +1,56 @@
-package com.fr.mail;
+package com.fr.impl.email;
 
+import com.fr.commons.dto.MailResourceContent;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
+import com.fr.service.UserParamService;
+import com.fr.service.email.SppotiMailerService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 /**
  * Created by djenanewail on 3/23/17.
- *
- * Send emails about sppoti activities.
  */
 @Component
-public class SppotiMailer extends ApplicationMailer
+public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements SppotiMailerService
 {
 	
-	/** Sppoti mail templates */
+	/** Sppoti email templates */
 	private final static String PATH_TO_JOIN_SPPOTI_TEMPLATE = "sppoti/join_sppoti";
 	private final static String PATH_TO_CREATE_SPPOTI_TEMPLATE = "sppoti/create_sppoti";
 	private final static String PATH_TO_RESPOND_TO_SPPOTI_TEMPLATE = "sppoti/respond_sppoti";
 	
-	/** Notify sppoti admin about his ne sppoti. */
 	@Value("${spring.app.mail.sppoti.add.subject}")
 	private String addSppotiSubject;
 	
-	/** Notify a sppoter about sppoti invitation. */
 	@Value("${spring.app.mail.sppoti.join.subject}")
 	private String joinSppotiSubject;
 	
-	/** Notify sppoti admin when an invitation is accepted or refused. */
 	@Value("${spring.app.mail.sppoti.confirm.subject}")
 	private String confirmJoinSppotiSubject;
 	
-	/** Redirection link to the front app. */
 	@Value("${spring.app.mail.sppoti.join.link}")
 	private String joinSppotiLink;
 	
-	/** Explain sppoti concept. */
 	@Value("${spring.app.mail.sppoti.description}")
 	private String sppotiConcept;
 	
-	/** translate to join sppoti message. */
 	@Value("${spring.app.mail.sppoti.invited.by.join.sppoti}")
 	private String toJoinSppotiMessage;
 	
-	/** Init mail configuration. */
-	@Autowired
-	public SppotiMailer(final JavaMailSender sender, final MailProperties mailProperties,
-						final TemplateEngine templateEngine)
-	{
-		super(sender, mailProperties, templateEngine);
-	}
+	private final TemplateEngine templateEngine;
 	
+	private final UserParamService userParamService;
+	
+	@Autowired
+	public SppotiMailerImpl(final TemplateEngine templateEngine, final UserParamService userParamService) {
+		this.templateEngine = templateEngine;
+		this.userParamService = userParamService;
+	}
 	
 	/**
 	 * Send email to confirm Sppoti creation.
@@ -63,9 +58,12 @@ public class SppotiMailer extends ApplicationMailer
 	 * @param Sppoti
 	 * 		ceated Sppoti.
 	 */
+	@Override
 	public void sendAddSppotiEmail(final SppotiDTO Sppoti)
 	{
-	
+		if (this.userParamService.canReceiveEmail()) {
+		
+		}
 	}
 	
 	/**
@@ -78,21 +76,23 @@ public class SppotiMailer extends ApplicationMailer
 	 * @param sppoti
 	 * 		sppoti data.
 	 */
+	@Override
 	public void sendJoinSppotiEmail(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
-		
-		final ResourceContent avatarResourceContent = new ResourceContent(), coverResourceContent
-				= new ResourceContent();
-		avatarResourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
-		avatarResourceContent.setResourceName(teamDefaultAvatarResourceName);
-		
-		coverResourceContent.setPath(IMAGES_DIRECTORY + sppotiCoverResourceName);
-		coverResourceContent.setResourceName(sppotiCoverResourceName);
-		
-		final String joinSppotiLinkParsed = this.frontRootPath +
-				this.joinSppotiLink.replace("%sppotiId%", sppoti.getId() + "");
-		prepareAndSendEmail(to, from, sppoti, this.joinSppotiSubject, joinSppotiLinkParsed, coverResourceContent,
-				avatarResourceContent);
+		if (this.userParamService.canReceiveEmail()) {
+			final MailResourceContent avatarResourceContent = new MailResourceContent(), coverResourceContent
+					= new MailResourceContent();
+			avatarResourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
+			avatarResourceContent.setResourceName(teamDefaultAvatarResourceName);
+			
+			coverResourceContent.setPath(IMAGES_DIRECTORY + sppotiCoverResourceName);
+			coverResourceContent.setResourceName(sppotiCoverResourceName);
+			
+			final String joinSppotiLinkParsed = this.frontRootPath +
+					this.joinSppotiLink.replace("%sppotiId%", sppoti.getId() + "");
+			prepareAndSendEmail(to, from, sppoti, this.joinSppotiSubject, joinSppotiLinkParsed, coverResourceContent,
+					avatarResourceContent);
+		}
 	}
 	
 	/**
@@ -103,16 +103,19 @@ public class SppotiMailer extends ApplicationMailer
 	 * @param sppoter
 	 * 		sppoti member.
 	 */
+	@Override
 	public void sendConfirmJoinSppotiEmail(final SppotiDTO sppoti, final UserDTO sppoter)
 	{
-	
+		if (this.userParamService.canReceiveEmail()) {
+		
+		}
 	}
 	
 	/**
 	 * Send email.
 	 */
 	private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final SppotiDTO Sppoti, final String subject,
-									 final String joinSppotiLink, final ResourceContent... resourceContent)
+									 final String joinSppotiLink, final MailResourceContent... resourceContent)
 	{
 		
 		final Context context = new Context();

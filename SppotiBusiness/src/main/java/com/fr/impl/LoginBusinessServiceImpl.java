@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by djenanewail on 1/22/17.
  */
 @Component
-class LoginBusinessServiceImpl extends AbstractControllerServiceImpl implements LoginBusinessService
+class LoginBusinessServiceImpl extends CommonControllerServiceImpl implements LoginBusinessService
 {
 	@Autowired
 	private UserTransformer userTransformer;

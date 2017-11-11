@@ -1,9 +1,9 @@
-package com.fr.mail;
+package com.fr.commons.dto;
 
 /**
  * Created by djenanewail on 5/6/17.
  */
-public class ResourceContent
+public class MailResourceContent
 {
 	private String path;
 	private String resourceName;

@@ -2,7 +2,7 @@ FROM java:8
 
 EXPOSE 8080
 
-#VOLUME /tmp
+VOLUME /tmp
 
 ADD sppoti-app.war app.war
 

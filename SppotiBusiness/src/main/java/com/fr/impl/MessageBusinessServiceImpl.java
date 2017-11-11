@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 @Component
-class MessageBusinessServiceImpl extends AbstractControllerServiceImpl implements MessageBusinessService
+class MessageBusinessServiceImpl extends CommonControllerServiceImpl implements MessageBusinessService
 {
 	
 	/**

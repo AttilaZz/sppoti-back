@@ -1,8 +1,8 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.ContactDTO;
-import com.fr.mail.ContactMailer;
 import com.fr.service.ContactRestService;
+import com.fr.service.email.ContactMailerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class ContactRestServiceImpl extends AbstractControllerServiceImpl implements ContactRestService
+public class ContactRestServiceImpl extends CommonControllerServiceImpl implements ContactRestService
 {
 	
 	/** Contact mailer. */
-	private final ContactMailer contactMailer;
+	private final ContactMailerService contactMailerService;
 	
 	/** Class logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(ContactRestServiceImpl.class);
@@ -26,9 +26,9 @@ public class ContactRestServiceImpl extends AbstractControllerServiceImpl implem
 	 * Init class dependencies.
 	 */
 	@Autowired
-	public ContactRestServiceImpl(final ContactMailer contactMailer)
+	public ContactRestServiceImpl(final ContactMailerService contactMailerService)
 	{
-		this.contactMailer = contactMailer;
+		this.contactMailerService = contactMailerService;
 	}
 	
 	/**
@@ -49,7 +49,7 @@ public class ContactRestServiceImpl extends AbstractControllerServiceImpl implem
 	private void sendContactEmail(final ContactDTO contact)
 	{
 		final Thread thread = new Thread(() -> {
-			this.contactMailer.sendContactEmail(contact);
+			this.contactMailerService.sendContactEmail(contact);
 			this.LOGGER.info("Confirmation email has been sent successfully !");
 		});
 		thread.start();

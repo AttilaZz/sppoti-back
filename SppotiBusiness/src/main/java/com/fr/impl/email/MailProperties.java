@@ -1,4 +1,4 @@
-package com.fr.mail;
+package com.fr.impl.email;
 /*
  * Copyright 2012-2015 the original author or authors.
  *
@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Eddú Meléndez
  * @since 1.2.0
  */
-@ConfigurationProperties(prefix = "spring.mail")
+@ConfigurationProperties(prefix = "spring.email")
 @Component
 public class MailProperties
 {
@@ -69,12 +69,12 @@ public class MailProperties
 	 */
 	private Charset defaultEncoding = DEFAULT_CHARSET;
 	/**
-	 * Session JNDI name. When set, takes precedence to others mail settings.
+	 * Session JNDI name. When set, takes precedence to others email settings.
 	 */
 	private String jndiName;
 	
 	/**
-	 * Test that the mail server is available on startup.
+	 * Test that the email server is available on startup.
 	 */
 	private boolean testConnection;
 	

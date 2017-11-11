@@ -25,7 +25,7 @@ import java.util.Optional;
  * Created by djenanewail on 4/7/17.
  */
 @Component
-public class ScoreBusinessServiceImpl extends AbstractControllerServiceImpl implements ScoreBusinessService
+public class ScoreBusinessServiceImpl extends CommonControllerServiceImpl implements ScoreBusinessService
 {
 	
 	private final ScoreTransformer scoreTransformer;
@@ -102,8 +102,7 @@ public class ScoreBusinessServiceImpl extends AbstractControllerServiceImpl impl
 		this.notificationService
 				.saveAndSendNotificationToUsers(scoreEntity.getSppotiEntity().getUserSppoti(), sppotiTeamHost.getUser(),
 						NotificationObjectType.SCORE, NotificationTypeEnum.SCORE_SET_AND_WAITING_FOR_APPROVAL,
-						scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), null, null,
-						scoreEntity);
+						scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), scoreEntity);
 		
 		return this.scoreTransformer.modelToDto(this.scoreRepository.save(scoreEntity));
 	}

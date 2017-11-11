@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.sppoti</groupId>
         <artifactId>sppoti</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${sppoti.project.version}</version>
     </parent>
 
     <developers>

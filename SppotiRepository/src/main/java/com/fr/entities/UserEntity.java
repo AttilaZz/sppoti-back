@@ -143,7 +143,18 @@ public class UserEntity extends AbstractCommonEntity
 	@OrderBy("dateTime DESC")
 	private SortedSet<AddressEntity> addresses;
 	
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	private AccountParamEntity paramEntity;
+	
 	private transient Long connectedUserId;
+	
+	public AccountParamEntity getParamEntity() {
+		return this.paramEntity;
+	}
+	
+	public void setParamEntity(final AccountParamEntity paramEntity) {
+		this.paramEntity = paramEntity;
+	}
 	
 	public Boolean getFirstConnexion() {
 		return this.firstConnexion;

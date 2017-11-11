@@ -12,9 +12,9 @@ import com.fr.commons.exception.*;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.enums.CoverType;
-import com.fr.mail.AccountMailer;
 import com.fr.repositories.ConnexionHistoryRepository;
 import com.fr.service.AccountBusinessService;
+import com.fr.service.email.AccountMailerService;
 import com.fr.transformers.ConnexionHistoryTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.SportTransformer;
@@ -37,43 +37,34 @@ import java.util.stream.Collectors;
  */
 
 @Component
-class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implements AccountBusinessService
+class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements AccountBusinessService
 {
 	
-	/** Class logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(AccountBusinessServiceImpl.class);
 	
-	/** Spring security Password encoder. */
 	private final PasswordEncoder passwordEncoder;
 	
-	/** {@link AccountMailer} to send emails. */
-	private final AccountMailer accountMailer;
+	private final AccountMailerService accountMailerService;
 	
-	/** {@link UserEntity} transformer. */
 	private final UserTransformer userTransformer;
 	
-	/** {@link com.fr.entities.SportEntity} transformer. */
 	private final SportTransformer sportTransformer;
 	
-	/** {@link ConnexionHistoryEntity} repository. */
 	private final ConnexionHistoryRepository connexionHistoryRepository;
 	
-	/** {@link ConnexionHistoryEntity} transformer. */
 	private final ConnexionHistoryTransformer connexionHistoryTransformer;
 	
-	/** Days before expiration. */
 	@Value("${spring.app.account.recover.expiry.date}")
 	private int daysBeforeExpiration;
 	
-	/** Init dependencies. */
 	@Autowired
-	public AccountBusinessServiceImpl(final AccountMailer accountMailer, final PasswordEncoder passwordEncoder,
-									  final UserTransformerImpl userTransformer,
+	public AccountBusinessServiceImpl(final AccountMailerService accountMailerService,
+									  final PasswordEncoder passwordEncoder, final UserTransformerImpl userTransformer,
 									  final SportTransformer sportTransformer,
 									  final ConnexionHistoryRepository connexionHistoryRepository,
 									  final ConnexionHistoryTransformer connexionHistoryTransformer)
 	{
-		this.accountMailer = accountMailer;
+		this.accountMailerService = accountMailerService;
 		this.passwordEncoder = passwordEncoder;
 		this.userTransformer = userTransformer;
 		this.sportTransformer = sportTransformer;
@@ -119,7 +110,6 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 		//		SendEmailToActivateAccount(newUser, TypeAccountValidation.signup);
 	}
 	
-	/** Check if account exists, and throw the appropriate exception. */
 	private void checkRequiredAttributeUniqueness(final SignUpDTO user) {
 		
 		final Optional<UserEntity> userFoundByUsername = Optional
@@ -140,35 +130,34 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 				Optional.empty();
 		
 		userFoundByEmail.ifPresent(e -> {
-			if (accountExist(e)) {
+			if (isAccountExist(e)) {
 				throw new ConflictEmailException(ErrorMessageEnum.EMAIL_ALREADY_EXISTS.getMessage());
 			}
 		});
 		userFoundByUsername.ifPresent(e -> {
-			if (accountExist(e)) {
+			if (isAccountExist(e)) {
 				throw new ConflictUsernameException(ErrorMessageEnum.USERNAME_ALREADY_EXISTS.getMessage());
 			}
 		});
 		
 		userFoundByFacebookId.ifPresent(e -> {
-			if (accountExist(e)) {
+			if (isAccountExist(e)) {
 				throw new ConflictFacebookIdException(ErrorMessageEnum.FACEBOOK_ID_ALREADY_EXISTS.getMessage());
 			}
 		});
 		userFoundByGoogleId.ifPresent(e -> {
-			if (accountExist(e)) {
+			if (isAccountExist(e)) {
 				throw new ConflictGoogleIdException(ErrorMessageEnum.GOOGLE_ID_ALREADY_EXISTS.getMessage());
 			}
 		});
 		userFoundByTwitterId.ifPresent(e -> {
-			if (accountExist(e)) {
+			if (isAccountExist(e)) {
 				throw new ConflictTwitterException(ErrorMessageEnum.TWITTER_ID_ALREADY_EXISTS.getMessage());
 			}
 		});
 	}
 	
-	/** Test if account exists. */
-	private boolean accountExist(final UserEntity u)
+	private boolean isAccountExist(final UserEntity u)
 	{
 		if (!u.isConfirmed()) {
 			throw new AccountConfirmationLinkExpiredException("Account exist! Ask for another confirmation code.");
@@ -176,7 +165,6 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 		return true;
 	}
 	
-	/** Send Email to activate new account. */
 	private void SendEmailToActivateAccount(final UserEntity user, final TypeAccountValidation type)
 	{
 		final UserDTO userDTO = this.userTransformer.modelToDto(user);
@@ -236,7 +224,7 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 	{
 		
 		final Thread thread = new Thread(
-				() -> this.accountMailer.sendCreateAccountConfirmationEmail(userDTO, code, type));
+				() -> this.accountMailerService.sendCreateAccountConfirmationEmail(userDTO, code, type));
 		thread.start();
 	}
 	
@@ -394,7 +382,7 @@ class AccountBusinessServiceImpl extends AbstractControllerServiceImpl implement
 			this.userRepository.save(u);
 			this.LOGGER.info("Recover password email sent tocommit: " + u.getEmail());
 			
-			final Thread thread = new Thread(() -> this.accountMailer
+			final Thread thread = new Thread(() -> this.accountMailerService
 					.sendRecoverPasswordEmail(this.userTransformer.modelToDto(u), code, tokenExpiryDate));
 			thread.start();
 		});

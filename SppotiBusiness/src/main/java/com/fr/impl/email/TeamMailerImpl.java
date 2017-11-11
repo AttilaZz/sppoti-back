@@ -1,11 +1,14 @@
-package com.fr.mail;
+package com.fr.impl.email;
 
+import com.fr.commons.dto.MailResourceContent;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.entities.TeamMemberEntity;
+import com.fr.service.UserParamService;
+import com.fr.service.email.TeamMailerService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -15,50 +18,37 @@ import java.util.stream.Collectors;
 
 /**
  * Created by djenanewail on 3/23/17.
- *
- * Team mailer.
  */
-
 @Component
-public class TeamMailer extends ApplicationMailer
+public class TeamMailerImpl extends ApplicationMailerServiceImpl implements TeamMailerService
 {
 	
-	/** Notify team admin about his new team. */
 	@Value("${spring.app.mail.team.add.subject}")
 	private String addTeamSubject;
 	
-	/** Notify team member about team invitation. */
 	@Value("${spring.app.mail.team.join.subject}")
 	private String joinTeamSubject;
 	
-	/** Notify team admin if a member accept or refuse to join his team. */
 	@Value("${spring.app.mail.team.confirm.subject}")
 	private String confirmJoinTeamSubject;
 	
-	/** Redirection link to the front app. */
 	@Value("${spring.app.mail.team.join.link}")
 	private String joinTeamLink;
 	
-	/** Explain team utility. */
 	@Value("${spring.app.mail.team.description}")
 	private String sppotiTeamConcept;
 	
-	/** translate to join team message. */
 	@Value("${spring.app.mail.team.invited.by.join.team}")
 	private String toJoinTeamMessage;
 	
-	/** Sppoti mail templates */
+	/** Sppoti email templates */
 	private final static String PATH_TO_JOIN_TEAM_TEMPLATE = "team/join_team";
-	private final static String PATH_TO_CREATE_TEAM_TEMPLATE = "team/create_sppoti";
-	private final static String PATH_TO_RESPOND_TO_TEAM_TEMPLATE = "team/respond_sppoti";
 	
+	@Autowired
+	private TemplateEngine templateEngine;
 	
-	/** Init team mailer. */
-	public TeamMailer(final JavaMailSender sender, final MailProperties mailProperties,
-					  final TemplateEngine templateEngine)
-	{
-		super(sender, mailProperties, templateEngine);
-	}
+	@Autowired
+	private UserParamService userParamService;
 	
 	/**
 	 * Send email to confirm team creation.
@@ -66,9 +56,12 @@ public class TeamMailer extends ApplicationMailer
 	 * @param team
 	 * 		ceated team.
 	 */
+	@Override
 	public void sendAddTeamEmail(final TeamDTO team)
 	{
-	
+		if (this.userParamService.canReceiveEmail()) {
+		
+		}
 	}
 	
 	/**
@@ -81,15 +74,18 @@ public class TeamMailer extends ApplicationMailer
 	 * @param team
 	 * 		team data.
 	 */
+	@Override
 	public void sendJoinTeamEmail(final TeamDTO team, final UserDTO to, final UserDTO from)
 	{
-		
-		final ResourceContent resourceContent = new ResourceContent();
-		resourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
-		resourceContent.setResourceName(teamDefaultAvatarResourceName);
-		
-		final String joinTeamLinkParsed = this.frontRootPath + this.joinTeamLink.replace("%teamId%", team.getId() + "");
-		prepareAndSendEmail(to, from, team, this.joinTeamSubject, joinTeamLinkParsed, resourceContent);
+		if (this.userParamService.canReceiveEmail()) {
+			final MailResourceContent resourceContent = new MailResourceContent();
+			resourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
+			resourceContent.setResourceName(teamDefaultAvatarResourceName);
+			
+			final String joinTeamLinkParsed = this.frontRootPath +
+					this.joinTeamLink.replace("%teamId%", team.getId() + "");
+			prepareAndSendEmail(to, from, team, this.joinTeamSubject, joinTeamLinkParsed, resourceContent);
+		}
 	}
 	
 	/**
@@ -100,16 +96,20 @@ public class TeamMailer extends ApplicationMailer
 	 * @param member
 	 * 		team member.
 	 */
+	@Override
 	public void sendConfirmJoinTeamEmail(final TeamDTO team, final TeamMemberEntity member)
 	{
-	
+		if (this.userParamService.canReceiveEmail()) {
+		
+		}
+		
 	}
 	
 	/**
 	 * Send email.
 	 */
 	private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final TeamDTO team, final String subject,
-									 final String joinTeamLink, final ResourceContent resourceContent)
+									 final String joinTeamLink, final MailResourceContent resourceContent)
 	{
 		
 		final int memberCount = team.getMembers().size();

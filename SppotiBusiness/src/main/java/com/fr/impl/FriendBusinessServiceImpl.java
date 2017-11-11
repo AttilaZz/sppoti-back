@@ -34,7 +34,7 @@ import static com.fr.commons.enumeration.notification.NotificationObjectType.FRI
  * Created by djenanewail on 1/22/17.
  */
 @Component
-class FriendBusinessServiceImpl extends AbstractControllerServiceImpl implements FriendBusinessService
+class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements FriendBusinessService
 {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(FriendBusinessServiceImpl.class);

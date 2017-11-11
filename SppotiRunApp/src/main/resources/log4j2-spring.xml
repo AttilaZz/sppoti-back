@@ -29,7 +29,7 @@
             </PatternLayout>
         </File>
         <!--Error logs-->
-        <File name="FileAllErrors" fileName="${path}/sppoti_errors.log" immediateFlush="true" append="true">
+        <File name="FileAllErrors" fileName="${path}/sppoti_errors.log">
             <PatternLayout>
                 <pattern>
                     [%-5level] %d{dd-MM-yyyy HH:mm:ss.SSS} [%t] %c{1} - %msg%n

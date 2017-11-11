@@ -29,7 +29,7 @@ import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_POS
  */
 
 @Component
-class PostBusinessServiceImpl extends AbstractControllerServiceImpl implements PostBusinessService
+class PostBusinessServiceImpl extends CommonControllerServiceImpl implements PostBusinessService
 {
 	
 	private final PostTransformer postTransformer;

@@ -1,5 +1,7 @@
-package com.fr.mail;
+package com.fr.impl.email;
 
+import com.fr.commons.dto.MailResourceContent;
+import com.fr.service.email.ApplicationMailerService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +12,6 @@ import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.TemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -23,7 +24,7 @@ import java.io.InputStream;
  * Email super class configuration.
  **/
 @Component
-abstract class ApplicationMailer
+abstract class ApplicationMailerServiceImpl implements ApplicationMailerService
 {
 	
 	/** Templates. */
@@ -35,21 +36,20 @@ abstract class ApplicationMailer
 	static final String logoResourceName = "sppoti_logo.png";
 	static final String teamDefaultAvatarResourceName = "team_avatar.png";
 	static final String sppotiCoverResourceName = "sppoti_bg.png";
-	/** Email charset. */
+	
 	private static final String CHARSET_NAME = "UTF-8";
-	/** Error message. */
+	
 	private static final String ERROR_SENDING_MAIL = "Error sending email";
 	private static final String ERROR_OPENING_RESOURCE_FILE = "Resource file not found";
-	/** resource content type. */
+	
 	private static final String IMAGE_PNG = "image/png";
-	/** Class logger. */
-	protected static Logger LOGGER = LoggerFactory.getLogger(ApplicationMailer.class);
-	/** Java mail sender. */
-	protected final JavaMailSender sender;
-	/** Template engine. */
-	protected final TemplateEngine templateEngine;
-	/** Mail properties. */
-	final MailProperties mailProperties;
+	
+	protected static Logger LOGGER = LoggerFactory.getLogger(ApplicationMailerServiceImpl.class);
+	
+	@Autowired
+	private JavaMailSender sender;
+	@Autowired
+	private MailProperties mailProperties;
 	
 	/** Front app path. */
 	@Value("${spring.app.originFront}")
@@ -77,16 +77,6 @@ abstract class ApplicationMailer
 	@Value("${spring.app.mail.other.preposition}")
 	String otherPrepositionMessage;
 	
-	/** Init dependencies. */
-	@Autowired
-	public ApplicationMailer(final JavaMailSender sender, final MailProperties mailProperties,
-							 final TemplateEngine templateEngine)
-	{
-		this.sender = sender;
-		this.mailProperties = mailProperties;
-		this.templateEngine = templateEngine;
-	}
-	
 	/**
 	 * @param to
 	 * 		email receiver.
@@ -96,7 +86,7 @@ abstract class ApplicationMailer
 	 * 		email content.
 	 */
 	protected void prepareAndSendEmail(final String to, final String subject, final String content,
-									   final ResourceContent... resourceContent)
+									   final MailResourceContent... resourceContent)
 	{
 		
 		final MimeMessage mail = this.sender.createMimeMessage();
@@ -111,7 +101,7 @@ abstract class ApplicationMailer
 			helper.setText(content, true);
 			
 			//add image resource
-			for (final ResourceContent r : resourceContent) {
+			for (final MailResourceContent r : resourceContent) {
 				// Add the inline image, referenced from the HTML code as "cid:${imageResourceName}"
 				final InputStreamSource imageSource = getImageResource(r);
 				helper.addInline(r.getResourceName(), imageSource, IMAGE_PNG);
@@ -126,7 +116,7 @@ abstract class ApplicationMailer
 		}
 	}
 	
-	private InputStreamSource getImageResource(final ResourceContent resourceContent) throws IOException
+	private InputStreamSource getImageResource(final MailResourceContent resourceContent) throws IOException
 	{
 		//		final ClassLoader classLoader = getClass().getClassLoader();
 		//		final File file = new File(classLoader.getResource(resourceContent.getPath()).getFile());
@@ -137,5 +127,4 @@ abstract class ApplicationMailer
 		final byte[] imageBytes = IOUtils.toByteArray(file);
 		return new ByteArrayResource(imageBytes);
 	}
-	
 }

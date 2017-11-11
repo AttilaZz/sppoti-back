@@ -1,26 +1,67 @@
-version: '3'
+version: '3.1'
 
 services:
 
-  nginx:
-      image: nginx
+  reverseproxy:
+      image: reverseproxy
+      container_name: reverseproxy
+      depends_on:
+          - sppoti
       ports:
-        - "80:80"
+        - 80:80
+
+  nginx:
+      image: sppoti-front
+      container_name: sppoti-front
+      depends_on:
+          - reverseproxy
+      volumes:
+        - nginx_data:/var/log/nginx
 
   db:
-      image: mysql
+      image: mysql:5.7
+      container_name: mysql
       volumes:
             - db_data:/var/lib/mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: /run/secrets/db_root_password
+        MYSQL_USER: sppoti
+        MYSQL_PASSWORD: /run/secrets/db_password
+        MYSQL_DATABASE: sppoti
+      secrets:
+             - db_root_password
+             - db_password
 
   redis:
     image: redis
+    volumes:
+        - redis_data:/data
 
   sppoti:
-      image: sppoti
+      image: sppoti-back
+      ports:
+        - 8080:8080
       depends_on:
-#            - redis
+            - redis
             - db
-      restart: always
+      environment:
+        REDIS_HOST_SERVICE: redis
+        MYSQL_HOST_SERVICE: db
+        MYSQL_USER: sppoti
+        MYSQL_PASSWORD: /run/secrets/db_password
+      volumes:
+            - sppoti_data:/var/log/sppoti
+      secrets:
+            - db_password
+
+secrets:
+   db_password:
+     file: ./secrets/db_password.txt
+   db_root_password:
+     file: ./secrets/db_root_password.txt
 
 volumes:
   db_data:
+  redis_data:
+  sppoti_data:
+  nginx_data:

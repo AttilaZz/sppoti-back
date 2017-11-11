@@ -84,6 +84,9 @@ public class UserDTO extends AbstractCommonDTO
 	private Boolean firstConnexion;
 	private Boolean isProfileComplete;
 	
+	private Boolean canReceiveEmails;
+	private Boolean canReceiveNotifications;
+	
 	public Boolean isFirstConnexion() {
 		return this.firstConnexion;
 	}
@@ -452,5 +455,21 @@ public class UserDTO extends AbstractCommonDTO
 	
 	public void setTwitterId(final String twitterId) {
 		this.twitterId = twitterId;
+	}
+	
+	public Boolean getCanReceiveEmails() {
+		return this.canReceiveEmails;
+	}
+	
+	public void setCanReceiveEmails(final Boolean canReceiveEmails) {
+		this.canReceiveEmails = canReceiveEmails;
+	}
+	
+	public Boolean getCanReceiveNotifications() {
+		return this.canReceiveNotifications;
+	}
+	
+	public void setCanReceiveNotifications(final Boolean canReceiveNotifications) {
+		this.canReceiveNotifications = canReceiveNotifications;
 	}
 }

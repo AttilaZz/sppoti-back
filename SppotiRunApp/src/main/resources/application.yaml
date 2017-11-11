@@ -1,8 +1,9 @@
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/sppoti
-    username: root
-    password:
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    port:     ${MYSQL_PORT}
     platform: mysql
     driverClassName: com.mysql.jdbc.Driver
     poolSize: 10
@@ -38,15 +39,15 @@ spring:
 spring:
   profiles: container
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST_SERVICE}:${MYSQL_PORT}/${MYSQL_DATABASE}
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
-    host: ${MYSQL_HOST_SERVICE}
-    dbName: ${MYSQL_DATABASE}
+    passwordFile: ${MYSQL_PASSWORD_FILE}
+    host:     ${MYSQL_HOST_SERVICE}
+    dbName:   ${MYSQL_DATABASE}
     driverClassName: com.mysql.jdbc.Driver
-    poolSize: 10
+    poolSize:   10
     initialize: true
   redis:
-    host: ${REDIS_HOST_SERVICE}
+    host:     ${REDIS_HOST_SERVICE}
     password: secret
-    port: 6379
+    port:     6379
