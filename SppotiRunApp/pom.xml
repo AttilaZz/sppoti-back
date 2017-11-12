@@ -81,7 +81,7 @@
         <profile>
             <id>container</id>
             <properties>
-                <environment>developpement</environment>
+                <environment>container</environment>
             </properties>
             <build>
                 <plugins>

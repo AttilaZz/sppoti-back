@@ -38,11 +38,13 @@
         </File>
     </Appenders>
     <Loggers>
+        <logger level="info">
+            <AppenderRef ref="SpringBoot-Appender" level="INFO"/>
+            <AppenderRef ref="App-Appender" level="INFO"/>
+            <AppenderRef ref="FileAllErrors" level="ERROR"/>
+        </logger>
         <Root level="trace">
-            <!--<AppenderRef ref="SpringBoot-Appender" level="INFO"/>-->
-            <!--<AppenderRef ref="App-Appender" level="INFO" />-->
-            <!--<AppenderRef ref="FileAllErrors" level="ERROR" />-->
-            <AppenderRef ref="console" level="INFO"/>
+            <!--<AppenderRef ref="console" level="INFO"/>-->
         </Root>
     </Loggers>
 </Configuration>
