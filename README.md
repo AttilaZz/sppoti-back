@@ -2,23 +2,47 @@
 
 # INSTALLATION
 
-## To install all dependencies and runs tests
+## Environment variable to set before launching project in local ENV
 
 <pre>
 
-  mvn clean install
+    MYSQL_USER = ""
+    MYSQL_PASSWORD = ""
+    MYSQL_PORT = ""
+    spring.profiles.active = dev
 
 </pre>
 
-### To skip tests
+### PROFILES:
+  
+  1. DEV
+  2. TEST
+  3. PROD
+  4. CONTAINER (for docker)
+  
+<pre>
+  mvn clean <goal> -P<profile>
+</pre>
+
+## To install all dependencies and run tests
 
 <pre>
 
-  mvn clean install -DskipTests
+  mvn clean install 
+
+</pre>
+
+### To run only tests
+
+<pre>
+
+  mvn clean test
 
 </pre>
 
 # DEPLOIMENT
+
+## LEGACY
 
 1. Move to project root
 2. execute: 
@@ -31,13 +55,23 @@
 
 > The script will run mvn deploy with the needed parameters
 
-# DOCKER
+## DOCKER
 
-## CREATE the docker image
+### CREATE the docker image
 
 <pre>
 
-  mvn clean package -Pcontainer
+  mvn clean package -DskipTests -Pcontainer
+
+</pre>
+
+### CREATE the docker image and push to docker hub
+
+> push is trigged automacally on install goal
+
+<pre>
+
+  mvn clean install -DskipTests -Pcontainer
 
 </pre>
 
