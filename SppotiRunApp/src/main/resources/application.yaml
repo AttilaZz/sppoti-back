@@ -5,7 +5,6 @@ spring:
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     port:     ${MYSQL_PORT}
-    passwordFile: ${MYSQL_PASSWORD_FILE}
     platform: mysql
     driverClassName: com.mysql.jdbc.Driver
     poolSize: 10
