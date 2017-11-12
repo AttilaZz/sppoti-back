@@ -1,9 +1,11 @@
 spring:
+  profiles: dev
   datasource:
     url: jdbc:mysql://localhost:3306/sppoti
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     port:     ${MYSQL_PORT}
+    passwordFile: ${MYSQL_PASSWORD_FILE}
     platform: mysql
     driverClassName: com.mysql.jdbc.Driver
     poolSize: 10
@@ -39,14 +41,14 @@ spring:
 spring:
   profiles: container
   datasource:
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    username:     ${MYSQL_USER}
     passwordFile: ${MYSQL_PASSWORD_FILE}
-    host:     ${MYSQL_HOST_SERVICE}
-    dbName:   ${MYSQL_DATABASE}
+    host:         ${MYSQL_HOST_SERVICE}
+    dbName:       ${MYSQL_DATABASE}
+    port:         3306
     driverClassName: com.mysql.jdbc.Driver
-    poolSize:   10
-    initialize: true
+    poolSize:     10
+    initialize:   true
   redis:
     host:     ${REDIS_HOST_SERVICE}
     password: secret

@@ -32,7 +32,7 @@ public class HikariCPConfig
 	private String dbName;
 	private String url;
 	private int poolSize;
-	private int port;
+	private String port;
 	
 	@Bean(destroyMethod = "close")
 	public HikariDataSource dataSource()
@@ -41,18 +41,19 @@ public class HikariCPConfig
 		
 		String jdbcUrl = this.url;
 		if (StringUtils.isEmpty(this.url)) {
-			jdbcUrl = "jdbc:mysql://" + this.host + ":3306/" + this.dbName;
+			jdbcUrl = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.dbName;
 		}
-		
+		this.LOGGER.info("Connection to database using URL={}", jdbcUrl);
 		ds.setMaximumPoolSize(this.poolSize);
 		ds.setDriverClassName(this.driverClassName);
 		
 		ds.setUsername(this.username);
-		ds.setPassword(this.password);
 		
 		if (StringUtils.hasText(this.passwordFile)) {
 			this.LOGGER.info("Reading password from a file: " + this.passwordFile);
 			ds.setPassword(getPasswordFromFile());
+		} else {
+			ds.setPassword(this.password);
 		}
 		
 		ds.setJdbcUrl(jdbcUrl);
@@ -142,11 +143,11 @@ public class HikariCPConfig
 		this.passwordFile = passwordFile;
 	}
 	
-	public int getPort() {
+	public String getPort() {
 		return this.port;
 	}
 	
-	public void setPort(final int port) {
+	public void setPort(final String port) {
 		this.port = port;
 	}
 	
