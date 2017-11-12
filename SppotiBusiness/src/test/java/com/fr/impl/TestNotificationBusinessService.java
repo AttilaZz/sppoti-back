@@ -32,7 +32,7 @@ public class TestNotificationBusinessService
 	@Mock
 	SimpMessagingTemplate simpMessagingTemplate;
 	
-	private static final NotificationTypeEnum notif = NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED;
+	private static final NotificationTypeEnum TEST_NOTIFICATION_TYPE = NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED;
 	
 	@Spy
 	@InjectMocks
@@ -42,7 +42,8 @@ public class TestNotificationBusinessService
 	public void testBuildNotificationEntityWith_FRIENDSHIP_As_NotificationObject_And_DataToSend_Empty() {
 		
 		final NotificationEntity notification = this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.FRIENDSHIP);
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.FRIENDSHIP);
 		
 		Assert.assertNotNull(notification);
 	}
@@ -54,15 +55,16 @@ public class TestNotificationBusinessService
 	public void testBuildNotificationEntityWith_RATING_As_NotificationObject_And_DataToSend_Empty() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.RATING);
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.RATING);
 	}
 	
 	@Test
 	public void shouldWorkFine_When_ArgumentPositionAreRespected_And_NotificationObject_Is_RATING() {
 		
 		final NotificationEntity notification = this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.RATING, null,
-						new SppotiEntity(), null, null, null, new RatingEntity());
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.RATING, new SppotiEntity(), new RatingEntity());
 		
 		Assert.assertNotNull(notification);
 		Assert.assertNotNull(notification.getRating());
@@ -81,15 +83,16 @@ public class TestNotificationBusinessService
 	public void testBuildNotificationEntityWith_COMMENT_As_NotificationObject_And_DataToSend_Empty() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.COMMENT);
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.COMMENT);
 	}
 	
 	@Test
 	public void shouldWorkFine_When_ArgumentPositionAreRespected_And_NotificationObject_Is_COMMENT() {
 		
 		final NotificationEntity notification = this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.COMMENT,
-						null, null, new PostEntity(), new CommentEntity());
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.COMMENT, new PostEntity(), new CommentEntity());
 		
 		Assert.assertNotNull(notification);
 		Assert.assertNotNull(notification.getPost());
@@ -108,8 +111,8 @@ public class TestNotificationBusinessService
 	public void shouldReturn_EntityNotFoundException_When_ArgumentPositionAreNotRespected_And_NotificationObject_Is_POST() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.POST,
-						new PostEntity(), new TeamEntity());
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.POST, new PostEntity(), new TeamEntity());
 		
 	}
 	
@@ -117,15 +120,16 @@ public class TestNotificationBusinessService
 	public void testBuildNotificationEntityWith_POST_As_NotificationObject_And_DataToSend_Empty() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.POST);
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.POST);
 	}
 	
 	@Test(expected = ClassCastException.class)
 	public void shouldThrow_ClassCastException_When_ArgumentPositionAreNotRespected_And_NotificationObject_Is_POST() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.POST, null,
-						null, new TeamEntity());
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.POST, new TeamEntity());
 		
 	}
 	
@@ -133,8 +137,8 @@ public class TestNotificationBusinessService
 	public void shouldWorkFine_When_ArgumentPositionAreRespected_And_NotificationObject_Is_POST() {
 		
 		final NotificationEntity notification = this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.POST, null,
-						null, new PostEntity());
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.POST, new PostEntity());
 		
 		Assert.assertNotNull(notification);
 		Assert.assertNotNull(notification.getPost());
@@ -153,15 +157,16 @@ public class TestNotificationBusinessService
 	public void testBuildNotificationEntityWith_TEAM_As_NotificationObject_And_DataToSend_Empty() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.TEAM);
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.TEAM);
 	}
 	
 	@Test(expected = ClassCastException.class)
 	public void shouldThrow_ClassCastException_When_ArgumentPositionAreNotRespected_And_NotificationObject_Is_TEAM() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.TEAM,
-						new PostEntity());
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.TEAM, new PostEntity());
 		
 	}
 	
@@ -169,8 +174,8 @@ public class TestNotificationBusinessService
 	public void shouldWorkFine_When_ArgumentPositionAreRespected_And_NotificationObject_Is_TEAM() {
 		
 		final NotificationEntity notification = this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.TEAM,
-						new TeamEntity());
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.TEAM, new TeamEntity());
 		
 		Assert.assertNotNull(notification);
 		Assert.assertNotNull(notification.getTeam());
@@ -189,15 +194,16 @@ public class TestNotificationBusinessService
 	public void testBuildNotificationEntityWith_SPPOTI_As_NotificationObject_And_DataToSend_Empty() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.SPPOTI);
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.SPPOTI);
 	}
 	
 	@Test(expected = ClassCastException.class)
 	public void shouldThrow_ClassCastException_When_ArgumentPositionAreNotRespected_And_NotificationObject_Is_SPPOTI() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.SPPOTI, null,
-						new UserEntity());
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.SPPOTI, null, new UserEntity());
 		
 	}
 	
@@ -208,15 +214,16 @@ public class TestNotificationBusinessService
 	public void testBuildNotificationEntityWith_SCORE_As_NotificationObject_And_DataToSend_Empty() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.SCORE);
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.SCORE);
 	}
 	
 	@Test(expected = ClassCastException.class)
 	public void shouldThrow_ClassCastException_When_ArgumentPositionAreNotRespected_And_NotificationObject_Is_SCORE() {
 		
 		this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.SCORE,
-						new UserEntity(), new PostEntity(), null, null, new TeamEntity());
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.SCORE, new UserEntity(), new PostEntity(), new TeamEntity());
 		
 	}
 	
@@ -224,8 +231,8 @@ public class TestNotificationBusinessService
 	public void shouldWorkFine_When_ArgumentPositionAreRespected_And_NotificationObject_Is_SCORE() {
 		
 		final NotificationEntity notification = this.notificationBusinessService
-				.buildNotificationEntity(notif, new UserEntity(), new UserEntity(), NotificationObjectType.SCORE,
-						new TeamEntity(), new SppotiEntity(), null, null, new ScoreEntity());
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.SCORE, new TeamEntity(), new SppotiEntity(), new ScoreEntity());
 		
 		Assert.assertNotNull(notification);
 		Assert.assertNotNull(notification.getScore());

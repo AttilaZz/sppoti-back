@@ -301,7 +301,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				if (!(objectToSend[2] instanceof ScoreEntity)) {
 					throw new ClassCastException("SCORE-ENTITY is expected");
 				}
-				final ScoreEntity score = (ScoreEntity) objectToSend[4];
+				final ScoreEntity score = (ScoreEntity) objectToSend[2];
 				score.setConnectedUserId(connectedUser);
 				notification.setScore(score);
 				
