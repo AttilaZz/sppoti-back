@@ -5,6 +5,8 @@ import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.UserEntity;
 import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 @ApiVersion("1")
 class AccountGetController
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(AccountGetController.class);
 	
-	/** Account controller service. */
 	private AccountBusinessService accountService;
 	
-	/** Init account service. */
 	@Autowired
 	void setAccountService(final AccountBusinessService accountService)
 	{
@@ -42,6 +43,7 @@ class AccountGetController
 	@GetMapping
 	ResponseEntity<UserDTO> connectedUserInfo(final Authentication authentication)
 	{
+		this.LOGGER.info("Request sent to get connected user data");
 		
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
 		final UserEntity targetUser = this.accountService.getUserById(accountUserDetails.getId());
@@ -61,6 +63,8 @@ class AccountGetController
 	@GetMapping("/other/{username}/**")
 	ResponseEntity<UserDTO> otherUserInfo(@PathVariable("username") final String username)
 	{
+		this.LOGGER.info("Request sent to get any user data");
+		
 		return new ResponseEntity<>(this.accountService.getAnyUserProfileData(username), HttpStatus.OK);
 	}
 }

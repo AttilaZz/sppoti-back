@@ -390,28 +390,26 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 		final Optional<UserEntity> optional = this.userRepository.getByUuidAndDeletedFalseAndConfirmedTrue(userId);
 		
 		if (optional.isPresent()) {
-			final List<Long> usersPostToReturn = new ArrayList<>();
-			//add connected user
-			if (page == 0) {
-				usersPostToReturn.add(getConnectedUserId());
-			}
+			final List<Long> listOfAllUsersIdRelatedToTheTimeline = new ArrayList<>();
+			
+			listOfAllUsersIdRelatedToTheTimeline.add(getConnectedUserId());
 			
 			//add user's friend to the list
 			this.friendShipRepository
 					.findByUserUuidOrFriendUuidAndStatus(userId, userId, GlobalAppStatusEnum.CONFIRMED, null)
 					.forEach(f -> {
 						if (!f.getFriend().getUuid().equals(userId)) {
-							usersPostToReturn.add(f.getFriend().getId());
+							listOfAllUsersIdRelatedToTheTimeline.add(f.getFriend().getId());
 						} else if (!f.getUser().getUuid().equals(userId)) {
-							usersPostToReturn.add(f.getUser().getId());
+							listOfAllUsersIdRelatedToTheTimeline.add(f.getUser().getId());
 						}
 					});
 			
-			final List<PostEntity> allUserAndFriendsPost = this.postRepository
-					.findByDeletedFalseAndUserIdIn(usersPostToReturn, pageable);
+			final List<PostEntity> allPostsToDisplayInTheTimeline = this.postRepository
+					.findByDeletedFalseAndUserIdIn(listOfAllUsersIdRelatedToTheTimeline, pageable);
 			
 			//transform posts from entities to dto, with sorting by creation date.
-			return allUserAndFriendsPost.stream().map(p -> this.fillPostToSend(p.getUuid(), accountUserId))
+			return allPostsToDisplayInTheTimeline.stream().map(p -> this.fillPostToSend(p.getUuid(), accountUserId))
 					.collect(Collectors.toList());
 		}
 		

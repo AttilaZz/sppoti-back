@@ -5,6 +5,8 @@ import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,10 @@ import org.springframework.web.bind.annotation.*;
 @ApiVersion("1")
 class AccountValidateController
 {
-	/** Account service. */
+	private final Logger LOGGER = LoggerFactory.getLogger(AccountValidateController.class);
+	
 	private AccountBusinessService accountService;
 	
-	/** Init service. */
 	@Autowired
 	void setAccountService(final AccountBusinessService accountService)
 	{
@@ -42,6 +44,7 @@ class AccountValidateController
 	ResponseEntity<Void> confirmUserEmail(@PathVariable("code") final String code,
 										  @RequestParam("type") final TypeAccountValidation type)
 	{
+		this.LOGGER.info("Request sent to validate the email in order to activate the account");
 		
 		if (StringUtils.isEmpty(code) || type == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -64,6 +67,7 @@ class AccountValidateController
 	@PutMapping("/validate/regenerate/code")
 	ResponseEntity<Void> generateNewConfirmationLink(@RequestBody final UserDTO userDTO)
 	{
+		this.LOGGER.info("Request sent to generate a new confirmation code to activate the account");
 		
 		if (StringUtils.isEmpty(userDTO.getEmail())) {
 			throw new BusinessGlobalException("Email is required !");

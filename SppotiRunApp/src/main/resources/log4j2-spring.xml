@@ -33,26 +33,12 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
-        <!-- springboot_log logs -->
-        <RollingFile name="SpringBoot-Appender" fileName="${path}/springboot_log.log"
-                     filePattern="${path}/sppoti_error-%d{yyyy-MM-dd}-%i.log">
-            <PatternLayout>
-                <Pattern>${LOG_PATTERN}</Pattern>
-            </PatternLayout>
-            <Policies>
-                <SizeBasedTriggeringPolicy size="10MB"/>
-            </Policies>
-            <DefaultRolloverStrategy max="10"/>
-        </RollingFile>
     </Appenders>
     <Loggers>
-        <logger level="TRACE" name="com.sppoti">
+        <Root level="TRACE">
+            <!--<AppenderRef ref="console" level="INFO"/>-->
             <AppenderRef ref="Error-Appender" level="ERROR"/>
             <AppenderRef ref="App-Appender" level="INFO"/>
-            <AppenderRef ref="SpringBoot-Appender" level="INFO"/>
-        </logger>
-        <Root level="TRACE">
-            <AppenderRef ref="console" level="INFO"/>
         </Root>
     </Loggers>
 </Configuration>

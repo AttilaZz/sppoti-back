@@ -6,6 +6,8 @@ import com.fr.commons.enumeration.ErrorMessageEnum;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import javax.validation.Valid;
 @ApiVersion("1")
 class AccountAddController
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(AccountAddController.class);
 	
 	/** Account service. */
 	private AccountBusinessService accountService;
@@ -44,6 +47,7 @@ class AccountAddController
 	@ResponseBody
 	ResponseEntity createUser(@RequestBody @Valid final SignUpDTO user)
 	{
+		this.LOGGER.info("Request sent to create a new user");
 		if (StringUtils.isEmpty(user.getFacebookId()) && StringUtils.isEmpty(user.getGoogleId()) &&
 				StringUtils.isEmpty(user.getTwitterId()) && StringUtils.isEmpty(user.getPassword())) {
 			throw new BusinessGlobalException(ErrorMessageEnum.PASSWORD_REQUIRED.getMessage());
@@ -67,6 +71,7 @@ class AccountAddController
 	@ResponseBody
 	ResponseEntity addConnexionHistory(@RequestBody final ConnexionHistoryDto historyDto)
 	{
+		this.LOGGER.info("Request sent to save user connexion details");
 		
 		this.accountService.saveConnexionHistory(historyDto);
 		

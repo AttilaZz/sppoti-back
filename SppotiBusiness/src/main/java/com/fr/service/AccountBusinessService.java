@@ -5,9 +5,7 @@ import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.entities.UserEntity;
-import org.springframework.stereotype.Component;
 
-@Component("accountService")
 public interface AccountBusinessService extends AbstractBusinessService
 {
 	

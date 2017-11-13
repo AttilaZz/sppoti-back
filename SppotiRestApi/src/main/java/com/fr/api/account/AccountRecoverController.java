@@ -4,6 +4,8 @@ import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +21,10 @@ import org.springframework.web.bind.annotation.*;
 @ApiVersion("1")
 public class AccountRecoverController
 {
-	/** Account service. */
+	private final Logger LOGGER = LoggerFactory.getLogger(AccountRecoverController.class);
+	
 	private AccountBusinessService accountControllerService;
 	
-	/** Init account service. */
 	@Autowired
 	void setAccountControllerService(final AccountBusinessService accountControllerService)
 	{
@@ -30,7 +32,7 @@ public class AccountRecoverController
 	}
 	
 	/**
-	 * Confirm email recover account by editing the password.
+	 * Confirm recover email.
 	 *
 	 * @param code
 	 * 		confirmation code.
@@ -42,6 +44,7 @@ public class AccountRecoverController
 	@PutMapping("/validate/password/{code}")
 	ResponseEntity<Void> confirmUserEmail(@RequestBody final UserDTO userDTO, @PathVariable("code") final String code)
 	{
+		this.LOGGER.info("Request sent to validate the password after account recover");
 		
 		if (StringUtils.isEmpty(code) || StringUtils.isEmpty(userDTO.getPassword())) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -62,8 +65,9 @@ public class AccountRecoverController
 	 * @return 200 if email found and email sent.
 	 */
 	@PutMapping("/recover")
-	ResponseEntity<Void> confirmUserEmail(@RequestBody final SignUpDTO userDTO)
+	ResponseEntity<Void> recoverAccount(@RequestBody final SignUpDTO userDTO)
 	{
+		this.LOGGER.info("Request sent to recover the password");
 		
 		if (StringUtils.isEmpty(userDTO.getEmail())) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

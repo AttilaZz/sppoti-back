@@ -3,6 +3,8 @@ package com.fr.api.account;
 import com.fr.commons.dto.UserDTO;
 import com.fr.service.AccountBusinessService;
 import com.fr.versionning.ApiVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +20,10 @@ import org.springframework.web.bind.annotation.*;
 @ApiVersion("1")
 class AccountUpdateController
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(AccountUpdateController.class);
 	
-	/** Account controller service. */
 	private AccountBusinessService accountService;
 	
-	/** Init account service. */
 	@Autowired
 	void setAccountService(final AccountBusinessService accountService)
 	{
@@ -40,6 +41,7 @@ class AccountUpdateController
 	@PutMapping
 	ResponseEntity<UserDTO> editUserInfo(@RequestBody final UserDTO user)
 	{
+		this.LOGGER.info("Request sent to edit user account data");
 		
 		boolean update = false;
 		
@@ -110,6 +112,8 @@ class AccountUpdateController
 	@PutMapping("/deactivate/{userId}")
 	ResponseEntity<Void> deactivateAccount(@PathVariable final String userId)
 	{
+		this.LOGGER.info("Request sent to deactivate the account");
+		
 		this.accountService.deactivateAccount(userId);
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}

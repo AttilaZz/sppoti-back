@@ -21,15 +21,15 @@ import java.util.*;
 public class UserEntity extends AbstractCommonEntity
 {
 	
-	@Column(nullable = false, name = "last_name")
+	@Column(name = "last_name")
 	private String lastName;
 	
-	@Column(nullable = false, name = "first_name")
+	@Column(name = "first_name")
 	private String firstName;
 	
 	@Temporal(TemporalType.DATE)
 	@Past
-	@Column(nullable = false, name = "date_born")
+	@Column(name = "date_born")
 	private Date dateBorn;
 	
 	@Column(name = "gender")
