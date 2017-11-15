@@ -8,7 +8,11 @@ import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.service.NotificationBusinessService;
 import com.fr.service.PostBusinessService;
+import com.fr.service.email.PostMailerService;
 import com.fr.transformers.PostTransformer;
+import com.fr.transformers.UserTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -31,21 +35,24 @@ import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_POS
 @Component
 class PostBusinessServiceImpl extends CommonControllerServiceImpl implements PostBusinessService
 {
-	
+	private final PostMailerService postMailerService;
 	private final PostTransformer postTransformer;
 	private final NotificationBusinessService notificationService;
+	private final UserTransformer userTransformer;
+	private final Logger LOGGER = LoggerFactory.getLogger(PostBusinessServiceImpl.class);
 	
-	/** Post list size. */
 	@Value("${key.postsPerPage}")
 	private int postSize;
 	
-	/** Init dependencies. */
 	@Autowired
-	public PostBusinessServiceImpl(final PostTransformer postTransformer,
-								   final NotificationBusinessService notificationService)
+	public PostBusinessServiceImpl(final PostMailerService postMailerService, final PostTransformer postTransformer,
+								   final NotificationBusinessService notificationService,
+								   final UserTransformer userTransformer)
 	{
+		this.postMailerService = postMailerService;
 		this.postTransformer = postTransformer;
 		this.notificationService = notificationService;
+		this.userTransformer = userTransformer;
 	}
 	
 	/**
@@ -53,20 +60,20 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 	 */
 	@Transactional
 	@Override
-	public PostDTO savePost(final PostRequestDTO postRequestDTO)
+	public PostDTO savePost(final PostRequestDTO dto)
 	{
 		final UserEntity connectedUser = getConnectedUser();
 		
 		final PostEntity entity = new PostEntity();
-		entity.setAlbum(postRequestDTO.getContent().getImageLink());
-		entity.setContent(postRequestDTO.getContent().getContent());
-		entity.setVideo(postRequestDTO.getContent().getVideoLink());
-		entity.setVisibility(postRequestDTO.getVisibility());
-		entity.setTimeZone(postRequestDTO.getTimeZone());
+		entity.setAlbum(dto.getContent().getImageLink());
+		entity.setContent(dto.getContent().getContent());
+		entity.setVideo(dto.getContent().getVideoLink());
+		entity.setVisibility(dto.getVisibility());
+		entity.setTimeZone(dto.getTimeZone());
 		entity.setUser(connectedUser);
 		
 		//Post sport.
-		final SportEntity sportEntity = this.sportRepository.findOne(postRequestDTO.getSportId());
+		final SportEntity sportEntity = this.sportRepository.findOne(dto.getSportId());
 		if (sportEntity == null) {
 			throw new EntityNotFoundException("Sport not found");
 		}
@@ -74,27 +81,28 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 		
 		//Post in friend profile.
 		final Optional<UserEntity> targetProfile = this.userRepository
-				.getByUuidAndDeletedFalseAndConfirmedTrue(postRequestDTO.getTargetUserUuid());
-		targetProfile.ifPresent(entity::setTargetUserProfile);
+				.getByUuidAndDeletedFalseAndConfirmedTrue(dto.getTargetUserUuid());
+		targetProfile.ifPresent(t -> {
+			entity.setTargetUserProfile(t);
+			
+			entity.setConnectedUserId(connectedUser.getId());
+			
+			//Send notification
+			if (!t.getId().equals(connectedUser.getId())) {
+				
+				this.notificationService
+						.saveAndSendNotificationToUsers(getConnectedUser(), entity.getTargetUserProfile(), POST,
+								X_POSTED_ON_YOUR_PROFILE, entity);
+				
+				this.postMailerService.sendEmailToTargetProfileOwner(this.userTransformer.modelToDto(t));
+			}
+		});
 		targetProfile.orElseThrow(() -> new EntityNotFoundException("Target profile not found !!"));
 		
-		//Saved post final
 		final PostEntity savedPost = this.postRepository.save(entity);
-		savedPost.setConnectedUserId(connectedUser.getId());
 		
-		//Send notification
-		if (savedPost.getTargetUserProfile() != null &&
-				!savedPost.getTargetUserProfile().getId().equals(connectedUser.getId())) {
-			
-			this.notificationService
-					.saveAndSendNotificationToUsers(getConnectedUser(), savedPost.getTargetUserProfile(), POST,
-							X_POSTED_ON_YOUR_PROFILE, savedPost);
-			
-			//Tag notification
-			if (savedPost.getContent() != null) {
-				this.notificationService.addTagNotification(savedPost, null);
-			}
-			
+		if (dto.getContent() != null) {
+			this.notificationService.checkForTagNotification(savedPost, null);
 		}
 		
 		savedPost.setConnectedUserId(connectedUser.getId());
@@ -114,34 +122,22 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 	 */
 	@Transactional
 	@Override
-	public boolean updatePost(final EditHistoryEntity postEditRow, final SortedSet<AddressEntity> postEditAddress,
-							  final String postId)
+	public void updatePost(final EditHistoryEntity postEditRow, final SortedSet<AddressEntity> postEditAddress,
+						   final String postId)
 	{
 		if (postEditAddress != null) {
 			
-			try {
-				final List<PostEntity> post = this.postRepository.getByUuidAndDeletedFalse(postId);
-				if (post == null) {
-					throw new IllegalArgumentException("Trying to update non existing post");
-				} else {
-					post.get(0).setAddresses(postEditAddress);
-				}
-				
-				this.postRepository.save(post);
-			} catch (final Exception e) {
-				e.printStackTrace();
-				return false;
+			final List<PostEntity> post = this.postRepository.getByUuidAndDeletedFalse(postId);
+			if (post == null) {
+				throw new IllegalArgumentException("Trying to update non existing post");
+			} else {
+				post.get(0).setAddresses(postEditAddress);
 			}
+			
+			this.postRepository.save(post);
 		} else {
-			try {
-				this.editHistoryRepository.save(postEditRow);
-			} catch (final Exception e) {
-				e.printStackTrace();
-				return false;
-			}
+			this.editHistoryRepository.save(postEditRow);
 		}
-		
-		return true;
 	}
 	
 	/**
@@ -160,7 +156,6 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 		
 		postEntity.get(0).setDeleted(true);
 		this.postRepository.save(postEntity.get(0));
-		
 	}
 	
 	/**
@@ -186,7 +181,6 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 	@Override
 	public SportEntity getSportToUse(final Long id)
 	{
-		
 		return this.sportRepository.getById(id);
 	}
 	
@@ -196,7 +190,6 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 	@Override
 	public SppotiEntity getSppotiById(final Long id)
 	{
-		
 		return this.sppotiRepository.getOne(id);
 	}
 	
@@ -252,7 +245,7 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 		
 		final List<PostEntity> postEntities = this.postRepository.getByUuidAndDeletedFalse(postId);
 		if (postEntities.isEmpty()) {
-			throw new EntityNotFoundException("Post id (" + postId + ") introuvable.");
+			throw new EntityNotFoundException("Post id (" + postId + ") not found.");
 		}
 		
 		final UserEntity userEntity = this.userRepository.findOne(userId);
@@ -316,7 +309,7 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 		post.setVisibility(visibility);
 		
 		this.postRepository.save(post);
-		
+		this.LOGGER.info("Visibility has been edited for the post {} to {}", id, visibility);
 	}
 	
 	/**

@@ -7,6 +7,8 @@ import com.fr.entities.PostEntity;
 import com.fr.entities.SportEntity;
 import com.fr.service.PostBusinessService;
 import com.fr.versionning.ApiVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,40 +26,31 @@ import java.util.SortedSet;
 @ApiVersion("1")
 public class PostUpdateController
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(PostUpdateController.class);
 	
-	/** Post controller service. */
 	private final PostBusinessService postDataService;
 	
-	/**
-	 * Init services.
-	 */
 	@Autowired
 	public PostUpdateController(final PostBusinessService postDataService)
 	{
 		this.postDataService = postDataService;
 	}
 	
-	/**
-	 * Edit post visibility.
-	 */
 	@PutMapping(value = "/{postId}/{visibility}")
 	ResponseEntity<Void> editVisibility(@PathVariable final String id, @PathVariable final int visibility)
 	{
-		
+		this.LOGGER.info("Request sent to update visibility of the post={} to {}", id, visibility);
 		this.postDataService.editPostVisibility(id, visibility);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		
 	}
 	
-	/**
-	 * Update post information.
-	 */
 	@PutMapping(value = "/{postId}")
 	ResponseEntity<ContentEditedResponseDTO> updatePost(@PathVariable("postId") final String postId,
 														@RequestBody final ContentEditedResponseDTO newData)
 	{
-		
+		this.LOGGER.info("Request sent to update post ID={}", postId);
 		final PostEntity postToEdit = this.postDataService.findPost(postId);
 		
 		final List<EditHistoryEntity> lastPostEditList = this.postDataService.getLastModification(postId);
@@ -116,20 +109,16 @@ public class PostUpdateController
 		}
 		
 		// if all arguments are correctly assigned - edit post
-		if (this.postDataService.updatePost(postEditRow, postEditAddress, postId)) {
-			
-			final ContentEditedResponseDTO edit = new ContentEditedResponseDTO();
-			edit.setId(postToEdit.getId());
-			edit.setDateTime(postEditRow.getDatetimeEdited());
-			edit.setText(postEditRow.getText());
-			
-			edit.setLatitude(newData.getLatitude());
-			edit.setLongitude(newData.getLongitude());
-			
-			return new ResponseEntity<>(edit, HttpStatus.ACCEPTED);
-		} else {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
+		this.postDataService.updatePost(postEditRow, postEditAddress, postId);
 		
+		final ContentEditedResponseDTO postResponse = new ContentEditedResponseDTO();
+		postResponse.setId(postToEdit.getId());
+		postResponse.setDateTime(postEditRow.getDatetimeEdited());
+		postResponse.setText(postEditRow.getText());
+		
+		postResponse.setLatitude(newData.getLatitude());
+		postResponse.setLongitude(newData.getLongitude());
+		
+		return new ResponseEntity<>(postResponse, HttpStatus.ACCEPTED);
 	}
 }

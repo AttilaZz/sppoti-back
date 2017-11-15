@@ -39,5 +39,5 @@ public interface NotificationBusinessService extends AbstractBusinessService
 										NotificationTypeEnum notificationTypeEnum, Object... dataToSendInNotification);
 	
 	@Transactional
-	void addTagNotification(PostEntity postEntity, CommentEntity commentEntity);
+	void checkForTagNotification(PostEntity postEntity, CommentEntity commentEntity);
 }

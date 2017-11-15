@@ -397,7 +397,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 	 */
 	@Override
 	@Transactional
-	public void addTagNotification(final PostEntity postEntity, final CommentEntity commentEntity)
+	public void checkForTagNotification(final PostEntity postEntity, final CommentEntity commentEntity)
 	{
 		
 		String content = null;

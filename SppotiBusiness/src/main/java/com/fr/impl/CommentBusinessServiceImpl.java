@@ -2,13 +2,17 @@ package com.fr.impl;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
+import com.fr.entities.UserEntity;
 import com.fr.service.CommentBusinessService;
 import com.fr.service.NotificationBusinessService;
+import com.fr.service.email.CommentMailerService;
 import com.fr.transformers.CommentTransformer;
+import com.fr.transformers.UserTransformer;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +24,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,19 +40,24 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(CommentBusinessServiceImpl.class);
 	
+	private final CommentMailerService commentMailerService;
 	private final CommentTransformer commentTransformer;
 	private final NotificationBusinessService notificationService;
+	private final UserTransformer userTransformer;
 	
-	/** Comment list size. */
 	@Value("${key.commentsPerPage}")
 	private int commentSize;
 	
 	@Autowired
-	CommentBusinessServiceImpl(final CommentTransformer commentTransformer,
-							   final NotificationBusinessService notificationService)
+	CommentBusinessServiceImpl(final CommentMailerService commentMailerService,
+							   final CommentTransformer commentTransformer,
+							   final NotificationBusinessService notificationService,
+							   final UserTransformer userTransformer)
 	{
+		this.commentMailerService = commentMailerService;
 		this.commentTransformer = commentTransformer;
 		this.notificationService = notificationService;
+		this.userTransformer = userTransformer;
 	}
 	
 	/**
@@ -57,8 +67,6 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 	@Override
 	public CommentDTO saveComment(final CommentEntity newCommentEntity, final Long userId, final String postId)
 	{
-		
-		
 		// get post postId to link the like
 		final List<PostEntity> postEntity = this.postRepository.getByUuidAndDeletedFalse(postId);
 		if (!postEntity.isEmpty()) {
@@ -82,10 +90,11 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 							commentEntity.get().getPost().getTargetUserProfile(), COMMENT,
 							NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getPost(),
 							commentEntity.get());
-					
+					this.commentMailerService.sendEmailToPostContributors(buildContributorsList(postEntity.get(0)));
 				}
 				
-				this.notificationService.addTagNotification(null, commentEntity.get());
+				
+				this.notificationService.checkForTagNotification(null, commentEntity.get());
 				
 			}
 			
@@ -93,6 +102,16 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 		}
 		
 		return null;
+	}
+	
+	private List<UserDTO> buildContributorsList(final PostEntity postEntity) {
+		final List<UserEntity> contributorsList = new ArrayList<>();
+		contributorsList.add(postEntity.getUser());
+		postEntity.getCommentEntities().forEach(c -> {
+			contributorsList.add(c.getUser());
+		});
+		
+		return this.userTransformer.modelToDto(contributorsList);
 	}
 	
 	/**

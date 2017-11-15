@@ -29,9 +29,6 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 	private final CommentTransformer commentTransformer;
 	private final UserTransformer userTransformer;
 	
-	/**
-	 * Init transformer.
-	 */
 	@Autowired
 	public PostTransformerImpl(final EditHistoryRepository editHistoryRepository,
 							   final CommentTransformer commentTransformer, final UserTransformer userTransformer)
@@ -71,15 +68,12 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		
 		post.setMyPost(connectedUser.equals(model.getUser().getId()));
 		
-		/*
-		 * Check if content has been modified or not
-		 */
-		final List<EditHistoryEntity> editHistory = this.editHistoryRepository
+		final List<EditHistoryEntity> postEditHistory = this.editHistoryRepository
 				.getByPostUuidOrderByDatetimeEditedDesc(model.getUuid());
 		
-		if (!editHistory.isEmpty()) {
+		if (!postEditHistory.isEmpty()) {
 			post.setEdited(true);
-			final EditHistoryEntity ec = editHistory.get(0);
+			final EditHistoryEntity ec = postEditHistory.get(0);
 			post.setDatetimeCreated(SppotiUtils.dateWithTimeZone(ec.getDatetimeEdited(), model.getTimeZone()));
 			if (ec.getText() != null) {
 				post.setContent(ec.getText());

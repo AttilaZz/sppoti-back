@@ -5,6 +5,8 @@ import com.fr.commons.dto.post.PostRequestDTO;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.PostBusinessService;
 import com.fr.versionning.ApiVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,45 +27,25 @@ import java.util.Set;
 @ApiVersion("1")
 class PostAddController
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(PostAddController.class);
 	
-	/** Post controller service. */
 	private PostBusinessService postDataService;
 	
-	/** Init post service. */
 	@Autowired
 	void setPostDataService(final PostBusinessService postDataService)
 	{
 		this.postDataService = postDataService;
 	}
 	
-	/**
-	 * @param postDto
-	 * 		post data to save.
-	 *
-	 * @return Add post by user.
-	 */
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@PostMapping
 	ResponseEntity<PostDTO> addPost(@RequestBody final PostRequestDTO postDto)
 	{
-		//		final SppotiEntity game;
-		//		final Long gameId;
+		this.LOGGER.info("Request sent to add post: {}", postDto);
 		
-		// SportEntity is required
 		if (postDto.getSportId() == null) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-		
-		// if post is about a game
-		//		if (postDto.getGameId() != null) {
-		//
-		//			gameId = postDto.getGameId();
-		//			game = this.postDataService.getSppotiById(gameId);
-		//
-		//			if (game == null) {
-		//				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		//			}
-		//		}
 		
 		if (postDto.getContent() == null ||
 				(postDto.getContent() == null && postDto.getContent() == null && postDto.getContent() == null)) {

@@ -198,40 +198,42 @@ public class PostDTO extends AbstractCommonDTO
 	}
 	
 	public UserInside getSender() {
-		return this.sender != null ? this.sender : new UserInside();
+		return this.sender;
 	}
 	
 	public void setSender(final UserDTO user) {
-		final UserInside ui = this.getSender();
-		ui.setFirstName(user.getFirstName());
-		ui.setLastName(user.getLastName());
-		ui.setUsername(user.getUsername());
-		ui.setAvatar(user.getAvatar());
-		ui.setCover(user.getCover());
-		this.sender = ui;
+		this.sender = new UserInside(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(),
+				user.getAvatar(), user.getCover());
 	}
 	
 	public UserInside getTargetUser() {
-		return this.targetUser != null ? this.targetUser : new UserInside();
+		return this.targetUser;
 	}
 	
 	public void setTargetUser(final UserDTO user) {
-		final UserInside ui = this.getTargetUser();
-		ui.setFirstName(user.getFirstName());
-		ui.setLastName(user.getLastName());
-		ui.setUsername(user.getUsername());
-		ui.setAvatar(user.getAvatar());
-		ui.setCover(user.getCover());
-		this.sender = ui;
+		this.targetUser = new UserInside(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(),
+				user.getAvatar(), user.getCover());
 	}
 	
 	class UserInside
 	{
+		private String id;
 		private String firstName;
 		private String lastName;
 		private String username;
 		private String avatar;
 		private String cover;
+		
+		public UserInside(final String id, final String firstName, final String lastName, final String username,
+						  final String avatar, final String cover)
+		{
+			this.id = id;
+			this.firstName = firstName;
+			this.lastName = lastName;
+			this.username = username;
+			this.avatar = avatar;
+			this.cover = cover;
+		}
 		
 		public String getFirstName() {
 			return this.firstName;
@@ -271,6 +273,14 @@ public class PostDTO extends AbstractCommonDTO
 		
 		public void setCover(final String cover) {
 			this.cover = cover;
+		}
+		
+		public String getId() {
+			return this.id;
+		}
+		
+		public void setId(final String id) {
+			this.id = id;
 		}
 	}
 }
