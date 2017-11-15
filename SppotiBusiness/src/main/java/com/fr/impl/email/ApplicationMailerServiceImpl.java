@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamSource;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
@@ -108,8 +109,8 @@ abstract class ApplicationMailerServiceImpl implements ApplicationMailerService
 			}
 			
 			this.sender.send(mail);
-			
-		} catch (final MessagingException e) {
+			LOGGER.info("Email has been sent successfully to user {}", to);
+		} catch (final MessagingException | MailAuthenticationException e) {
 			LOGGER.error(ERROR_SENDING_MAIL, e);
 		} catch (final IOException e) {
 			LOGGER.error(ERROR_OPENING_RESOURCE_FILE, e);

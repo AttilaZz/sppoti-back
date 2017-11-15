@@ -380,14 +380,14 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 			u.setRecoverCodeCreationDate(tokenExpiryDate);
 			u.setRecoverCode(code);
 			this.userRepository.save(u);
-			this.LOGGER.info("Recover password email sent tocommit: " + u.getEmail());
+			this.LOGGER.info("Recover password email sent to {} ", u.getEmail());
 			
-			final Thread thread = new Thread(() -> this.accountMailerService
-					.sendRecoverPasswordEmail(this.userTransformer.modelToDto(u), code, tokenExpiryDate));
-			thread.start();
+			this.accountMailerService
+					.sendRecoverPasswordEmail(this.userTransformer.modelToDto(u), code, tokenExpiryDate);
 		});
 		
-		optional.orElseThrow(() -> new EntityNotFoundException("Email not found"));
+		this.LOGGER.info("Email {} not found in database", userDTO.getEmail());
+		optional.orElseThrow(EntityNotFoundException::new);
 	}
 	
 	/**

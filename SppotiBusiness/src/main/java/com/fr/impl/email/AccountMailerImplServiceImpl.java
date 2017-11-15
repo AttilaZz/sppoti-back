@@ -5,6 +5,8 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.service.email.AccountMailerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,7 @@ import java.util.Date;
 @Component
 public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl implements AccountMailerService
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(AccountMailerImplServiceImpl.class);
 	
 	// Password recover
 	@Value("${spring.app.mail.account.recover.path}")

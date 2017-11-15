@@ -30,7 +30,7 @@ import java.util.Map;
  * @author Eddú Meléndez
  * @since 1.2.0
  */
-@ConfigurationProperties(prefix = "spring.email")
+@ConfigurationProperties(prefix = "spring.mail")
 @Component
 public class MailProperties
 {

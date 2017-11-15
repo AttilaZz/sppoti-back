@@ -41,7 +41,7 @@ class AccountUpdateController
 	@PutMapping
 	ResponseEntity<UserDTO> editUserInfo(@RequestBody final UserDTO user)
 	{
-		this.LOGGER.info("Request sent to edit user account data");
+		this.LOGGER.info("Request sent to edit user account data with this informations {}", user);
 		
 		boolean update = false;
 		
