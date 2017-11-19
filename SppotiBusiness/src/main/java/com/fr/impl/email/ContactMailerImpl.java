@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by djenanewail on 4/8/17.
  */
@@ -50,21 +53,23 @@ public class ContactMailerImpl extends ApplicationMailerServiceImpl implements C
 	 */
 	private void prepareAndSendEmail(final ContactDTO contactDTO, final String subject, final String emailContact)
 	{
-		final MailResourceContent resourceContent = new MailResourceContent();
-		resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
-		resourceContent.setResourceName(logoResourceName);
+		final List<MailResourceContent> resourceContents = new ArrayList<>();
+		final MailResourceContent content = new MailResourceContent();
+		content.setPath(IMAGES_DIRECTORY + logoResourceName);
+		content.setResourceName(logoResourceName);
+		resourceContents.add(content);
 		
 		final Context context = new Context();
 		context.setVariable("name", contactDTO.getName());
 		context.setVariable("email", contactDTO.getEmail());
 		context.setVariable("object", contactDTO.getObject());
 		context.setVariable("body", contactDTO.getMessage());
-		context.setVariable("imageResourceName", resourceContent.getResourceName());
+		context.setVariable("imageResourceName", content.getResourceName());
 		
 		final String text = this.templateEngine.process(PATH_TO_CONTACT_TEMPLATE, context);
 		
 		
-		super.prepareAndSendEmail(emailContact, subject, text, resourceContent);
+		super.prepareAndSendEmail(emailContact, subject, text, resourceContents);
 		
 	}
 }

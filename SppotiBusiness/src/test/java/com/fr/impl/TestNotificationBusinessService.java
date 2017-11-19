@@ -203,8 +203,16 @@ public class TestNotificationBusinessService
 		
 		this.notificationBusinessService
 				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
-						NotificationObjectType.SPPOTI, null, new UserEntity());
+						NotificationObjectType.SPPOTI, new UserEntity());
 		
+	}
+	
+	@Test
+	public void should_workFine_when_buildNotificationEntity_and_NotificationObjectType_is_SPPOTI_and_object_toSend_is_SPPOTI()
+	{
+		this.notificationBusinessService
+				.buildNotificationEntity(TEST_NOTIFICATION_TYPE, new UserEntity(), new UserEntity(),
+						NotificationObjectType.SPPOTI, new SppotiEntity());
 	}
 	
 	/**

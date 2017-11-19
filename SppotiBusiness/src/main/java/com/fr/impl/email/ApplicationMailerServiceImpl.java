@@ -18,6 +18,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Created by wdjenane on 09/02/2017.
@@ -53,7 +54,7 @@ abstract class ApplicationMailerServiceImpl implements ApplicationMailerService
 	private MailProperties mailProperties;
 	
 	/** Front app path. */
-	@Value("${spring.app.originFront}")
+	@Value("${spring.app.redirection.url}")
 	protected String frontRootPath;
 	
 	/** Global email texts - for translation. */
@@ -87,7 +88,7 @@ abstract class ApplicationMailerServiceImpl implements ApplicationMailerService
 	 * 		email content.
 	 */
 	protected void prepareAndSendEmail(final String to, final String subject, final String content,
-									   final MailResourceContent... resourceContent)
+									   final List<MailResourceContent> resourceContent)
 	{
 		
 		final MimeMessage mail = this.sender.createMimeMessage();

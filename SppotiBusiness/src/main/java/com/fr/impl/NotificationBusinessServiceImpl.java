@@ -184,10 +184,9 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		}
 	}
 	
-	public NotificationEntity buildNotificationEntity(final NotificationTypeEnum notificationType,
-													  final UserEntity sender, final UserEntity userTo,
-													  final NotificationObjectType objectType,
-													  final Object... objectToSend)
+	NotificationEntity buildNotificationEntity(final NotificationTypeEnum notificationType, final UserEntity sender,
+											   final UserEntity userTo, final NotificationObjectType objectType,
+											   final Object... objectToSend)
 	{
 		final NotificationEntity notification = new NotificationEntity();
 		notification.setNotificationType(notificationType);
@@ -248,19 +247,19 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				break;
 			case SPPOTI:
 				//Sppoti required
-				if (objectToSend.length < 2) {
+				if (objectToSend.length < 1) {
 					throw new IllegalArgumentException("SPPOTI Object is missing");
 				}
 				
-				if (objectToSend[1] == null) {
+				if (objectToSend[0] == null) {
 					throw new BusinessGlobalException("SPPOTI is missing");
 				}
 				
-				if (!(objectToSend[1] instanceof SppotiEntity)) {
+				if (!(objectToSend[0] instanceof SppotiEntity)) {
 					throw new ClassCastException("SPPOTI-ENTITY is expected");
 				}
 				
-				sppoti = (SppotiEntity) objectToSend[1];
+				sppoti = (SppotiEntity) objectToSend[0];
 				sppoti.setConnectedUserId(connectedUser);
 				notification.setSppoti(sppoti);
 				

@@ -12,6 +12,7 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
+import com.fr.enums.SppotiResponse;
 import com.fr.repositories.SppotiRequestRepository;
 import com.fr.service.NotificationBusinessService;
 import com.fr.service.SppotiBusinessService;
@@ -164,9 +165,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			//exclude sppoti admin from the email.
 			if (!m.getUser().getId().equals(sppoti.getUserSppoti().getId())) {
 				//Email
-				new Thread(() -> this.sppotiMailerService
-						.sendJoinSppotiEmail(sppotiDTO, this.userTransformer.modelToDto(m.getUser()),
-								this.userTransformer.modelToDto(sppoti.getUserSppoti()))).start();
+				this.sppotiMailerService
+						.sendJoinSppotiEmailToSppoters(sppotiDTO, this.userTransformer.modelToDto(m.getUser()),
+								this.userTransformer.modelToDto(sppoti.getUserSppoti()));
 				//Notification
 				this.notificationService
 						.saveAndSendNotificationToUsers(savedSppoti.getUserSppoti(), m.getUser(), SPPOTI,
@@ -353,12 +354,6 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			sm.setStatus(GlobalAppStatusEnum.CONFIRMED);
 			this.sppoterRepository.save(sm);
 			
-			//Send notification to sppoti admin.
-			//			if (updatedSppoter != null) {
-			//				addNotification(NotificationTypeEnum.X_ACCEPTED_THE_SPPOTI_INVITATION, sm.getTeamMember().getUser(),
-			//						sm.getSppoti().getUserSppoti(), null, updatedSppoter.getSppoti(), null, null, null, null);
-			//			}
-			
 			//update team member status.
 			final TeamMemberEntity teamMembers = sm.getTeamMember();
 			teamMembers.setStatus(GlobalAppStatusEnum.CONFIRMED);
@@ -370,7 +365,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 							SppotiUtils.statusToFilter()).getUser();
 			
 			this.notificationService.saveAndSendNotificationToUsers(sm.getTeamMember().getUser(), teamAdmin, SPPOTI,
-					X_ACCEPTED_THE_SPPOTI_INVITATION, teamMembers.getTeam(), sm.getSppoti());
+					X_ACCEPTED_THE_SPPOTI_INVITATION, sm.getSppoti());
+			
+			sendSppotiJoinResponseEmail(sm.getSppoti(), SppotiResponse.ACCEPTED);
 			
 		});
 		
@@ -385,24 +382,29 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	public void refuseSppoti(final String sppotiId, final String userId)
 	{
 		
-		final SppoterEntity sppotiMembers = this.sppoterRepository
+		final SppoterEntity sppoter = this.sppoterRepository
 				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(sppotiId, userId,
 						SppotiUtils.statusToFilter());
 		
-		if (sppotiMembers == null) {
+		if (sppoter == null) {
 			throw new EntityNotFoundException("Sppoter not found");
 		}
 		
-		sppotiMembers.setStatus(GlobalAppStatusEnum.REFUSED);
-		final SppoterEntity updatedSppoter = this.sppoterRepository.save(sppotiMembers);
+		sppoter.setStatus(GlobalAppStatusEnum.REFUSED);
+		final SppoterEntity updatedSppoter = this.sppoterRepository.save(sppoter);
 		
-		//Send notification to sppoti admin.
-		if (updatedSppoter != null) {
-			this.notificationService.saveAndSendNotificationToUsers(sppotiMembers.getTeamMember().getUser(),
-					sppotiMembers.getSppoti().getUserSppoti(), SPPOTI, X_REFUSED_YOUR_SPPOTI_INVITATION,
-					updatedSppoter.getSppoti());
-		}
+		this.notificationService
+				.saveAndSendNotificationToUsers(sppoter.getTeamMember().getUser(), sppoter.getSppoti().getUserSppoti(),
+						SPPOTI, X_REFUSED_YOUR_SPPOTI_INVITATION, updatedSppoter.getSppoti());
 		
+		sendSppotiJoinResponseEmail(sppoter.getSppoti(), SppotiResponse.REJECTED);
+	}
+	
+	private void sendSppotiJoinResponseEmail(final SppotiEntity sppoti, final SppotiResponse response) {
+		final UserDTO emailTo = this.userTransformer.modelToDto(sppoti.getUserSppoti());
+		final UserDTO emailFrom = this.userTransformer.modelToDto(getConnectedUser());
+		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sppoti);
+		this.sppotiMailerService.sendSppotiJoinResponseEmail(sppotiDTO, emailTo, emailFrom, response);
 	}
 	
 	/**
@@ -903,9 +905,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			final TeamMemberEntity savedMember = this.teamMembersRepository.save(teamMembers);
 			
 			//Email sppoter
-			new Thread(() -> this.sppotiMailerService.sendJoinSppotiEmail(this.sppotiTransformer.modelToDto(sppoti),
+			this.sppotiMailerService.sendJoinSppotiEmailToSppoters(this.sppotiTransformer.modelToDto(sppoti),
 					this.userTransformer.modelToDto(userSppoter),
-					this.userTransformer.modelToDto(sppoti.getUserSppoti()))).start();
+					this.userTransformer.modelToDto(sppoti.getUserSppoti()));
 			
 			//Notify new sppoter
 			this.notificationService.saveAndSendNotificationToUsers(sppoti.getUserSppoti(), userSppoter, SPPOTI,
@@ -990,7 +992,14 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			r.setSppoti(entity.get());
 			r.setUser(user);
 			entity.get().getSppotiRequests().add(r);
-			return this.sppotiTransformer.modelToDto(this.sppotiRepository.save(entity.get()));
+			
+			final SppotiDTO dto = this.sppotiTransformer.modelToDto(this.sppotiRepository.save(entity.get()));
+			
+			this.sppotiMailerService.sendJoinSppotiEmailToSppotiAdmin(dto,
+					this.userTransformer.modelToDto(entity.get().getUserSppoti()),
+					this.userTransformer.modelToDto(user));
+			
+			return dto;
 		}
 		
 		throw new EntityNotFoundException(ErrorMessageEnum.SPPOTI_NOT_FOUND.getMessage());

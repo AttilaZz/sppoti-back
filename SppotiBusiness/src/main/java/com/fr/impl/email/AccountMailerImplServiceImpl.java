@@ -14,7 +14,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wdjenane on 19/01/2017.
@@ -127,13 +129,14 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 	private void prepareAndSendEmail(final UserDTO to, final String subject, final String message,
 									 final String buttonText, final String activateLinkTag, final int op)
 	{
-		
+		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent resourceContent = new MailResourceContent();
 		resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
 		resourceContent.setResourceName(logoResourceName);
+		resourceContents.add(resourceContent);
 		
 		final Context context = new Context();
-		context.setVariable("title", to.getFirstName());
+		context.setVariable("firstName", to.getFirstName());
 		context.setVariable("body", message);
 		context.setVariable("buttonLink", activateLinkTag);
 		context.setVariable("textButtonLink", buttonText);
@@ -161,7 +164,7 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 		final String text = this.templateEngine.process(PATH_TO_ACCOUNT_TEMPLATE, context);
 		
 		
-		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContent);
+		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContents);
 		
 	}
 }

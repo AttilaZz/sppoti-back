@@ -3,6 +3,7 @@ package com.fr.impl.email;
 import com.fr.commons.dto.MailResourceContent;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
+import com.fr.enums.SppotiResponse;
 import com.fr.service.UserParamService;
 import com.fr.service.email.SppotiMailerService;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by djenanewail on 3/23/17.
@@ -21,8 +25,6 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 	
 	/** Sppoti email templates */
 	private final static String PATH_TO_JOIN_SPPOTI_TEMPLATE = "sppoti/join_sppoti";
-	private final static String PATH_TO_CREATE_SPPOTI_TEMPLATE = "sppoti/create_sppoti";
-	private final static String PATH_TO_RESPOND_TO_SPPOTI_TEMPLATE = "sppoti/respond_sppoti";
 	
 	@Value("${spring.app.mail.sppoti.add.subject}")
 	private String addSppotiSubject;
@@ -39,8 +41,20 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 	@Value("${spring.app.mail.sppoti.description}")
 	private String sppotiConcept;
 	
-	@Value("${spring.app.mail.sppoti.invited.by.join.sppoti}")
-	private String toJoinSppotiMessage;
+	@Value("${spring.app.mail.sppoti.message.to.sppoter}")
+	private String invitationMessageSentToSppoter;
+	
+	@Value("${spring.app.mail.sppoti.message.to.admin}")
+	private String invitationMessageSentToSppotiAdmin;
+	
+	@Value("${spring.app.mail.sppoti.message.response.join}")
+	private String responseToSppotiInvitationMessage;
+	
+	@Value("${spring.app.mail.accepted}")
+	private String messageSppotiAccepted;
+	
+	@Value("${spring.app.mail.refused}")
+	private String messageSppotiRefused;
 	
 	private final TemplateEngine templateEngine;
 	
@@ -62,63 +76,107 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 	public void sendAddSppotiEmail(final SppotiDTO Sppoti)
 	{
 		if (this.userParamService.canReceiveEmail()) {
-		
+			
 		}
 	}
 	
-	/**
-	 * Send email to the Sppoti members.
-	 *
-	 * @param to
-	 * 		sppoti memeber.
-	 * @param from
-	 * 		sppoti admin.
-	 * @param sppoti
-	 * 		sppoti data.
-	 */
 	@Override
-	public void sendJoinSppotiEmail(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
+	public void sendJoinSppotiEmailToSppoters(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
 		if (this.userParamService.canReceiveEmail()) {
-			final MailResourceContent avatarResourceContent = new MailResourceContent(), coverResourceContent
-					= new MailResourceContent();
-			avatarResourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
-			avatarResourceContent.setResourceName(teamDefaultAvatarResourceName);
 			
-			coverResourceContent.setPath(IMAGES_DIRECTORY + sppotiCoverResourceName);
-			coverResourceContent.setResourceName(sppotiCoverResourceName);
+			final Context context = new Context();
+			context.setVariable("sentToValidationLinkMessage", this.joinMessage);
+			context.setVariable("requestFromSppotiAdmin", true);
+			context.setVariable("toJoinSppotiMessage", this.invitationMessageSentToSppoter);
+			
+			this.invitationMessageSentToSppoter = this.invitationMessageSentToSppoter
+					.replace("%SPPOTI_ADMIN%", from.getUsername());
+			context.setVariable("messageBody", this.invitationMessageSentToSppoter);
+			
 			
 			final String joinSppotiLinkParsed = this.frontRootPath +
 					this.joinSppotiLink.replace("%sppotiId%", sppoti.getId() + "");
-			prepareAndSendEmail(to, from, sppoti, this.joinSppotiSubject, joinSppotiLinkParsed, coverResourceContent,
-					avatarResourceContent);
+			prepareAndSendEmail(context, to, from, sppoti, this.joinSppotiSubject, joinSppotiLinkParsed,
+					PATH_TO_JOIN_SPPOTI_TEMPLATE, buildSppotiMailResources());
 		}
 	}
 	
-	/**
-	 * Send email to confirm Sppoti sppoti.
-	 *
-	 * @param sppoti
-	 * 		sppoti data.
-	 * @param sppoter
-	 * 		sppoti member.
-	 */
 	@Override
-	public void sendConfirmJoinSppotiEmail(final SppotiDTO sppoti, final UserDTO sppoter)
+	public void sendJoinSppotiEmailToSppotiAdmin(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
 		if (this.userParamService.canReceiveEmail()) {
-		
+			
+			final Context context = new Context();
+			context.setVariable("requestFromSppotiAdmin", false);
+			
+			this.invitationMessageSentToSppotiAdmin = this.invitationMessageSentToSppotiAdmin
+					.replace("%SPPOTER%", from.getUsername());
+			context.setVariable("messageBody", this.invitationMessageSentToSppotiAdmin);
+			
+			
+			final String joinSppotiLinkParsed = this.frontRootPath +
+					this.joinSppotiLink.replace("%sppotiId%", sppoti.getId() + "");
+			
+			prepareAndSendEmail(context, to, from, sppoti, this.joinSppotiSubject, joinSppotiLinkParsed,
+					PATH_TO_JOIN_SPPOTI_TEMPLATE, buildSppotiMailResources());
 		}
+	}
+	
+	@Override
+	public void sendSppotiJoinResponseEmail(final SppotiDTO sppoti, final UserDTO to, final UserDTO from,
+											final SppotiResponse sppotiResponse)
+	{
+		if (this.userParamService.canReceiveEmail()) {
+			
+			final Context context = new Context();
+			context.setVariable("requestFromSppotiAdmin", false);
+			this.responseToSppotiInvitationMessage = this.responseToSppotiInvitationMessage
+					.replace("%SPPOTER%", from.getUsername());
+			
+			switch (sppotiResponse) {
+				case ACCEPTED:
+					this.responseToSppotiInvitationMessage = this.responseToSppotiInvitationMessage
+							.replace("%RESPONSE%", this.messageSppotiAccepted);
+					break;
+				case REJECTED:
+					this.responseToSppotiInvitationMessage = this.responseToSppotiInvitationMessage
+							.replace("%RESPONSE%", this.messageSppotiRefused);
+					break;
+				default:
+					break;
+			}
+			
+			context.setVariable("messageBody", this.responseToSppotiInvitationMessage);
+			
+			prepareAndSendEmail(context, to, from, sppoti, this.joinSppotiSubject, null, PATH_TO_JOIN_SPPOTI_TEMPLATE,
+					buildSppotiMailResources());
+		}
+	}
+	
+	private List<MailResourceContent> buildSppotiMailResources() {
+		final List<MailResourceContent> resourceContents = new ArrayList<>();
+		final MailResourceContent avatarResourceContent = new MailResourceContent(), coverResourceContent
+				= new MailResourceContent();
+		avatarResourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
+		avatarResourceContent.setResourceName(teamDefaultAvatarResourceName);
+		
+		coverResourceContent.setPath(IMAGES_DIRECTORY + sppotiCoverResourceName);
+		coverResourceContent.setResourceName(sppotiCoverResourceName);
+		
+		resourceContents.add(avatarResourceContent);
+		resourceContents.add(coverResourceContent);
+		return resourceContents;
 	}
 	
 	/**
 	 * Send email.
 	 */
-	private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final SppotiDTO Sppoti, final String subject,
-									 final String joinSppotiLink, final MailResourceContent... resourceContent)
+	private void prepareAndSendEmail(final Context context, final UserDTO to, final UserDTO from,
+									 final SppotiDTO Sppoti, final String subject, final String joinSppotiLink,
+									 final String templatePath, final List<MailResourceContent> resourceContent)
 	{
 		
-		final Context context = new Context();
 		context.setVariable("title", to.getFirstName());
 		
 		context.setVariable("sentFromName", from.getFirstName() + " " + from.getLastName());
@@ -132,15 +190,12 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 		context.setVariable("sentToEmail", to.getEmail());
 		context.setVariable("sentToUsername", to.getUsername());
 		
-		context.setVariable("coverResourceName", resourceContent[0].getResourceName());
-		context.setVariable("avatarResourceName", resourceContent[1].getResourceName());
+		context.setVariable("avatarResourceName", resourceContent.get(0).getResourceName());
+		context.setVariable("coverResourceName", resourceContent.get(1).getResourceName());
 		
-		context.setVariable("toJoinSppotiMessage", this.toJoinSppotiMessage);
 		context.setVariable("globalInformationAboutSppoti", this.sppotiConcept);
 		
 		context.setVariable("learnMoreMessage", this.learnMoreMessage);
-		context.setVariable("joinMessage", this.joinMessage);
-		context.setVariable("invitedByMessage", this.invitedByMessage);
 		context.setVariable("andPrepositionMessage", this.andPrepositionMessage);
 		context.setVariable("otherPrepositionMessage", this.otherPrepositionMessage);
 		
@@ -151,7 +206,7 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 		context.setVariable("contactUsLink", this.contactUsLink);
 		context.setVariable("sentToText", this.sentToTextMessage);
 		
-		final String text = this.templateEngine.process(PATH_TO_JOIN_SPPOTI_TEMPLATE, context);
+		final String text = this.templateEngine.process(templatePath, context);
 		
 		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContent);
 	}

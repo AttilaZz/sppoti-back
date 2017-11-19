@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,14 +79,19 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 	public void sendJoinTeamEmail(final TeamDTO team, final UserDTO to, final UserDTO from)
 	{
 		if (this.userParamService.canReceiveEmail()) {
-			final MailResourceContent resourceContent = new MailResourceContent();
-			resourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
-			resourceContent.setResourceName(teamDefaultAvatarResourceName);
-			
 			final String joinTeamLinkParsed = this.frontRootPath +
 					this.joinTeamLink.replace("%teamId%", team.getId() + "");
-			prepareAndSendEmail(to, from, team, this.joinTeamSubject, joinTeamLinkParsed, resourceContent);
+			prepareAndSendEmail(to, from, team, this.joinTeamSubject, joinTeamLinkParsed, buildTeamMailResources());
 		}
+	}
+	
+	private List<MailResourceContent> buildTeamMailResources() {
+		final List<MailResourceContent> resourceContents = new ArrayList<>();
+		final MailResourceContent resourceContent = new MailResourceContent();
+		resourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
+		resourceContent.setResourceName(teamDefaultAvatarResourceName);
+		resourceContents.add(resourceContent);
+		return resourceContents;
 	}
 	
 	/**
@@ -109,7 +115,7 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 	 * Send email.
 	 */
 	private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final TeamDTO team, final String subject,
-									 final String joinTeamLink, final MailResourceContent resourceContent)
+									 final String joinTeamLink, final List<MailResourceContent> resourceContent)
 	{
 		
 		final int memberCount = team.getMembers().size();
@@ -135,7 +141,7 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 		context.setVariable("teamMembers", teamMembers);
 		
 		//Team avatar
-		context.setVariable("imageResourceName", resourceContent.getResourceName());
+		context.setVariable("imageResourceName", resourceContent.get(0).getResourceName());
 		
 		context.setVariable("globalInformationAboutTeams", this.sppotiTeamConcept);
 		context.setVariable("learnMoreMessage", this.learnMoreMessage);

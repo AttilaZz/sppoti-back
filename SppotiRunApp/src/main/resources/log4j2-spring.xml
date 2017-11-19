@@ -36,7 +36,7 @@
     </Appenders>
     <Loggers>
         <Root level="TRACE">
-            <!--<AppenderRef ref="console" level="INFO"/>-->
+            <AppenderRef ref="console" level="INFO"/>
             <AppenderRef ref="Error-Appender" level="ERROR"/>
             <AppenderRef ref="App-Appender" level="INFO"/>
         </Root>

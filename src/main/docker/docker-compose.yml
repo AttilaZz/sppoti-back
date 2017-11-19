@@ -2,18 +2,6 @@ version: '3.1'
 
 services:
 
-#  reverseproxy:
-#      image: reverseproxy
-#      build:
-#        context: <path_to_proxy>
-#      container_name: reverseproxy
-#      depends_on:
-#          - nginx
-#      ports:
-#          - 80:80
-#      volumes:
-#          - nginx_data:/var/log/nginx
-
   nginx:
       image: cocoda/sppoti-front
       depends_on:
@@ -32,8 +20,6 @@ services:
 #      volumes:
 #            - db_data:/var/lib/mysql
       environment:
-#        MYSQL_ROOT_PASSWORD: root
-#        MYSQL_PASSWORD: sppoti2017!!
         MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
         MYSQL_PASSWORD_FILE: /run/secrets/db_password
         MYSQL_USER: sppoti
@@ -71,9 +57,3 @@ secrets:
      file: ./secrets/db_password.txt
    db_root_password:
      file: ./secrets/db_root_password.txt
-
-volumes:
-  db_data:
-  redis_data:
-  sppoti_data:
-  nginx_data:

@@ -74,7 +74,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 						//.antMatchers(HttpMethod.GET, "/**").permitAll()
 						.antMatchers("/**/sport/**", "/**/contact/**", "/**/init/token").permitAll()
 						.antMatchers(HttpMethod.POST, "/**/account/create").permitAll()
-						.antMatchers(HttpMethod.PUT,"/**/account/recover", "/validate/password/**").permitAll()
+						.antMatchers(HttpMethod.PUT,"/**/account/recover/**", "/**/account/validate/password/**").permitAll()
 						.antMatchers(HttpMethod.POST, "/**/account/connexion/endpoint").permitAll()
 						.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 						.anyRequest().authenticated()
