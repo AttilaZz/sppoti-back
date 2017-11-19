@@ -1,6 +1,7 @@
 package com.fr.service;
 
 import com.fr.commons.dto.ConnexionHistoryDto;
+import com.fr.commons.dto.FirebaseDTO;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.TypeAccountValidation;
@@ -112,4 +113,12 @@ public interface AccountBusinessService extends AbstractBusinessService
 	 * @return saved details.
 	 */
 	ConnexionHistoryDto saveConnexionHistory(ConnexionHistoryDto historyDto);
+	
+	/**
+	 * Save firebase registration id for a giver user id.
+	 *
+	 * @param user
+	 * 		user registration data.
+	 */
+	void saveFirebaseRegistrationKey(FirebaseDTO user);
 }

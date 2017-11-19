@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.NonUniqueResultException;
+import java.util.Objects;
 
 /**
  * This Class handle all Exceptions.
@@ -49,8 +50,12 @@ public class SppotiExceptionHandler
 	@ExceptionHandler(value = BusinessGlobalException.class)
 	public ResponseEntity globalException(final BusinessGlobalException e)
 	{
-		this.LOGGER.error(e.getMessage());
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		if (Objects.nonNull(e.getObject())) {
+			this.LOGGER.error(e.getMessage(), e.getObject());
+		} else {
+			this.LOGGER.error(e.getMessage());
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
 	}
 	
 	/**

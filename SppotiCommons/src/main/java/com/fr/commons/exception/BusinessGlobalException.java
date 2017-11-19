@@ -5,10 +5,17 @@ package com.fr.commons.exception;
  */
 public class BusinessGlobalException extends RuntimeException
 {
+	private Object object;
 	
 	public BusinessGlobalException()
 	{
 		super();
+	}
+	
+	public BusinessGlobalException(final String message, final Object object)
+	{
+		super(message);
+		this.object = object;
 	}
 	
 	public BusinessGlobalException(final String message)
@@ -20,5 +27,9 @@ public class BusinessGlobalException extends RuntimeException
 									  final boolean writableStackTrace)
 	{
 		super(message, cause, enableSuppression, writableStackTrace);
+	}
+	
+	public Object getObject() {
+		return this.object;
 	}
 }

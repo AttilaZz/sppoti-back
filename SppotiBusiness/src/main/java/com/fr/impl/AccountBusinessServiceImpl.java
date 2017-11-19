@@ -1,9 +1,6 @@
 package com.fr.impl;
 
-import com.fr.commons.dto.ConnexionHistoryDto;
-import com.fr.commons.dto.SignUpDTO;
-import com.fr.commons.dto.SportDTO;
-import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.*;
 import com.fr.commons.enumeration.ErrorMessageEnum;
 import com.fr.commons.enumeration.LanguageEnum;
 import com.fr.commons.enumeration.TypeAccountValidation;
@@ -13,6 +10,7 @@ import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.enums.CoverType;
 import com.fr.repositories.ConnexionHistoryRepository;
+import com.fr.repositories.FirebaseRegistrationRepository;
 import com.fr.service.AccountBusinessService;
 import com.fr.service.email.AccountMailerService;
 import com.fr.transformers.ConnexionHistoryTransformer;
@@ -43,16 +41,12 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 	private final Logger LOGGER = LoggerFactory.getLogger(AccountBusinessServiceImpl.class);
 	
 	private final PasswordEncoder passwordEncoder;
-	
 	private final AccountMailerService accountMailerService;
-	
 	private final UserTransformer userTransformer;
-	
 	private final SportTransformer sportTransformer;
-	
 	private final ConnexionHistoryRepository connexionHistoryRepository;
-	
 	private final ConnexionHistoryTransformer connexionHistoryTransformer;
+	private final FirebaseRegistrationRepository firebaseRegistrationRepository;
 	
 	@Value("${spring.app.account.recover.expiry.date}")
 	private int daysBeforeExpiration;
@@ -62,7 +56,8 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 									  final PasswordEncoder passwordEncoder, final UserTransformerImpl userTransformer,
 									  final SportTransformer sportTransformer,
 									  final ConnexionHistoryRepository connexionHistoryRepository,
-									  final ConnexionHistoryTransformer connexionHistoryTransformer)
+									  final ConnexionHistoryTransformer connexionHistoryTransformer,
+									  final FirebaseRegistrationRepository firebaseRegistrationRepository)
 	{
 		this.accountMailerService = accountMailerService;
 		this.passwordEncoder = passwordEncoder;
@@ -70,6 +65,7 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 		this.sportTransformer = sportTransformer;
 		this.connexionHistoryRepository = connexionHistoryRepository;
 		this.connexionHistoryTransformer = connexionHistoryTransformer;
+		this.firebaseRegistrationRepository = firebaseRegistrationRepository;
 	}
 	
 	/**
@@ -519,5 +515,22 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 		return this.connexionHistoryTransformer.modelToDto(
 				this.connexionHistoryRepository.save(this.connexionHistoryTransformer.dtoToModel(historyDto)));
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void saveFirebaseRegistrationKey(final FirebaseDTO user) {
+		final FirebaseRegistrationEntity entity = new FirebaseRegistrationEntity();
+		entity.setKey(user.getRegistrationId());
+		final Optional<UserEntity> userOptional = this.userRepository
+				.getByUuidAndDeletedFalseAndConfirmedTrue(user.getUserId());
+		userOptional.ifPresent(u -> {
+			entity.setUser(u);
+			this.firebaseRegistrationRepository.save(entity);
+		});
+		userOptional.orElseThrow(
+				() -> new BusinessGlobalException("User id in firebase request not found in DB, {}", user.getUserId()));
 	}
 }

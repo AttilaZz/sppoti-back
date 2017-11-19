@@ -146,6 +146,9 @@ public class UserEntity extends AbstractCommonEntity
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private AccountParamEntity paramEntity;
 	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<FirebaseRegistrationEntity> firebaseRegistrationKeys;
+	
 	private transient Long connectedUserId;
 	
 	public AccountParamEntity getParamEntity() {
@@ -506,5 +509,13 @@ public class UserEntity extends AbstractCommonEntity
 	
 	public void setTwitterId(final String twitterId) {
 		this.twitterId = twitterId;
+	}
+	
+	public List<FirebaseRegistrationEntity> getFirebaseRegistrationKeys() {
+		return this.firebaseRegistrationKeys;
+	}
+	
+	public void setFirebaseRegistrationKeys(final List<FirebaseRegistrationEntity> firebaseRegistrationKeys) {
+		this.firebaseRegistrationKeys = firebaseRegistrationKeys;
 	}
 }

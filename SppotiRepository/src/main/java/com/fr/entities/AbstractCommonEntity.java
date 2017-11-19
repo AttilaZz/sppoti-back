@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
 
 @MappedSuperclass
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class AbstractCommonEntity
+public class AbstractCommonEntity implements Serializable
 {
 	
 	private static final long serialVersionUID = -6893399491928930624L;
@@ -25,20 +26,20 @@ public class AbstractCommonEntity
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", nullable = false, unique = true)
 	private Long id;
-
+	
 	/**
 	 * versionning.
 	 */
 	@Version
 	@Column(name = "version", nullable = false)
 	private Integer version = -1;
-
+	
 	/**
 	 * fonctionnal id.
 	 */
 	@Column(nullable = false, unique = true, updatable = false)
-	private String uuid = UUID.randomUUID().toString() + "-" +  UUID.randomUUID().toString();
-
+	private String uuid = UUID.randomUUID().toString() + "-" + UUID.randomUUID().toString();
+	
 	/**
 	 * {@inheritDoc}.
 	 */
@@ -59,9 +60,9 @@ public class AbstractCommonEntity
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-
+		
 		final AbstractCommonEntity that = (AbstractCommonEntity) o;
-
+		
 		return Objects.equals(this.uuid, that.uuid) && this.id.equals(that.id) && this.version.equals(that.version);
 	}
 	
@@ -92,12 +93,12 @@ public class AbstractCommonEntity
 	public void setVersion(final Integer version) {
 		this.version = version;
 	}
-
+	
 	public String getUuid() {
-		return uuid;
+		return this.uuid;
 	}
-
-	public void setUuid(String uuid) {
+	
+	public void setUuid(final String uuid) {
 		this.uuid = uuid;
 	}
 }

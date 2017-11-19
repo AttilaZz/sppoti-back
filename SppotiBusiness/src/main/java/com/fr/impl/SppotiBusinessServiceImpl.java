@@ -413,15 +413,12 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	@Override
 	public List<SppotiDTO> getAllUserSppoties(final String id, final int page)
 	{
-		
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "datetimeCreated");
-		
 		final List<SppotiEntity> sppoties = this.sppotiRepository.findByUserSppotiUuidAndDeletedFalse(id, pageable);
 		
 		return sppoties.stream()
 				//.filter(s -> !s.getTeamAdverseStatusEnum().equals(GlobalAppStatusEnum.REFUSED))
 				.map(this::getSppotiResponse).collect(Collectors.toList());
-		
 	}
 	
 	/**

@@ -1,6 +1,7 @@
 package com.fr.api.account;
 
 import com.fr.commons.dto.ConnexionHistoryDto;
+import com.fr.commons.dto.FirebaseDTO;
 import com.fr.commons.dto.SignUpDTO;
 import com.fr.commons.enumeration.ErrorMessageEnum;
 import com.fr.commons.exception.BusinessGlobalException;
@@ -23,9 +24,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/account")
 @ApiVersion("1")
-class AccountAddController
+class AccountPostController
 {
-	private final Logger LOGGER = LoggerFactory.getLogger(AccountAddController.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(AccountPostController.class);
 	
 	/** Account service. */
 	private AccountBusinessService accountService;
@@ -37,12 +38,6 @@ class AccountAddController
 		this.accountService = accountService;
 	}
 	
-	/**
-	 * @param user
-	 * 		user to add.
-	 *
-	 * @return http status 201 if created, ...
-	 */
 	@PostMapping(value = "/create")
 	@ResponseBody
 	ResponseEntity createUser(@RequestBody @Valid final SignUpDTO user)
@@ -59,14 +54,6 @@ class AccountAddController
 		
 	}
 	
-	/**
-	 * Save user connexion details.
-	 *
-	 * @param historyDto
-	 * 		details to save.
-	 *
-	 * @return 201 if data has been saved correctly.
-	 */
 	@PostMapping(value = "/connexion/endpoint")
 	@ResponseBody
 	ResponseEntity addConnexionHistory(@RequestBody final ConnexionHistoryDto historyDto)
@@ -75,8 +62,25 @@ class AccountAddController
 		
 		this.accountService.saveConnexionHistory(historyDto);
 		
-		return ResponseEntity.status(HttpStatus.OK).build();
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 		
 	}
+	
+	@PostMapping(value = "/firebase/register")
+	@ResponseBody
+	ResponseEntity addConnexionHistory(@RequestBody final FirebaseDTO user)
+	{
+		this.LOGGER.info("Request sent to save firebase registration key");
+		
+		if (!StringUtils.hasText(user.getRegistrationId()) || !StringUtils.hasText(user.getUserId())) {
+			throw new BusinessGlobalException("Request are incorrect or elements are missing, received data {}", user);
+		}
+		
+		this.accountService.saveFirebaseRegistrationKey(user);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+		
+	}
+	
 	
 }
