@@ -2,6 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.FirebaseDTO;
 import com.fr.commons.exception.BusinessGlobalException;
+import com.fr.entities.FirebaseRegistrationEntity;
 import com.fr.entities.UserEntity;
 import com.fr.repositories.FirebaseRegistrationRepository;
 import com.fr.repositories.UserRepository;
@@ -10,11 +11,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 /**
@@ -56,8 +59,8 @@ public class TestAccountBusinessService
 		
 		this.accountBusinessService.saveFirebaseRegistrationKey(buildFirebaseDTO());
 		
-		//		Mockito.verify(this.firebaseRegistrationRepository, times(1))
-		//				.save(Mockito.any(FirebaseRegistrationEntity.class));
+		Mockito.verify(this.firebaseRegistrationRepository, times(1))
+				.save(Mockito.any(FirebaseRegistrationEntity.class));
 	}
 	
 	private FirebaseDTO buildFirebaseDTO() {

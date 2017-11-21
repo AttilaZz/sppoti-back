@@ -10,8 +10,11 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.entities.*;
 import com.fr.impl.notification.AndroidPushNotificationsService;
+import com.fr.repositories.FirebaseRegistrationRepository;
+import com.fr.repositories.UserRepository;
 import com.fr.service.NotificationBusinessService;
 import com.fr.transformers.NotificationTransformer;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -44,20 +48,19 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 {
 	private final Logger LOGGER = LoggerFactory.getLogger(NotificationBusinessServiceImpl.class);
 	
-	/** Notification list size. */
 	@Value("${key.notificationsPerPage}")
 	private int notificationSize;
 	
-	/** Notification transformer. */
 	@Autowired
 	private NotificationTransformer notificationTransformer;
-	
-	/** Socket messaging temples. */
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
-	
 	@Autowired
 	private AndroidPushNotificationsService androidPushNotificationsService;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private FirebaseRegistrationRepository firebaseRegistrationRepository;
 	
 	private final String TOPIC = "notify";
 	
@@ -155,33 +158,53 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		this.messagingTemplate.convertAndSendToUser(email, "/queue/" + this.TOPIC, notificationDTO);
 		
 		if (!"dev".equals(this.originServerBack)) {
-			//Notify mobiles with fire-base
-			final JSONObject body = new JSONObject();
-			final JSONObject data = new JSONObject();
-			try {
-				body.put("to", "/topics/" + this.TOPIC);
-				body.put("priority", "high");
-				
-				data.put("notification", notificationDTO);
-				body.put("data", data);
-				
-			} catch (final JSONException e) {
-				this.LOGGER.error(ErrorMessageEnum.SERIALIZE_FIREBASE_NOTIF_MESSAGE_FAILURE.getMessage(), e);
-			}
+			final UserEntity userToReceiveNotification = this.userRepository
+					.getByEmailAndDeletedFalseAndConfirmedTrue(email);
+			final List<FirebaseRegistrationEntity> firebaseRegistrationEntities = userToReceiveNotification
+					.getFirebaseRegistrationKeys();
+			this.LOGGER.info("Sending firebase notification to {}, having the following registration ids {}", email,
+					userToReceiveNotification);
 			
-			final HttpEntity<String> request = new HttpEntity<>(body.toString());
+			final JSONObject data = buildJsonToSendViaFirebase(firebaseRegistrationEntities, notificationDTO, email);
+			
+			final HttpEntity<String> request = new HttpEntity<>(data.toString());
 			final CompletableFuture<String> pushNotification = this.androidPushNotificationsService.send(request);
 			CompletableFuture.allOf(pushNotification).join();
 			
 			try {
-				final String firebaseResponse = pushNotification.get();
-				this.LOGGER.info("Notification {} has been fired successfully, under reference {}", body,
-						firebaseResponse);
-				
+				final String notificationKey = pushNotification.get();
+				this.LOGGER.info("Notification {} has been fired successfully, under notification_key {}", data,
+						notificationKey);
+				updateFirebaseRegistration(email, notificationKey);
 			} catch (final InterruptedException | ExecutionException e) {
-				this.LOGGER.error("Failed to send notif to firebase", e);
+				this.LOGGER.error("Failed to send notification to firebase", e);
 			}
 		}
+	}
+	
+	private JSONObject buildJsonToSendViaFirebase(final List<FirebaseRegistrationEntity> entityList,
+												  final NotificationDTO dto, final String email)
+	{
+		final JSONObject data = new JSONObject();
+		try {
+			data.put("operation", "add");
+			data.put("notification_key_name", email);
+			data.put("registration_ids", new JSONArray(Collections.singletonList(entityList)));
+			data.put("notification", dto);
+		} catch (final JSONException e) {
+			this.LOGGER.error(ErrorMessageEnum.SERIALIZE_FIREBASE_NOTIF_MESSAGE_FAILURE.getMessage(), e);
+		}
+		return data;
+	}
+	
+	@Transactional
+	private void updateFirebaseRegistration(final String email, final String notificationKey) {
+		final Optional<FirebaseRegistrationEntity> entityToUpdate = this.firebaseRegistrationRepository
+				.findByNotificationKeyName(email);
+		entityToUpdate.ifPresent(f -> {
+			f.setNotificationKey(notificationKey);
+			this.firebaseRegistrationRepository.save(f);
+		});
 	}
 	
 	NotificationEntity buildNotificationEntity(final NotificationTypeEnum notificationType, final UserEntity sender,

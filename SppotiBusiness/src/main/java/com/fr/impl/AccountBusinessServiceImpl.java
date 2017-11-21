@@ -16,7 +16,6 @@ import com.fr.service.email.AccountMailerService;
 import com.fr.transformers.ConnexionHistoryTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.SportTransformer;
-import com.fr.transformers.impl.UserTransformerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,33 +39,23 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(AccountBusinessServiceImpl.class);
 	
-	private final PasswordEncoder passwordEncoder;
-	private final AccountMailerService accountMailerService;
-	private final UserTransformer userTransformer;
-	private final SportTransformer sportTransformer;
-	private final ConnexionHistoryRepository connexionHistoryRepository;
-	private final ConnexionHistoryTransformer connexionHistoryTransformer;
-	private final FirebaseRegistrationRepository firebaseRegistrationRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private AccountMailerService accountMailerService;
+	@Autowired
+	private UserTransformer userTransformer;
+	@Autowired
+	private SportTransformer sportTransformer;
+	@Autowired
+	private ConnexionHistoryRepository connexionHistoryRepository;
+	@Autowired
+	private ConnexionHistoryTransformer connexionHistoryTransformer;
+	@Autowired
+	private FirebaseRegistrationRepository firebaseRegistrationRepository;
 	
 	@Value("${spring.app.account.recover.expiry.date}")
 	private int daysBeforeExpiration;
-	
-	@Autowired
-	public AccountBusinessServiceImpl(final AccountMailerService accountMailerService,
-									  final PasswordEncoder passwordEncoder, final UserTransformerImpl userTransformer,
-									  final SportTransformer sportTransformer,
-									  final ConnexionHistoryRepository connexionHistoryRepository,
-									  final ConnexionHistoryTransformer connexionHistoryTransformer,
-									  final FirebaseRegistrationRepository firebaseRegistrationRepository)
-	{
-		this.accountMailerService = accountMailerService;
-		this.passwordEncoder = passwordEncoder;
-		this.userTransformer = userTransformer;
-		this.sportTransformer = sportTransformer;
-		this.connexionHistoryRepository = connexionHistoryRepository;
-		this.connexionHistoryTransformer = connexionHistoryTransformer;
-		this.firebaseRegistrationRepository = firebaseRegistrationRepository;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -521,6 +510,7 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional
 	public void saveFirebaseRegistrationKey(final FirebaseDTO user) {
 		final FirebaseRegistrationEntity entity = new FirebaseRegistrationEntity();
 		entity.setKey(user.getRegistrationId());
@@ -528,6 +518,7 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 				.getByUuidAndDeletedFalseAndConfirmedTrue(user.getUserId());
 		userOptional.ifPresent(u -> {
 			entity.setUser(u);
+			entity.setNotificationKeyName(u.getEmail());
 			this.firebaseRegistrationRepository.save(entity);
 		});
 		userOptional.orElseThrow(

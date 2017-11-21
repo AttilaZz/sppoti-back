@@ -12,6 +12,12 @@ public class FirebaseRegistrationEntity extends AbstractCommonEntity
 	@Column(name = "REGISTRATION_KEY", nullable = false, unique = true)
 	private String key;
 	
+	@Column(name = "NOTIFICATION_KEY")
+	private String notificationKey;
+	
+	@Column(name = "NOTIFICATION_KEY_NAME")
+	private String notificationKeyName;
+	
 	@ManyToOne
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private UserEntity user;
@@ -30,5 +36,21 @@ public class FirebaseRegistrationEntity extends AbstractCommonEntity
 	
 	public void setUser(final UserEntity user) {
 		this.user = user;
+	}
+	
+	public String getNotificationKey() {
+		return this.notificationKey;
+	}
+	
+	public void setNotificationKey(final String notificationKey) {
+		this.notificationKey = notificationKey;
+	}
+	
+	public String getNotificationKeyName() {
+		return this.notificationKeyName;
+	}
+	
+	public void setNotificationKeyName(final String notificationKeyName) {
+		this.notificationKeyName = notificationKeyName;
 	}
 }
