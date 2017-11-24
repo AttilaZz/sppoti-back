@@ -75,7 +75,8 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 		final RoleEntity profile = this.roleRepository.getByName(UserRoleTypeEnum.USER);
 		
 		if (profile == null) {
-			throw new EntityNotFoundException("Profile <" + UserRoleTypeEnum.USER.name() + "> not found !!");
+			this.LOGGER.info("Profile <{}> not found !!", UserRoleTypeEnum.USER.name());
+			throw new EntityNotFoundException();
 		}
 		
 		final Set<RoleEntity> roles = new HashSet<>();
@@ -83,13 +84,13 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 		newUser.setRoles(roles);
 		
 		if (user.getPassword() != null) {
-			final PasswordHistory p = new PasswordHistory();
-			p.setPassword(newUser.getPassword());
-			p.setUser(newUser);
+			final PasswordHistory p = new PasswordHistory(newUser.getPassword(), newUser);
 			newUser.getPasswordHistories().add(p);
 		}
 		
-		this.userRepository.save(newUser);
+		newUser.setParamEntity(new AccountParamEntity(true, true, newUser));
+		
+		this.userRepository.saveAndFlush(newUser);
 		this.LOGGER.info("Account has been created for user : " + user);
 		
 		//		SendEmailToActivateAccount(newUser, TypeAccountValidation.signup);

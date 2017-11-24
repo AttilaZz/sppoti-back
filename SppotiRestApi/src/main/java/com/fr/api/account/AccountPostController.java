@@ -28,10 +28,8 @@ class AccountPostController
 {
 	private final Logger LOGGER = LoggerFactory.getLogger(AccountPostController.class);
 	
-	/** Account service. */
 	private AccountBusinessService accountService;
 	
-	/** Init account service. */
 	@Autowired
 	void setAccountService(final AccountBusinessService accountService)
 	{

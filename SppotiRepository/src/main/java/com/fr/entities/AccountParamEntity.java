@@ -21,6 +21,21 @@ public class AccountParamEntity extends AbstractCommonEntity
 	@OneToOne(mappedBy = "paramEntity")
 	private UserEntity user;
 	
+	public AccountParamEntity() {
+	}
+	
+	public AccountParamEntity(final boolean canReceiveEmail) {
+		this.canReceiveEmail = canReceiveEmail;
+	}
+	
+	public AccountParamEntity(final boolean canReceiveEmail, final boolean canReceiveNotification,
+							  final UserEntity user)
+	{
+		this.canReceiveEmail = canReceiveEmail;
+		this.canReceiveNotification = canReceiveNotification;
+		this.user = user;
+	}
+	
 	public boolean isCanReceiveEmail() {
 		return this.canReceiveEmail;
 	}

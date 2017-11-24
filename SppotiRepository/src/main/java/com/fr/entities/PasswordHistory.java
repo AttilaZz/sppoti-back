@@ -10,40 +10,49 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "password_history")
-public class PasswordHistory extends AbstractCommonEntity {
-
-    @Column(updatable = false, nullable = false)
-    private String password;
-
-    @Column(updatable = false, nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date datetimeCreated = new Date();
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", updatable = false, nullable = false)
-    private UserEntity user;
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(final String password) {
-        this.password = password;
-    }
-
-    public Date getDatetimeCreated() {
-        return this.datetimeCreated;
-    }
-
-    public void setDatetimeCreated(final Date datetimeCreated) {
-        this.datetimeCreated = datetimeCreated;
-    }
-
-    public UserEntity getUser() {
-        return this.user;
-    }
-
-    public void setUser(final UserEntity user) {
-        this.user = user;
-    }
+public class PasswordHistory extends AbstractCommonEntity
+{
+	
+	@Column(updatable = false, nullable = false)
+	private String password;
+	
+	@Column(updatable = false, nullable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date datetimeCreated = new Date();
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id", updatable = false, nullable = false)
+	private UserEntity user;
+	
+	public PasswordHistory() {
+	}
+	
+	public PasswordHistory(final String password, final UserEntity user) {
+		this.password = password;
+		this.user = user;
+	}
+	
+	public String getPassword() {
+		return this.password;
+	}
+	
+	public void setPassword(final String password) {
+		this.password = password;
+	}
+	
+	public Date getDatetimeCreated() {
+		return this.datetimeCreated;
+	}
+	
+	public void setDatetimeCreated(final Date datetimeCreated) {
+		this.datetimeCreated = datetimeCreated;
+	}
+	
+	public UserEntity getUser() {
+		return this.user;
+	}
+	
+	public void setUser(final UserEntity user) {
+		this.user = user;
+	}
 }
