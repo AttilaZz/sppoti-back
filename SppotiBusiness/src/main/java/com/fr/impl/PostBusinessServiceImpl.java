@@ -82,24 +82,25 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 		//Post in friend profile.
 		final Optional<UserEntity> targetProfile = this.userRepository
 				.getByUuidAndDeletedFalseAndConfirmedTrue(dto.getTargetUserUuid());
+		entity.setConnectedUserId(connectedUser.getId());
+		
+		targetProfile.ifPresent(entity::setTargetUserProfile);
+		
+		targetProfile.ifPresent(entity::setTargetUserProfile);
+		
+		final PostEntity savedPost = this.postRepository.saveAndFlush(entity);
+		
 		targetProfile.ifPresent(t -> {
-			entity.setTargetUserProfile(t);
-			
-			entity.setConnectedUserId(connectedUser.getId());
-			
 			//Send notification
 			if (!t.getId().equals(connectedUser.getId())) {
 				
 				this.notificationService
-						.saveAndSendNotificationToUsers(getConnectedUser(), entity.getTargetUserProfile(), POST,
-								X_POSTED_ON_YOUR_PROFILE, entity);
+						.saveAndSendNotificationToUsers(getConnectedUser(), savedPost.getTargetUserProfile(), POST,
+								X_POSTED_ON_YOUR_PROFILE, savedPost);
 				
 				this.postMailerService.sendEmailToTargetProfileOwner(this.userTransformer.modelToDto(t));
 			}
 		});
-		targetProfile.orElseThrow(() -> new EntityNotFoundException("Target profile not found !!"));
-		
-		final PostEntity savedPost = this.postRepository.save(entity);
 		
 		if (dto.getContent() != null) {
 			this.notificationService.checkForTagNotification(savedPost, null);

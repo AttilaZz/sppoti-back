@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -124,7 +125,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 											   final NotificationTypeEnum notificationTypeEnum,
 											   final Object... dataToSendInNotification)
 	{
-		this.LOGGER.info("Received notification data {}", dataToSendInNotification);
+		this.LOGGER.info("Received notification data {}", Arrays.toString(dataToSendInNotification));
 		
 		if (dataToSendInNotification.length == 0 && notifObjectType != NotificationObjectType.FRIENDSHIP) {
 			throw new BusinessGlobalException("At least one object must be added to send a notification");
@@ -152,7 +153,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		
 		sendNotificationToSubscribedUsers(userTo.getEmail(), notificationDTO);
 		
-		this.notificationRepository.save(notification);
+		this.notificationRepository.saveAndFlush(notification);
 	}
 	
 	private void sendNotificationToSubscribedUsers(final String email, final NotificationDTO notificationDTO) {

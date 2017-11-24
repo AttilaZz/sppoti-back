@@ -70,7 +70,7 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "post")
 	private List<EditHistoryEntity> editList = new ArrayList<>();
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "target_user")
 	private UserEntity targetUserProfile;
 	

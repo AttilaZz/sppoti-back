@@ -36,15 +36,15 @@ public class NotificationEntity extends AbstractCommonEntity
 	@Enumerated(EnumType.STRING)
 	private NotificationStatus status = NotificationStatus.UNREAD;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "team_id")
 	private TeamEntity team;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "sppoti_id")
 	private SppotiEntity sppoti;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "post_id")
 	private PostEntity post;
 	
