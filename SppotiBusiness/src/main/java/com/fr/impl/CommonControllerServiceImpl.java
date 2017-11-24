@@ -17,7 +17,6 @@ import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -83,9 +82,6 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 	
 	@Autowired
 	private TeamTransformer teamTransformer;
-	
-	@Value("${spring.app.back.origin}")
-	protected String originServerBack;
 	
 	/**
 	 * {@inheritDoc}

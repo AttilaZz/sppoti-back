@@ -520,6 +520,7 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 			entity.setUser(u);
 			entity.setNotificationKeyName(u.getEmail());
 			this.firebaseRegistrationRepository.save(entity);
+			this.LOGGER.info("Firebase registration has been saved {}", entity);
 		});
 		userOptional.orElseThrow(
 				() -> new BusinessGlobalException("User id in firebase request not found in DB, {}", user.getUserId()));
