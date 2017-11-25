@@ -514,12 +514,11 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 	@Transactional
 	public void saveFirebaseRegistrationKey(final FirebaseDTO user) {
 		final FirebaseRegistrationEntity entity = new FirebaseRegistrationEntity();
-		entity.setKey(user.getRegistrationId());
+		entity.setRegistrationKey(user.getRegistrationId());
 		final Optional<UserEntity> userOptional = this.userRepository
 				.getByUuidAndDeletedFalseAndConfirmedTrue(user.getUserId());
 		userOptional.ifPresent(u -> {
 			entity.setUser(u);
-			entity.setNotificationKeyName(u.getEmail());
 			this.firebaseRegistrationRepository.save(entity);
 			this.LOGGER.info("Firebase registration has been saved {}", entity);
 		});

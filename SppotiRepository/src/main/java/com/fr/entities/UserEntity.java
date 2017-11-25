@@ -139,14 +139,14 @@ public class UserEntity extends AbstractCommonEntity
 	@JsonIgnore
 	private Set<SportEntity> relatedSports;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "users")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
 	@OrderBy("dateTime DESC")
 	private SortedSet<AddressEntity> addresses;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private AccountParamEntity paramEntity;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
 	private List<FirebaseRegistrationEntity> firebaseRegistrationKeys;
 	
 	private transient Long connectedUserId;

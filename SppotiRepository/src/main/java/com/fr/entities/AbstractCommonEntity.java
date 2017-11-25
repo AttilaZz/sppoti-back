@@ -78,6 +78,7 @@ public class AbstractCommonEntity implements Serializable
 		return result;
 	}
 	
+	
 	public Long getId() {
 		return this.id;
 	}

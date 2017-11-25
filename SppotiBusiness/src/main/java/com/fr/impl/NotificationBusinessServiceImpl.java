@@ -2,6 +2,7 @@ package com.fr.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fr.commons.dto.FirebaseNotificationDTO;
 import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.dto.notification.NotificationListDTO;
 import com.fr.commons.enumeration.notification.NotificationObjectType;
@@ -30,10 +31,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -64,8 +62,6 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 	private UserRepository userRepository;
 	@Autowired
 	private FirebaseRegistrationRepository firebaseRegistrationRepository;
-	
-	private final String TOPIC = "notify";
 	
 	/**
 	 * {@inheritDoc}
@@ -121,13 +117,13 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 	@Override
 	@Transactional
 	public void saveAndSendNotificationToUsers(final UserEntity sender, final UserEntity userTo,
-											   final NotificationObjectType notifObjectType,
+											   final NotificationObjectType notificationObjectType,
 											   final NotificationTypeEnum notificationTypeEnum,
 											   final Object... dataToSendInNotification)
 	{
 		this.LOGGER.info("Received notification data {}", Arrays.toString(dataToSendInNotification));
 		
-		if (dataToSendInNotification.length == 0 && notifObjectType != NotificationObjectType.FRIENDSHIP) {
+		if (dataToSendInNotification.length == 0 && notificationObjectType != NotificationObjectType.FRIENDSHIP) {
 			throw new BusinessGlobalException("At least one object must be added to send a notification");
 		}
 		
@@ -138,7 +134,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		if (userTo == null) {
 			throw new BusinessGlobalException("Notification receivers must be added to notification ");
 		}
-		if (notifObjectType == null) {
+		if (notificationObjectType == null) {
 			throw new BusinessGlobalException("Notification context must be specified, ex: SPPOTI, TEAM, ect..");
 		}
 		if (notificationTypeEnum == null) {
@@ -146,17 +142,17 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		}
 		
 		final NotificationEntity notification = buildNotificationEntity(notificationTypeEnum, sender, userTo,
-				notifObjectType, dataToSendInNotification);
+				notificationObjectType, dataToSendInNotification);
 		
 		notification.setConnectedUserId(getConnectedUserId());
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
-		
 		sendNotificationToSubscribedUsers(userTo.getEmail(), notificationDTO);
 		
 		this.notificationRepository.saveAndFlush(notification);
 	}
 	
-	private void sendNotificationToSubscribedUsers(final String email, final NotificationDTO notificationDTO) {
+	private void sendNotificationToSubscribedUsers(final String email, final NotificationDTO notificationDTO)
+	{
 		
 		if (this.isFirebaseActivated) {
 			final UserEntity userToReceiveNotification = this.userRepository
@@ -167,7 +163,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 					userToReceiveNotification.toString());
 			
 			firebaseRegistrationEntities.forEach(r -> {
-				final JSONObject data = buildJsonToSendViaFirebase(r, notificationDTO, email);
+				final JSONObject data = buildJsonToSendViaFirebase(r.getRegistrationKey(), notificationDTO);
 				
 				final HttpEntity<String> request = new HttpEntity<>(data.toString());
 				final CompletableFuture<String> pushNotification = this.androidPushNotificationsService.send(request);
@@ -185,17 +181,15 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		}
 	}
 	
-	private JSONObject buildJsonToSendViaFirebase(final FirebaseRegistrationEntity tokenID, final NotificationDTO dto,
-												  final String email)
+	private JSONObject buildJsonToSendViaFirebase(final String tokenID, final NotificationDTO dto)
 	{
 		final ObjectMapper mapper = new ObjectMapper();
+		
 		final JSONObject data = new JSONObject();
 		try {
 			final JSONObject body = new JSONObject();
 			body.put("to", tokenID);
-			//			data.put("operation", FirebaseNotifType.CREATE.getValue());
-			//			data.put("notification_key_name", email);
-			//			data.put("registration_ids", new JSONArray(Collections.singletonList(entityList)));
+			body.put("notification", mapper.writeValueAsString(new FirebaseNotificationDTO(dto)));
 			body.put("data", mapper.writeValueAsString(dto));
 			return data;
 		} catch (final JSONException | JsonProcessingException e) {
@@ -205,12 +199,12 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 	
 	@Transactional
 	private void updateFirebaseRegistration(final String email, final String notificationKey) {
-		final Optional<FirebaseRegistrationEntity> entityToUpdate = this.firebaseRegistrationRepository
-				.findByNotificationKeyName(email);
-		entityToUpdate.ifPresent(f -> {
-			f.setNotificationKey(notificationKey);
-			this.firebaseRegistrationRepository.save(f);
-		});
+		final FirebaseRegistrationEntity entityToUpdate = this.firebaseRegistrationRepository
+				.findByRegistrationKey(email);
+		if (Objects.nonNull(entityToUpdate)) {
+			entityToUpdate.setRegistrationKey(notificationKey);
+			this.firebaseRegistrationRepository.save(entityToUpdate);
+		}
 	}
 	
 	NotificationEntity buildNotificationEntity(final NotificationTypeEnum notificationType, final UserEntity sender,
