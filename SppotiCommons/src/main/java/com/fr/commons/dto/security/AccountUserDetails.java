@@ -15,13 +15,10 @@ import java.util.Collection;
  */
 public class AccountUserDetails implements MyUserDetails
 {
-	/** Class logger. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(AccountUserDetails.class);
 	
-	/** account entity. */
 	private final UserDTO account;
 	
-	/** Init class. */
 	public AccountUserDetails(final UserDTO account)
 	{
 		this.account = account;
@@ -40,7 +37,7 @@ public class AccountUserDetails implements MyUserDetails
 			authorities.add(new SimpleGrantedAuthority("ROLE_" + userRole.getName()));
 		}
 		
-		LOGGER.info("logged user <" + this.account.getEmail() + "> with authorities : {}", authorities.toString());
+		LOGGER.info("logged user <{}> with authorities : {}", this.account.getEmail(), authorities.toString());
 		
 		return authorities;
 	}
@@ -150,5 +147,10 @@ public class AccountUserDetails implements MyUserDetails
 	@Override
 	public boolean hasActivatedNotifications() {
 		return this.account.getCanReceiveNotifications();
+	}
+	
+	@Override
+	public String getFirebaseToken() {
+		return this.account.getFirebaseToken();
 	}
 }

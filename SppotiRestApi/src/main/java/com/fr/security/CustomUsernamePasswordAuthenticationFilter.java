@@ -17,6 +17,7 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
 	private static final String SPRING_SECURITY_FORM_FACEBOOK_KEY = "facebook";
 	private static final String SPRING_SECURITY_FORM_GOOGLE_KEY = "google";
 	private static final String SPRING_SECURITY_FORM_TWITTER_KEY = "twitter";
+	private static final String SPRING_SECURITY_FORM_FIREBASE_KEY = "firebaseToken";
 	
 	/**
 	 * {@inheritDoc}
@@ -27,8 +28,9 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
 		final String facebookId = buildParameter(request.getParameter(SPRING_SECURITY_FORM_FACEBOOK_KEY));
 		final String googleId = buildParameter(request.getParameter(SPRING_SECURITY_FORM_GOOGLE_KEY));
 		final String twitterId = buildParameter(request.getParameter(SPRING_SECURITY_FORM_TWITTER_KEY));
+		final String firebaseToken = buildParameter(request.getParameter(SPRING_SECURITY_FORM_FIREBASE_KEY));
 		
-		return String.join(",", username, facebookId, googleId, twitterId);
+		return String.join(",", username, facebookId, googleId, twitterId, firebaseToken);
 	}
 	
 	/**
@@ -36,7 +38,8 @@ public class CustomUsernamePasswordAuthenticationFilter extends UsernamePassword
 	 */
 	@Override
 	protected String obtainPassword(final HttpServletRequest request) {
-		return !StringUtils.isEmpty(super.obtainPassword(request)) ? SppotiUtils.decode64ToString(super.obtainPassword(request)): null;
+		return !StringUtils.isEmpty(super.obtainPassword(request)) ?
+				SppotiUtils.decode64ToString(super.obtainPassword(request)) : null;
 	}
 	
 	private String buildParameter(final String param) {

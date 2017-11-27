@@ -4,13 +4,18 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.entities.UserEntity;
 import com.fr.repositories.UserRepository;
+import com.fr.service.LoginBusinessService;
 import com.fr.transformers.UserTransformer;
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -26,20 +31,16 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AccountUserDetails.class);
 	
-	/** USer repository. */
-	private final UserRepository userRepository;
-	
-	/** User transformer. */
-	private final UserTransformer userTransformer;
-	
-	/** Init repository. */
 	@Autowired
-	public AuthSuccess(final UserRepository userRepository, final UserTransformer userTransformer)
-	{
-		this.userRepository = userRepository;
-		this.userTransformer = userTransformer;
-	}
+	private UserRepository userRepository;
+	
+	@Autowired
+	private UserTransformer userTransformer;
+	
+	@Autowired
+	private LoginBusinessService loginService;
 	
 	/**
 	 * {@inheritDoc}
@@ -73,5 +74,25 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 		response.getWriter().write(gson.toJson(userDTO));
 		
 		response.setStatus(HttpServletResponse.SC_OK);
+		
+		final String firebaseToken = getUserFirebaseToken();
+		if (StringUtils.hasText(firebaseToken)) {
+			LOGGER.info("Firebase key sent with login is: {}", firebaseToken);
+			this.loginService.updateUserDeviceToConnectedStatus(getUserFirebaseToken(), getConnectedUserEmail());
+		}
+	}
+	
+	private String getUserFirebaseToken() {
+		final AccountUserDetails accountUserDetails = getAccountUserDetails();
+		return accountUserDetails.getFirebaseToken();
+	}
+	
+	private AccountUserDetails getAccountUserDetails() {
+		return (AccountUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	}
+	
+	private String getConnectedUserEmail() {
+		final AccountUserDetails accountUserDetails = getAccountUserDetails();
+		return accountUserDetails.getUsername();
 	}
 }

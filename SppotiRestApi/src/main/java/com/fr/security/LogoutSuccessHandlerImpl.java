@@ -3,6 +3,9 @@
  */
 package com.fr.security;
 
+import com.fr.commons.dto.security.AccountUserDetails;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -22,6 +25,7 @@ import static com.fr.filter.HeadersValues.*;
 @Component
 public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler
 {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AccountUserDetails.class);
 	
 	/**
 	 * {@inheritDoc}
@@ -48,7 +52,7 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler
 			System.out.println(authentication.getName());
 		}
 		
+		LOGGER.info("user has been logged out successfully");
 		response.setStatus(HttpStatus.OK.value());
 	}
-	
 }

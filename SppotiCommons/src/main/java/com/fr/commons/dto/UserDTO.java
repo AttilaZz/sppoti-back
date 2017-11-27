@@ -87,6 +87,8 @@ public class UserDTO extends AbstractCommonDTO
 	private Boolean canReceiveEmails;
 	private Boolean canReceiveNotifications;
 	
+	private String firebaseToken;
+	
 	public Boolean isFirstConnexion() {
 		return this.firstConnexion;
 	}
@@ -471,5 +473,13 @@ public class UserDTO extends AbstractCommonDTO
 	
 	public void setCanReceiveNotifications(final Boolean canReceiveNotifications) {
 		this.canReceiveNotifications = canReceiveNotifications;
+	}
+	
+	public String getFirebaseToken() {
+		return this.firebaseToken;
+	}
+	
+	public void setFirebaseToken(final String firebaseToken) {
+		this.firebaseToken = firebaseToken;
 	}
 }

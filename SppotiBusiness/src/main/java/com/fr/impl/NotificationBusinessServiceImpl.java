@@ -121,7 +121,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 											   final NotificationTypeEnum notificationTypeEnum,
 											   final Object... dataToSendInNotification)
 	{
-		this.LOGGER.info("Received notification data {}", Arrays.toString(dataToSendInNotification));
+		this.LOGGER.info("Notification data to send{}", Arrays.toString(dataToSendInNotification));
 		
 		if (dataToSendInNotification.length == 0 && notificationObjectType != NotificationObjectType.FRIENDSHIP) {
 			throw new BusinessGlobalException("At least one object must be added to send a notification");
@@ -159,39 +159,53 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 					.getByEmailAndDeletedFalseAndConfirmedTrue(email);
 			final List<FirebaseRegistrationEntity> firebaseRegistrationEntities = userToReceiveNotification
 					.getFirebaseRegistrationKeys();
-			this.LOGGER.info("Sending firebase notification to {}, having the following registration ids {}", email,
-					userToReceiveNotification.toString());
 			
-			firebaseRegistrationEntities.forEach(r -> {
-				final JSONObject data = buildJsonToSendViaFirebase(r.getRegistrationKey(), notificationDTO);
-				
-				final HttpEntity<String> request = new HttpEntity<>(data.toString());
-				final CompletableFuture<String> pushNotification = this.androidPushNotificationsService.send(request);
-				CompletableFuture.allOf(pushNotification).join();
-				
-				try {
-					final String notificationKey = pushNotification.get();
-					this.LOGGER.info("Notification {} has been fired successfully, under notification_key {}", data,
-							notificationKey);
-					updateFirebaseRegistration(email, notificationKey);
-				} catch (final InterruptedException | ExecutionException e) {
-					throw new BusinessGlobalException("Failed to send notification to firebase {}", e);
-				}
-			});
+			firebaseRegistrationEntities.stream().filter(r -> r.getDeviceConnected().equals(Boolean.TRUE))
+					.forEach(r -> {
+						
+						this.LOGGER
+								.info("Sending firebase notification to {}, having the following registration ids {}",
+										email, userToReceiveNotification.toString());
+						
+						final JSONObject data = buildJsonToSendViaFirebase(r.getRegistrationKey(), notificationDTO);
+						
+						final HttpEntity<String> request = new HttpEntity<>(data.toString());
+						final CompletableFuture<String> pushNotification = this.androidPushNotificationsService
+								.send(request);
+						CompletableFuture.allOf(pushNotification).join();
+						
+						try {
+							final String notificationKey = pushNotification.get();
+							this.LOGGER.info("Notification {} has been fired successfully, under notification_key {}",
+									data, notificationKey);
+							updateFirebaseRegistration(email, notificationKey);
+						} catch (final InterruptedException | ExecutionException e) {
+							throw new BusinessGlobalException("Failed to send notification to firebase {}", e);
+						}
+					});
 		}
 	}
 	
 	private JSONObject buildJsonToSendViaFirebase(final String tokenID, final NotificationDTO dto)
 	{
 		final ObjectMapper mapper = new ObjectMapper();
-		
-		final JSONObject data = new JSONObject();
+		final FirebaseNotificationDTO firebaseNotificationDTO = new FirebaseNotificationDTO(dto);
 		try {
 			final JSONObject body = new JSONObject();
 			body.put("to", tokenID);
-			body.put("notification", mapper.writeValueAsString(new FirebaseNotificationDTO(dto)));
-			body.put("data", mapper.writeValueAsString(dto));
-			return data;
+			final JSONObject notification = new JSONObject();
+			notification.put("title", firebaseNotificationDTO.getTitle());
+			notification.put("body", firebaseNotificationDTO.getBody());
+			notification.put("sound", firebaseNotificationDTO.getSound());
+			notification.put("click_action", firebaseNotificationDTO.getPluginActivity());
+			body.put("notification", notification);
+			final JSONObject data = new JSONObject();
+			data.put("title", "");
+			data.put("body", "");
+			data.put("notification", mapper.writeValueAsString(dto));
+			body.put("data", data);
+			this.LOGGER.info("Json to send via firebase: {}", body.toString());
+			return body;
 		} catch (final JSONException | JsonProcessingException e) {
 			throw new BusinessGlobalException("Cannot serialize firebase notification object: {}", e);
 		}

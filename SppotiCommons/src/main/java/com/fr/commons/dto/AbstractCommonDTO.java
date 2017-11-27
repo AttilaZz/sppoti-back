@@ -1,7 +1,8 @@
 package com.fr.commons.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.Serializable;
 
@@ -11,19 +12,9 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AbstractCommonDTO implements Serializable
 {
-	
 	protected Integer version;
 	
 	protected String id;
-	
-	/**
-	 * {@inheritDoc}.
-	 */
-	@Override
-	public String toString()
-	{
-		return ToStringBuilder.reflectionToString(this);
-	}
 	
 	public Integer getVersion()
 	{
@@ -41,5 +32,18 @@ public class AbstractCommonDTO implements Serializable
 	
 	public void setId(final String id) {
 		this.id = id;
+	}
+	
+	/**
+	 * {@inheritDoc}.
+	 */
+	@Override
+	public String toString() {
+		final ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.writeValueAsString(this);
+		} catch (final JsonProcessingException e) {
+			return null;
+		}
 	}
 }

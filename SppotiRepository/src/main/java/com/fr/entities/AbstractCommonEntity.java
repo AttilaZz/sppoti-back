@@ -1,7 +1,8 @@
 package com.fr.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +17,6 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AbstractCommonEntity implements Serializable
 {
-	
 	private static final long serialVersionUID = -6893399491928930624L;
 	
 	/**
@@ -45,8 +45,12 @@ public class AbstractCommonEntity implements Serializable
 	 */
 	@Override
 	public String toString() {
-		//        return ToStringBuilder.reflectionToString(this);
-		return new ToStringBuilder(this).append("id", this.id).toString();
+		final ObjectMapper mapper = new ObjectMapper();
+		try {
+			return mapper.writeValueAsString(this);
+		} catch (final JsonProcessingException e) {
+			return null;
+		}
 	}
 	
 	/**

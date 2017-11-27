@@ -22,17 +22,14 @@ import java.util.Arrays;
 @Component
 public class UserDetailServiceImpl implements UserDetailsService
 {
-	/** Class logger. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserDetailServiceImpl.class);
 	
-	/** Login service. */
 	private LoginBusinessService loginService;
 	
 	private static boolean isAttributeEmpty(final String param) {
 		return StringUtils.isEmpty(param) || "null".equals(param);
 	}
 	
-	/** Init login service. */
 	@Autowired
 	public void setLoginService(final LoginBusinessService loginService)
 	{
@@ -40,18 +37,7 @@ public class UserDetailServiceImpl implements UserDetailsService
 	}
 	
 	/**
-	 * Login logic, based on parameters sent by the user.
-	 *
-	 * @param loginUser
-	 * 		login parameters imploded in a string separated by comma, ex [a,b,c,d] a: username b: facebook id c: google id
-	 * 		d: twitter id
-	 *
-	 * @return AccountUserDetails
-	 *
-	 * @throws UsernameNotFoundException
-	 * 		if username not found.
-	 * @throws SocialUserIdNotFound
-	 * 		if social id not found.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public UserDetails loadUserByUsername(final String loginUser) throws UsernameNotFoundException, SocialUserIdNotFound
@@ -64,12 +50,14 @@ public class UserDetailServiceImpl implements UserDetailsService
 		final String facebookId = loginAttributes[1];
 		final String googleId = loginAttributes[2];
 		final String twitterId = loginAttributes[3];
+		final String firebaseToken = loginAttributes[4];
 		
 		UserDTO account = null;
 		boolean isSocial = false;
 		
 		if (isAttributeEmpty(username) && isAttributeEmpty(facebookId) && isAttributeEmpty(googleId) &&
 				isAttributeEmpty(twitterId)) {
+			LOGGER.info("At least one parameter must be assigned, {}", Arrays.toString(loginAttributes));
 			throw new UsernameNotFoundException("AT least one parameter must be assigned");
 		}
 		
@@ -98,7 +86,7 @@ public class UserDetailServiceImpl implements UserDetailsService
 			}
 		}
 		
+		account.setFirebaseToken(!isAttributeEmpty(firebaseToken) ? firebaseToken : null);
 		return new AccountUserDetails(account);
 	}
-	
 }

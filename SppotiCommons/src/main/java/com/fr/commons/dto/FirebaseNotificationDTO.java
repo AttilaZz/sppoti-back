@@ -13,7 +13,7 @@ public class FirebaseNotificationDTO
 	private String title;
 	private String body;
 	private final String sound = "default";
-	private FcmPluginEnum click_action = FCM_PLUGIN_ACTIVITY;
+	private FcmPluginEnum pluginActivity = FCM_PLUGIN_ACTIVITY;
 	
 	public FirebaseNotificationDTO() {
 	}
@@ -48,11 +48,11 @@ public class FirebaseNotificationDTO
 		return this.sound;
 	}
 	
-	public FcmPluginEnum getClick_action() {
-		return this.click_action;
+	public FcmPluginEnum getPluginActivity() {
+		return this.pluginActivity;
 	}
 	
-	public void setClick_action(final FcmPluginEnum click_action) {
-		this.click_action = click_action;
+	public void setPluginActivity(final FcmPluginEnum pluginActivity) {
+		this.pluginActivity = pluginActivity;
 	}
 }

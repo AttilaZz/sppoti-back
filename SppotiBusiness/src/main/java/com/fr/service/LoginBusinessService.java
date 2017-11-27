@@ -46,4 +46,14 @@ public interface LoginBusinessService extends AbstractBusinessService
 	 * @return user data.
 	 */
 	UserDTO getUserByTwitterId(String twitterId);
+	
+	/**
+	 * Update devive login status to connected.
+	 *
+	 * @param userEmail
+	 * 		email of the user trying to connect.
+	 * @param firebaseRegistrationKey
+	 * 		user firebase token.
+	 */
+	void updateUserDeviceToConnectedStatus(String firebaseRegistrationKey, String userEmail);
 }
