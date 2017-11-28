@@ -54,17 +54,17 @@ public class SppotiEntity extends AbstractCommonEntity
 	@Column(nullable = false)
 	private boolean deleted = false;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne
 	@JoinColumn(name = "sport_id", nullable = false)
 	@JsonIgnore
 	private SportEntity sport;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	@JsonIgnore
 	private UserEntity userSppoti;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "team_host_id")
 	@JsonIgnore
 	private TeamEntity teamHostEntity;

@@ -17,11 +17,11 @@ import java.util.Date;
 public class NotificationEntity extends AbstractCommonEntity
 {
 	
-	@ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "from_user_id")
 	private UserEntity from;
 	
-	@ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "to_user_id")
 	private UserEntity to;
 	

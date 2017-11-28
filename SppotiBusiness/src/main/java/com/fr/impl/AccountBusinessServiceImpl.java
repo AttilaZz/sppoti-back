@@ -519,6 +519,7 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 				.getByUuidAndDeletedFalseAndConfirmedTrue(user.getUserId());
 		userOptional.ifPresent(u -> {
 			entity.setUser(u);
+			entity.setDeviceConnected(true);
 			this.firebaseRegistrationRepository.save(entity);
 			this.LOGGER.info("Firebase registration has been saved {}", entity);
 		});

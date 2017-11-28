@@ -35,7 +35,7 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	
 	private String video;
 	
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.LAZY)
 	@CollectionTable(name = "post_album", joinColumns = @JoinColumn(name = "post_id"))
 	@Column(name = "post_album", nullable = false)
 	private Set<String> album;

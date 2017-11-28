@@ -33,12 +33,12 @@ public class CommentEntity extends AbstractCommonEntity implements Comparable<Co
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date datetimeCreated = new Date();
 	
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	@JsonIgnore
 	private UserEntity user;
 	
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne
 	@JoinColumn(name = "post_id", nullable = false)
 	@JsonIgnore
 	private PostEntity post;

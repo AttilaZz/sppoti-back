@@ -47,7 +47,7 @@ public class PostDTO extends AbstractCommonDTO
 	
 	private int visibility;
 	
-	@JsonUnwrapped
+	@JsonUnwrapped(prefix = "sender_")
 	private UserInside sender;
 	
 	private UserInside targetUser;

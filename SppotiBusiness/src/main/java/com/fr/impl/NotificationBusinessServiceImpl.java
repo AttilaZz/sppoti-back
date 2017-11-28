@@ -14,6 +14,7 @@ import com.fr.entities.*;
 import com.fr.impl.notification.AndroidPushNotificationsService;
 import com.fr.repositories.FirebaseRegistrationRepository;
 import com.fr.repositories.UserRepository;
+import com.fr.service.FirebaseAdminService;
 import com.fr.service.NotificationBusinessService;
 import com.fr.transformers.NotificationTransformer;
 import org.json.JSONException;
@@ -26,12 +27,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -55,13 +58,13 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 	@Autowired
 	private NotificationTransformer notificationTransformer;
 	@Autowired
-	private SimpMessagingTemplate messagingTemplate;
-	@Autowired
 	private AndroidPushNotificationsService androidPushNotificationsService;
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
 	private FirebaseRegistrationRepository firebaseRegistrationRepository;
+	@Autowired
+	private FirebaseAdminService firebaseAdminService;
 	
 	/**
 	 * {@inheritDoc}
@@ -121,7 +124,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 											   final NotificationTypeEnum notificationTypeEnum,
 											   final Object... dataToSendInNotification)
 	{
-		this.LOGGER.info("Notification data to send{}", Arrays.toString(dataToSendInNotification));
+		//		this.LOGGER.info("Notification data to send{}", Arrays.toString(dataToSendInNotification));
 		
 		if (dataToSendInNotification.length == 0 && notificationObjectType != NotificationObjectType.FRIENDSHIP) {
 			throw new BusinessGlobalException("At least one object must be added to send a notification");
@@ -160,7 +163,11 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 			final List<FirebaseRegistrationEntity> firebaseRegistrationEntities = userToReceiveNotification
 					.getFirebaseRegistrationKeys();
 			
-			firebaseRegistrationEntities.stream().filter(r -> r.getDeviceConnected().equals(Boolean.TRUE))
+			if (firebaseRegistrationEntities.stream().noneMatch(r -> Boolean.TRUE.equals(r.getDeviceConnected()))) {
+				this.LOGGER.info("All devices are offline - notifications are not sent");
+			}
+			
+			firebaseRegistrationEntities.stream().filter(r -> Boolean.TRUE.equals(r.getDeviceConnected()))
 					.forEach(r -> {
 						
 						this.LOGGER
@@ -170,6 +177,10 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 						final JSONObject data = buildJsonToSendViaFirebase(r.getRegistrationKey(), notificationDTO);
 						
 						final HttpEntity<String> request = new HttpEntity<>(data.toString());
+						
+						//						final String deviceUid = this.firebaseAdminService
+						//								.verifyUserFirebaseToken(r.getRegistrationKey());
+						
 						final CompletableFuture<String> pushNotification = this.androidPushNotificationsService
 								.send(request);
 						CompletableFuture.allOf(pushNotification).join();

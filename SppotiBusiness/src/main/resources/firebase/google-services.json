@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "527954611268",
+    "firebase_url": "https://sppoti-2017baw.firebaseio.com",
+    "project_id": "sppoti-2017baw",
+    "storage_bucket": "sppoti-2017baw.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527954611268:android:b9763a1a625e22c8",
+        "android_client_info": {
+          "package_name": "Io.sppoti.sppoti112233"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "527954611268-8q1uv2728e5h6j8ptfgu6hugpt5r3c84.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjQCMicAwlpjABxxkn9ZkUfaYconSCIIQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,11 +1,10 @@
 package com.fr.entities;
 
-import java.util.Date;
-
-import javax.persistence.*;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -17,123 +16,130 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @Entity
 @Table(name = "RESSOURCE")
 @JsonInclude(Include.NON_ABSENT)
-public class ResourcesEntity
-        extends AbstractCommonEntity {
-
-    @Column(nullable = false)
-    private String url;
-    @Column
-    private String description;
-    @Column
-    private Integer type; // 1: avatar, 2: cover, 3: document
-    @Column
-    private Integer typeExtension; // 1: image, 2: vidéo, 3: pdf, word ...
-    @Column
-    private String dateTime = new Date().toString();
-    @Column
-    private boolean selected = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    public String getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean isSelected) {
-        this.selected = isSelected;
-    }
-
-    public UserEntity getUserRessources() {
-        return user;
-    }
-
-    public void setUserRessources(UserEntity userRessources) {
-        this.user = userRessources;
-    }
-
-    public Integer getTypeExtension() {
-        return typeExtension;
-    }
-
-    public void setTypeExtension(Integer typeExtension) {
-        this.typeExtension = typeExtension;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ResourcesEntity)) return false;
-        if (!super.equals(o)) return false;
-
-        ResourcesEntity that = (ResourcesEntity) o;
-
-        if (selected != that.selected) return false;
-        if (url != null ? !url.equals(that.url) : that.url != null) return false;
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (type != null ? !type.equals(that.type) : that.type != null) return false;
-        if (typeExtension != null ? !typeExtension.equals(that.typeExtension) : that.typeExtension != null)
-            return false;
-        return dateTime != null ? dateTime.equals(that.dateTime) : that.dateTime == null;
-
-    }
-
-    /**
-     * {@inheritDoc}.
-     */
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (url != null ? url.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (typeExtension != null ? typeExtension.hashCode() : 0);
-        result = 31 * result + (dateTime != null ? dateTime.hashCode() : 0);
-        result = 31 * result + (selected ? 1 : 0);
-        return result;
-    }
+public class ResourcesEntity extends AbstractCommonEntity
+{
+	
+	@Column(nullable = false)
+	private String url;
+	@Column
+	private String description;
+	@Column
+	private Integer type; // 1: avatar, 2: cover, 3: document
+	@Column
+	private Integer typeExtension; // 1: image, 2: vidéo, 3: pdf, word ...
+	@Column
+	private String dateTime = new Date().toString();
+	@Column
+	private boolean selected = false;
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private UserEntity user;
+	
+	public String getUrl() {
+		return this.url;
+	}
+	
+	public void setUrl(final String url) {
+		this.url = url;
+	}
+	
+	public String getDescription() {
+		return this.description;
+	}
+	
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+	
+	public Integer getType() {
+		return this.type;
+	}
+	
+	public void setType(final Integer type) {
+		this.type = type;
+	}
+	
+	public String getDateTime() {
+		return this.dateTime;
+	}
+	
+	public void setDateTime(final String dateTime) {
+		this.dateTime = dateTime;
+	}
+	
+	public boolean isSelected() {
+		return this.selected;
+	}
+	
+	public void setSelected(final boolean isSelected) {
+		this.selected = isSelected;
+	}
+	
+	public UserEntity getUserRessources() {
+		return this.user;
+	}
+	
+	public void setUserRessources(final UserEntity userRessources) {
+		this.user = userRessources;
+	}
+	
+	public Integer getTypeExtension() {
+		return this.typeExtension;
+	}
+	
+	public void setTypeExtension(final Integer typeExtension) {
+		this.typeExtension = typeExtension;
+	}
+	
+	public UserEntity getUser() {
+		return this.user;
+	}
+	
+	public void setUser(final UserEntity user) {
+		this.user = user;
+	}
+	
+	/**
+	 * {@inheritDoc}.
+	 */
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o)
+			return true;
+		if (!(o instanceof ResourcesEntity))
+			return false;
+		if (!super.equals(o))
+			return false;
+		
+		final ResourcesEntity that = (ResourcesEntity) o;
+		
+		if (this.selected != that.selected)
+			return false;
+		if (this.url != null ? !this.url.equals(that.url) : that.url != null)
+			return false;
+		if (this.description != null ? !this.description.equals(that.description) : that.description != null)
+			return false;
+		if (this.type != null ? !this.type.equals(that.type) : that.type != null)
+			return false;
+		if (this.typeExtension != null ? !this.typeExtension.equals(that.typeExtension) : that.typeExtension != null)
+			return false;
+		return this.dateTime != null ? this.dateTime.equals(that.dateTime) : that.dateTime == null;
+		
+	}
+	
+	/**
+	 * {@inheritDoc}.
+	 */
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + (this.url != null ? this.url.hashCode() : 0);
+		result = 31 * result + (this.description != null ? this.description.hashCode() : 0);
+		result = 31 * result + (this.type != null ? this.type.hashCode() : 0);
+		result = 31 * result + (this.typeExtension != null ? this.typeExtension.hashCode() : 0);
+		result = 31 * result + (this.dateTime != null ? this.dateTime.hashCode() : 0);
+		result = 31 * result + (this.selected ? 1 : 0);
+		return result;
+	}
 }
