@@ -249,7 +249,8 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		
 		switch (objectType) {
 			case POST:
-				//post required(2)
+				this.LOGGER.info("Building POST notifiction");
+				
 				if (objectToSend.length != 1) {
 					throw new IllegalArgumentException("Post Object is missing");
 				}
@@ -267,7 +268,8 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case TEAM:
-				//Team and sppoti needed, but only team is required(0, 1)
+				this.LOGGER.info("Building TEAM notifiction");
+				
 				if (objectToSend.length < 1) {
 					throw new IllegalArgumentException("TEAM Object is missing");
 				}
@@ -294,7 +296,8 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case SPPOTI:
-				//Sppoti required
+				this.LOGGER.info("Building SPPOTI notifiction");
+				
 				if (objectToSend.length < 1) {
 					throw new IllegalArgumentException("SPPOTI Object is missing");
 				}
@@ -313,6 +316,8 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case SCORE:
+				this.LOGGER.info("Building SCORE notifiction");
+				
 				//Sppoti, Team and score are required(0, 1, 4)
 				if (objectToSend.length < 3) {
 					throw new IllegalArgumentException("(TEAM or SPPOTI or SCORE) Object is missing");
@@ -354,8 +359,10 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case COMMENT:
-				//POSt and COMMENT are required (1, 3)
+				this.LOGGER.info("Building COMMENT notifiction");
+				
 				if (objectToSend.length < 2) {
+					this.LOGGER.info("Sending comment notifiction");
 					throw new IllegalArgumentException("(COMMENT or POST) Object is missing");
 				}
 				
@@ -377,7 +384,8 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case RATING:
-				//Sppoti and rating are required (1, 5)
+				this.LOGGER.info("Building RATING notifiction");
+				
 				if (objectToSend.length < 2) {
 					throw new IllegalArgumentException("(SPPOTI or RATING) Object is missing");
 				}
@@ -400,10 +408,12 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case FRIENDSHIP:
-				//No param is required
+				this.LOGGER.info("Building FRIENDSHIP notifiction");
+				
 				break;
 			case LIKE:
-				//POST or COMMENT are required
+				this.LOGGER.info("Building LIKE notifiction");
+				
 				if (objectToSend.length < 4) {
 					throw new IllegalArgumentException("(COMMENT or POST) Object is missing");
 				}

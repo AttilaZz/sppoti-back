@@ -19,7 +19,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.fr.commons.enumeration.notification.NotificationObjectType.FRIENDSHIP;
 import static com.fr.commons.enumeration.notification.NotificationObjectType.LIKE;
 import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_LIKED_YOUR_COMMENT;
 import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_LIKED_YOUR_POST;
@@ -175,9 +174,8 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 					!likeContent.getComment().getUser().getId().equals(getConnectedUser().getId())) {
 				//like comment
 				this.notificationService
-						.saveAndSendNotificationToUsers(likeContent.getUser(), likeContent.getComment().getUser(),
-								FRIENDSHIP, X_LIKED_YOUR_COMMENT, likeContent.getComment().getPost(),
-								likeContent.getComment());
+						.saveAndSendNotificationToUsers(likeContent.getUser(), likeContent.getComment().getUser(), LIKE,
+								X_LIKED_YOUR_COMMENT, likeContent.getComment().getPost(), likeContent.getComment());
 				
 			} else if (likeContent.getPost() != null &&
 					!likeContent.getPost().getUser().getId().equals(getConnectedUser().getId())) {

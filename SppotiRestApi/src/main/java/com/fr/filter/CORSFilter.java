@@ -31,7 +31,7 @@ public class CORSFilter implements Filter
 		final HttpServletResponse response = (HttpServletResponse) res;
 		final HttpServletRequest request = (HttpServletRequest) req;
 		
-		if(StringUtils.hasText(Origins.getValue())){
+		if (StringUtils.hasText(Origins.getValue())) {
 			final String[] allowedHeaders = Origins.getValue().split(",");
 			
 			for (final String allowedHeader : allowedHeaders) {
