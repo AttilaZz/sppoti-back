@@ -2,6 +2,8 @@ package com.fr.api.friend;
 
 import com.fr.service.FriendBusinessService;
 import com.fr.versionning.ApiVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 class FriendDeleteController
 {
 	
-	/** Friend service. */
+	private final Logger LOGGER = LoggerFactory.getLogger(FriendDeleteController.class);
+	
 	private FriendBusinessService friendControllerService;
 	
-	/** Init friend service. */
 	@Autowired
 	void setFriendControllerService(final FriendBusinessService friendControllerService)
 	{
@@ -39,6 +41,7 @@ class FriendDeleteController
 	@DeleteMapping("/{friend_id}")
 	ResponseEntity deleteFriend(@PathVariable("friend_id") final String friendId)
 	{
+		this.LOGGER.info("Request sent to delete a friendship");
 		
 		this.friendControllerService.deleteFriendShip(friendId);
 		

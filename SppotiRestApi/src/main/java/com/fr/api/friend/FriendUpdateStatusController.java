@@ -6,6 +6,8 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.FriendBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 @ApiVersion("1")
 class FriendUpdateStatusController
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(FriendUpdateStatusController.class);
 	
-	/** Friend service. */
 	private FriendBusinessService friendControllerService;
 	
-	/** Init service. */
 	@Autowired
 	void setFriendControllerService(final FriendBusinessService friendControllerService)
 	{
@@ -48,7 +49,7 @@ class FriendUpdateStatusController
 	@PutMapping
 	ResponseEntity updateFriend(@RequestBody final UserDTO user, final Authentication authentication)
 	{
-		
+		this.LOGGER.info("Request sent to update friendship");
 		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 		
 		if (StringUtils.isBlank(user.getFriendUuid())) {

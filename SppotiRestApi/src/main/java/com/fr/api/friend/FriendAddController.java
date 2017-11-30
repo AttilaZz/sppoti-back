@@ -5,6 +5,8 @@ import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.service.FriendBusinessService;
 import com.fr.versionning.ApiVersion;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 class FriendAddController
 {
 	
-	/** Friend service. */
+	private final Logger LOGGER = LoggerFactory.getLogger(FriendAddController.class);
+	
 	private FriendBusinessService friendControllerService;
 	
-	/** Init service. */
 	@Autowired
 	void setFriendControllerService(final FriendBusinessService friendControllerService)
 	{
@@ -43,7 +45,8 @@ class FriendAddController
 	ResponseEntity<Object> addFriend(@RequestBody final UserDTO user)
 	{
 		
-		//Check received data
+		this.LOGGER.info("Request sent to add a friend");
+		
 		if (StringUtils.isBlank(user.getFriendUuid())) {
 			throw new BusinessGlobalException("Friend id is empty");
 		}

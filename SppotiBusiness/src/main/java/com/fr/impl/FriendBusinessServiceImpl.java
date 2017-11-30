@@ -42,11 +42,9 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 	private final UserTransformer userTransformer;
 	private final NotificationBusinessService notificationService;
 	
-	/** Friend list size. */
 	@Value("${key.friendShipPerPage}")
 	private int friendListSize;
 	
-	/** Init services. */
 	@Autowired
 	public FriendBusinessServiceImpl(final UserTransformer userTransformer,
 									 final NotificationBusinessService notificationService)
@@ -63,22 +61,13 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 	public void saveFriendShip(final UserDTO user)
 	{
 		
-        /*
-		Prepare friendShip
-         */
 		final UserEntity connectedUser = this.getConnectedUser();
 		final UserEntity friend = this.getUserByUuId(user.getFriendUuid());
-
-        /*
-		Check if the friend id refers to an existing user account
-         */
+		
 		if (friend == null) {
 			throw new EntityNotFoundException("Friend id not found");
 		}
-
-        /*
-		Friend with my self
-         */
+		
 		if (connectedUser.equals(friend)) {
 			throw new BusinessGlobalException("You're already friend with your self body !");
 		}
@@ -120,10 +109,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 	@Override
 	public void updateFriendShip(final Long userId, final String friendUuid, final int friendStatus)
 	{
-
-         /*
-		Prepare friendShip
-         */
+		
 		final UserEntity connectedUser = getUserById(userId);
 
          /*

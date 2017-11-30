@@ -2,14 +2,12 @@ package com.fr.service;
 
 import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Created by djenanewail on 1/22/17.
  */
-@Service
 public interface FriendBusinessService extends AbstractBusinessService
 {
 	

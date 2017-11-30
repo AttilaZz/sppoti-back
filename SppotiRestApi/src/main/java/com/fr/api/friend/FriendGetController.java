@@ -4,6 +4,8 @@ import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.service.FriendBusinessService;
 import com.fr.versionning.ApiVersion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +25,10 @@ import java.util.List;
 @ApiVersion("1")
 class FriendGetController
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(FriendDeleteController.class);
 	
-	/** Friend service. */
 	private final FriendBusinessService friendControllerService;
 	
-	/** Init services. */
 	@Autowired
 	FriendGetController(final FriendBusinessService friendControllerService)
 	{
@@ -43,9 +44,10 @@ class FriendGetController
 	 * @return confirmed friend list.
 	 */
 	@GetMapping("/confirmed/{userId}/{page}")
-	ResponseEntity<List<UserDTO>> getConfirmedFriendList(@PathVariable final String userId, @PathVariable final int page)
+	ResponseEntity<List<UserDTO>> getConfirmedFriendList(@PathVariable final String userId,
+														 @PathVariable final int page)
 	{
-		
+		this.LOGGER.info("Request sent to get list of friends for user {}, select page is {} ", userId, page);
 		final List<UserDTO> friendList = this.friendControllerService.getConfirmedFriendList(userId, page);
 		
 		return new ResponseEntity<>(friendList, HttpStatus.OK);
@@ -61,12 +63,13 @@ class FriendGetController
 	@GetMapping("/refused/{page}")
 	ResponseEntity<FriendResponseDTO> getRefusedFriendList(@PathVariable final int page)
 	{
+		this.LOGGER.info("Request sent to get list of refused friends, select page is {} ", page);
+		
 		final FriendResponseDTO friendResponse = this.friendControllerService.getRefusedFriendList(page);
 		
 		return new ResponseEntity<>(friendResponse, HttpStatus.OK);
 		
 	}
-	
 	
 	/**
 	 * @param page
@@ -77,6 +80,7 @@ class FriendGetController
 	@GetMapping("/pending/sent/{page}")
 	ResponseEntity<FriendResponseDTO> getSentPendingFriendList(@PathVariable final int page)
 	{
+		this.LOGGER.info("Request sent to get list of sent pending friend requests, select page is {} ", page);
 		
 		final FriendResponseDTO friendResponse = this.friendControllerService.getAllSentPendingFriendList(page);
 		
@@ -93,6 +97,8 @@ class FriendGetController
 	@GetMapping("/pending/received/{page}")
 	ResponseEntity<FriendResponseDTO> getReceivedPendingFriendList(@PathVariable final int page)
 	{
+		this.LOGGER.info("Request sent to get list of received pending friend requests, select page is {} ", page);
+		
 		final FriendResponseDTO friendResponse = this.friendControllerService.getAllReceivedPendingFriendList(page);
 		
 		return new ResponseEntity<>(friendResponse, HttpStatus.OK);
