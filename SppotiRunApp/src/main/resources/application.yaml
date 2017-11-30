@@ -22,6 +22,24 @@ spring:
 spring:
   profiles: test
   datasource:
+    url: jdbc:mysql://uat.sppoti.com:3306/sppoti
+    username: sppoti
+    password: sppoti2017!!
+    platform: mysql
+    driverClassName: com.mysql.jdbc.Driver
+    poolSize: 10
+    host: uat.sppoti.com
+    dbName: sppoti
+    initialize: false
+  redis:
+    host: localhost
+    password: secret
+    port: 6379
+
+---
+spring:
+  profiles: prod
+  datasource:
     url: jdbc:mysql://sppoti-databse.cft4b56rinat.eu-west-1.rds.amazonaws.com:3306/sppoti
     username: sppoti
     password: sppoti2017

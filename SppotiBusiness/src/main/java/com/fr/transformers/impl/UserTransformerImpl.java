@@ -226,11 +226,11 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 		
 		if (!connectedUser.getUuid().equals(targetUserId)) {
 			final FriendShipEntity sent = this.friendShipRepository
-					.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
+					.findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
 							targetUserId, SppotiUtils.statusToFilter());
 			
 			final FriendShipEntity received = this.friendShipRepository
-					.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(targetUserId,
+					.findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(targetUserId,
 							connectedUser.getUuid(), SppotiUtils.statusToFilter());
 			
 			if (sent == null) {

@@ -16,9 +16,9 @@ import java.util.List;
 public interface FriendShipRepository extends JpaRepository<FriendShipEntity, Long>
 {
 	
-	FriendShipEntity findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(String friendUuid,
-																							 String connectedUser,
-																							 Collection<GlobalAppStatusEnum> status);
+	FriendShipEntity findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(String friendUuid,
+																							String connectedUser,
+																							Collection<GlobalAppStatusEnum> status);
 	
 	List<FriendShipEntity> findByUserUuidAndStatus(String uuid, GlobalAppStatusEnum name, Pageable pageable);
 	

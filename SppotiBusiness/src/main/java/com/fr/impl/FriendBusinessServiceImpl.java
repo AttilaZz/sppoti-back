@@ -76,7 +76,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 		Check if friendship exist
          */
 		final FriendShipEntity tempFriendShip = this.friendShipRepository
-				.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(friend.getUuid(),
+				.findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(friend.getUuid(),
 						connectedUser.getUuid(), SppotiUtils.statusToFilter());
 		if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
 			throw new EntityExistsException("FriendShip already exists !");
@@ -116,7 +116,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 		Check if i received a friend request from the USER in the request
          */
 		final FriendShipEntity tempFriendShip = this.friendShipRepository
-				.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
+				.findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(connectedUser.getUuid(),
 						friendUuid, SppotiUtils.statusToFilter());
 		
 		if (tempFriendShip == null) {

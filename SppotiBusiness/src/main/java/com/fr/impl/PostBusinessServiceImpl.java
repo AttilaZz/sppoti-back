@@ -333,7 +333,7 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 	public boolean isTargetUserFriendOfMe(final String connectedUserUuid, final String friendId)
 	{
 		return this.friendShipRepository
-				.findLastByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(friendId, connectedUserUuid,
+				.findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(friendId, connectedUserUuid,
 						SppotiUtils.statusToFilter()) != null;
 	}
 	
