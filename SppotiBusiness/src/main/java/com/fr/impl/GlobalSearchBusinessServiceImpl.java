@@ -14,6 +14,8 @@ import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
 import com.querydsl.core.types.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -31,12 +33,12 @@ import java.util.stream.Collectors;
 @Component
 public class GlobalSearchBusinessServiceImpl extends CommonControllerServiceImpl implements GlobalSearchBusinessService
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(GlobalSearchBusinessServiceImpl.class);
 	
 	private final UserTransformer userTransformer;
 	private final TeamTransformer teamTransformer;
 	private final SppotiTransformer sppotiTransformer;
 	
-	/** Friend list size. */
 	@Value("${key.globalSearchPerPage}")
 	private Integer searchListSize;
 	
@@ -66,17 +68,22 @@ public class GlobalSearchBusinessServiceImpl extends CommonControllerServiceImpl
 		if (StringUtils.hasText(sex)) {
 			GenderEnum gender = GenderEnum.MALE;
 			if ("f".equals(sex)) {
+				this.LOGGER.info("Gender female criteria has been found");
 				gender = GenderEnum.FEMALE;
+			} else {
+				this.LOGGER.info("Gender male criteria has been found");
 			}
 			predicate1 = QUserEntity.userEntity.gender.eq(gender);
 		}
 		
 		if (ageMax != null) {
+			this.LOGGER.info("Max age {} criteria has been found", ageMax);
 			//Dates are greater when they are in the past
 			predicate2 = QUserEntity.userEntity.dateBorn.gt(SppotiUtils.getDateOfBorn(ageMax));
 		}
 		
 		if (ageMin != null) {
+			this.LOGGER.info("Min age {} criteria has been found", ageMin);
 			predicate3 = QUserEntity.userEntity.dateBorn.lt(SppotiUtils.getDateOfBorn(ageMin));
 		}
 		
@@ -94,6 +101,7 @@ public class GlobalSearchBusinessServiceImpl extends CommonControllerServiceImpl
 			result.getUsers().add(this.userTransformer.modelToDto(u));
 		});
 		
+		this.LOGGER.info("Global search result has been returned with following data: {}", result);
 		return result;
 	}
 	
@@ -118,6 +126,7 @@ public class GlobalSearchBusinessServiceImpl extends CommonControllerServiceImpl
 		result.getTeams().addAll(this.teamTransformer
 				.iterableModelsToDtos(this.teamRepository.findAll(predicate, getPage(page)).getContent()));
 		
+		this.LOGGER.info("Search result for teams has been returned with following data: {}", result);
 		return result;
 	}
 	
@@ -153,8 +162,8 @@ public class GlobalSearchBusinessServiceImpl extends CommonControllerServiceImpl
 		
 		result.getSppoties().addAll(list);
 		
+		this.LOGGER.info("Search result for sppotis has been returned with following data: {}", result);
 		return result;
-		
 	}
 	
 	/**
@@ -183,6 +192,8 @@ public class GlobalSearchBusinessServiceImpl extends CommonControllerServiceImpl
 		result.getSppoties().addAll(this.sppotiTransformer
 				.iterableModelsToDtos(this.sppotiRepository.findAll(predicate3, getPage(page)).getContent()));
 		
+		this.LOGGER
+				.info("Search result for all types without criteria has been returned with following data: {}", result);
 		return result;
 	}
 	
