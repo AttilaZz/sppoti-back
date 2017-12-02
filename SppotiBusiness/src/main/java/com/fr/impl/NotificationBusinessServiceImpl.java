@@ -17,6 +17,7 @@ import com.fr.repositories.UserRepository;
 import com.fr.service.FirebaseAdminService;
 import com.fr.service.NotificationBusinessService;
 import com.fr.transformers.NotificationTransformer;
+import com.fr.transformers.UserTransformer;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -31,10 +32,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
@@ -61,6 +59,8 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 	private AndroidPushNotificationsService androidPushNotificationsService;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserTransformer userTransformer;
 	@Autowired
 	private FirebaseRegistrationRepository firebaseRegistrationRepository;
 	@Autowired
@@ -124,21 +124,21 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 											   final NotificationTypeEnum notificationTypeEnum,
 											   final Object... dataToSendInNotification)
 	{
-		//		this.LOGGER.info("Notification data to send{}", Arrays.toString(dataToSendInNotification));
-		
 		if (dataToSendInNotification.length == 0 && notificationObjectType != NotificationObjectType.FRIENDSHIP) {
 			throw new BusinessGlobalException("At least one object must be added to send a notification");
 		}
 		
 		if (sender == null) {
-			//			throw new EntityNotFoundException("Sender identity is required to send notification");
 			this.LOGGER.warn("Sender identity is required to send notification, sender is {}", getConnectedUser());
+			return;
 		}
 		if (userTo == null) {
-			throw new BusinessGlobalException("Notification receivers must be added to notification ");
+			this.LOGGER.warn("Notification receivers must be added to notification, receiver is NULL");
+			return;
 		}
 		if (notificationObjectType == null) {
-			throw new BusinessGlobalException("Notification context must be specified, ex: SPPOTI, TEAM, ect..");
+			this.LOGGER.warn("Notification context must be specified, ex: SPPOTI, TEAM, ect..");
+			return;
 		}
 		if (notificationTypeEnum == null) {
 			throw new BusinessGlobalException("Notification type must be specified");
@@ -149,12 +149,14 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		
 		notification.setConnectedUserId(getConnectedUserId());
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
-		sendNotificationToSubscribedUsers(userTo.getEmail(), notificationDTO);
+		sendNotificationToSubscribedUsers(sender, userTo.getEmail(), notificationDTO, notificationTypeEnum);
 		
 		this.notificationRepository.saveAndFlush(notification);
 	}
 	
-	private void sendNotificationToSubscribedUsers(final String email, final NotificationDTO notificationDTO)
+	private void sendNotificationToSubscribedUsers(final UserEntity sender, final String email,
+												   final NotificationDTO notificationDTO,
+												   final NotificationTypeEnum notificationTypeEnum)
 	{
 		
 		if (this.isFirebaseActivated) {
@@ -174,7 +176,11 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 								.info("Sending firebase notification to {}, having the following registration ids {}",
 										email, userToReceiveNotification.toString());
 						
-						final JSONObject data = buildJsonToSendViaFirebase(r.getRegistrationKey(), notificationDTO);
+						final FirebaseNotificationDTO firebaseNotificationDTO = new FirebaseNotificationDTO(
+								notificationTypeEnum, this.userTransformer.modelToDto(sender));
+						
+						final JSONObject data = buildJsonToSendViaFirebase(r.getRegistrationKey(), notificationDTO,
+								firebaseNotificationDTO);
 						
 						final HttpEntity<String> request = new HttpEntity<>(data.toString());
 						
@@ -197,10 +203,11 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		}
 	}
 	
-	private JSONObject buildJsonToSendViaFirebase(final String tokenID, final NotificationDTO dto)
+	private JSONObject buildJsonToSendViaFirebase(final String tokenID, final NotificationDTO notificationDTO,
+												  final FirebaseNotificationDTO firebaseNotificationDTO)
 	{
+		this.LOGGER.info("firebaseNotificationDTO to send is: {}", firebaseNotificationDTO);
 		final ObjectMapper mapper = new ObjectMapper();
-		final FirebaseNotificationDTO firebaseNotificationDTO = new FirebaseNotificationDTO(dto);
 		try {
 			final JSONObject body = new JSONObject();
 			body.put("to", tokenID);
@@ -213,7 +220,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 			final JSONObject data = new JSONObject();
 			data.put("title", "");
 			data.put("body", "");
-			data.put("notification", mapper.writeValueAsString(dto));
+			data.put("notification", mapper.writeValueAsString(notificationDTO));
 			body.put("data", data);
 			this.LOGGER.info("Json to send via firebase: {}", body.toString());
 			return body;
@@ -249,7 +256,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		
 		switch (objectType) {
 			case POST:
-				this.LOGGER.info("Building POST notification");
+				this.LOGGER.info("Building POST notification, with data: {}", Arrays.toString(objectToSend));
 				
 				if (objectToSend.length != 1) {
 					throw new IllegalArgumentException("Post Object is missing");
@@ -268,7 +275,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case TEAM:
-				this.LOGGER.info("Building TEAM notification");
+				this.LOGGER.info("Building TEAM notification, with data: {}", Arrays.toString(objectToSend));
 				
 				if (objectToSend.length < 1) {
 					throw new IllegalArgumentException("TEAM Object is missing");
@@ -296,7 +303,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case SPPOTI:
-				this.LOGGER.info("Building SPPOTI notification");
+				this.LOGGER.info("Building SPPOTI notification, with data: {}", Arrays.toString(objectToSend));
 				
 				if (objectToSend.length < 1) {
 					throw new IllegalArgumentException("SPPOTI Object is missing");
@@ -316,7 +323,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case SCORE:
-				this.LOGGER.info("Building SCORE notification");
+				this.LOGGER.info("Building SCORE notification, with data: {}", Arrays.toString(objectToSend));
 				
 				//Sppoti, Team and score are required(0, 1, 4)
 				if (objectToSend.length < 3) {
@@ -359,7 +366,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case COMMENT:
-				this.LOGGER.info("Building COMMENT notification");
+				this.LOGGER.info("Building COMMENT notification, with data: {}", Arrays.toString(objectToSend));
 				
 				if (objectToSend.length < 2) {
 					this.LOGGER.info("Sending comment notification");
@@ -384,7 +391,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case RATING:
-				this.LOGGER.info("Building RATING notification");
+				this.LOGGER.info("Building RATING notification, with data: {}", Arrays.toString(objectToSend));
 				
 				if (objectToSend.length < 2) {
 					throw new IllegalArgumentException("(SPPOTI or RATING) Object is missing");
@@ -408,7 +415,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case FRIENDSHIP:
-				this.LOGGER.info("Building FRIENDSHIP notification");
+				this.LOGGER.info("Building FRIENDSHIP notification, with data: {}", Arrays.toString(objectToSend));
 				
 				break;
 			case LIKE:

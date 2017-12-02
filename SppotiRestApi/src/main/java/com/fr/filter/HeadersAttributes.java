@@ -17,7 +17,7 @@ public enum HeadersAttributes
 	
 	ATTR_ORIGIN, ATTR_CREDENTIALS, ATTR_METHODS, ATTR_AGE, ATTR_HEADER, ATTR_EXPOSE_HEADERS;
 	
-	private static final String PATH = "/headerConfig.properties";
+	private static final String PATH = "/properties/headerConfig.properties";
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(HeadersAttributes.class);
 	

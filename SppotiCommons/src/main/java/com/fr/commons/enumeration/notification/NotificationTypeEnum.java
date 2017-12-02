@@ -1,102 +1,170 @@
 package com.fr.commons.enumeration.notification;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Properties;
+
 /**
  * Created by djenanewail on 2/11/17.
  */
 public enum NotificationTypeEnum
 {
-	
 	//FRIEND
-	FRIEND_REQUEST_SENT(51), FRIEND_REQUEST_ACCEPTED(52), FRIEND_REQUEST_REFUSED(53),
+	FRIEND_REQUEST_SENT, FRIEND_REQUEST_ACCEPTED, FRIEND_REQUEST_REFUSED,
 	
 	//COMMENT
-	X_COMMENTED_ON_YOUR_POST(21), X_LIKED_YOUR_COMMENT(22), X_TAGGED_YOU_IN_A_COMMENT(22),
+	X_COMMENTED_ON_YOUR_POST, X_LIKED_YOUR_COMMENT, X_TAGGED_YOU_IN_A_COMMENT,
 	
 	//POST
-	X_POSTED_ON_YOUR_PROFILE(11), X_LIKED_YOUR_POST(12), X_TAGGED_YOU_IN_A_POST(13),
+	X_POSTED_ON_YOUR_PROFILE, X_LIKED_YOUR_POST, X_TAGGED_YOU_IN_A_POST,
 	
 	//TEAM
-	X_INVITED_YOU_TO_JOIN_HIS_TEAM(31), X_ACCEPTED_YOUR_TEAM_INVITATION(32), X_REFUSED_YOUR_TEAM_INVITATION(33),
+	X_INVITED_YOU_TO_JOIN_HIS_TEAM, X_ACCEPTED_YOUR_TEAM_INVITATION, X_REFUSED_YOUR_TEAM_INVITATION,
 	
 	//SPPOTI
-	X_INVITED_YOU_TO_JOIN_HIS_SPPOTI(41), X_ACCEPTED_THE_SPPOTI_INVITATION(42), X_REFUSED_YOUR_SPPOTI_INVITATION(43),
-	SPPOTI_HAS_BEEN_EDITED(44),
+	X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, X_ACCEPTED_THE_SPPOTI_INVITATION, X_REFUSED_YOUR_SPPOTI_INVITATION,
+	SPPOTI_HAS_BEEN_EDITED,
 	
 	//Challenge
-	SPPOTI_ADMIN_CHALLENGED_YOU(61), SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE(62), SPPOTI_ADMIN_REFUSED_YOUR_CHALLENGE(63),
-	SPPOTI_ADMIN_CANCELED_HIS_CHALLENGE(64), TEAM_ADMIN_SENT_YOU_A_CHALLENGE(65), TEAM_ADMIN_REFUSED_YOUR_CHALLENGE(66),
-	TEAM_ADMIN_ACCEPTED_YOUR_CHALLENGE(67), TEAM_ADMIN_CANCELED_HIS_CHALLENGE(68),
+	SPPOTI_ADMIN_CHALLENGED_YOU, SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE, SPPOTI_ADMIN_REFUSED_YOUR_CHALLENGE,
+	SPPOTI_ADMIN_CANCELED_HIS_CHALLENGE, TEAM_ADMIN_SENT_YOU_A_CHALLENGE, TEAM_ADMIN_REFUSED_YOUR_CHALLENGE,
+	TEAM_ADMIN_ACCEPTED_YOUR_CHALLENGE, TEAM_ADMIN_CANCELED_HIS_CHALLENGE,
 	
 	//Score
-	SCORE_SET_AND_WAITING_FOR_APPROVAL(71), SCORE_HAS_BEEN_APPROVED(72), SCORE_HAS_BEEN_REFUSED(73),
+	SCORE_SET_AND_WAITING_FOR_APPROVAL, SCORE_HAS_BEEN_APPROVED, SCORE_HAS_BEEN_REFUSED,
 	
 	//RATING
-	YOU_HAVE_BEEN_RATED(81);
+	YOU_HAVE_BEEN_RATED;
 	
-	private final Integer notifType;
+	private static final String PATH = "/properties/firebase-notification.properties";
+	private static Properties properties;
 	
-	NotificationTypeEnum(final Integer notifType)
+	private static final Logger LOGGER = LoggerFactory.getLogger(NotificationTypeEnum.class);
+	
+	private Integer type;
+	private String property;
+	
+	private void init()
 	{
-		this.notifType = notifType;
+		if (properties == null) {
+			properties = new Properties();
+			try {
+				LOGGER.info("Reading property from {}", PATH);
+				properties.load(NotificationTypeEnum.class.getResourceAsStream(PATH));
+			} catch (final Exception e) {
+				LOGGER.info("Unable to load " + PATH + " file from classpath.", e);
+				System.exit(1);
+			}
+		}
+		final String value = (String) properties.get(this.toString());
+		final String[] fields = value.split(",");
+		this.type = Integer.valueOf(fields[0]);
+		this.property = fields[1];
+		LOGGER.info("Notif type properties has been populated with type:{} and property: {}", this.type, this.property);
 	}
 	
-	public Integer getNotifType()
+	public String getProperty()
 	{
-		return this.notifType;
+		if (this.property == null) {
+			init();
+		}
+		return this.property;
+	}
+	
+	@JsonValue
+	public Integer getType()
+	{
+		if (this.type == null) {
+			init();
+		}
+		return this.type;
 	}
 	
 	public boolean isTeamNotification() {
-		return this.notifType.equals(X_INVITED_YOU_TO_JOIN_HIS_TEAM.getNotifType()) ||
-				this.notifType.equals(X_ACCEPTED_YOUR_TEAM_INVITATION.getNotifType()) ||
-				this.notifType.equals(X_REFUSED_YOUR_TEAM_INVITATION.getNotifType());
+		return this.equals(X_INVITED_YOU_TO_JOIN_HIS_TEAM) || this.equals(X_ACCEPTED_YOUR_TEAM_INVITATION) ||
+				this.equals(X_REFUSED_YOUR_TEAM_INVITATION);
 	}
 	
 	public boolean isSppotiNotification() {
-		return this.notifType.equals(X_INVITED_YOU_TO_JOIN_HIS_SPPOTI.getNotifType()) ||
-				this.notifType.equals(X_ACCEPTED_THE_SPPOTI_INVITATION.getNotifType()) ||
-				this.notifType.equals(X_REFUSED_YOUR_SPPOTI_INVITATION.getNotifType()) ||
-				this.notifType.equals(SPPOTI_HAS_BEEN_EDITED.getNotifType());
+		return this.equals(X_INVITED_YOU_TO_JOIN_HIS_SPPOTI) || this.equals(X_ACCEPTED_THE_SPPOTI_INVITATION) ||
+				this.equals(X_REFUSED_YOUR_SPPOTI_INVITATION) || this.equals(SPPOTI_HAS_BEEN_EDITED);
 	}
 	
 	public boolean isRatingNotification() {
-		return this.notifType.equals(YOU_HAVE_BEEN_RATED.getNotifType());
+		return this.equals(YOU_HAVE_BEEN_RATED);
 	}
 	
 	public boolean isScoreNotification() {
-		return this.notifType.equals(SCORE_SET_AND_WAITING_FOR_APPROVAL.getNotifType()) ||
-				this.notifType.equals(SCORE_HAS_BEEN_APPROVED.getNotifType()) ||
-				this.notifType.equals(SCORE_HAS_BEEN_REFUSED.getNotifType());
+		return this.equals(SCORE_SET_AND_WAITING_FOR_APPROVAL) || this.equals(SCORE_HAS_BEEN_APPROVED) ||
+				this.equals(SCORE_HAS_BEEN_REFUSED);
 	}
 	
 	public boolean isChallengeNotification() {
-		return this.notifType.equals(SPPOTI_ADMIN_CHALLENGED_YOU.getNotifType()) ||
-				this.notifType.equals(SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE.getNotifType()) ||
-				this.notifType.equals(SPPOTI_ADMIN_REFUSED_YOUR_CHALLENGE.getNotifType()) ||
-				this.notifType.equals(SPPOTI_ADMIN_CANCELED_HIS_CHALLENGE.getNotifType()) ||
-				this.notifType.equals(TEAM_ADMIN_SENT_YOU_A_CHALLENGE.getNotifType()) ||
-				this.notifType.equals(TEAM_ADMIN_REFUSED_YOUR_CHALLENGE.getNotifType()) ||
-				this.notifType.equals(TEAM_ADMIN_ACCEPTED_YOUR_CHALLENGE.getNotifType()) ||
-				this.notifType.equals(TEAM_ADMIN_CANCELED_HIS_CHALLENGE.getNotifType());
+		return this.equals(SPPOTI_ADMIN_CHALLENGED_YOU) || this.equals(SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE) ||
+				this.equals(SPPOTI_ADMIN_REFUSED_YOUR_CHALLENGE) || this.equals(SPPOTI_ADMIN_CANCELED_HIS_CHALLENGE) ||
+				this.equals(TEAM_ADMIN_SENT_YOU_A_CHALLENGE) || this.equals(TEAM_ADMIN_REFUSED_YOUR_CHALLENGE) ||
+				this.equals(TEAM_ADMIN_ACCEPTED_YOUR_CHALLENGE) || this.equals(TEAM_ADMIN_CANCELED_HIS_CHALLENGE);
 	}
 	
-	
-	public boolean isPostNotification() {
-		return this.notifType.equals(X_POSTED_ON_YOUR_PROFILE.getNotifType()) ||
-				this.notifType.equals(X_LIKED_YOUR_POST.getNotifType()) ||
-				this.notifType.equals(X_TAGGED_YOU_IN_A_POST.getNotifType());
-	}
-	
-	
-	public boolean isCommentNotification() {
-		return this.notifType.equals(X_COMMENTED_ON_YOUR_POST.getNotifType()) ||
-				this.notifType.equals(X_LIKED_YOUR_COMMENT.getNotifType()) ||
-				this.notifType.equals(X_TAGGED_YOU_IN_A_COMMENT.getNotifType());
-	}
-	
-	
+	/**
+	 * FRIENDSHIP
+	 */
 	public boolean isFriendNotification() {
-		return this.notifType.equals(FRIEND_REQUEST_SENT.getNotifType()) ||
-				this.notifType.equals(FRIEND_REQUEST_ACCEPTED.getNotifType()) ||
-				this.notifType.equals(FRIEND_REQUEST_REFUSED.getNotifType());
+		return this.equals(FRIEND_REQUEST_SENT) || this.equals(FRIEND_REQUEST_ACCEPTED) ||
+				this.equals(FRIEND_REQUEST_REFUSED);
+	}
+	
+	public boolean isFriendRequestSent() {
+		return this.equals(FRIEND_REQUEST_SENT);
+	}
+	
+	public boolean isFriendRequestAccepted() {
+		return this.equals(FRIEND_REQUEST_SENT);
+	}
+	
+	public boolean isFriendRequestRefused() {
+		return this.equals(FRIEND_REQUEST_SENT);
+	}
+	
+	/**
+	 * POST
+	 */
+	public boolean isPostNotification() {
+		return this.equals(X_POSTED_ON_YOUR_PROFILE) || this.equals(X_LIKED_YOUR_POST) ||
+				this.equals(X_TAGGED_YOU_IN_A_POST);
+	}
+	
+	public boolean isSomeOnePostedOnProfile() {
+		return this.equals(X_POSTED_ON_YOUR_PROFILE);
+	}
+	
+	public boolean isSomeOnePostedOnYourProfile() {
+		return this.equals(X_POSTED_ON_YOUR_PROFILE);
+	}
+	
+	public boolean isSomeOneTaggedYouOnHisPost() {
+		return this.equals(X_POSTED_ON_YOUR_PROFILE);
+	}
+	
+	/**
+	 * COMMENT
+	 */
+	public boolean isCommentNotification() {
+		return this.equals(X_COMMENTED_ON_YOUR_POST) || this.equals(X_LIKED_YOUR_COMMENT) ||
+				this.equals(X_TAGGED_YOU_IN_A_COMMENT);
+	}
+	
+	public boolean isSomeOneCommentedOnProfile() {
+		return this.equals(X_POSTED_ON_YOUR_PROFILE);
+	}
+	
+	public boolean isSomeOneCommentedOnYourProfile() {
+		return this.equals(X_POSTED_ON_YOUR_PROFILE);
+	}
+	
+	public boolean isSomeOneTaggedYouOnHisComment() {
+		return this.equals(X_POSTED_ON_YOUR_PROFILE);
 	}
 }

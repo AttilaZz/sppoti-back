@@ -22,8 +22,10 @@ import javax.servlet.ServletException;
  */
 @SpringBootApplication
 @PropertySources({
-		@PropertySource(value = "classpath:pagination.properties", ignoreResourceNotFound = true, encoding = "UTF-8"),
-		@PropertySource(value = "classpath:headerConfig.properties", ignoreResourceNotFound = true, encoding = "UTF-8"),
+		@PropertySource(value = "classpath:properties/pagination.properties", ignoreResourceNotFound = true,
+				encoding = "UTF-8"),
+		@PropertySource(value = "classpath:properties/headerConfig.properties", ignoreResourceNotFound = true,
+				encoding = "UTF-8"),
 		@PropertySource(value = "classpath:email/email_fr.properties", ignoreResourceNotFound = true,
 				encoding = "UTF-8"),
 		@PropertySource(value = "classpath:email/email_en.properties", ignoreResourceNotFound = true,
@@ -31,18 +33,14 @@ import javax.servlet.ServletException;
 })
 public class SppotiApplication extends WebMvcConfigurationSupport implements ServletContextInitializer
 {
-	
-	/** CSRF properties. */
 	@Autowired
 	private CsrfProperties filterProperties;
 	
-	/** Main method to launch app. */
 	public static void main(final String[] args) throws Exception
 	{
 		SpringApplication.run(SppotiApplication.class, args);
 	}
 	
-	/** Init Spring security password encoder. */
 	@Bean
 	public PasswordEncoder passwordEncoder()
 	{

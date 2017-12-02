@@ -71,7 +71,7 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 		if (notification.getTo() != null) {
 			notificationDTO.setTo(this.notificationUserEntityToDto(notification.getTo()));
 		}
-		notificationDTO.setNotificationType(notification.getNotificationType().getNotifType());
+		notificationDTO.setNotificationType(notification.getNotificationType().getType());
 		notificationDTO.setStatus(notification.getStatus());
 		
 		//POST

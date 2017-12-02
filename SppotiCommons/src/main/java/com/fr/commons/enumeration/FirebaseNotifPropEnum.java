@@ -1,5 +1,4 @@
-package com.fr.filter;
-
+package com.fr.commons.enumeration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,17 +6,15 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 
 /**
- * Created by: Wail DJENANE on Jun 29, 2016
+ * Created by djenanewail on 12/1/17.
  */
-public enum HeadersValues
+public enum FirebaseNotifPropEnum
 {
+	ATTR_ORIGIN, ATTR_CREDENTIALS, ATTR_METHODS, ATTR_AGE, ATTR_HEADER, ATTR_EXPOSE_HEADERS;
 	
-	Origins, AllowCredentials, DenyCredentials, GetMethods, PostMethods, DeleteMethods, PutMethods, OptionsMethods,
-	AllMethods, Max_Age, Allowed_Headers, AccessControlExposeHeaders;
+	private static final String PATH = "/properties/firebase-notification.properties";
 	
-	private static final String PATH = "/properties/headerConfig.properties";
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(HeadersValues.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(FirebaseNotifPropEnum.class);
 	
 	private static Properties properties;
 	
@@ -28,7 +25,7 @@ public enum HeadersValues
 		if (properties == null) {
 			properties = new Properties();
 			try {
-				properties.load(HeadersValues.class.getResourceAsStream(PATH));
+				properties.load(FirebaseNotifPropEnum.class.getResourceAsStream(PATH));
 			} catch (final Exception e) {
 				LOGGER.info("Unable to load " + PATH + " file from classpath.", e);
 				System.exit(1);
@@ -44,5 +41,4 @@ public enum HeadersValues
 		}
 		return this.value;
 	}
-	
 }
