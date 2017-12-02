@@ -35,6 +35,11 @@ services:
 #    volumes:
 #        - redis_data:/data
 
+  aws-getway:
+    image: wdjenane/aws-getway
+    ports:
+        - 8181:8181
+
   sppoti:
       image: wdjenane/sppoti
 #      ports:
