@@ -12,15 +12,15 @@ import java.util.List;
 public interface LikeRepository extends JpaRepository<LikeContentEntity, Long>
 {
 	
-	LikeContentEntity findByPostIdAndUserId(Long poostId, Long userId);
+	LikeContentEntity findTopByPostIdAndUserId(Long poostId, Long userId);
 	
 	List<LikeContentEntity> getByPostUuidOrderByDatetimeCreatedDesc(String id, Pageable pageable1);
 	
-	LikeContentEntity getByUserIdAndPostUuid(Long userId, String postId);
+	LikeContentEntity findTopByUserIdAndPostUuid(Long userId, String postId);
 	
-	LikeContentEntity getByCommentId(Long id);
+	LikeContentEntity findTopByCommentId(Long id);
 	
-	Object getByUserIdAndCommentUuid(Long userId, String commentId);
+	LikeContentEntity findTopByUserIdAndCommentUuid(Long userId, String commentId);
 	
-	List<LikeContentEntity> getByCommentUuidOrderByDatetimeCreatedDesc(String id, Pageable pageable1);
+	List<LikeContentEntity> findByCommentUuidOrderByDatetimeCreatedDesc(String id, Pageable pageable1);
 }

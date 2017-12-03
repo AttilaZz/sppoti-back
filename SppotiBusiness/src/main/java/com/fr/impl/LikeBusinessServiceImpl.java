@@ -8,6 +8,8 @@ import com.fr.entities.UserEntity;
 import com.fr.service.LikeBusinessService;
 import com.fr.service.NotificationBusinessService;
 import com.fr.transformers.UserTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.fr.commons.enumeration.notification.NotificationObjectType.LIKE;
@@ -29,10 +32,11 @@ import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_LIK
 @Component
 class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements LikeBusinessService
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(LikeBusinessServiceImpl.class);
+	
 	private final UserTransformer userTransformer;
 	private final NotificationBusinessService notificationService;
 	
-	/** post likers list size. */
 	@Value("${key.likesPerPage}")
 	private int likeSize;
 	
@@ -48,6 +52,8 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	@Override
 	public LikeContentEntity likePost(final LikeContentEntity likeToSave)
 	{
+		this.LOGGER.info("Process triggered to like post: {}", likeToSave.getPost());
+		
 		return likeContent(likeToSave);
 	}
 	
@@ -58,6 +64,7 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	@Override
 	public void unLikePost(final String postId)
 	{
+		this.LOGGER.info("Process triggered to unlike post: {}", postId);
 		
 		final List<PostEntity> postToUnlike = this.postRepository.getByUuidAndDeletedFalse(postId);
 		
@@ -72,7 +79,7 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 		if (this.isPostAlreadyLikedByUser(postId, connectedUser.getId())) {
 			
 			final LikeContentEntity likeContent = this.likeRepository
-					.findByPostIdAndUserId(postToUnlike.get(0).getId(), connectedUser.getId());
+					.findTopByPostIdAndUserId(postToUnlike.get(0).getId(), connectedUser.getId());
 			this.likeRepository.delete(likeContent);
 			
 		}
@@ -85,7 +92,7 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	public boolean isPostAlreadyLikedByUser(final String postId, final Long userId)
 	{
 		
-		return this.likeRepository.getByUserIdAndPostUuid(userId, postId) != null;
+		return this.likeRepository.findTopByUserIdAndPostUuid(userId, postId) != null;
 		
 	}
 	
@@ -93,13 +100,14 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<UserDTO> getPostLikersList(final String id, final int page)
+	public List<UserDTO> getPostLikersList(final String postId, final int page)
 	{
+		this.LOGGER.info("Process triggered to get post <{}> likers list", postId);
 		
 		final Pageable pageable1 = new PageRequest(page, this.likeSize);
 		
 		final List<LikeContentEntity> likersData = this.likeRepository
-				.getByPostUuidOrderByDatetimeCreatedDesc(id, pageable1);
+				.getByPostUuidOrderByDatetimeCreatedDesc(postId, pageable1);
 		
 		return likersList(likersData);
 		
@@ -109,13 +117,14 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<UserDTO> getCommentLikersList(final String id, final int page)
+	public List<UserDTO> getCommentLikersList(final String commentId, final int page)
 	{
+		this.LOGGER.info("Process triggered to get comment <{}> likers list", commentId);
 		
 		final Pageable pageable1 = new PageRequest(page, this.likeSize);
 		
 		final List<LikeContentEntity> likersData = this.likeRepository
-				.getByCommentUuidOrderByDatetimeCreatedDesc(id, pageable1);
+				.findByCommentUuidOrderByDatetimeCreatedDesc(commentId, pageable1);
 		
 		return likersList(likersData);
 		
@@ -128,8 +137,9 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	@Override
 	public void unLikeComment(final CommentEntity commentEntityToUnlike)
 	{
+		this.LOGGER.info("Process triggered to unlike comment {}", commentEntityToUnlike);
 		
-		final LikeContentEntity likeContent = this.likeRepository.getByCommentId(commentEntityToUnlike.getId());
+		final LikeContentEntity likeContent = this.likeRepository.findTopByCommentId(commentEntityToUnlike.getId());
 		this.likeRepository.delete(likeContent);
 		
 	}
@@ -140,8 +150,7 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	@Override
 	public boolean isCommentAlreadyLikedByUser(final String commentId, final Long userId)
 	{
-		return this.likeRepository.getByUserIdAndCommentUuid(userId, commentId) != null;
-		
+		return Objects.nonNull(this.likeRepository.findTopByUserIdAndCommentUuid(userId, commentId));
 	}
 	
 	/**
@@ -151,9 +160,8 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	@Override
 	public void likeComment(final LikeContentEntity likeToSave)
 	{
-		
+		this.LOGGER.info("Process triggered to like comment {}", likeToSave.getComment());
 		likeContent(likeToSave);
-		
 	}
 	
 	/**
@@ -191,17 +199,8 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 		
 	}
 	
-	/**
-	 * Transform {@link LikeContentEntity} to {@link UserEntity}.
-	 *
-	 * @param likeContentEntityList
-	 * 		list of post or comment likers.
-	 *
-	 * @return list of {@link UserEntity}.
-	 */
 	private List<UserDTO> likersList(final List<LikeContentEntity> likeContentEntityList)
 	{
-		
 		return likeContentEntityList.stream().map(u -> this.userTransformer.modelToDto(u.getUser()))
 				.collect(Collectors.toList());
 	}
