@@ -208,10 +208,7 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 	 */
 	private void sendConfirmationEmail(final UserDTO userDTO, final String code, final TypeAccountValidation type)
 	{
-		
-		final Thread thread = new Thread(
-				() -> this.accountMailerService.sendCreateAccountConfirmationEmail(userDTO, code, type));
-		thread.start();
+		this.accountMailerService.sendCreateAccountConfirmationEmail(userDTO, code, type);
 	}
 	
 	/**
@@ -242,16 +239,16 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 		if (StringUtils.hasText(userDTO.getTimeZone())) {
 			connectedUser.setTimeZone(userDTO.getTimeZone());
 		}
-		if (userDTO.isFirstConnexion() != null) {
+		if (Objects.nonNull(userDTO.isFirstConnexion())) {
 			connectedUser.setFirstConnexion(false);
 		}
-		if (userDTO.getBirthDate() != null) {
+		if (Objects.nonNull(userDTO.getBirthDate())) {
 			connectedUser.setDateBorn(userDTO.getBirthDate());
 		}
-		if (userDTO.isProfileComplete() != null) {
+		if (Objects.nonNull(userDTO.isProfileComplete())) {
 			connectedUser.setProfileComplete(userDTO.isProfileComplete());
 		}
-		if (userDTO.getGender() != null) {
+		if (Objects.nonNull(userDTO.getGender())) {
 			connectedUser.setGender(userDTO.getGender());
 		}
 		if (StringUtils.hasText(userDTO.getPassword()) && StringUtils.isEmpty(userDTO.getEmail()) &&

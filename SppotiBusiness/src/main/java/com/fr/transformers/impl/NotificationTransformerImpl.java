@@ -19,38 +19,20 @@ import java.util.Optional;
 public class NotificationTransformerImpl extends AbstractTransformerImpl<NotificationDTO, NotificationEntity> implements
 		NotificationTransformer
 {
-	/** Team transformer. */
-	private final TeamTransformer teamTransformer;
-	/** USer transformer. */
-	private final UserTransformer userTransformer;
-	/** Sppoti transformer. */
-	private final SppotiTransformer sppotiTransformer;
-	/** Post transformer. */
-	private final PostTransformer postTransformer;
-	/** Comment transformer. */
-	private final CommentTransformer commentTransformer;
-	/** Score transformer. */
-	private final ScoreTransformer scoreTransformer;
-	/** Rating transformer. */
-	private final RatingTransformer ratingTransformer;
-	
 	@Autowired
-	public NotificationTransformerImpl(final TeamTransformerImpl teamTransformer,
-									   final UserTransformerImpl userTransformer,
-									   final SppotiTransformerImpl sppotiTransformer,
-									   final PostTransformer postTransformer,
-									   final CommentTransformer commentTransformer,
-									   final ScoreTransformer scoreTransformer,
-									   final RatingTransformer ratingTransformer)
-	{
-		this.teamTransformer = teamTransformer;
-		this.userTransformer = userTransformer;
-		this.sppotiTransformer = sppotiTransformer;
-		this.postTransformer = postTransformer;
-		this.commentTransformer = commentTransformer;
-		this.scoreTransformer = scoreTransformer;
-		this.ratingTransformer = ratingTransformer;
-	}
+	private TeamTransformer teamTransformer;
+	@Autowired
+	private UserTransformer userTransformer;
+	@Autowired
+	private SppotiTransformer sppotiTransformer;
+	@Autowired
+	private PostTransformer postTransformer;
+	@Autowired
+	private CommentTransformer commentTransformer;
+	@Autowired
+	private ScoreTransformer scoreTransformer;
+	@Autowired
+	private RatingTransformer ratingTransformer;
 	
 	/**
 	 * @param notification
@@ -133,6 +115,7 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 		dto.setLastName(model.getLastName());
 		dto.setUsername(model.getUsername());
 		dto.setGender(model.getGender());
+		dto.setId(model.getUuid());
 		
 		dto.setAvatar(resourceUserDto.getAvatar());
 		dto.setCover(resourceUserDto.getCover());

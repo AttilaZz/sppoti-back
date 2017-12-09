@@ -42,6 +42,11 @@ public class SppotiApplication extends WebMvcConfigurationSupport implements Ser
 	}
 	
 	@Bean
+	public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+		return new ApiVersionRequestMappingHandlerMapping("v");
+	}
+	
+	@Bean
 	public PasswordEncoder passwordEncoder()
 	{
 		return new BCryptPasswordEncoder();
@@ -52,13 +57,5 @@ public class SppotiApplication extends WebMvcConfigurationSupport implements Ser
 	{
 		servletContext.getSessionCookieConfig().setDomain(this.filterProperties.getDomain());
 		servletContext.getSessionCookieConfig().setSecure(this.filterProperties.isSecureConnexion());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-		return new ApiVersionRequestMappingHandlerMapping("v");
 	}
 }

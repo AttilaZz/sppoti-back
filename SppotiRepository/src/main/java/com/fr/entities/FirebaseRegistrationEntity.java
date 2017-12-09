@@ -1,5 +1,7 @@
 package com.fr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -16,6 +18,7 @@ public class FirebaseRegistrationEntity extends AbstractCommonEntity
 	private Boolean deviceConnected = Boolean.FALSE;
 	
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private UserEntity user;
 	

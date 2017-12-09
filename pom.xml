@@ -65,10 +65,19 @@
 
     <repositories>
         <repository>
-            <id>JBoss repository</id>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+            <id>spring-releases</id>
+            <name>Spring Milestone Repository</name>
+            <url>https://repo.spring.io/libs-release</url>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-releases</id>
+            <name>Spring Milestone Repository</name>
+            <url>https://repo.spring.io/libs-release</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <dependencyManagement>
         <dependencies>

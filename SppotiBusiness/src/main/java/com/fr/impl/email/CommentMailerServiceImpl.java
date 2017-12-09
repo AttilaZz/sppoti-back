@@ -1,6 +1,6 @@
 package com.fr.impl.email;
 
-import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.EmailUserDTO;
 import com.fr.service.UserParamService;
 import com.fr.service.email.CommentMailerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl imple
 	}
 	
 	@Override
-	public void sendEmailToPostContributors(final List<UserDTO> contributors) {
+	public void sendEmailToPostContributors(final List<EmailUserDTO> contributors) {
 		if (this.userParamService.canReceiveEmail()) {
 		
 		}

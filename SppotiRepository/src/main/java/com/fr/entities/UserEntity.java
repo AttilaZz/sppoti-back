@@ -149,6 +149,13 @@ public class UserEntity extends AbstractCommonEntity
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
 	private List<FirebaseRegistrationEntity> firebaseRegistrationKeys;
 	
+	public UserEntity() {
+	}
+	
+	public UserEntity(final Long id) {
+		this.id = id;
+	}
+	
 	private transient Long connectedUserId;
 	
 	public AccountParamEntity getParamEntity() {

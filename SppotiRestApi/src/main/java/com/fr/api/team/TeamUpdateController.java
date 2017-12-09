@@ -26,10 +26,8 @@ import org.springframework.web.bind.annotation.*;
 class TeamUpdateController
 {
 	
-	/** Team controller service. */
 	private TeamBusinessService teamControllerService;
 	
-	/** Init controller services. */
 	@Autowired
 	void setTeamControllerService(final TeamBusinessService teamControllerService)
 	{

@@ -1,7 +1,5 @@
 package com.fr.entities;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fr.commons.enumeration.notification.NotificationStatus;
 import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 
@@ -13,16 +11,14 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "NOTIFICATION")
-@JsonInclude(Include.NON_EMPTY)
 public class NotificationEntity extends AbstractCommonEntity
 {
-	
 	@ManyToOne
-	@JoinColumn(name = "from_user_id")
+	@JoinColumn(name = "FROM_USER_ID", nullable = false, referencedColumnName = "ID")
 	private UserEntity from;
 	
 	@ManyToOne
-	@JoinColumn(name = "to_user_id")
+	@JoinColumn(name = "TO_USER_ID", nullable = false, referencedColumnName = "ID")
 	private UserEntity to;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -30,34 +26,35 @@ public class NotificationEntity extends AbstractCommonEntity
 	private Date creationDate = new Date();
 	
 	@Enumerated(EnumType.STRING)
+	@Column(name = "NOTIFICATION_TYPE", nullable = false)
 	private NotificationTypeEnum notificationType;
 	
-	@Column(nullable = false)
+	@Column(name = "STATUS", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private NotificationStatus status = NotificationStatus.UNREAD;
 	
 	@ManyToOne
-	@JoinColumn(name = "team_id")
+	@JoinColumn(name = "TEAM_ID")
 	private TeamEntity team;
 	
 	@ManyToOne
-	@JoinColumn(name = "sppoti_id")
+	@JoinColumn(name = "SPPOTI_ID")
 	private SppotiEntity sppoti;
 	
 	@ManyToOne
-	@JoinColumn(name = "post_id")
+	@JoinColumn(name = "POST_ID")
 	private PostEntity post;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "comment_id")
+	@ManyToOne
+	@JoinColumn(name = "COMMENT_ID")
 	private CommentEntity comment;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "score_id")
+	@ManyToOne
+	@JoinColumn(name = "SCORE_ID")
 	private ScoreEntity score;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "rating_id")
+	@ManyToOne
+	@JoinColumn(name = "RATING_ID")
 	private RatingEntity rating;
 	
 	/**

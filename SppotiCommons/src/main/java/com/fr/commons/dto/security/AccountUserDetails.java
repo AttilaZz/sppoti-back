@@ -137,7 +137,7 @@ public class AccountUserDetails implements MyUserDetails
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean hasActivatedEmails() {
+	public boolean hasActivatedEmail() {
 		return this.account.getCanReceiveEmails();
 	}
 	

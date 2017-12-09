@@ -35,6 +35,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.fr.commons.enumeration.notification.NotificationObjectType.CHALLENGE;
 import static com.fr.commons.enumeration.notification.NotificationObjectType.SPPOTI;
 import static com.fr.commons.enumeration.notification.NotificationTypeEnum.*;
 
@@ -171,7 +172,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				//Notification
 				this.notificationService
 						.saveAndSendNotificationToUsers(savedSppoti.getUserSppoti(), m.getUser(), SPPOTI,
-								X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, null, savedSppoti);
+								X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, savedSppoti);
 				
 			}
 		});
@@ -426,8 +427,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	 */
 	@Transactional
 	@Override
-	public SppotiDTO sendChallengeToSppotiHostTeam(final String sppotiId, final String teamId,
-												   final Long connectedUserId)
+	public SppotiDTO sendChallengeToSppotiHostTeam(final String sppotiId, final String teamId)
 	{
 		//Check if team exist.
 		final List<TeamEntity> teamEntities = this.teamRepository.findByUuidAndDeletedFalse(teamId);
@@ -437,7 +437,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		final TeamEntity challengeTeam = teamEntities.get(0);
 		
 		//check if user has rights to send challenge. (team adverse admin)
-		if (!connectedUserId.equals(this.teamMembersRepository
+		if (!getConnectedUserId().equals(this.teamMembersRepository
 				.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(teamId, SppotiUtils.statusToFilter())
 				.getUser().getId())) {
 			throw new NotAdminException("You have to be the admin of the team to send challenge");
@@ -467,13 +467,15 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		}
 		
 		//check if adverse team members are not in conflict with team host members
-		sppotiEntity.getTeamHostEntity().getTeamMembers()
-				.forEach(hostMember -> challengeTeam.getTeamMembers().forEach(adverseMember -> {
-					if (hostMember.getUser().getId().equals(adverseMember.getUser().getId())) {
-						throw new BusinessGlobalException(
-								"Conflict found between host team members and adverse team members");
-					}
-				}));
+		sppotiEntity.getTeamHostEntity().getTeamMembers().stream()
+				.filter(m -> !SppotiUtils.statusToFilter().contains(m.getStatus())).forEach(
+				hostMember -> challengeTeam.getTeamMembers().stream()
+						.filter(m -> !SppotiUtils.statusToFilter().contains(m.getStatus())).forEach(adverseMember -> {
+							if (hostMember.getUser().getId().equals(adverseMember.getUser().getId())) {
+								throw new BusinessGlobalException(
+										"Conflict found between host team members and adverse team members");
+							}
+						}));
 		
 		final SppotiAdverseEntity adverse = new SppotiAdverseEntity();
 		adverse.setSppoti(sppotiEntity);
@@ -484,8 +486,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		final SppotiEntity savedSppoti = this.sppotiRepository.save(sppotiEntity);
 		
 		//Send notification to sppoti admin
-		this.notificationService.saveAndSendNotificationToUsers(null, sppotiEntity.getUserSppoti(), SPPOTI,
-				TEAM_ADMIN_SENT_YOU_A_CHALLENGE, adverse.getTeam(), sppotiEntity);
+		this.notificationService
+				.saveAndSendNotificationToUsers(getConnectedUser(), sppotiEntity.getUserSppoti(), SPPOTI,
+						TEAM_ADMIN_SENT_YOU_A_CHALLENGE, adverse.getTeam(), sppotiEntity);
 		
 		return getSppotiResponse(savedSppoti);
 	}
@@ -534,7 +537,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 										if (m.getAdmin()) {
 											this.notificationService
 													.saveAndSendNotificationToUsers(sp.getUserSppoti(), m.getUser(),
-															SPPOTI, SPPOTI_ADMIN_REFUSED_YOUR_CHALLENGE,
+															CHALLENGE, SPPOTI_ADMIN_REFUSED_YOUR_CHALLENGE,
 															teamAdverse.getTeam(), sp);
 										}
 									});
@@ -544,7 +547,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 										if (m.getAdmin()) {
 											this.notificationService
 													.saveAndSendNotificationToUsers(sp.getUserSppoti(), m.getUser(),
-															SPPOTI, SPPOTI_ADMIN_CANCELED_HIS_CHALLENGE,
+															CHALLENGE, SPPOTI_ADMIN_CANCELED_HIS_CHALLENGE,
 															teamAdverse.getTeam(), sp);
 										}
 									});
@@ -579,8 +582,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 								usersToNotify.forEach(m -> {
 									if (!sp.getUserSppoti().getUuid().equals(m.getUser().getUuid())) {
 										this.notificationService
-												.saveAndSendNotificationToUsers(sp.getUserSppoti(), m.getUser(), SPPOTI,
-														SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE, teamAdverse.getTeam(), sp);
+												.saveAndSendNotificationToUsers(sp.getUserSppoti(), m.getUser(),
+														CHALLENGE, SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE,
+														teamAdverse.getTeam(), sp);
 									}
 								});
 							}

@@ -77,6 +77,13 @@ public class PostEntity extends AbstractCommonEntity implements Comparable<PostE
 	@Column(name = "time_zone")
 	private String timeZone;
 	
+	public PostEntity() {
+	}
+	
+	public PostEntity(final Long id) {
+		this.id = id;
+	}
+	
 	/**
 	 * to get trace of the connected user when using transformers.
 	 */

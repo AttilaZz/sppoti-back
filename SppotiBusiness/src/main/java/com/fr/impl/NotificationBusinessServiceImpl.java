@@ -28,6 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
@@ -65,6 +66,11 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 	private FirebaseRegistrationRepository firebaseRegistrationRepository;
 	@Autowired
 	private FirebaseAdminService firebaseAdminService;
+	
+	@Autowired
+	private SimpMessagingTemplate messagingTemplate;
+	
+	private final String TOPIC = "notify";
 	
 	/**
 	 * {@inheritDoc}
@@ -146,18 +152,18 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		
 		final NotificationEntity notification = buildNotificationEntity(notificationTypeEnum, sender, userTo,
 				notificationObjectType, dataToSendInNotification);
-		
-		notification.setConnectedUserId(getConnectedUserId());
-		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(notification);
+		final NotificationEntity savedNotification = this.notificationRepository.save(notification);
+		this.notificationRepository.flush();
+		savedNotification.setConnectedUserId(getConnectedUserId());
+		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(savedNotification);
 		sendNotificationToSubscribedUsers(sender, userTo.getEmail(), notificationDTO, notificationTypeEnum);
-		
-		this.notificationRepository.saveAndFlush(notification);
 	}
 	
 	private void sendNotificationToSubscribedUsers(final UserEntity sender, final String email,
 												   final NotificationDTO notificationDTO,
 												   final NotificationTypeEnum notificationTypeEnum)
 	{
+		this.messagingTemplate.convertAndSendToUser(email, "/queue/" + this.TOPIC, notificationDTO);
 		
 		if (this.isFirebaseActivated) {
 			final UserEntity userToReceiveNotification = this.userRepository
@@ -245,8 +251,8 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 	{
 		final NotificationEntity notification = new NotificationEntity();
 		notification.setNotificationType(notificationType);
-		notification.setFrom(sender);
-		notification.setTo(userTo);
+		notification.setFrom(new UserEntity(sender.getId()));
+		notification.setTo(new UserEntity(userTo.getId()));
 		
 		final Long connectedUser = sender.getId();
 		final SppotiEntity sppoti;
@@ -262,7 +268,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 					throw new IllegalArgumentException("Post Object is missing");
 				}
 				
-				if (objectToSend[0] == null) {
+				if (Objects.isNull(objectToSend[0])) {
 					throw new EntityNotFoundException("POST is missing");
 				}
 				if (!(objectToSend[0] instanceof PostEntity)) {
@@ -281,7 +287,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 					throw new IllegalArgumentException("TEAM Object is missing");
 				}
 				
-				if (objectToSend[0] == null) {
+				if (Objects.isNull(objectToSend[0])) {
 					throw new EntityNotFoundException("TEAM is missing");
 				}
 				if (!(objectToSend[0] instanceof TeamEntity)) {
@@ -309,7 +315,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 					throw new IllegalArgumentException("SPPOTI Object is missing");
 				}
 				
-				if (objectToSend[0] == null) {
+				if (Objects.isNull(objectToSend[0])) {
 					throw new BusinessGlobalException("SPPOTI is missing");
 				}
 				
@@ -318,6 +324,38 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				}
 				
 				sppoti = (SppotiEntity) objectToSend[0];
+				sppoti.setConnectedUserId(connectedUser);
+				notification.setSppoti(sppoti);
+				
+				break;
+			case CHALLENGE:
+				this.LOGGER.info("Building CHALLENGE notification, with data: {}", Arrays.toString(objectToSend));
+				
+				if (objectToSend.length < 2) {
+					throw new IllegalArgumentException("SPPOTI Object is missing");
+				}
+				
+				if (Objects.isNull(objectToSend[0])) {
+					throw new BusinessGlobalException("TEAM is missing");
+				}
+				
+				if (!(objectToSend[0] instanceof TeamEntity)) {
+					throw new ClassCastException("TEAM-ENTITY is expected");
+				}
+				
+				team = (TeamEntity) objectToSend[0];
+				team.setConnectedUserId(connectedUser);
+				notification.setTeam(team);
+				
+				if (Objects.isNull(objectToSend[1])) {
+					throw new BusinessGlobalException("SPPOTI is missing");
+				}
+				
+				if (!(objectToSend[1] instanceof SppotiEntity)) {
+					throw new ClassCastException("SPPOTI-ENTITY is expected");
+				}
+				
+				sppoti = (SppotiEntity) objectToSend[1];
 				sppoti.setConnectedUserId(connectedUser);
 				notification.setSppoti(sppoti);
 				
@@ -331,7 +369,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				}
 				
 				//				team
-				if (objectToSend[0] == null) {
+				if (Objects.isNull(objectToSend[0])) {
 					throw new EntityNotFoundException("TEAM is missing");
 				}
 				if (!(objectToSend[0] instanceof TeamEntity)) {
@@ -342,7 +380,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				notification.setTeam(team);
 				
 				//				sppoti
-				if (objectToSend[1] == null) {
+				if (Objects.isNull(objectToSend[1])) {
 					throw new BusinessGlobalException("SPPOTI is missing");
 				}
 				if (!(objectToSend[1] instanceof SppotiEntity)) {
@@ -353,7 +391,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				notification.setSppoti(sppoti);
 				
 				//				score
-				if (objectToSend[2] == null) {
+				if (Objects.isNull(objectToSend[2])) {
 					throw new BusinessGlobalException(
 							"SCORE is missing OR the passed object is not an instance of SCORE-ENTITY");
 				}
@@ -373,7 +411,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 					throw new IllegalArgumentException("(COMMENT or POST) Object is missing");
 				}
 				
-				if (objectToSend[0] == null || !(objectToSend[0] instanceof PostEntity)) {
+				if (Objects.isNull(objectToSend[0]) || !(objectToSend[0] instanceof PostEntity)) {
 					throw new BusinessGlobalException(
 							"POST is missing OR the passed object is not an instance of SPPOTI-ENTITY");
 				}
@@ -381,7 +419,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				post.setConnectedUserId(connectedUser);
 				notification.setPost(post);
 				
-				if (objectToSend[1] == null || !(objectToSend[1] instanceof CommentEntity)) {
+				if (Objects.isNull(objectToSend[1]) || !(objectToSend[1] instanceof CommentEntity)) {
 					throw new BusinessGlobalException(
 							"COMMENT is missing OR the passed object is not an instance of COMMENT-ENTITY");
 				}
@@ -397,7 +435,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 					throw new IllegalArgumentException("(SPPOTI or RATING) Object is missing");
 				}
 				
-				if (objectToSend[0] == null || !(objectToSend[0] instanceof SppotiEntity)) {
+				if (Objects.isNull(objectToSend[0]) || !(objectToSend[0] instanceof SppotiEntity)) {
 					throw new BusinessGlobalException(
 							"SPPOTI is missing OR the passed object is not an instance of SPPOTI-ENTITY");
 				}
@@ -405,7 +443,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				sppoti.setConnectedUserId(connectedUser);
 				notification.setSppoti(sppoti);
 				
-				if (objectToSend[1] == null || !(objectToSend[1] instanceof RatingEntity)) {
+				if (Objects.isNull(objectToSend[1]) || !(objectToSend[1] instanceof RatingEntity)) {
 					throw new BusinessGlobalException(
 							"RATING is missing OR the passed object is not an instance of RATING-ENTITY");
 				}
@@ -419,33 +457,32 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 				
 				break;
 			case LIKE:
-				this.LOGGER.info("Building LIKE notifiction");
+				this.LOGGER.info("Building LIKE notification");
 				
-				if (objectToSend.length < 4) {
-					throw new IllegalArgumentException("(COMMENT or POST) Object is missing");
+				if (objectToSend.length == 1 && Objects.isNull(objectToSend[0])) {
+					throw new BusinessGlobalException("POSt object is needed to send like notification");
 				}
 				
-				boolean hasComment = true;
-				boolean hasPost = true;
-				
-				if (objectToSend[2] == null || !(objectToSend[2] instanceof PostEntity)) {
-					hasPost = false;
-				}
-				if (objectToSend[3] == null || !(objectToSend[3] instanceof CommentEntity)) {
-					hasComment = false;
-				}
-				if (!hasComment && !hasPost) {
-					throw new BusinessGlobalException("At least COMMENT or POST are needed to send like notification");
+				if (objectToSend.length == 2 && Objects.isNull(objectToSend[0]) && Objects.isNull(objectToSend[1])) {
+					throw new BusinessGlobalException("Comment object is needed to send like notification");
 				}
 				
-				if (hasComment) {
-					comment = (CommentEntity) objectToSend[3];
-					comment.setConnectedUserId(connectedUser);
-					notification.setComment(comment);
-				} else {
-					post = (PostEntity) objectToSend[2];
+				if (objectToSend.length == 1 && objectToSend[0] instanceof PostEntity) {
+					post = (PostEntity) objectToSend[0];
 					post.setConnectedUserId(connectedUser);
 					notification.setPost(post);
+					this.LOGGER.info("Sending like notification for the post: {}", post.getUuid());
+					
+				} else if (objectToSend.length == 2 && objectToSend[0] instanceof PostEntity &&
+						objectToSend[1] instanceof CommentEntity) {
+					post = (PostEntity) objectToSend[0];
+					post.setConnectedUserId(connectedUser);
+					notification.setPost(post);
+					
+					comment = (CommentEntity) objectToSend[1];
+					comment.setConnectedUserId(connectedUser);
+					notification.setComment(comment);
+					this.LOGGER.info("Sending like notification for the comment: {}", comment.getUuid());
 				}
 				
 				break;
@@ -463,6 +500,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 	@Transactional
 	public void checkForTagNotification(final PostEntity postEntity, final CommentEntity commentEntity)
 	{
+		this.LOGGER.info("Check for tags in the comment text has been started ...");
 		
 		String content = null;
 		if (postEntity != null) {

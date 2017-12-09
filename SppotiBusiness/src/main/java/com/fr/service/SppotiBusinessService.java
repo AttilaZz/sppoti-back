@@ -113,7 +113,7 @@ public interface SppotiBusinessService extends AbstractBusinessService
 	 * @param teamId
 	 * 		team id.
 	 */
-	SppotiDTO sendChallengeToSppotiHostTeam(String sppotiId, String teamId, Long connectedUserId);
+	SppotiDTO sendChallengeToSppotiHostTeam(String sppotiId, String teamId);
 	
 	/**
 	 * rating many sppoters at a time.

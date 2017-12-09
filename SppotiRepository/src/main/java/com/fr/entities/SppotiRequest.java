@@ -1,5 +1,6 @@
 package com.fr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import javax.persistence.*;
@@ -18,10 +19,12 @@ public class SppotiRequest extends AbstractCommonEntity
 	private final Date datetimeCreated = new Date();
 	
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "user_id")
 	private UserEntity user;
 	
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "sppoti_id")
 	private SppotiEntity sppoti;
 	

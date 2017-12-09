@@ -1,7 +1,6 @@
 package com.fr.api.sppoti;
 
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
@@ -26,16 +25,8 @@ import org.springframework.web.bind.annotation.*;
 @ApiVersion("1")
 class SppotiUpdateController
 {
-	
-	/** Sppoti controller service. */
-	private SppotiBusinessService sppotiControllerService;
-	
-	/** Init service. */
 	@Autowired
-	void setSppotiControllerService(final SppotiBusinessService sppotiControllerService)
-	{
-		this.sppotiControllerService = sppotiControllerService;
-	}
+	private SppotiBusinessService sppotiControllerService;
 	
 	/**
 	 * Update sppoti information.
@@ -98,13 +89,10 @@ class SppotiUpdateController
 	 * Send a challenge.
 	 */
 	@PutMapping("/challenge/send/{sppotiId}/{teamId}")
-	ResponseEntity<SppotiDTO> sendChallenge(@PathVariable final String sppotiId, @PathVariable final String teamId,
-											final Authentication authentication)
+	ResponseEntity<SppotiDTO> sendChallenge(@PathVariable final String sppotiId, @PathVariable final String teamId)
 	{
 		
-		final AccountUserDetails accountUserDetails = (AccountUserDetails) authentication.getPrincipal();
-		
-		this.sppotiControllerService.sendChallengeToSppotiHostTeam(sppotiId, teamId, accountUserDetails.getId());
+		this.sppotiControllerService.sendChallengeToSppotiHostTeam(sppotiId, teamId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}

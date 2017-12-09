@@ -90,32 +90,34 @@ abstract class ApplicationMailerServiceImpl implements ApplicationMailerService
 	protected void prepareAndSendEmail(final String to, final String subject, final String content,
 									   final List<MailResourceContent> resourceContent)
 	{
-		
-		final MimeMessage mail = this.sender.createMimeMessage();
-		
-		try {
-			final MimeMessageHelper helper = new MimeMessageHelper(mail, true, CHARSET_NAME);
+		final Thread thread = new Thread(() -> {
+			final MimeMessage mail = this.sender.createMimeMessage();
 			
-			helper.setFrom(this.mailProperties.getFrom());
-			helper.setTo(to);
-			helper.setSubject(subject);
-			
-			helper.setText(content, true);
-			
-			//add image resource
-			for (final MailResourceContent r : resourceContent) {
-				// Add the inline image, referenced from the HTML code as "cid:${imageResourceName}"
-				final InputStreamSource imageSource = getImageResource(r);
-				helper.addInline(r.getResourceName(), imageSource, IMAGE_PNG);
+			try {
+				final MimeMessageHelper helper = new MimeMessageHelper(mail, true, CHARSET_NAME);
+				
+				helper.setFrom(this.mailProperties.getFrom());
+				helper.setTo(to);
+				helper.setSubject(subject);
+				
+				helper.setText(content, true);
+				
+				//add image resource
+				for (final MailResourceContent r : resourceContent) {
+					// Add the inline image, referenced from the HTML code as "cid:${imageResourceName}"
+					final InputStreamSource imageSource = getImageResource(r);
+					helper.addInline(r.getResourceName(), imageSource, IMAGE_PNG);
+				}
+				
+				this.sender.send(mail);
+				LOGGER.info("Email has been sent successfully to user {}", to);
+			} catch (final MessagingException | MailAuthenticationException e) {
+				LOGGER.error(ERROR_SENDING_MAIL, e);
+			} catch (final IOException e) {
+				LOGGER.error(ERROR_OPENING_RESOURCE_FILE, e);
 			}
-			
-			this.sender.send(mail);
-			LOGGER.info("Email has been sent successfully to user {}", to);
-		} catch (final MessagingException | MailAuthenticationException e) {
-			LOGGER.error(ERROR_SENDING_MAIL, e);
-		} catch (final IOException e) {
-			LOGGER.error(ERROR_OPENING_RESOURCE_FILE, e);
-		}
+		});
+		thread.start();
 	}
 	
 	private InputStreamSource getImageResource(final MailResourceContent resourceContent) throws IOException

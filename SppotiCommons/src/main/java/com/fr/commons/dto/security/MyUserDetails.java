@@ -16,7 +16,7 @@ public interface MyUserDetails extends UserDetails
 	
 	String getTimeZone();
 	
-	boolean hasActivatedEmails();
+	boolean hasActivatedEmail();
 	
 	boolean hasActivatedNotifications();
 	

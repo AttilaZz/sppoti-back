@@ -15,16 +15,16 @@ import java.util.List;
  */
 public interface CommentBusinessService extends AbstractBusinessService
 {
-
-    CommentDTO saveComment(CommentEntity newCommentEntity, Long userId, String postId);
-
-    boolean deleteComment(CommentEntity commentEntity);
-
+	
+	CommentDTO saveComment(CommentDTO commentDTO);
+	
+	boolean deleteComment(CommentEntity commentEntity);
+	
 	CommentEntity findComment(String id);
-
+	
 	boolean updateComment(EditHistoryEntity commentEditRow);
 	
 	List<CommentDTO> getPostCommentsFromLastId(String postId, int page, Long userId);
-
+	
 	List<ContentEditedResponseDTO> getAllCommentHistory(String id, int page);
 }

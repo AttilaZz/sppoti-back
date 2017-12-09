@@ -1,5 +1,7 @@
 package com.fr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -19,6 +21,7 @@ public class AccountParamEntity extends AbstractCommonEntity
 	private boolean canReceiveNotification;
 	
 	@OneToOne(mappedBy = "paramEntity")
+	@JsonIgnore
 	private UserEntity user;
 	
 	public AccountParamEntity() {

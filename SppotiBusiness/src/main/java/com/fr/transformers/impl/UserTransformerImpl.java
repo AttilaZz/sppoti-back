@@ -199,11 +199,7 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 	 */
 	@Override
 	public List<UserDTO> modelToDto(final List<UserEntity> models) {
-		return models.stream().map(u -> {
-			UserDTO dto = this.modelToDto(u);
-			u.setPassword(null);
-			return dto;
-		}).collect(Collectors.toList());
+		return models.stream().map(this::modelToDto).collect(Collectors.toList());
 	}
 	
 	/**

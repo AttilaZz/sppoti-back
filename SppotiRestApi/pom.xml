@@ -22,7 +22,10 @@
     <artifactId>SppotiRestApi</artifactId>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.springframework.mobile</groupId>
+            <artifactId>spring-mobile-device</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.sppoti</groupId>
             <artifactId>SppotiBusiness</artifactId>

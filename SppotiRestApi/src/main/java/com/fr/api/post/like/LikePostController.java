@@ -27,32 +27,14 @@ import org.springframework.web.bind.annotation.RestController;
 @ApiVersion("1")
 class LikePostController
 {
-	
-	/** Post service. */
-	private final PostBusinessService postDataService;
-	
-	/** like service. */
-	private final LikeBusinessService likeControllerService;
-
 	private final Logger LOGGER = LoggerFactory.getLogger(LikePostController.class);
-
-	/** Init services. */
-	@Autowired
-	public LikePostController(final PostBusinessService postDataService,
-							  final LikeBusinessService likeControllerService)
-	{
-		this.postDataService = postDataService;
-		this.likeControllerService = likeControllerService;
-	}
 	
-	/**
-	 * @param id
-	 * 		post id.
-	 * @param authentication
-	 * 		spring auth.
-	 *
-	 * @return Like post
-	 */
+	@Autowired
+	private PostBusinessService postDataService;
+	
+	@Autowired
+	private LikeBusinessService likeControllerService;
+	
 	@PutMapping(value = "/post/{id}")
 	ResponseEntity<Void> likePost(@PathVariable("id") final String id, final Authentication authentication)
 	{
@@ -66,8 +48,7 @@ class LikePostController
 		if (postToLike == null || user == null) {
 			
 			if (postToLike == null) {
-				// post not found
-				this.LOGGER.info("LIKE_POST: Failed to retreive the post");
+				this.LOGGER.info("LIKE_POST: Failed to retrieve the post");
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			} else {
 				this.LOGGER.info("LIKE_POST: trying to like a non existing post");
@@ -84,8 +65,8 @@ class LikePostController
 			try {
 				this.likeControllerService.likePost(likeToSave);
 				
-				this.LOGGER.info("LIKE_POST: PostEntity with id:" + id + " has been liked by: " + user.getFirstName() +
-						" " + user.getLastName());
+				this.LOGGER.info("LIKE_POST: PostEntity with id:{} has been liked by: {} {}", id, user.getFirstName(),
+						user.getLastName());
 				return new ResponseEntity<>(HttpStatus.OK);
 				
 			} catch (final Exception e) {

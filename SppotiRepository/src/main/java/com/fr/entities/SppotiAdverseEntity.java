@@ -1,5 +1,6 @@
 package com.fr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import javax.persistence.*;
@@ -18,10 +19,12 @@ public class SppotiAdverseEntity extends AbstractCommonEntity
 	private GlobalAppStatusEnum status = GlobalAppStatusEnum.PENDING;
 	
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "sppoti_id", nullable = false)
 	private SppotiEntity sppoti;
 	
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "team_id", nullable = false)
 	private TeamEntity team;
 	

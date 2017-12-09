@@ -14,7 +14,7 @@ public class UserParamServiceImpl implements UserParamService
 {
 	@Override
 	public boolean canReceiveEmail() {
-		return getConnectedUserInfo().hasActivatedEmails();
+		return getConnectedUserInfo().hasActivatedEmail();
 	}
 	
 	@Override

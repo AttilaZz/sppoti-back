@@ -24,10 +24,8 @@ import java.util.List;
 class NotificationController
 {
 	
-	/** Notification service. */
 	private NotificationBusinessService notificationControllerService;
 	
-	/** Init notif service. */
 	@Autowired
 	void setNotificationControllerService(final NotificationBusinessService notificationControllerService)
 	{

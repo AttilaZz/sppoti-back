@@ -76,7 +76,7 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 	public void sendAddSppotiEmail(final SppotiDTO Sppoti)
 	{
 		if (this.userParamService.canReceiveEmail()) {
-			
+		
 		}
 	}
 	
@@ -84,7 +84,6 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 	public void sendJoinSppotiEmailToSppoters(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
 		if (this.userParamService.canReceiveEmail()) {
-			
 			final Context context = new Context();
 			context.setVariable("sentToValidationLinkMessage", this.joinMessage);
 			context.setVariable("requestFromSppotiAdmin", true);
@@ -176,7 +175,6 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 									 final SppotiDTO Sppoti, final String subject, final String joinSppotiLink,
 									 final String templatePath, final List<MailResourceContent> resourceContent)
 	{
-		
 		context.setVariable("title", to.getFirstName());
 		
 		context.setVariable("sentFromName", from.getFirstName() + " " + from.getLastName());

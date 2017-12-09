@@ -55,7 +55,7 @@ public class SppotiExceptionHandler
 		} else {
 			this.LOGGER.error(e.getMessage());
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 	}
 	
 	/**

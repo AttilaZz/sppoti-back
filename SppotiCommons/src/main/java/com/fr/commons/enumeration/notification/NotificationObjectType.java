@@ -5,7 +5,7 @@ package com.fr.commons.enumeration.notification;
  */
 public enum NotificationObjectType
 {
-	TEAM(0), SPPOTI(1), POST(2), COMMENT(3), SCORE(4), RATING(5), FRIENDSHIP(6), LIKE(7);
+	TEAM(0), SPPOTI(1), POST(2), COMMENT(3), SCORE(4), RATING(5), FRIENDSHIP(6), LIKE(7), CHALLENGE(8);
 	
 	private final int positionInNotificationEntity;
 	

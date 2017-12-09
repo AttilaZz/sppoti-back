@@ -128,14 +128,12 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 	{
 		if (postEditAddress != null) {
 			
-			final List<PostEntity> post = this.postRepository.getByUuidAndDeletedFalse(postId);
-			if (post == null) {
-				throw new IllegalArgumentException("Trying to update non existing post");
-			} else {
-				post.get(0).setAddresses(postEditAddress);
-			}
+			final Optional<PostEntity> optional = this.postRepository.findTopByUuidAndDeletedFalse(postId);
 			
-			this.postRepository.save(post);
+			optional.ifPresent(p -> this.postRepository.save(p));
+			
+			optional.orElseThrow(() -> new IllegalArgumentException("Trying to update non existing post"));
+			
 		} else {
 			this.editHistoryRepository.save(postEditRow);
 		}
@@ -148,15 +146,17 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 	@Override
 	public void deletePost(final String postId)
 	{
+		this.LOGGER.info("Deleting post: {}", postId);
 		
-		final List<PostEntity> postEntity = this.postRepository.getByUuidAndDeletedFalse(postId);
+		final Optional<PostEntity> optional = this.postRepository.findTopByUuidAndDeletedFalse(postId);
 		
-		if (postEntity.isEmpty()) {
-			throw new EntityNotFoundException("Post (" + postId + ") not found");
-		}
+		optional.orElseThrow(() -> new EntityNotFoundException("Post not found"));
 		
-		postEntity.get(0).setDeleted(true);
-		this.postRepository.save(postEntity.get(0));
+		optional.ifPresent(p -> {
+			p.setDeleted(true);
+			this.postRepository.save(p);
+			this.LOGGER.info("Post has been deleted: {}", p);
+		});
 	}
 	
 	/**
@@ -165,15 +165,9 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 	@Override
 	public PostEntity findPost(final String id)
 	{
+		final Optional<PostEntity> optional = this.postRepository.findTopByUuidAndDeletedFalse(id);
 		
-		final List<PostEntity> posts = this.postRepository.getByUuidAndDeletedFalse(id);
-		
-		if (posts == null || posts.isEmpty()) {
-			return null;
-		} else {
-			return posts.get(0);
-		}
-		
+		return optional.orElse(null);
 	}
 	
 	/**
@@ -243,20 +237,16 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 	@Override
 	public PostDTO fillPostToSend(final String postId, final Long userId)
 	{
+		this.LOGGER.info("Filling post ({}) to return to the user: ({})", postId, userId);
+		final Optional<PostEntity> optional = this.postRepository.findTopByUuidAndDeletedFalse(postId);
 		
-		final List<PostEntity> postEntities = this.postRepository.getByUuidAndDeletedFalse(postId);
-		if (postEntities.isEmpty()) {
-			throw new EntityNotFoundException("Post id (" + postId + ") not found.");
+		if (optional.isPresent()) {
+			optional.get().setConnectedUserId(getConnectedUserId());
+			optional.get().setConnectedUserId(getConnectedUserId());
+			return this.postTransformer.modelToDto(optional.get());
 		}
 		
-		final UserEntity userEntity = this.userRepository.findOne(userId);
-		if (userEntity == null) {
-			throw new EntityNotFoundException("User id (" + userId + ") not found !!");
-		}
-		
-		postEntities.forEach(p -> p.setConnectedUserId(userEntity.getId()));
-		
-		return this.postTransformer.modelToDto(postEntities.get(0));
+		throw new EntityNotFoundException("Post id (" + postId + ") not found.");
 	}
 	
 	/**

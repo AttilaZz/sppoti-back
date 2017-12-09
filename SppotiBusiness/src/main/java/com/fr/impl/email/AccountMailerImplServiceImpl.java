@@ -60,14 +60,6 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 		this.templateEngine = templateEngine;
 	}
 	
-	/**
-	 * @param to
-	 * 		receiver.
-	 * @param confirmationCode
-	 * 		confirmation code.
-	 * @param type
-	 * 		activation type.
-	 */
 	@Override
 	public void sendCreateAccountConfirmationEmail(final UserDTO to, final String confirmationCode,
 												   final TypeAccountValidation type)
@@ -79,14 +71,6 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 				this.confirmationAccountButtonText, activateLink, 1);
 	}
 	
-	/**
-	 * @param to
-	 * 		receiver.
-	 * @param confirmationCode
-	 * 		Send email to use with a token to recover the account.
-	 * @param currentDate
-	 * 		link expiry date.
-	 */
 	@Override
 	public void sendRecoverPasswordEmail(final UserDTO to, final String confirmationCode, final Date currentDate)
 	{
@@ -100,71 +84,54 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 				this.recoverAccountButtonText, recoverLink, 2);
 	}
 	
-	/**
-	 * @param to
-	 * 		receiver.
-	 * @param confirmationCode
-	 * 		send email to user to confirm the new email.
-	 */
 	@Override
 	public void sendEmailUpdateConfirmation(final String to, final String confirmationCode)
 	{
 	
 	}
 	
-	/**
-	 * Prepare email to send
-	 *
-	 * @param to
-	 * 		receiver.
-	 * @param subject
-	 * 		email subject.
-	 * @param message
-	 * 		message to send.
-	 * @param buttonText
-	 * 		button text.
-	 * @param activateLinkTag
-	 * 		activation link.
-	 */
 	private void prepareAndSendEmail(final UserDTO to, final String subject, final String message,
 									 final String buttonText, final String activateLinkTag, final int op)
 	{
-		final List<MailResourceContent> resourceContents = new ArrayList<>();
-		final MailResourceContent resourceContent = new MailResourceContent();
-		resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
-		resourceContent.setResourceName(logoResourceName);
-		resourceContents.add(resourceContent);
-		
-		final Context context = new Context();
-		context.setVariable("firstName", to.getFirstName());
-		context.setVariable("body", message);
-		context.setVariable("buttonLink", activateLinkTag);
-		context.setVariable("textButtonLink", buttonText);
-		context.setVariable("receiverEmail", to.getEmail());
-		context.setVariable("receiverUsername", to.getUsername());
-		context.setVariable("imageResourceName", resourceContent.getResourceName());
-		
-		context.setVariable("recoverAccountConcatUsMessage", this.recoverAccountConcatUsMessage);
-		
-		//Template footer.
-		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
-		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
-		context.setVariable("contactUsMessageText", this.contactUsMessage);
-		context.setVariable("contactUsLink", this.contactUsLink);
-		context.setVariable("sentToText", this.sentToTextMessage);
-		
-		switch (op) {
-			case 1:
-				context.setVariable("isRecoverPassword", false);
-				break;
-			case 2:
-				context.setVariable("isRecoverPassword", true);
-				break;
-		}
-		final String text = this.templateEngine.process(PATH_TO_ACCOUNT_TEMPLATE, context);
-		
-		
-		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContents);
-		
+		final Thread thread = new Thread(() -> {
+			
+			final List<MailResourceContent> resourceContents = new ArrayList<>();
+			final MailResourceContent resourceContent = new MailResourceContent();
+			resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
+			resourceContent.setResourceName(logoResourceName);
+			resourceContents.add(resourceContent);
+			
+			final Context context = new Context();
+			context.setVariable("firstName", to.getFirstName());
+			context.setVariable("body", message);
+			context.setVariable("buttonLink", activateLinkTag);
+			context.setVariable("textButtonLink", buttonText);
+			context.setVariable("receiverEmail", to.getEmail());
+			context.setVariable("receiverUsername", to.getUsername());
+			context.setVariable("imageResourceName", resourceContent.getResourceName());
+			
+			context.setVariable("recoverAccountConcatUsMessage", this.recoverAccountConcatUsMessage);
+			
+			//Template footer.
+			context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
+			context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
+			context.setVariable("contactUsMessageText", this.contactUsMessage);
+			context.setVariable("contactUsLink", this.contactUsLink);
+			context.setVariable("sentToText", this.sentToTextMessage);
+			
+			switch (op) {
+				case 1:
+					context.setVariable("isRecoverPassword", false);
+					break;
+				case 2:
+					context.setVariable("isRecoverPassword", true);
+					break;
+			}
+			final String text = this.templateEngine.process(PATH_TO_ACCOUNT_TEMPLATE, context);
+			
+			
+			super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContents);
+		});
+		thread.start();
 	}
 }

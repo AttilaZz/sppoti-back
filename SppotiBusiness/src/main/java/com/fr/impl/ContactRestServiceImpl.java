@@ -16,15 +16,10 @@ import org.springframework.stereotype.Component;
 public class ContactRestServiceImpl extends CommonControllerServiceImpl implements ContactRestService
 {
 	
-	/** Contact mailer. */
 	private final ContactMailerService contactMailerService;
 	
-	/** Class logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(ContactRestServiceImpl.class);
 	
-	/**
-	 * Init class dependencies.
-	 */
 	@Autowired
 	public ContactRestServiceImpl(final ContactMailerService contactMailerService)
 	{
@@ -48,10 +43,7 @@ public class ContactRestServiceImpl extends CommonControllerServiceImpl implemen
 	 */
 	private void sendContactEmail(final ContactDTO contact)
 	{
-		final Thread thread = new Thread(() -> {
-			this.contactMailerService.sendContactEmail(contact);
-			this.LOGGER.info("Confirmation email has been sent successfully !");
-		});
-		thread.start();
+		this.LOGGER.info("Confirmation email has been sent successfully !");
+		this.contactMailerService.sendContactEmail(contact);
 	}
 }

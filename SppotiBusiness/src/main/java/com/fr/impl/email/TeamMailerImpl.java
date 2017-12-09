@@ -51,12 +51,6 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 	@Autowired
 	private UserParamService userParamService;
 	
-	/**
-	 * Send email to confirm team creation.
-	 *
-	 * @param team
-	 * 		ceated team.
-	 */
 	@Override
 	public void sendAddTeamEmail(final TeamDTO team)
 	{
@@ -65,16 +59,6 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 		}
 	}
 	
-	/**
-	 * Send email to the team members.
-	 *
-	 * @param to
-	 * 		team memeber.
-	 * @param from
-	 * 		team admin.
-	 * @param team
-	 * 		team data.
-	 */
 	@Override
 	public void sendJoinTeamEmail(final TeamDTO team, final UserDTO to, final UserDTO from)
 	{
@@ -94,14 +78,7 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 		return resourceContents;
 	}
 	
-	/**
-	 * Send email to confirm team join.
-	 *
-	 * @param team
-	 * 		team data.
-	 * @param member
-	 * 		team member.
-	 */
+	
 	@Override
 	public void sendConfirmJoinTeamEmail(final TeamDTO team, final TeamMemberEntity member)
 	{
@@ -117,7 +94,6 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 	private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final TeamDTO team, final String subject,
 									 final String joinTeamLink, final List<MailResourceContent> resourceContent)
 	{
-		
 		final int memberCount = team.getMembers().size();
 		final List<UserDTO> teamMembers = team.getMembers().stream().limit(2).collect(Collectors.toList());
 		final int memberCountToDisplay = memberCount - teamMembers.size();

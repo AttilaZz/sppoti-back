@@ -26,7 +26,7 @@ public class LikeMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 	@Override
 	public void sendEmailToPostPublisher(final UserDTO user) {
 		if (this.userParamService.canReceiveEmail()) {
-			
+		
 		}
 	}
 }

@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mobile.device.Device;
+import org.springframework.mobile.device.DeviceUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -50,6 +52,28 @@ public class AuthSuccess extends SimpleUrlAuthenticationSuccessHandler
 	public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
 										final Authentication authentication) throws IOException, ServletException
 	{
+		final Device currentDevice = (Device) request.getAttribute(DeviceUtils.CURRENT_DEVICE_ATTRIBUTE);
+		
+		//		String deviceType = BROWSER;
+		//		String platform = BROWSER;
+		//
+		//		if (currentDevice.isNormal()) {
+		//			deviceType = BROWSER;
+		//		} else if (currentDevice.isMobile()) {
+		//			deviceType = "mobile";
+		//		} else if (currentDevice.isTablet()) {
+		//			deviceType = "tablet";
+		//		}
+		//
+		//		platform = currentDevice.getDevicePlatform().name();
+		//
+		//		if (platform.equalsIgnoreCase("UNKNOWN")) {
+		//			platform = BROWSER;
+		//		}
+		//
+		//		this.LOGGER.info("Received request is coming from device: {}, from platform:() ", deviceType, platform);
+		
+		
 		final String[] allowedHeaders = Origins.getValue().split(",");
 		
 		for (final String allowedHeader : allowedHeaders) {

@@ -2,8 +2,8 @@ package com.fr.impl;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
-import com.fr.commons.dto.UserDTO;
-import com.fr.commons.enumeration.notification.NotificationTypeEnum;
+import com.fr.commons.dto.EmailUserDTO;
+import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
@@ -13,7 +13,6 @@ import com.fr.service.NotificationBusinessService;
 import com.fr.service.email.CommentMailerService;
 import com.fr.transformers.CommentTransformer;
 import com.fr.transformers.UserTransformer;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +21,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static com.fr.commons.enumeration.notification.NotificationObjectType.COMMENT;
+import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST;
 
 /**
  * Created by: Wail DJENANE on Aug 12, 2016
@@ -40,78 +42,101 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(CommentBusinessServiceImpl.class);
 	
-	private final CommentMailerService commentMailerService;
-	private final CommentTransformer commentTransformer;
-	private final NotificationBusinessService notificationService;
-	private final UserTransformer userTransformer;
+	@Autowired
+	private CommentMailerService commentMailerService;
+	@Autowired
+	private CommentTransformer commentTransformer;
+	@Autowired
+	private NotificationBusinessService notificationService;
+	@Autowired
+	private UserTransformer userTransformer;
 	
 	@Value("${key.commentsPerPage}")
 	private int commentSize;
-	
-	@Autowired
-	CommentBusinessServiceImpl(final CommentMailerService commentMailerService,
-							   final CommentTransformer commentTransformer,
-							   final NotificationBusinessService notificationService,
-							   final UserTransformer userTransformer)
-	{
-		this.commentMailerService = commentMailerService;
-		this.commentTransformer = commentTransformer;
-		this.notificationService = notificationService;
-		this.userTransformer = userTransformer;
-	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Transactional
 	@Override
-	public CommentDTO saveComment(final CommentEntity newCommentEntity, final Long userId, final String postId)
+	public CommentDTO saveComment(final CommentDTO dto)
 	{
-		// get post postId to link the like
-		final List<PostEntity> postEntity = this.postRepository.getByUuidAndDeletedFalse(postId);
-		if (!postEntity.isEmpty()) {
-			newCommentEntity.setPost(postEntity.get(0));
-		} else {
-			throw new EntityNotFoundException("Post not found (" + postId + ")");
+		final CommentEntity commentEntityToSave = new CommentEntity();
+		commentEntityToSave.setTimeZone(dto.getTimeZone());
+		
+		final String content = dto.getText();
+		final String image = dto.getImageLink();
+		final String video = dto.getVideoLink();
+		final String postId = dto.getPostId();
+		boolean checkForTags = false;
+		
+		if (StringUtils.isEmpty(content) && StringUtils.isEmpty(image) && StringUtils.isEmpty(video)) {
+			throw new BusinessGlobalException("No content has been specified in this comment");
 		}
 		
-		newCommentEntity.setUser(this.userRepository.findOne(getConnectedUser().getId()));
-		final Optional<CommentEntity> commentEntity = Optional
-				.ofNullable(this.commentRepository.save(newCommentEntity));
+		if (StringUtils.hasText(content)) {
+			checkForTags = true;
+			commentEntityToSave.setContent(content);
+		}
 		
-		if (commentEntity.isPresent()) {
-			final String targetUser = commentEntity.get().getPost().getTargetUserProfile().getUuid();
-			if (!StringUtils.isBlank(targetUser) && !Objects.equals(targetUser, getConnectedUser().getUuid())) {
+		if (StringUtils.hasText(image)) {
+			commentEntityToSave.setImageLink(image);
+		}
+		
+		if (StringUtils.hasText(video)) {
+			commentEntityToSave.setVideoLink(video);
+		}
+		
+		final Optional<PostEntity> optional = this.postRepository.findTopByUuidAndDeletedFalse(postId);
+		
+		optional.orElseThrow(() -> new EntityNotFoundException("Post id not found in database, data are corrupt"));
+		
+		commentEntityToSave.setPost(optional.get());
+		
+		commentEntityToSave.setUser(getConnectedUser());
+		
+		this.LOGGER.info("The following comment is going to be saved: {}", commentEntityToSave);
+		final CommentEntity commentEntity = this.commentRepository.saveAndFlush(commentEntityToSave);
+		
+		final String targetUser = commentEntity.getPost().getTargetUserProfile().getUuid();
+		if (StringUtils.hasText(targetUser) && !Objects.equals(targetUser, getConnectedUser().getUuid())) {
+			
+			//like on other posts not mine
+			if (!Objects.equals(commentEntity.getUser().getUuid(),
+					commentEntity.getPost().getTargetUserProfile().getUuid())) {
 				
-				//like on other posts not mine
-				if (!Objects.equals(commentEntity.get().getUser().getUuid(),
-						commentEntity.get().getPost().getTargetUserProfile().getUuid())) {
-					this.notificationService.saveAndSendNotificationToUsers(commentEntity.get().getUser(),
-							commentEntity.get().getPost().getTargetUserProfile(), COMMENT,
-							NotificationTypeEnum.X_COMMENTED_ON_YOUR_POST, commentEntity.get().getPost(),
-							commentEntity.get());
-					this.commentMailerService.sendEmailToPostContributors(buildContributorsList(postEntity.get(0)));
-				}
+				this.notificationService.saveAndSendNotificationToUsers(getConnectedUser(),
+						commentEntity.getPost().getTargetUserProfile(), COMMENT, X_COMMENTED_ON_YOUR_POST,
+						commentEntity.getPost(), commentEntity);
 				
-				
-				this.notificationService.checkForTagNotification(null, commentEntity.get());
-				
+				this.commentMailerService.sendEmailToPostContributors(buildContributorsList(optional.get()));
 			}
 			
-			return this.commentTransformer.modelToDto(commentEntity.get());
+			if (checkForTags) {
+				this.notificationService.checkForTagNotification(null, commentEntity);
+			}
 		}
 		
-		return null;
+		final CommentDTO dto1 = this.commentTransformer.modelToDto(commentEntity);
+		dto1.setMyComment(true);
+		
+		this.LOGGER.info("Comment has been saved and the following DTO has been returned to the user: {}", dto1);
+		return dto1;
 	}
 	
-	private List<UserDTO> buildContributorsList(final PostEntity postEntity) {
+	private List<EmailUserDTO> buildContributorsList(final PostEntity postEntity) {
 		final List<UserEntity> contributorsList = new ArrayList<>();
 		contributorsList.add(postEntity.getUser());
-		postEntity.getCommentEntities().forEach(c -> {
-			contributorsList.add(c.getUser());
-		});
+		postEntity.getCommentEntities().forEach(c -> contributorsList.add(c.getUser()));
 		
-		return this.userTransformer.modelToDto(contributorsList);
+		return this.userTransformer.modelToDto(contributorsList).stream()
+				.map(u -> new EmailUserDTO(u.getFirstName(), u.getLastName(), u.getEmail()))
+				.filter(distinctByKey(EmailUserDTO::getEmail)).collect(Collectors.toList());
+	}
+	
+	public static <T> Predicate<T> distinctByKey(final Function<? super T, ?> keyExtractor) {
+		final Set<Object> seen = ConcurrentHashMap.newKeySet();
+		return t -> seen.add(keyExtractor.apply(t));
 	}
 	
 	/**

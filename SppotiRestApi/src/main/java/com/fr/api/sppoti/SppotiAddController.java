@@ -24,27 +24,13 @@ import javax.validation.Valid;
 @ApiVersion("1")
 class SppotiAddController
 {
-	
-	/** Sppoti service. */
+	@Autowired
 	private SppotiBusinessService sppotiControllerService;
 	
-	/** Init service. */
-	@Autowired
-	void setSppotiControllerService(final SppotiBusinessService sppotiControllerService)
-	{
-		this.sppotiControllerService = sppotiControllerService;
-	}
-	
-	/**
-	 * @param newSppoti
-	 * 		sppoti to save.
-	 *
-	 * @return 201 status && SppotiEntity object with the inserted data, 400 status otherwise.
-	 */
 	@PostMapping
 	ResponseEntity<SppotiDTO> addSppoti(@RequestBody @Valid final SppotiDTO newSppoti)
 	{
-
+		
 		if (newSppoti.getMaxTeamCount() == 0) {
 			throw new BusinessGlobalException("Max team count must be greater than 0");
 		}

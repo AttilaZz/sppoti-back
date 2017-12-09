@@ -7,6 +7,8 @@ import com.fr.entities.PostEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.LikeBusinessService;
 import com.fr.service.NotificationBusinessService;
+import com.fr.transformers.CommentTransformer;
+import com.fr.transformers.PostTransformer;
 import com.fr.transformers.UserTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.fr.commons.enumeration.notification.NotificationObjectType.LIKE;
@@ -34,25 +37,26 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 {
 	private final Logger LOGGER = LoggerFactory.getLogger(LikeBusinessServiceImpl.class);
 	
-	private final UserTransformer userTransformer;
-	private final NotificationBusinessService notificationService;
+	@Autowired
+	private UserTransformer userTransformer;
+	@Autowired
+	private PostTransformer postTransformer;
+	@Autowired
+	private CommentTransformer commentTransformer;
+	@Autowired
+	private NotificationBusinessService notificationService;
 	
 	@Value("${key.likesPerPage}")
 	private int likeSize;
-	
-	@Autowired
-	LikeBusinessServiceImpl(final UserTransformer userTransformer,
-							final NotificationBusinessService notificationService)
-	{
-		this.userTransformer = userTransformer;
-		this.notificationService = notificationService;
-	}
 	
 	@Transactional
 	@Override
 	public LikeContentEntity likePost(final LikeContentEntity likeToSave)
 	{
-		this.LOGGER.info("Process triggered to like post: {}", likeToSave.getPost());
+		final PostEntity entity = likeToSave.getPost();
+		entity.setConnectedUserId(getConnectedUserId());
+		
+		this.LOGGER.info("Process triggered to like post: {}", this.postTransformer.modelToDto(entity));
 		
 		return likeContent(likeToSave);
 	}
@@ -66,23 +70,20 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	{
 		this.LOGGER.info("Process triggered to unlike post: {}", postId);
 		
-		final List<PostEntity> postToUnlike = this.postRepository.getByUuidAndDeletedFalse(postId);
+		final Optional<PostEntity> optional = this.postRepository.findTopByUuidAndDeletedFalse(postId);
 		
 		final UserEntity connectedUser = getConnectedUser();
 		
-		if (postToUnlike == null) {
-			// post not fount
-			throw new EntityNotFoundException("Post not found");
-		}
+		optional.orElseThrow(() -> new EntityNotFoundException("Post " + postId + " not found"));
 		
-		//post must be liked before unlike
-		if (this.isPostAlreadyLikedByUser(postId, connectedUser.getId())) {
-			
-			final LikeContentEntity likeContent = this.likeRepository
-					.findTopByPostIdAndUserId(postToUnlike.get(0).getId(), connectedUser.getId());
-			this.likeRepository.delete(likeContent);
-			
-		}
+		optional.ifPresent(p -> {
+			if (this.isPostAlreadyLikedByUser(postId, connectedUser.getId())) {
+				
+				final LikeContentEntity likeContent = this.likeRepository
+						.findTopByPostIdAndUserId(p.getId(), connectedUser.getId());
+				this.likeRepository.delete(likeContent);
+			}
+		});
 	}
 	
 	/**
@@ -91,9 +92,7 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	@Override
 	public boolean isPostAlreadyLikedByUser(final String postId, final Long userId)
 	{
-		
 		return this.likeRepository.findTopByUserIdAndPostUuid(userId, postId) != null;
-		
 	}
 	
 	/**
@@ -137,7 +136,8 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	@Override
 	public void unLikeComment(final CommentEntity commentEntityToUnlike)
 	{
-		this.LOGGER.info("Process triggered to unlike comment {}", commentEntityToUnlike);
+		this.LOGGER.info("Process triggered to unlike comment {}",
+				this.commentTransformer.modelToDto(commentEntityToUnlike));
 		
 		final LikeContentEntity likeContent = this.likeRepository.findTopByCommentId(commentEntityToUnlike.getId());
 		this.likeRepository.delete(likeContent);
@@ -160,7 +160,8 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	@Override
 	public void likeComment(final LikeContentEntity likeToSave)
 	{
-		this.LOGGER.info("Process triggered to like comment {}", likeToSave.getComment());
+		this.LOGGER.info("Process triggered to like comment {}",
+				this.commentTransformer.modelToDto(likeToSave.getComment()));
 		likeContent(likeToSave);
 	}
 	

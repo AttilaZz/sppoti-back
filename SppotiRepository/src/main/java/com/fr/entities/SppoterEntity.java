@@ -1,5 +1,6 @@
 package com.fr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import javax.persistence.*;
@@ -30,10 +31,12 @@ public class SppoterEntity extends AbstractCommonEntity
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "sppoti_id")
+	@JsonIgnore
 	private SppotiEntity sppoti;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "team_member_id")
+	@JsonIgnore
 	private TeamMemberEntity teamMember;
 	
 	private Boolean hasRateOtherSppoter = Boolean.FALSE;

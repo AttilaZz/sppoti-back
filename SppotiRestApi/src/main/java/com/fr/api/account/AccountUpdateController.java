@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 /**
  * Created by djenanewail on 2/12/17.
  */
@@ -52,6 +54,9 @@ class AccountUpdateController
 			
 			return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
 		} else {
+			if (Objects.nonNull(user.getBirthDate())) {
+				update = true;
+			}
 			if (StringUtils.hasText(user.getFirstName())) {
 				update = true;
 			}
@@ -79,13 +84,13 @@ class AccountUpdateController
 			if (StringUtils.hasText(user.getTimeZone())) {
 				update = true;
 			}
-			if (user.isFirstConnexion() != null && !user.isFirstConnexion()) {
+			if (Objects.nonNull(user.isFirstConnexion()) && !user.isFirstConnexion()) {
 				update = true;
 			}
-			if (user.isProfileComplete() != null) {
+			if (Objects.nonNull(user.isProfileComplete())) {
 				update = true;
 			}
-			if (user.getGender() != null) {
+			if (Objects.nonNull(user.getGender())) {
 				update = true;
 			}
 			

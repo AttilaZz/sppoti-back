@@ -1,6 +1,7 @@
 package com.fr.filter;
 
-import org.springframework.core.Ordered;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -13,14 +14,18 @@ import java.util.Objects;
 
 import static com.fr.filter.HeadersAttributes.*;
 import static com.fr.filter.HeadersValues.*;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
  */
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(HIGHEST_PRECEDENCE)
 public class CORSFilter implements Filter
 {
+	private static final String BROWSER = "browser";
+	private final Logger LOGGER = LoggerFactory.getLogger(CORSFilter.class);
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -36,9 +41,14 @@ public class CORSFilter implements Filter
 			
 			for (final String allowedHeader : allowedHeaders) {
 				if (allowedHeader.equals(request.getHeader("origin"))) {
-					response.setHeader(ATTR_ORIGIN.getValue(), request.getHeader("origin"));
+					response.setHeader(ATTR_ORIGIN.getValue(), allowedHeader);
+					this.LOGGER.info("Request header origin is secured, allowing access to: {}", allowedHeader);
+					break;
 				}
 			}
+		} else {
+			this.LOGGER.info("NO origin filter found in properties file, Origin will be set to <*>");
+			response.setHeader(ATTR_ORIGIN.getValue(), "*");
 		}
 		
 		response.setHeader(ATTR_CREDENTIALS.getValue(), AllowCredentials.getValue());

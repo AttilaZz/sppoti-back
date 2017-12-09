@@ -4,15 +4,12 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.TeamStatus;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
  * Created by djenanewail on 1/22/17.
  */
-
-@Service
 public interface TeamBusinessService extends AbstractBusinessService
 {
 	

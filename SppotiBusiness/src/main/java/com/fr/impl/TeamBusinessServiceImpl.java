@@ -94,6 +94,7 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 				final TeamMemberEntity admin = this.teamMembersRepository
 						.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(addedTeam.getUuid(),
 								SppotiUtils.statusToFilter());
+				
 				this.notificationService.saveAndSendNotificationToUsers(admin.getUser(), m.getUser(), TEAM,
 						NotificationTypeEnum.X_INVITED_YOU_TO_JOIN_HIS_TEAM, admin.getTeam());
 			}

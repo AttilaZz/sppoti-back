@@ -24,16 +24,8 @@ import javax.validation.Valid;
 @ApiVersion("1")
 class TeamAddController
 {
-	
-	/** Team controller service. */
-	private TeamBusinessService teamControllerService;
-	
-	/** Init services. */
 	@Autowired
-	void setTeamControllerService(final TeamBusinessService teamControllerService)
-	{
-		this.teamControllerService = teamControllerService;
-	}
+	private TeamBusinessService teamControllerService;
 	
 	/**
 	 * This service create team

@@ -24,24 +24,14 @@ import javax.validation.Valid;
 public class ContactAddController
 {
 	
-	/** Contact service. */
 	private final ContactRestService contactControllerService;
 	
-	/** Init contact service. */
 	@Autowired
 	public ContactAddController(final ContactRestService contactControllerService)
 	{
 		this.contactControllerService = contactControllerService;
 	}
 	
-	/**
-	 * Send Email to sppoti.contact@gmail.com
-	 *
-	 * @param contactDTO
-	 * 		contact data.
-	 *
-	 * @return 200 status if email sent.
-	 */
 	@PostMapping
 	public ResponseEntity sendContactEmail(@RequestBody @Valid final ContactDTO contactDTO)
 	{

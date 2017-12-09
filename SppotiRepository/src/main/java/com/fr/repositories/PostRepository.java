@@ -8,13 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PostFilter;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by djenane wail on 12/11/16.
  */
 public interface PostRepository extends JpaRepository<PostEntity, Long>
 {
-	List<PostEntity> getByUuidAndDeletedFalse(String postId);
+	Optional<PostEntity> findTopByUuidAndDeletedFalse(String postId);
 	
 	/**
 	 * Find all users's and user friends posts.
@@ -27,7 +28,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Long>
 			"|| filterObject.user.friends.contains(authentication.getPrincipal().getUserAsFriend()))")
 	List<PostEntity> findAll();
 	
-
+	
 	@PostFilter("filterObject.user.id == authentication.getPrincipal().getId()")
 	List<PostEntity> getByUuidAndDeletedFalseOrderByDatetimeCreatedDesc(String postUuid);
 	
