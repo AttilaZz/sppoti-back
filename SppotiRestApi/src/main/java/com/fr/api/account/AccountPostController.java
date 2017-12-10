@@ -66,7 +66,7 @@ class AccountPostController
 	
 	@PostMapping(value = "/firebase/register")
 	@ResponseBody
-	ResponseEntity addConnexionHistory(@RequestBody final FirebaseDTO user)
+	ResponseEntity registerFirebaseToken(@RequestBody final FirebaseDTO user)
 	{
 		this.LOGGER.info("Request sent to save firebase registration key");
 		
@@ -79,6 +79,5 @@ class AccountPostController
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 		
 	}
-	
 	
 }

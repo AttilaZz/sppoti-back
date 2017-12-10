@@ -26,27 +26,21 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 {
 	
-	/** Custom auth failure. */
 	@Autowired
 	private AuthFailure authFailure;
 	
-	/** Custom auth success. */
 	@Autowired
 	private AuthSuccess authSuccess;
 	
-	/** Security user details. */
 	@Autowired
 	private UserDetailsService userDetailService;
 	
-	/** Custom logout success handler. */
 	@Autowired
 	private LogoutSuccessHandler logoutSuccessHandler;
 	
-	/** Logout handler. */
 	@Autowired
 	private CustomLogoutHandler logoutHandler;
 	
-	/** Entry point filter. */
 	@Autowired
 	private EntryPointUnAthorisedHandler pointUnAthorisedHandler;
 	

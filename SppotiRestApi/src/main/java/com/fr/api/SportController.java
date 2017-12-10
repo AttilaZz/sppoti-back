@@ -44,7 +44,7 @@ class SportController
 			return new ResponseEntity<>(allSports, HttpStatus.NO_CONTENT);
 		}
 		
-		this.LOGGER.info("Sport list has been returned: {}", allSports);
+		this.LOGGER.info("Sport list has been returned: {}", allSports.toString());
 		return new ResponseEntity<>(allSports, HttpStatus.OK);
 		
 	}

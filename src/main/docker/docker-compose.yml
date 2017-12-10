@@ -3,7 +3,7 @@ version: '3.1'
 services:
 
   nginx:
-      image: cocoda/sppoti-front
+      image: wdjenane/sppoti-web:latest
       depends_on:
           - sppoti
 #      build:
@@ -11,6 +11,7 @@ services:
       container_name: sppoti-front
       ports:
           - 80:80
+          - 443:443
 #      volumes:
 #        - nginx_data:/var/log/nginx
 
@@ -18,7 +19,7 @@ services:
       image: mysql:5.7
       container_name: mysql
       ports:
-        - 3306:3306
+          - 3306:3306
 #      volumes:
 #            - db_data:/var/lib/mysql
       environment:
@@ -27,8 +28,8 @@ services:
         MYSQL_USER: sppoti
         MYSQL_DATABASE: sppoti
       secrets:
-             - db_root_password
-             - db_password
+          - db_root_password
+          - db_password
 
   redis:
     image: redis
@@ -36,12 +37,10 @@ services:
 #        - redis_data:/data
 
   aws-getway:
-    image: wdjenane/aws-getway
-    ports:
-        - 8181:8181
+    image: wdjenane/aws-getway:latest
 
   sppoti:
-      image: wdjenane/sppoti
+      image: wdjenane/sppoti:latest
 #      ports:
 #        - 8080:8080
       depends_on:

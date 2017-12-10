@@ -21,4 +21,6 @@ public interface MyUserDetails extends UserDetails
 	boolean hasActivatedNotifications();
 	
 	String getFirebaseToken();
+	
+	void setFirebaseToken(String token);
 }

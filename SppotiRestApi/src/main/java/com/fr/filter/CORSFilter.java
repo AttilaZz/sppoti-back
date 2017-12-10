@@ -38,14 +38,20 @@ public class CORSFilter implements Filter
 		
 		if (StringUtils.hasText(Origins.getValue())) {
 			final String[] allowedHeaders = Origins.getValue().split(",");
-			
+			boolean originFound = false;
 			for (final String allowedHeader : allowedHeaders) {
 				if (allowedHeader.equals(request.getHeader("origin"))) {
 					response.setHeader(ATTR_ORIGIN.getValue(), allowedHeader);
 					this.LOGGER.info("Request header origin is secured, allowing access to: {}", allowedHeader);
+					originFound = true;
 					break;
 				}
 			}
+			
+			if (!originFound) {
+				this.LOGGER.info("Access denied for origin: {}", request.getHeader("origin"));
+			}
+			
 		} else {
 			this.LOGGER.info("NO origin filter found in properties file, Origin will be set to <*>");
 			response.setHeader(ATTR_ORIGIN.getValue(), "*");

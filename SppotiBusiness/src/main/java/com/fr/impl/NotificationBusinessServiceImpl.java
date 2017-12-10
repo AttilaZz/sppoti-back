@@ -237,12 +237,11 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 	
 	@Transactional
 	private void updateFirebaseRegistration(final String email, final String notificationKey) {
-		final FirebaseRegistrationEntity entityToUpdate = this.firebaseRegistrationRepository
-				.findByRegistrationKey(email);
-		if (Objects.nonNull(entityToUpdate)) {
-			entityToUpdate.setRegistrationKey(notificationKey);
-			this.firebaseRegistrationRepository.save(entityToUpdate);
-		}
+		this.firebaseRegistrationRepository.findByRegistrationKey(email).ifPresent(e -> {
+			this.LOGGER.info("Update firebase registration key for user {}, new token is: {}", email, notificationKey);
+			e.setRegistrationKey(notificationKey);
+			this.firebaseRegistrationRepository.save(e);
+		});
 	}
 	
 	NotificationEntity buildNotificationEntity(final NotificationTypeEnum notificationType, final UserEntity sender,

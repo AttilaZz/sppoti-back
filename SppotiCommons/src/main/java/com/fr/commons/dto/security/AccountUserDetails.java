@@ -149,8 +149,19 @@ public class AccountUserDetails implements MyUserDetails
 		return this.account.getCanReceiveNotifications();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public String getFirebaseToken() {
 		return this.account.getFirebaseToken();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setFirebaseToken(final String token) {
+		this.account.setFirebaseToken(token);
 	}
 }

@@ -1,6 +1,7 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.*;
+import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.enumeration.ErrorMessageEnum;
 import com.fr.commons.enumeration.LanguageEnum;
 import com.fr.commons.enumeration.TypeAccountValidation;
@@ -20,6 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -510,17 +514,46 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 	@Override
 	@Transactional
 	public void saveFirebaseRegistrationKey(final FirebaseDTO user) {
-		final FirebaseRegistrationEntity entity = new FirebaseRegistrationEntity();
-		entity.setRegistrationKey(user.getRegistrationId());
 		final Optional<UserEntity> userOptional = this.userRepository
 				.getByUuidAndDeletedFalseAndConfirmedTrue(user.getUserId());
 		userOptional.ifPresent(u -> {
-			entity.setUser(u);
-			entity.setDeviceConnected(true);
-			this.firebaseRegistrationRepository.save(entity);
-			this.LOGGER.info("Firebase registration has been saved {}", entity);
+			
+			final Optional<FirebaseRegistrationEntity> firebaseRegistrationEntity = this.firebaseRegistrationRepository
+					.findByRegistrationKey(user.getRegistrationId());
+			
+			if (!firebaseRegistrationEntity.isPresent()) {
+				final FirebaseRegistrationEntity entity = new FirebaseRegistrationEntity();
+				entity.setRegistrationKey(user.getRegistrationId());
+				entity.setUser(u);
+				entity.setDeviceConnected(true);
+				this.firebaseRegistrationRepository.save(entity);
+				this.LOGGER.info("Firebase registration has been added: {}", entity);
+			}
+			
+			firebaseRegistrationEntity.ifPresent(f -> {
+				f.setDeviceConnected(true);
+				this.firebaseRegistrationRepository.save(f);
+				this.LOGGER.info("Firebase registration has been updated: {}", f.getRegistrationKey());
+			});
+			
+			updateFirebaseTokenInSecurityContext(user.getRegistrationId());
 		});
 		userOptional.orElseThrow(
 				() -> new BusinessGlobalException("User id in firebase request not found in DB, {}", user.getUserId()));
+	}
+	
+	private void updateFirebaseTokenInSecurityContext(final String firebaseToken) {
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		final AccountUserDetails accountUserDetails = (AccountUserDetails) principal;
+		accountUserDetails.setFirebaseToken(firebaseToken);
+		
+		final Authentication newAuth = new UsernamePasswordAuthenticationToken(principal, auth.getCredentials(),
+				auth.getAuthorities());
+		
+		SecurityContextHolder.getContext().setAuthentication(newAuth);
+		
+		this.LOGGER.info("Firebase token has been added to security context");
 	}
 }

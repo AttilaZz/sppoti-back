@@ -2,7 +2,6 @@ package com.fr.impl;
 
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.utils.SppotiUtils;
-import com.fr.entities.FirebaseRegistrationEntity;
 import com.fr.entities.UserEntity;
 import com.fr.repositories.FirebaseRegistrationRepository;
 import com.fr.service.LoginBusinessService;
@@ -12,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
 
 /**
  * Created by djenanewail on 1/22/17.
@@ -67,15 +64,12 @@ class LoginBusinessServiceImpl extends CommonControllerServiceImpl implements Lo
 	@Override
 	@Transactional
 	public void updateUserDeviceToConnectedStatus(final String firebaseRegistrationKey, final String userEmail) {
-		final FirebaseRegistrationEntity entity = this.firebaseRegistrationRepository
-				.findByRegistrationKey(firebaseRegistrationKey);
-		
-		if (Objects.nonNull(entity)) {
+		this.firebaseRegistrationRepository.findByRegistrationKey(firebaseRegistrationKey).ifPresent(e -> {
 			LOGGER.info("Device status for user {} using token {}, has been activated", userEmail,
 					firebaseRegistrationKey);
-			entity.setDeviceConnected(true);
-			this.firebaseRegistrationRepository.save(entity);
-		}
+			e.setDeviceConnected(true);
+			this.firebaseRegistrationRepository.save(e);
+		});
 	}
 	
 	/**

@@ -1,7 +1,6 @@
 package com.fr.security;
 
 import com.fr.commons.dto.security.AccountUserDetails;
-import com.fr.entities.FirebaseRegistrationEntity;
 import com.fr.repositories.FirebaseRegistrationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,6 @@ public class CustomLogoutHandler implements LogoutHandler
 	public void logout(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse,
 					   final Authentication authentication)
 	{
-		
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		if (auth != null && auth.isAuthenticated()) {
@@ -47,16 +45,19 @@ public class CustomLogoutHandler implements LogoutHandler
 			
 			final String fbToken = getUserFirebaseToken();
 			if (StringUtils.hasText(fbToken) && !"null".equals(fbToken)) {
-				LOGGER.info("Logging out mobile device, using firebase token {}", fbToken);
-				final FirebaseRegistrationEntity entity = this.firebaseRegistrationRepository
-						.findByRegistrationKey(fbToken);
-				entity.setDeviceConnected(false);
-				this.firebaseRegistrationRepository.save(entity);
+				LOGGER.info("Disconnecting mobile device, using firebase token {}", fbToken);
+				this.firebaseRegistrationRepository.findByRegistrationKey(fbToken).ifPresent(e -> {
+					e.setDeviceConnected(false);
+					this.firebaseRegistrationRepository.save(e);
+					LOGGER.info("Mobile device has been disconnected");
+				});
 			}
 			
 			new SecurityContextLogoutHandler().logout(httpServletRequest, httpServletResponse, auth);
 			SecurityContextHolder.clearContext();
 			httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+			
+			LOGGER.info("user <{}> has been logged out", loggedUser);
 		}
 		
 		httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
