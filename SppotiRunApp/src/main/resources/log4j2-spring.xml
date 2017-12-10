@@ -2,6 +2,7 @@
 <Configuration monitorInterval="60">
     <Properties>
         <Property name="path">${sys:LOG_PATH}</Property>
+        <Property name="archive">${path}/archive</Property>
         <Property name="LOG_PATTERN">[%-5level] %d{dd-MM-yyyy HH:mm:ss.SSS} [%t] %c{1} - %msg%n</Property>
     </Properties>
     <Appenders>
@@ -13,7 +14,7 @@
         </Console>
         <!-- Info logs -->
         <RollingFile name="App-Appender" fileName="${path}/sppoti_log.log"
-                     filePattern="${path}/sppoti_log-%d{yyyy-MM-dd}-%i.log">
+                     filePattern="${archive}/sppoti_log-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
@@ -24,7 +25,7 @@
         </RollingFile>
         <!-- Error logs -->
         <RollingFile name="Error-Appender" fileName="${path}/sppoti_error.log"
-                     filePattern="${path}/sppoti_error-%d{yyyy-MM-dd}-%i.log">
+                     filePattern="${archive}/sppoti_error-%d{yyyy-MM-dd}-%i.log">
             <PatternLayout>
                 <Pattern>${LOG_PATTERN}</Pattern>
             </PatternLayout>
@@ -35,10 +36,10 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="TRACE">
+        <Root level="INFO">
             <AppenderRef ref="console" level="INFO"/>
-            <AppenderRef ref="Error-Appender" level="ERROR"/>
-            <AppenderRef ref="App-Appender" level="INFO"/>
+            <!--<AppenderRef ref="Error-Appender" level="ERROR"/>-->
+            <!--<AppenderRef ref="App-Appender" level="INFO"/>-->
         </Root>
     </Loggers>
 </Configuration>
