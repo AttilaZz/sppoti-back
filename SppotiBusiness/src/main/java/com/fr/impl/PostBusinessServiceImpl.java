@@ -35,11 +35,12 @@ import static com.fr.commons.enumeration.notification.NotificationTypeEnum.X_POS
 @Component
 class PostBusinessServiceImpl extends CommonControllerServiceImpl implements PostBusinessService
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(PostBusinessServiceImpl.class);
+	
 	private final PostMailerService postMailerService;
 	private final PostTransformer postTransformer;
 	private final NotificationBusinessService notificationService;
 	private final UserTransformer userTransformer;
-	private final Logger LOGGER = LoggerFactory.getLogger(PostBusinessServiceImpl.class);
 	
 	@Value("${key.postsPerPage}")
 	private int postSize;
@@ -241,7 +242,6 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 		final Optional<PostEntity> optional = this.postRepository.findTopByUuidAndDeletedFalse(postId);
 		
 		if (optional.isPresent()) {
-			optional.get().setConnectedUserId(getConnectedUserId());
 			optional.get().setConnectedUserId(getConnectedUserId());
 			return this.postTransformer.modelToDto(optional.get());
 		}

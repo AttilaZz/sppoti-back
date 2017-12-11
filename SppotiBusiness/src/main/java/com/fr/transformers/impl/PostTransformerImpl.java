@@ -7,16 +7,14 @@ import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
 import com.fr.entities.PostEntity;
 import com.fr.repositories.EditHistoryRepository;
+import com.fr.service.FriendBusinessService;
 import com.fr.transformers.CommentTransformer;
 import com.fr.transformers.PostTransformer;
 import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -25,18 +23,14 @@ import java.util.stream.Collectors;
 @Component
 public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEntity> implements PostTransformer
 {
-	private final EditHistoryRepository editHistoryRepository;
-	private final CommentTransformer commentTransformer;
-	private final UserTransformer userTransformer;
-	
 	@Autowired
-	public PostTransformerImpl(final EditHistoryRepository editHistoryRepository,
-							   final CommentTransformer commentTransformer, final UserTransformer userTransformer)
-	{
-		this.editHistoryRepository = editHistoryRepository;
-		this.commentTransformer = commentTransformer;
-		this.userTransformer = userTransformer;
-	}
+	private EditHistoryRepository editHistoryRepository;
+	@Autowired
+	private CommentTransformer commentTransformer;
+	@Autowired
+	private UserTransformer userTransformer;
+	@Autowired
+	private FriendBusinessService friendBusinessService;
 	
 	/**
 	 * {@inheritDoc}
@@ -123,7 +117,11 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		
 		post.setLikedByUser(model.getLikes().stream().anyMatch(l -> l.getUser().getId().equals(connectedUser)));
 		
-		post.setTargetUser(this.userTransformer.modelToDto(model.getTargetUserProfile()));
+		if (Objects.nonNull(model.getTargetUserProfile())) {
+			post.setTargetUser(this.userTransformer.modelToDto(model.getTargetUserProfile()));
+			post.setFriendShipStatus(
+					this.friendBusinessService.getFriendShipStatus(model.getTargetUserProfile().getUuid()));
+		}
 		
 		return post;
 	}

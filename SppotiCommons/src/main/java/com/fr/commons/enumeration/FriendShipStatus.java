@@ -5,7 +5,7 @@ package com.fr.commons.enumeration;
  */
 public enum FriendShipStatus
 {
-	PUBLIC_RELATION(1), PENDING_SENT(2), PENDING(3), CONFIRMED(4), REFUSED(5);
+	PUBLIC_RELATION(1), PENDING_SENT(2), PENDING(3), CONFIRMED(4), REFUSED(5), DELETED(6);
 	
 	private final int status;
 	

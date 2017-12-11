@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.FriendShipStatus;
 import com.fr.commons.utils.JsonDateSerializer;
 
 import java.util.Date;
@@ -56,9 +57,19 @@ public class PostDTO extends AbstractCommonDTO
 	
 	private String timeZone;
 	
+	private FriendShipStatus friendShipStatus;
+	
 	public List<UserDTO> getLikers()
 	{
 		return this.likers;
+	}
+	
+	public FriendShipStatus getFriendShipStatus() {
+		return this.friendShipStatus;
+	}
+	
+	public void setFriendShipStatus(final FriendShipStatus friendShipStatus) {
+		this.friendShipStatus = friendShipStatus;
 	}
 	
 	public void setLikers(final List<UserDTO> likers)

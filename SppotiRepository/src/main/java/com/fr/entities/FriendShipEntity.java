@@ -1,6 +1,6 @@
 package com.fr.entities;
 
-import com.fr.commons.enumeration.GlobalAppStatusEnum;
+import com.fr.commons.enumeration.FriendShipStatus;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,7 +18,7 @@ public class FriendShipEntity extends AbstractCommonEntity
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private GlobalAppStatusEnum status = GlobalAppStatusEnum.PENDING;
+	private FriendShipStatus status = FriendShipStatus.PENDING;
 	
 	@OneToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "friend_id")
@@ -38,12 +38,12 @@ public class FriendShipEntity extends AbstractCommonEntity
 		this.datetimeCreated = datetime;
 	}
 	
-	public GlobalAppStatusEnum getStatus()
+	public FriendShipStatus getStatus()
 	{
 		return this.status;
 	}
 	
-	public void setStatus(final GlobalAppStatusEnum status)
+	public void setStatus(final FriendShipStatus status)
 	{
 		this.status = status;
 	}

@@ -2,6 +2,7 @@ package com.fr.service;
 
 import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.FriendShipStatus;
 
 import java.util.List;
 
@@ -30,6 +31,16 @@ public interface FriendBusinessService extends AbstractBusinessService
 	 * 		friend status.
 	 */
 	void updateFriendShip(Long userId, String friendUuid, int friendStatus);
+	
+	/**
+	 * Get ffriendship status between connected user and a target user.
+	 *
+	 * @param friendUuid
+	 * 		friend user uuid.
+	 *
+	 * @return FriendShipStatus
+	 */
+	FriendShipStatus getFriendShipStatus(String friendUuid);
 	
 	/**
 	 * Delete friendship by the sender

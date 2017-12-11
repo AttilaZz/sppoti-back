@@ -2,6 +2,7 @@ package com.fr.impl;
 
 import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
+import com.fr.commons.enumeration.FriendShipStatus;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 import com.fr.commons.exception.BusinessGlobalException;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.fr.commons.enumeration.FriendShipStatus.*;
 import static com.fr.commons.enumeration.notification.NotificationObjectType.FRIENDSHIP;
 
 /**
@@ -78,16 +80,16 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 		final FriendShipEntity tempFriendShip = this.friendShipRepository
 				.findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(friend.getUuid(),
 						connectedUser.getUuid(), SppotiUtils.statusToFilter());
-		if (tempFriendShip != null && !tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
+		if (tempFriendShip != null && !tempFriendShip.getStatus().equals(PUBLIC_RELATION)) {
 			throw new EntityExistsException("FriendShip already exists !");
 		}
 		
 		FriendShipEntity friendShip = new FriendShipEntity();
 		
 		//friendship already exist in a different status
-		if (tempFriendShip != null && tempFriendShip.getStatus().equals(GlobalAppStatusEnum.PUBLIC_RELATION)) {
+		if (tempFriendShip != null && tempFriendShip.getStatus().equals(PUBLIC_RELATION)) {
 			friendShip = tempFriendShip;
-			friendShip.setStatus(GlobalAppStatusEnum.PENDING);
+			friendShip.setStatus(PENDING);
 		} else {
 			final UserEntity u = this.getUserByUuId(user.getFriendUuid());
 			friendShip.setFriend(u);
@@ -128,7 +130,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
         /*
 		prepare update
          */
-		for (final GlobalAppStatusEnum globalAppStatus : GlobalAppStatusEnum.values()) {
+		for (final FriendShipStatus globalAppStatus : values()) {
 			if (globalAppStatus.getValue() == friendStatus) {
 				tempFriendShip.setStatus(globalAppStatus);
 			}
@@ -137,17 +139,33 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 		//update and add notification
 		final FriendShipEntity friendShip = this.friendShipRepository.save(tempFriendShip);
 		if (friendShip != null) {
-			if (friendShip.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
+			if (friendShip.getStatus().equals(CONFIRMED)) {
 				this.notificationService
 						.saveAndSendNotificationToUsers(friendShip.getFriend(), friendShip.getUser(), FRIENDSHIP,
 								NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED);
-			} else if (friendShip.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
+			} else if (friendShip.getStatus().equals(REFUSED)) {
 				this.notificationService
 						.saveAndSendNotificationToUsers(friendShip.getFriend(), friendShip.getUser(), FRIENDSHIP,
 								NotificationTypeEnum.FRIEND_REQUEST_REFUSED);
 			}
 		}
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public FriendShipStatus getFriendShipStatus(final String friendUuid) {
+		final FriendShipEntity friendShipEntity = this.friendShipRepository
+				.findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(getConnectedUserUuid(),
+						friendUuid, SppotiUtils.statusToFilter());
+		
+		if (Objects.nonNull(friendShipEntity)) {
+			return friendShipEntity.getStatus();
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -166,7 +184,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 			throw new EntityNotFoundException("Friendship not found");
 		}
 		
-		friendShip.get(0).setStatus(GlobalAppStatusEnum.DELETED);
+		friendShip.get(0).setStatus(DELETED);
 		this.friendShipRepository.save(friendShip);
 		
 	}
