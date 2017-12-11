@@ -117,7 +117,8 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		
 		post.setLikedByUser(model.getLikes().stream().anyMatch(l -> l.getUser().getId().equals(connectedUser)));
 		
-		if (Objects.nonNull(model.getTargetUserProfile())) {
+		if (Objects.nonNull(model.getTargetUserProfile()) &&
+				!model.getTargetUserProfile().getId().equals(connectedUser)) {
 			post.setTargetUser(this.userTransformer.modelToDto(model.getTargetUserProfile()));
 			post.setFriendShipStatus(
 					this.friendBusinessService.getFriendShipStatus(model.getTargetUserProfile().getUuid()).getValue());
