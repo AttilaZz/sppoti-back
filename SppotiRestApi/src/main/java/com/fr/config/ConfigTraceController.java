@@ -11,8 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mobile.device.Device;
 import org.springframework.mobile.device.DeviceUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,21 +35,18 @@ import javax.servlet.http.HttpServletRequest;
  * @AfterThrowing – Run after the method throws an exception
  *
  * @Around – Run around the method execution, combine all three advices above.
- */ public class TraceController
+ */
+
+public class ConfigTraceController
 {
-	private final Logger LOGGER = LoggerFactory.getLogger(TraceController.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(ConfigTraceController.class);
 	
 	@Before("traceInvocationPointcut()")
 	public void displayTraceBeginning(final JoinPoint joinpoint) throws Throwable
 	{
 		final Object[] args = joinpoint.getArgs();
 		final StringBuilder sb = new StringBuilder();
-		
-		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
-				.getRequest();
-		
-		final Device currentDevice = (Device) request.getAttribute(DeviceUtils.CURRENT_DEVICE_ATTRIBUTE);
-		this.LOGGER.info("Request received from this platform: {}", currentDevice.getDevicePlatform());
+		printDevicePlatform();
 		
 		sb.append("Request sent to ");
 		sb.append(joinpoint.getSignature().getName());
@@ -75,8 +73,17 @@ import javax.servlet.http.HttpServletRequest;
 	 * http://docs.spring.io/spring/docs/current/spring-framework-reference/html
 	 * /config.html
 	 */
-	@Pointcut(value = "execution(* com.fr.api.*.*(..))")
+	@Pointcut(value = "execution(* com.fr.api..*.*(..))")
 	public void traceInvocationPointcut()
 	{
+	}
+	
+	private void printDevicePlatform() {
+		final RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
+		if (attribs instanceof NativeWebRequest) {
+			final HttpServletRequest request = (HttpServletRequest) ((NativeWebRequest) attribs).getNativeRequest();
+			final Device currentDevice = (Device) request.getAttribute(DeviceUtils.CURRENT_DEVICE_ATTRIBUTE);
+			this.LOGGER.info("Request received from this platform: {}", currentDevice.getDevicePlatform());
+		}
 	}
 }

@@ -2,6 +2,7 @@ package com.fr.filter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -13,11 +14,13 @@ import java.util.Objects;
 
 import static com.fr.filter.HeadersAttributes.*;
 import static com.fr.filter.HeadersValues.*;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
  */
 @Component
+@Order(HIGHEST_PRECEDENCE)
 public class CORSFilter implements Filter
 {
 	private final Logger LOGGER = LoggerFactory.getLogger(CORSFilter.class);

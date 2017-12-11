@@ -22,7 +22,6 @@ import static com.fr.filter.HeadersValues.*;
 public class AuthFailure extends SimpleUrlAuthenticationFailureHandler
 {
 	
-	/** Class logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(AuthFailure.class);
 	
 	/**

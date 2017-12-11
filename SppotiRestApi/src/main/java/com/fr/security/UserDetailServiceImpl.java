@@ -44,7 +44,7 @@ public class UserDetailServiceImpl implements UserDetailsService
 	{
 		
 		final String[] loginAttributes = loginUser.split(",");
-		LOGGER.info("received data from login form: ", Arrays.toString(loginAttributes));
+		LOGGER.info("Received data from login form: ", Arrays.toString(loginAttributes));
 		
 		final String username = loginAttributes[0];
 		final String facebookId = loginAttributes[1];

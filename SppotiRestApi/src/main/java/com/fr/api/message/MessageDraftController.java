@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.fr.api;
+package com.fr.api.message;
 
 import com.fr.entities.MessageEntity;
 import com.fr.service.MessageBusinessService;

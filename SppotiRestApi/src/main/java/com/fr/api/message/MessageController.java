@@ -1,4 +1,4 @@
-package com.fr.api;
+package com.fr.api.message;
 
 import com.fr.commons.dto.message.MessageRequestDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
