@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.fr.commons.enumeration.FriendShipStatus.*;
+import static com.fr.commons.enumeration.GlobalAppStatusEnum.*;
 import static com.fr.commons.enumeration.notification.NotificationObjectType.FRIENDSHIP;
 
 /**
@@ -130,7 +130,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
         /*
 		prepare update
          */
-		for (final FriendShipStatus globalAppStatus : values()) {
+		for (final GlobalAppStatusEnum globalAppStatus : values()) {
 			if (globalAppStatus.getValue() == friendStatus) {
 				tempFriendShip.setStatus(globalAppStatus);
 			}
@@ -162,7 +162,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 						friendUuid, SppotiUtils.statusToFilter());
 		
 		if (Objects.nonNull(friendShipEntity)) {
-			return friendShipEntity.getStatus();
+			return FriendShipStatus.fromGlobalStatus(friendShipEntity.getStatus());
 		}
 		
 		return null;
@@ -199,7 +199,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 		final Pageable pageable = new PageRequest(page, this.friendListSize);
 		
 		final List<FriendShipEntity> friendShips = this.friendShipRepository
-				.findByUserUuidOrFriendUuidAndStatus(userId, userId, GlobalAppStatusEnum.CONFIRMED, pageable);
+				.findByUserUuidOrFriendUuidAndStatus(userId, userId, CONFIRMED, pageable);
 		
 		return friendShips.stream().map(f -> {
 			UserDTO userDTO;
@@ -224,7 +224,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 		final Pageable pageable = new PageRequest(page, this.friendListSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		final List<FriendShipEntity> friendShips = this.friendShipRepository
-				.findByUserUuidAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
+				.findByUserUuidAndStatus(connectedUser.getUuid(), PENDING, pageable);
 		
 		return getFriendResponse(friendShips, connectedUser.getId());
 	}
@@ -241,7 +241,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 		final Pageable pageable = new PageRequest(page, this.friendListSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		final List<FriendShipEntity> friendShips = this.friendShipRepository
-				.findByFriendUuidAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.PENDING, pageable);
+				.findByFriendUuidAndStatus(connectedUser.getUuid(), PENDING, pageable);
 		
 		return getFriendResponse(friendShips, connectedUser.getId());
 	}
@@ -259,7 +259,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 		final Pageable pageable = new PageRequest(page, this.friendListSize, Sort.Direction.DESC, "datetimeCreated");
 		
 		final List<FriendShipEntity> friendShips = this.friendShipRepository
-				.findByUserUuidAndStatus(connectedUser.getUuid(), GlobalAppStatusEnum.REFUSED, pageable);
+				.findByUserUuidAndStatus(connectedUser.getUuid(), REFUSED, pageable);
 		
 		return getFriendResponse(friendShips, connectedUser.getId());
 	}

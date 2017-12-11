@@ -18,4 +18,7 @@ public enum FriendShipStatus
 		return this.status;
 	}
 	
+	public static FriendShipStatus fromGlobalStatus(final GlobalAppStatusEnum status) {
+		return FriendShipStatus.valueOf(status.name());
+	}
 }
