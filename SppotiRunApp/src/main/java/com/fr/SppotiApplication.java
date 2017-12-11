@@ -9,6 +9,8 @@ import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.mobile.device.DeviceHandlerMethodArgumentResolver;
+import org.springframework.mobile.device.DeviceResolverHandlerInterceptor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -43,7 +45,10 @@ public class SppotiApplication extends WebMvcConfigurationSupport implements Ser
 	
 	@Bean
 	public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-		return new ApiVersionRequestMappingHandlerMapping("v");
+		final ApiVersionRequestMappingHandlerMapping apiVersionRequestMappingHandlerMapping
+				= new ApiVersionRequestMappingHandlerMapping("v");
+		apiVersionRequestMappingHandlerMapping.setInterceptors(deviceResolverHandlerInterceptor());
+		return apiVersionRequestMappingHandlerMapping;
 	}
 	
 	@Bean
@@ -57,5 +62,15 @@ public class SppotiApplication extends WebMvcConfigurationSupport implements Ser
 	{
 		servletContext.getSessionCookieConfig().setDomain(this.filterProperties.getDomain());
 		servletContext.getSessionCookieConfig().setSecure(this.filterProperties.isSecureConnexion());
+	}
+	
+	@Bean
+	public DeviceResolverHandlerInterceptor deviceResolverHandlerInterceptor() {
+		return new DeviceResolverHandlerInterceptor();
+	}
+	
+	@Bean
+	public DeviceHandlerMethodArgumentResolver deviceHandlerMethodArgumentResolver() {
+		return new DeviceHandlerMethodArgumentResolver();
 	}
 }

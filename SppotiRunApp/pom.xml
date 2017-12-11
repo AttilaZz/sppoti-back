@@ -18,7 +18,7 @@
 
     <artifactId>SppotiRunApp</artifactId>
 
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
@@ -38,20 +38,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <profiles>
-                        <profile>container</profile>
-                        <profile>test</profile>
-                        <profile>dev</profile>
-                    </profiles>
-                </configuration>
             </plugin>
         </plugins>
 

@@ -4,6 +4,9 @@ import com.fr.commons.dto.SportDTO;
 import com.fr.entities.SportEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * Transformer for the {@link com.fr.entities.SportEntity}.
  * <p>
@@ -12,15 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class SportTransformer
 {
-	
-	/**
-	 * Transform sport entity to dto.
-	 *
-	 * @param sportEntity
-	 * 		sport entity to transform.
-	 *
-	 * @return SportDTO.
-	 */
 	public SportDTO modelToDto(final SportEntity sportEntity)
 	{
 		final SportDTO sportDTO = new SportDTO();
@@ -29,5 +23,7 @@ public class SportTransformer
 		return sportDTO;
 	}
 	
-	
+	public List<SportDTO> modelToDto(final List<SportEntity> sportEntities) {
+		return sportEntities.stream().map(this::modelToDto).collect(Collectors.toList());
+	}
 }
