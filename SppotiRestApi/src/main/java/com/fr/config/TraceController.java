@@ -8,7 +8,13 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mobile.device.Device;
+import org.springframework.mobile.device.DeviceUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by: Wail DJENANE On May 22, 2016
@@ -28,11 +34,9 @@ import org.springframework.stereotype.Component;
  * @AfterThrowing – Run after the method throws an exception
  *
  * @Around – Run around the method execution, combine all three advices above.
- */
-
-public class TraceControllers
+ */ public class TraceController
 {
-	private final Logger LOGGER = LoggerFactory.getLogger(TraceControllers.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(TraceController.class);
 	
 	@Before("traceInvocationPointcut()")
 	public void displayTraceBeginning(final JoinPoint joinpoint) throws Throwable
@@ -40,6 +44,13 @@ public class TraceControllers
 		final Object[] args = joinpoint.getArgs();
 		final StringBuilder sb = new StringBuilder();
 		
+		final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+				.getRequest();
+		
+		final Device currentDevice = (Device) request.getAttribute(DeviceUtils.CURRENT_DEVICE_ATTRIBUTE);
+		this.LOGGER.info("Request received from this platform: {}", currentDevice.getDevicePlatform());
+		
+		sb.append("Request sent to ");
 		sb.append(joinpoint.getSignature().getName());
 		sb.append(" with params : (");
 		for (int i = 0; i < args.length; i++) {
@@ -53,8 +64,6 @@ public class TraceControllers
 	}
 	
 	@After("traceInvocationPointcut()") //for all situations
-	//	@AfterReturning("traceInvocationPointcut()") //when return success
-	//	@AfterThrowing //when throws error
 	public void displayLastTrace(final StaticPart staticPart) throws Throwable
 	{
 		final String fullPackageName = staticPart.getSignature().getDeclaringType().getName();
