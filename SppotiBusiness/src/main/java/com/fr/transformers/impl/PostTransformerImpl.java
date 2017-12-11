@@ -2,6 +2,7 @@ package com.fr.transformers.impl;
 
 import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.post.PostDTO;
+import com.fr.commons.enumeration.FriendShipStatus;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.CommentEntity;
 import com.fr.entities.EditHistoryEntity;
@@ -120,8 +121,10 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		if (Objects.nonNull(model.getTargetUserProfile()) &&
 				!model.getTargetUserProfile().getId().equals(connectedUser)) {
 			post.setTargetUser(this.userTransformer.modelToDto(model.getTargetUserProfile()));
-			post.setFriendShipStatus(
-					this.friendBusinessService.getFriendShipStatus(model.getTargetUserProfile().getUuid()).getValue());
+			
+			final FriendShipStatus status = this.friendBusinessService
+					.getFriendShipStatus(model.getTargetUserProfile().getUuid());
+			post.setFriendShipStatus(Objects.nonNull(status) ? status.getValue() : null);
 		}
 		
 		return post;

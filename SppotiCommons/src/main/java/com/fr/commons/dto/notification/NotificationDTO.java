@@ -34,9 +34,18 @@ public class NotificationDTO extends AbstractCommonDTO
 	private CommentDTO comment;
 	private RatingDTO rating;
 	private ScoreDTO score;
+	private Integer friendShipStatus;
 	
 	@JsonSerialize(using = JsonDateSerializer.class)
 	private Date datetime;
+	
+	public Integer getFriendShipStatus() {
+		return this.friendShipStatus;
+	}
+	
+	public void setFriendShipStatus(final Integer friendShipStatus) {
+		this.friendShipStatus = friendShipStatus;
+	}
 	
 	public UserDTO getFrom()
 	{
