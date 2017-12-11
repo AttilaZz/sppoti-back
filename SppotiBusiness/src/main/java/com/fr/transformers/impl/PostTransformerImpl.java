@@ -120,7 +120,7 @@ public class PostTransformerImpl extends AbstractTransformerImpl<PostDTO, PostEn
 		if (Objects.nonNull(model.getTargetUserProfile())) {
 			post.setTargetUser(this.userTransformer.modelToDto(model.getTargetUserProfile()));
 			post.setFriendShipStatus(
-					this.friendBusinessService.getFriendShipStatus(model.getTargetUserProfile().getUuid()));
+					this.friendBusinessService.getFriendShipStatus(model.getTargetUserProfile().getUuid()).getValue());
 		}
 		
 		return post;
