@@ -327,7 +327,7 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 		
 		//Check if the user is not already a member
 		if (team.getTeamMembers().stream().anyMatch(tm -> Objects.equals(tm.getUser().getUuid(), userParam.getId()) &&
-				!SppotiUtils.statusToFilter().contains(tm.getStatus()))) {
+				tm.getStatus().isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled())) {
 			throw new EntityExistsException("User is already a member in this team.");
 		}
 		

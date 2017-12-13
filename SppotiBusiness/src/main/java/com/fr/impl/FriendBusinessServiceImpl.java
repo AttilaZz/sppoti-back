@@ -2,7 +2,6 @@ package com.fr.impl;
 
 import com.fr.commons.dto.FriendResponseDTO;
 import com.fr.commons.dto.UserDTO;
-import com.fr.commons.enumeration.FriendShipStatus;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 import com.fr.commons.exception.BusinessGlobalException;
@@ -41,19 +40,13 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(FriendBusinessServiceImpl.class);
 	
-	private final UserTransformer userTransformer;
-	private final NotificationBusinessService notificationService;
+	@Autowired
+	private UserTransformer userTransformer;
+	@Autowired
+	private NotificationBusinessService notificationService;
 	
 	@Value("${key.friendShipPerPage}")
 	private int friendListSize;
-	
-	@Autowired
-	public FriendBusinessServiceImpl(final UserTransformer userTransformer,
-									 final NotificationBusinessService notificationService)
-	{
-		this.userTransformer = userTransformer;
-		this.notificationService = notificationService;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -123,7 +116,7 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 		
 		if (tempFriendShip == null) {
 			this.LOGGER.error("UPDATE-FRIEND: FriendShipEntity not found !");
-			throw new EntityNotFoundException(
+			throw new BusinessGlobalException(
 					"FriendShipEntity not found between (" + connectedUser.getUuid() + ") And (" + friendUuid + ")");
 		}
 
@@ -150,22 +143,6 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 			}
 		}
 		
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public FriendShipStatus getFriendShipStatus(final String friendUuid) {
-		final FriendShipEntity friendShipEntity = this.friendShipRepository
-				.findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(getConnectedUserUuid(),
-						friendUuid, SppotiUtils.statusToFilter());
-		
-		if (Objects.nonNull(friendShipEntity)) {
-			return FriendShipStatus.fromGlobalStatus(friendShipEntity.getStatus());
-		}
-		
-		return null;
 	}
 	
 	/**

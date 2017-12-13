@@ -21,6 +21,8 @@ import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.SportTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -46,39 +48,25 @@ import static com.fr.commons.enumeration.notification.NotificationTypeEnum.*;
 @Component
 class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements SppotiBusinessService
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(SppotiBusinessServiceImpl.class);
 	
-	private final SportTransformer sportTransformer;
-	private final SppotiTransformer sppotiTransformer;
-	private final TeamMemberTransformer teamMemberTransformer;
-	private final UserTransformer userTransformer;
-	private final SppotiRequestRepository sppotiRequestRepository;
-	private final SppotiMailerService sppotiMailerService;
+	@Autowired
+	private SportTransformer sportTransformer;
+	@Autowired
+	private SppotiTransformer sppotiTransformer;
+	@Autowired
+	private TeamMemberTransformer teamMemberTransformer;
+	@Autowired
+	private UserTransformer userTransformer;
+	@Autowired
+	private SppotiRequestRepository sppotiRequestRepository;
+	@Autowired
+	private SppotiMailerService sppotiMailerService;
+	@Autowired
+	private NotificationBusinessService notificationService;
 	
-	private final NotificationBusinessService notificationService;
-	
-	/** Returned sppoti list size. */
 	@Value("${key.sppotiesPerPage}")
 	private int sppotiSize;
-	
-	/**
-	 * Init services.
-	 */
-	@Autowired
-	public SppotiBusinessServiceImpl(final SportTransformer sportTransformer, final SppotiTransformer sppotiTransformer,
-									 final TeamMemberTransformer teamMemberTransformer,
-									 final UserTransformer userTransformer,
-									 final SppotiMailerService sppotiMailerService,
-									 final SppotiRequestRepository sppotiRequestRepository,
-									 final NotificationBusinessService notificationService)
-	{
-		this.sportTransformer = sportTransformer;
-		this.sppotiTransformer = sppotiTransformer;
-		this.teamMemberTransformer = teamMemberTransformer;
-		this.userTransformer = userTransformer;
-		this.sppotiMailerService = sppotiMailerService;
-		this.sppotiRequestRepository = sppotiRequestRepository;
-		this.notificationService = notificationService;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -87,10 +75,11 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	@Override
 	public SppotiDTO saveSppoti(final SppotiDTO newSppoti)
 	{
-		
 		TeamEntity hostTeam = new TeamEntity();
+		
 		final SppotiEntity sppoti = this.sppotiTransformer.dtoToModel(newSppoti);
 		sppoti.setUserSppoti(getConnectedUser());
+		
 		final Set<SppotiEntity> sppotiEntities = new HashSet<>();
 		sppotiEntities.add(sppoti);
 		hostTeam.setSppotiEntity(sppotiEntities);
@@ -119,13 +108,15 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			
 			final List<TeamEntity> tempTeams = this.teamRepository.findByUuidAndDeletedFalse(newSppoti.getMyTeamId());
 			
-			if (tempTeams == null || tempTeams.isEmpty()) {
-				throw new EntityNotFoundException("Host team not found in the request");
+			if (Objects.isNull(tempTeams)) {
+				this.LOGGER.error("Host team id is invalid, team not found in database");
+				throw new BusinessGlobalException();
 			}
 			hostTeam = tempTeams.get(0);
 			
 			if (!hostTeam.getSport().equals(sppoti.getSport())) {
-				throw new BusinessGlobalException("Host team sport not as same as sppoti sport !");
+				throw new BusinessGlobalException("Host team sport {} not as same as sppoti sport {}",
+						hostTeam.getSport(), sppoti.getSport());
 			}
 			
 			//Convert team members to sppoters.
@@ -142,7 +133,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			sppoti.setSppotiMembers(sppotiMembers);
 			
 		} else {
-			throw new EntityNotFoundException("Host team not found in the request");
+			throw new BusinessGlobalException("Host team not found in the request");
 		}
 		
 		sppoti.setTeamHostEntity(hostTeam);
@@ -160,6 +151,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				}
 			});
 		}
+		
 		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(savedSppoti);
 		//send email and notification to sppoters.
 		sppoti.getTeamHostEntity().getTeamMembers().forEach(m -> {
@@ -176,8 +168,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				
 			}
 		});
-		return sppotiDTO;
 		
+		this.LOGGER.info("Sppoti has been saved: {}", sppotiDTO);
+		return sppotiDTO;
 	}
 	
 	/**
@@ -186,15 +179,16 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	@Override
 	public SppotiDTO getSppotiByUuid(final String uuid)
 	{
-		
 		final SppotiEntity sppoti = this.sppotiRepository.findByUuid(uuid);
 		
 		if (sppoti != null && sppoti.isDeleted()) {
-			throw new EntityNotFoundException("Trying to get a deleted sppoti");
+			this.LOGGER.info("This sppoti {}, is deleted");
+			throw new BusinessGlobalException("Trying to get a deleted sppoti");
 		}
 		
-		return getSppotiResponse(sppoti);
-		
+		final SppotiDTO dto = getSppotiResponse(sppoti);
+		this.LOGGER.info("Sppoti data has been returned: {}", dto);
+		return dto;
 	}
 	
 	/**
@@ -468,9 +462,10 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		//check if adverse team members are not in conflict with team host members
 		sppotiEntity.getTeamHostEntity().getTeamMembers().stream()
-				.filter(m -> !SppotiUtils.statusToFilter().contains(m.getStatus())).forEach(
+				.filter(m -> m.getStatus().isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled()).forEach(
 				hostMember -> challengeTeam.getTeamMembers().stream()
-						.filter(m -> !SppotiUtils.statusToFilter().contains(m.getStatus())).forEach(adverseMember -> {
+						.filter(m -> m.getStatus().isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled())
+						.forEach(adverseMember -> {
 							if (hostMember.getUser().getId().equals(adverseMember.getUser().getId())) {
 								throw new BusinessGlobalException(
 										"Conflict found between host team members and adverse team members");
@@ -796,12 +791,14 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			final List<Long> existingSppoter = new ArrayList<>();
 			
 			sp.getAdverseTeams().forEach(ad -> existingSppoter.addAll(ad.getTeam().getTeamMembers().stream().filter(m ->
-					m.getSppotiMembers().stream().noneMatch(s -> s.getStatus().equals(SppotiUtils.statusToFilter())) &&
+					m.getSppotiMembers().stream()
+							.noneMatch(s -> s.getStatus().isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled()) &&
 							!m.getSppotiMembers().isEmpty()).map(a -> a.getUser().getId())
 					.collect(Collectors.toList())));
 			
 			existingSppoter.addAll(sp.getTeamHostEntity().getTeamMembers().stream().filter(m ->
-					m.getSppotiMembers().stream().noneMatch(s -> s.getStatus().equals(SppotiUtils.statusToFilter())) &&
+					m.getSppotiMembers().stream()
+							.noneMatch(s -> s.getStatus().isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled()) &&
 							!m.getSppotiMembers().isEmpty()).map(m -> m.getUser().getId())
 					.collect(Collectors.toList()));
 			
@@ -1034,7 +1031,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	/**
 	 * {@inheritDoc}
 	 */
-	//TODO: to impement.
+	//TODO: to implement.
 	@Transactional
 	@Override
 	public void refuseTeamRequestSentFromUser(final String sppotiId, final UserDTO dto) {

@@ -5,7 +5,6 @@ import com.fr.commons.dto.notification.NotificationDTO;
 import com.fr.commons.enumeration.FriendShipStatus;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
-import com.fr.service.FriendBusinessService;
 import com.fr.transformers.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,8 +35,6 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 	private ScoreTransformer scoreTransformer;
 	@Autowired
 	private RatingTransformer ratingTransformer;
-	@Autowired
-	private FriendBusinessService friendBusinessService;
 	
 	/**
 	 * @param notification
@@ -103,8 +100,7 @@ public class NotificationTransformerImpl extends AbstractTransformerImpl<Notific
 			notificationDTO.setScore(this.scoreTransformer.modelToDto(t));
 		});
 		
-		final FriendShipStatus status = this.friendBusinessService
-				.getFriendShipStatus(notification.getFrom().getUuid());
+		final FriendShipStatus status = notification.getFriendStatus();
 		notificationDTO.setFriendShipStatus(Objects.nonNull(status) ? status.getValue() : null);
 		
 		return notificationDTO;

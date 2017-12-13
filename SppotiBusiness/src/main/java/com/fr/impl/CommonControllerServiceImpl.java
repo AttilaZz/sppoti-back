@@ -5,6 +5,7 @@ import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
 import com.fr.commons.dto.team.TeamDTO;
+import com.fr.commons.enumeration.FriendShipStatus;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 import com.fr.commons.exception.NotAdminException;
 import com.fr.commons.exception.TeamMemberNotFoundException;
@@ -361,13 +362,7 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 		
 	}
 	
-	/**
-	 * @param team
-	 * 		team to map.
-	 *
-	 * @return a teamResponse object from TeamEntity entity.
-	 */
-	protected TeamDTO fillTeamResponse(final TeamEntity team, final SppotiEntity sppoti)
+	TeamDTO fillTeamResponse(final TeamEntity team, final SppotiEntity sppoti)
 	{
 		
 		final List<UserDTO> teamUsers = new ArrayList<>();
@@ -377,16 +372,21 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 			 * If team member is not deleted && Sppoter Not deleted too, add sppoter to the list of members.
 			 */
 			if (sppoti != null) {
-				if (!memberEntity.getStatus().equals(GlobalAppStatusEnum.DELETED) &&
+				if (memberEntity.getStatus().isNotCancelledAndDeletedAndCancelled() &&
 						memberEntity.getSppotiMembers().stream().anyMatch(
 								s -> s.getSppoti().getUuid().equals(sppoti.getUuid()) &&
-										!s.getStatus().equals(GlobalAppStatusEnum.DELETED))) {
+										s.getStatus().isNotCancelledAndDeletedAndCancelled())) {
+					
 					teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, sppoti));
+					
 				}
-			} else if (!memberEntity.getStatus().equals(GlobalAppStatusEnum.DELETED)) {
+			} else if (memberEntity.getStatus().isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled()) {
+				
 				teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, null));
+				
 			}
 		}
+		
 		final TeamDTO teamDTO = this.teamTransformer.modelToDto(team);
 		teamDTO.setMembers(teamUsers);
 		
@@ -394,12 +394,6 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 		
 	}
 	
-	/**
-	 * Check if the user id in parameter is same as connected user id.
-	 *
-	 * @param userId
-	 * 		user id resource.
-	 */
 	void CheckConnectedUserAccessPrivileges(final String userId)
 	{
 		if (!Objects.equals(getConnectedUser().getUuid(), userId)) {
@@ -407,17 +401,6 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 		}
 	}
 	
-	
-	/**
-	 * Send Email to the invited member to join the team.
-	 *
-	 * @param team
-	 * 		team to add member.
-	 * @param to
-	 * 		added member.
-	 * @param from
-	 * 		team admin.
-	 */
 	void sendJoinTeamEmail(final TeamEntity team, final UserEntity to, final TeamMemberEntity from)
 	{
 		
@@ -429,14 +412,6 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 		thread.start();
 	}
 	
-	/**
-	 * @param challengeTeam
-	 * 		adverse team.
-	 * @param sppoti
-	 * 		sppoti id.
-	 *
-	 * @return all adverse team as sppoters.
-	 */
 	Set<SppoterEntity> convertAdverseTeamMembersToSppoters(final TeamEntity challengeTeam, final SppotiEntity sppoti)
 	{
 		return challengeTeam.getTeamMembers().stream().map(teamMember -> {
@@ -453,12 +428,24 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 		).collect(Collectors.toSet());
 	}
 	
-	/**
-	 * Get timeZone from security context.
-	 */
 	public String getTimeZone() {
 		final AccountUserDetails accountUserDetails = (AccountUserDetails) SecurityContextHolder.getContext()
 				.getAuthentication().getPrincipal();
 		return accountUserDetails.getTimeZone();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public FriendShipStatus getFriendShipStatus(final String friendUuid) {
+		final FriendShipEntity friendShipEntity = this.friendShipRepository
+				.findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(getConnectedUserUuid(),
+						friendUuid, SppotiUtils.statusToFilter());
+		
+		if (Objects.nonNull(friendShipEntity)) {
+			return FriendShipStatus.fromGlobalStatus(friendShipEntity.getStatus());
+		}
+		
+		return null;
 	}
 }

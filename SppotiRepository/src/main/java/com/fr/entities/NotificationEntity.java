@@ -1,5 +1,6 @@
 package com.fr.entities;
 
+import com.fr.commons.enumeration.FriendShipStatus;
 import com.fr.commons.enumeration.notification.NotificationStatus;
 import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 
@@ -61,6 +62,8 @@ public class NotificationEntity extends AbstractCommonEntity
 	 * to get trace of the connected user when using transformers.
 	 */
 	private transient Long connectedUserId;
+	
+	private transient FriendShipStatus friendStatus;
 	
 	public UserEntity getFrom()
 	{
@@ -170,6 +173,14 @@ public class NotificationEntity extends AbstractCommonEntity
 	
 	public void setConnectedUserId(final Long connectedUserId) {
 		this.connectedUserId = connectedUserId;
+	}
+	
+	public FriendShipStatus getFriendStatus() {
+		return this.friendStatus;
+	}
+	
+	public void setFriendStatus(final FriendShipStatus friendStatus) {
+		this.friendStatus = friendStatus;
 	}
 	
 	/**

@@ -87,6 +87,7 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		
 		notificationListDTO.setNotifications(notifications.stream().map(n -> {
 			n.setConnectedUserId(getConnectedUserId());
+			n.setFriendStatus(getFriendShipStatus(n.getFrom().getUuid()));
 			return this.notificationTransformer.modelToDto(n);
 		}).collect(Collectors.toList()));
 		
@@ -135,15 +136,15 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		}
 		
 		if (sender == null) {
-			this.LOGGER.warn("Sender identity is required to send notification, sender is {}", getConnectedUser());
+			this.LOGGER.error("Sender identity is required to send notification, sender is {}", getConnectedUser());
 			return;
 		}
 		if (userTo == null) {
-			this.LOGGER.warn("Notification receivers must be added to notification, receiver is NULL");
+			this.LOGGER.error("Notification receivers must be added to notification, receiver is NULL");
 			return;
 		}
 		if (notificationObjectType == null) {
-			this.LOGGER.warn("Notification context must be specified, ex: SPPOTI, TEAM, ect..");
+			this.LOGGER.error("Notification context must be specified, ex: SPPOTI, TEAM, ect..");
 			return;
 		}
 		if (notificationTypeEnum == null) {
@@ -152,9 +153,11 @@ public class NotificationBusinessServiceImpl extends CommonControllerServiceImpl
 		
 		final NotificationEntity notification = buildNotificationEntity(notificationTypeEnum, sender, userTo,
 				notificationObjectType, dataToSendInNotification);
-		final NotificationEntity savedNotification = this.notificationRepository.save(notification);
-		this.notificationRepository.flush();
+		final NotificationEntity savedNotification = this.notificationRepository.saveAndFlush(notification);
+		
 		savedNotification.setConnectedUserId(getConnectedUserId());
+		savedNotification.setFriendStatus(getFriendShipStatus(notification.getFrom().getUuid()));
+		
 		final NotificationDTO notificationDTO = this.notificationTransformer.modelToDto(savedNotification);
 		sendNotificationToSubscribedUsers(sender, userTo.getEmail(), notificationDTO, notificationTypeEnum);
 	}

@@ -5,14 +5,14 @@ package com.fr.commons.exception;
  */
 public class BusinessGlobalException extends RuntimeException
 {
-	private Object object;
+	private Object[] object;
 	
 	public BusinessGlobalException()
 	{
 		super();
 	}
 	
-	public BusinessGlobalException(final String message, final Object object)
+	public BusinessGlobalException(final String message, final Object... object)
 	{
 		super(message);
 		this.object = object;
