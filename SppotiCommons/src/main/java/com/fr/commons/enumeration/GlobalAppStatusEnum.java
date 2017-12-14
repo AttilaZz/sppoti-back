@@ -22,11 +22,11 @@ public enum GlobalAppStatusEnum
 	}
 	
 	public boolean isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled() {
-		return !this.equals(PENDING) || !this.equals(CANCELED) || !this.equals(DELETED) || !this.equals(CANCELED);
+		return !this.equals(PENDING) && !this.equals(CANCELED) && !this.equals(DELETED) && !this.equals(CANCELED);
 	}
 	
 	public boolean isNotCancelledAndDeletedAndCancelled() {
-		return !this.equals(CANCELED) || !this.equals(DELETED) || !this.equals(CANCELED);
+		return !this.equals(CANCELED) && !this.equals(DELETED) && !this.equals(CANCELED);
 	}
 }
 

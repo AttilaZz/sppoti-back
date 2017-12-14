@@ -462,7 +462,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		//check if adverse team members are not in conflict with team host members
 		sppotiEntity.getTeamHostEntity().getTeamMembers().stream()
-				.filter(m -> m.getStatus().isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled()).forEach(
+				.filter(m -> !m.getStatus().isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled()).forEach(
 				hostMember -> challengeTeam.getTeamMembers().stream()
 						.filter(m -> m.getStatus().isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled())
 						.forEach(adverseMember -> {
