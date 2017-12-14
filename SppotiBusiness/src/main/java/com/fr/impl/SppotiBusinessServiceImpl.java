@@ -37,8 +37,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.fr.commons.enumeration.notification.NotificationObjectType.CHALLENGE;
-import static com.fr.commons.enumeration.notification.NotificationObjectType.SPPOTI;
+import static com.fr.commons.enumeration.notification.NotificationObjectType.*;
 import static com.fr.commons.enumeration.notification.NotificationTypeEnum.*;
 
 /**
@@ -206,6 +205,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			this.sppotiRepository.save(s);
 		});
 		
+		//TODO: send notification to host team
+		
 		sppoti.orElseThrow(() -> new EntityNotFoundException("Trying to delete non existing sppoti"));
 	}
 	
@@ -302,7 +303,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			adverse.getTeam().getTeamMembers().forEach(hostMember -> {
 				if (hostMember.getAdmin()) {
 					this.notificationService
-							.saveAndSendNotificationToUsers(sppoti.getUserSppoti(), hostMember.getUser(), SPPOTI,
+							.saveAndSendNotificationToUsers(sppoti.getUserSppoti(), hostMember.getUser(), CHALLENGE,
 									NotificationTypeEnum.SPPOTI_ADMIN_CHALLENGED_YOU, adverse.getTeam(), sppoti);
 				}
 			});
@@ -325,7 +326,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		if (editNotification) {
 			usersToNotify.stream().filter(m -> !m.getAdmin()).forEach(m -> this.notificationService
 					.saveAndSendNotificationToUsers(updatedSppoti.getUserSppoti(), m.getUser(), SPPOTI,
-							NotificationTypeEnum.SPPOTI_HAS_BEEN_EDITED, null, updatedSppoti));
+							NotificationTypeEnum.SPPOTI_HAS_BEEN_EDITED, updatedSppoti));
 		}
 		
 		return getSppotiResponse(updatedSppoti);
@@ -482,7 +483,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		//Send notification to sppoti admin
 		this.notificationService
-				.saveAndSendNotificationToUsers(getConnectedUser(), sppotiEntity.getUserSppoti(), SPPOTI,
+				.saveAndSendNotificationToUsers(getConnectedUser(), sppotiEntity.getUserSppoti(), CHALLENGE,
 						TEAM_ADMIN_SENT_YOU_A_CHALLENGE, adverse.getTeam(), sppotiEntity);
 		
 		return getSppotiResponse(savedSppoti);
@@ -639,7 +640,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				
 				if (!connectUser.getId().equals(ratedSppoter.getTeamMember().getUser().getId())) {
 					this.notificationService
-							.saveAndSendNotificationToUsers(connectUser, ratedSppoter.getTeamMember().getUser(), SPPOTI,
+							.saveAndSendNotificationToUsers(connectUser, ratedSppoter.getTeamMember().getUser(), RATING,
 									YOU_HAVE_BEEN_RATED, ratedSppoter.getSppoti(), ratingEntity);
 				}
 				
@@ -967,6 +968,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			return this.sppotiTransformer.modelToDto(this.sppotiRepository.save(entity.get()));
 		}
 		
+		//TODO: send notification to host team
+		
 		throw new EntityNotFoundException(ErrorMessageEnum.SPPOTI_NOT_FOUND.getMessage());
 	}
 	
@@ -1052,6 +1055,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			s.setStatus(GlobalAppStatusEnum.LEFT);
 			this.sppoterRepository.save(s);
 		});
+		
+		//TODO: send notification to sppoti admin
 		
 		optional.orElseThrow(() -> new EntityNotFoundException("User not member of this sppoti"));
 	}
