@@ -372,15 +372,15 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 			 * If team member is not deleted && Sppoter Not deleted too, add sppoter to the list of members.
 			 */
 			if (sppoti != null) {
-				if (memberEntity.getStatus().isNotCancelledAndDeletedAndCancelled() &&
+				if (memberEntity.getStatus().isNotCancelledAndNotDeletedAndNotRefused() &&
 						memberEntity.getSppotiMembers().stream().anyMatch(
 								s -> s.getSppoti().getUuid().equals(sppoti.getUuid()) &&
-										s.getStatus().isNotCancelledAndDeletedAndCancelled())) {
+										s.getStatus().isNotCancelledAndNotDeletedAndNotRefused())) {
 					
 					teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, sppoti));
 					
 				}
-			} else if (memberEntity.getStatus().isNotPendingAndNotRefusedAndNotDeletedAndNotCancelled()) {
+			} else if (memberEntity.getStatus().isNotCancelledAndNotDeletedAndNotRefused()) {
 				
 				teamUsers.add(this.teamMemberTransformer.modelToDto(memberEntity, null));
 				

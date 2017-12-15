@@ -32,9 +32,11 @@ services:
           - db_password
 
   redis:
-    image: redis
+      image: redis
 #    volumes:
 #        - redis_data:/data
+      environment:
+        AWS_S3_BUCKET: aws-uploads-dev
 
   aws-getway:
     image: wdjenane/aws-getway:latest
