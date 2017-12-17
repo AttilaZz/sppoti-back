@@ -1,7 +1,9 @@
 package com.fr.impl;
 
 import com.fr.commons.dto.security.AccountUserDetails;
+import com.fr.repositories.AccountParamRepository;
 import com.fr.service.UserParamService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -12,14 +14,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserParamServiceImpl implements UserParamService
 {
+	@Autowired
+	private AccountParamRepository accountParamRepository;
+	
 	@Override
-	public boolean canReceiveEmail() {
-		return getConnectedUserInfo().hasActivatedEmail();
+	public boolean canReceiveEmail(final String userId) {
+		return this.accountParamRepository.findByUserUuidAndCanReceiveEmailTrue(userId).isPresent();
 	}
 	
 	@Override
-	public boolean canReceiveNotification() {
-		return getConnectedUserInfo().hasActivatedNotifications();
+	public boolean canReceiveNotification(final String userId) {
+		return this.accountParamRepository.findByUserUuidAndCanReceiveNotificationTrue(userId).isPresent();
 	}
 	
 	private AccountUserDetails getConnectedUserInfo() {

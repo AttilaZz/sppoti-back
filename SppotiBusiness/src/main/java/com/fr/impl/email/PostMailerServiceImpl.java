@@ -24,8 +24,5 @@ public class PostMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 	
 	@Override
 	public void sendEmailToTargetProfileOwner(final UserDTO target) {
-		if (this.userParamService.canReceiveEmail()) {
-		
-		}
 	}
 }

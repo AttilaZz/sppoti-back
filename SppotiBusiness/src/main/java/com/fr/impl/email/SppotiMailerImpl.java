@@ -75,15 +75,12 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 	@Override
 	public void sendAddSppotiEmail(final SppotiDTO Sppoti)
 	{
-		if (this.userParamService.canReceiveEmail()) {
-		
-		}
 	}
 	
 	@Override
 	public void sendJoinSppotiEmailToSppoters(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
-		if (this.userParamService.canReceiveEmail()) {
+		if (this.userParamService.canReceiveEmail(to.getEmail())) {
 			final Context context = new Context();
 			context.setVariable("sentToValidationLinkMessage", this.joinMessage);
 			context.setVariable("requestFromSppotiAdmin", true);
@@ -104,7 +101,7 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 	@Override
 	public void sendJoinSppotiEmailToSppotiAdmin(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
-		if (this.userParamService.canReceiveEmail()) {
+		if (this.userParamService.canReceiveEmail(to.getEmail())) {
 			
 			final Context context = new Context();
 			context.setVariable("requestFromSppotiAdmin", false);
@@ -126,7 +123,7 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 	public void sendSppotiJoinResponseEmail(final SppotiDTO sppoti, final UserDTO to, final UserDTO from,
 											final SppotiResponse sppotiResponse)
 	{
-		if (this.userParamService.canReceiveEmail()) {
+		if (this.userParamService.canReceiveEmail(to.getEmail())) {
 			
 			final Context context = new Context();
 			context.setVariable("requestFromSppotiAdmin", false);

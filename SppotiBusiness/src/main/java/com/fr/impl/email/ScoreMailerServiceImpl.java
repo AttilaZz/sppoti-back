@@ -26,8 +26,5 @@ public class ScoreMailerServiceImpl extends ApplicationMailerServiceImpl impleme
 	
 	@Override
 	public void sendScoreNotificationToTeamMember(final TeamDTO team) {
-		if (this.userParamService.canReceiveEmail()) {
-		
-		}
 	}
 }

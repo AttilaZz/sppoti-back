@@ -26,8 +26,5 @@ public class RatingMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	
 	@Override
 	public void sendRatingNotificationToTheRatedMember(final UserDTO user) {
-		if (this.userParamService.canReceiveEmail()) {
-		
-		}
 	}
 }

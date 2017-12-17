@@ -3,7 +3,7 @@ package com.fr.commons.dto;
 /**
  * Created by djenanewail on 12/6/17.
  */
-public class EmailUserDTO
+public class EmailUserDTO extends AbstractCommonDTO
 {
 	private String firstName;
 	private String lastName;
@@ -12,10 +12,11 @@ public class EmailUserDTO
 	public EmailUserDTO() {
 	}
 	
-	public EmailUserDTO(final String firstName, final String lastName, final String email) {
+	public EmailUserDTO(final String firstName, final String lastName, final String email, final String id) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
+		this.id = id;
 	}
 	
 	public String getFirstName() {

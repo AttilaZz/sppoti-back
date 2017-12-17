@@ -110,7 +110,7 @@ abstract class ApplicationMailerServiceImpl implements ApplicationMailerService
 				}
 				
 				this.sender.send(mail);
-				LOGGER.info("Email has been sent successfully to user {}", to);
+				LOGGER.info("Email has been sent successfully sent to user: <{}>, with subject: <{}>", to, subject);
 			} catch (final MessagingException | MailAuthenticationException e) {
 				LOGGER.error(ERROR_SENDING_MAIL, e);
 			} catch (final IOException e) {

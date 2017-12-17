@@ -12,6 +12,7 @@ import com.fr.service.CommentBusinessService;
 import com.fr.service.NotificationBusinessService;
 import com.fr.service.email.CommentMailerService;
 import com.fr.transformers.CommentTransformer;
+import com.fr.transformers.PostTransformer;
 import com.fr.transformers.UserTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,8 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 	private NotificationBusinessService notificationService;
 	@Autowired
 	private UserTransformer userTransformer;
+	@Autowired
+	private PostTransformer postTransformer;
 	
 	@Value("${key.commentsPerPage}")
 	private int commentSize;
@@ -97,6 +100,7 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 		
 		this.LOGGER.info("The following comment is going to be saved: {}", commentEntityToSave);
 		final CommentEntity commentEntity = this.commentRepository.saveAndFlush(commentEntityToSave);
+		final CommentDTO commentDTO = this.commentTransformer.modelToDto(commentEntity);
 		
 		final String targetUser = commentEntity.getPost().getTargetUserProfile().getUuid();
 		if (StringUtils.hasText(targetUser) && !Objects.equals(targetUser, getConnectedUser().getUuid())) {
@@ -109,7 +113,9 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 						commentEntity.getPost().getTargetUserProfile(), COMMENT, X_COMMENTED_ON_YOUR_POST,
 						commentEntity.getPost(), commentEntity);
 				
-				this.commentMailerService.sendEmailToPostContributors(buildContributorsList(optional.get()));
+				this.commentMailerService
+						.sendEmailToPostContributors(this.postTransformer.modelToDto(optional.get()), commentDTO,
+								buildContributorsList(optional.get()));
 			}
 			
 			if (checkForTags) {
@@ -117,11 +123,10 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 			}
 		}
 		
-		final CommentDTO dto1 = this.commentTransformer.modelToDto(commentEntity);
-		dto1.setMyComment(true);
+		commentDTO.setMyComment(true);
 		
-		this.LOGGER.info("Comment has been saved and the following DTO has been returned to the user: {}", dto1);
-		return dto1;
+		this.LOGGER.info("Comment has been saved and the following DTO has been returned to the user: {}", commentDTO);
+		return commentDTO;
 	}
 	
 	private List<EmailUserDTO> buildContributorsList(final PostEntity postEntity) {
@@ -130,7 +135,7 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 		postEntity.getCommentEntities().forEach(c -> contributorsList.add(c.getUser()));
 		
 		return this.userTransformer.modelToDto(contributorsList).stream()
-				.map(u -> new EmailUserDTO(u.getFirstName(), u.getLastName(), u.getEmail()))
+				.map(u -> new EmailUserDTO(u.getFirstName(), u.getLastName(), u.getEmail(), u.getId()))
 				.filter(distinctByKey(EmailUserDTO::getEmail)).collect(Collectors.toList());
 	}
 	

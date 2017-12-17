@@ -38,6 +38,8 @@
         <docker.maven.plugin.version>1.0.0</docker.maven.plugin.version>
         <com.google.firebase.version>5.5.0</com.google.firebase.version>
         <org.apache.maven.plugin.version>2.5.3</org.apache.maven.plugin.version>
+
+        <environment>developpement</environment>
     </properties>
 
     <modules>
@@ -296,15 +298,4 @@
         </extensions>
     </build>
 
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <environment>developpement</environment>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-    </profiles>
 </project>

@@ -5,7 +5,7 @@ package com.fr.service;
  */
 public interface UserParamService
 {
-	boolean canReceiveEmail();
+	boolean canReceiveEmail(String userId);
 	
-	boolean canReceiveNotification();
+	boolean canReceiveNotification(String userId);
 }

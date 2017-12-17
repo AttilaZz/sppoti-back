@@ -1,6 +1,8 @@
 package com.fr.service.email;
 
+import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.EmailUserDTO;
+import com.fr.commons.dto.post.PostDTO;
 
 import java.util.List;
 
@@ -9,5 +11,5 @@ import java.util.List;
  */
 public interface CommentMailerService extends ApplicationMailerService
 {
-	void sendEmailToPostContributors(List<EmailUserDTO> contributors);
+	void sendEmailToPostContributors(final PostDTO postDTO, CommentDTO comment, List<EmailUserDTO> contributors);
 }

@@ -64,7 +64,6 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 	public void sendCreateAccountConfirmationEmail(final UserDTO to, final String confirmationCode,
 												   final TypeAccountValidation type)
 	{
-		
 		final String activateLink = this.frontRootPath + this.pathToValidateAccount + confirmationCode + "/" + type;
 		
 		this.prepareAndSendEmail(to, this.confirmationAccountSubject, this.confirmationAccountMessage,
@@ -93,45 +92,42 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 	private void prepareAndSendEmail(final UserDTO to, final String subject, final String message,
 									 final String buttonText, final String activateLinkTag, final int op)
 	{
-		final Thread thread = new Thread(() -> {
-			
-			final List<MailResourceContent> resourceContents = new ArrayList<>();
-			final MailResourceContent resourceContent = new MailResourceContent();
-			resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
-			resourceContent.setResourceName(logoResourceName);
-			resourceContents.add(resourceContent);
-			
-			final Context context = new Context();
-			context.setVariable("firstName", to.getFirstName());
-			context.setVariable("body", message);
-			context.setVariable("buttonLink", activateLinkTag);
-			context.setVariable("textButtonLink", buttonText);
-			context.setVariable("receiverEmail", to.getEmail());
-			context.setVariable("receiverUsername", to.getUsername());
-			context.setVariable("imageResourceName", resourceContent.getResourceName());
-			
-			context.setVariable("recoverAccountConcatUsMessage", this.recoverAccountConcatUsMessage);
-			
-			//Template footer.
-			context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
-			context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
-			context.setVariable("contactUsMessageText", this.contactUsMessage);
-			context.setVariable("contactUsLink", this.contactUsLink);
-			context.setVariable("sentToText", this.sentToTextMessage);
-			
-			switch (op) {
-				case 1:
-					context.setVariable("isRecoverPassword", false);
-					break;
-				case 2:
-					context.setVariable("isRecoverPassword", true);
-					break;
-			}
-			final String text = this.templateEngine.process(PATH_TO_ACCOUNT_TEMPLATE, context);
-			
-			
-			super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContents);
-		});
-		thread.start();
+		
+		final List<MailResourceContent> resourceContents = new ArrayList<>();
+		final MailResourceContent resourceContent = new MailResourceContent();
+		resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
+		resourceContent.setResourceName(logoResourceName);
+		resourceContents.add(resourceContent);
+		
+		final Context context = new Context();
+		context.setVariable("firstName", to.getFirstName());
+		context.setVariable("body", message);
+		context.setVariable("buttonLink", activateLinkTag);
+		context.setVariable("textButtonLink", buttonText);
+		context.setVariable("receiverEmail", to.getEmail());
+		context.setVariable("receiverUsername", to.getUsername());
+		context.setVariable("imageResourceName", resourceContent.getResourceName());
+		
+		context.setVariable("recoverAccountConcatUsMessage", this.recoverAccountConcatUsMessage);
+		
+		//Template footer.
+		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
+		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
+		context.setVariable("contactUsMessageText", this.contactUsMessage);
+		context.setVariable("contactUsLink", this.contactUsLink);
+		context.setVariable("sentToText", this.sentToTextMessage);
+		
+		switch (op) {
+			case 1:
+				context.setVariable("isRecoverPassword", false);
+				break;
+			case 2:
+				context.setVariable("isRecoverPassword", true);
+				break;
+		}
+		final String text = this.templateEngine.process(PATH_TO_ACCOUNT_TEMPLATE, context);
+		
+		
+		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContents);
 	}
 }

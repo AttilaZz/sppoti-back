@@ -54,15 +54,12 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 	@Override
 	public void sendAddTeamEmail(final TeamDTO team)
 	{
-		if (this.userParamService.canReceiveEmail()) {
-		
-		}
 	}
 	
 	@Override
 	public void sendJoinTeamEmail(final TeamDTO team, final UserDTO to, final UserDTO from)
 	{
-		if (this.userParamService.canReceiveEmail()) {
+		if (this.userParamService.canReceiveEmail(to.getEmail())) {
 			final String joinTeamLinkParsed = this.frontRootPath +
 					this.joinTeamLink.replace("%teamId%", team.getId() + "");
 			prepareAndSendEmail(to, from, team, this.joinTeamSubject, joinTeamLinkParsed, buildTeamMailResources());
@@ -82,10 +79,6 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 	@Override
 	public void sendConfirmJoinTeamEmail(final TeamDTO team, final TeamMemberEntity member)
 	{
-		if (this.userParamService.canReceiveEmail()) {
-		
-		}
-		
 	}
 	
 	/**

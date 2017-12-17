@@ -127,5 +127,24 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>dev</id>
+            <properties>
+                <environment>developpement</environment>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker.maven.plugin.version}</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
