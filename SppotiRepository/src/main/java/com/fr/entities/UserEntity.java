@@ -143,7 +143,7 @@ public class UserEntity extends AbstractCommonEntity
 	@OrderBy("dateTime DESC")
 	private SortedSet<AddressEntity> addresses;
 	
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL)
 	private AccountParamEntity paramEntity;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")

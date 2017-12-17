@@ -65,51 +65,64 @@
 
     <profiles>
         <profile>
+            <id>dev-docker</id>
+            <properties>
+                <environment>developpement</environment>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker.maven.plugin.version}</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>production</id>
+            <properties>
+                <environment>production</environment>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker.maven.plugin.version}</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>test</id>
+            <properties>
+                <environment>test</environment>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <version>${docker.maven.plugin.version}</version>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
             <id>container</id>
             <properties>
                 <environment>container</environment>
             </properties>
             <build>
                 <plugins>
-                    <!--Docker plugin-->
                     <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <version>${docker.maven.plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>build</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>push</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                    <goal>push</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <imageName>${docker.image.prefix}</imageName>
-                            <dockerDirectory>src/main/docker</dockerDirectory>
-                            <serverId>docker-hub</serverId>
-                            <registryUrl>https://index.docker.io/v1/</registryUrl>
-                            <imageTags>
-                                <imageTag>${project.version}</imageTag>
-                            </imageTags>
-                            <resources>
-                                <!--INCLUDE-->
-                                <resource>
-                                    <targetPath>/</targetPath>
-                                    <directory>${project.basedir}/target</directory>
-                                    <include>${project.build.finalName}.war</include>
-                                </resource>
-                            </resources>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
