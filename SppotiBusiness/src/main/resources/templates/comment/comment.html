@@ -5,5 +5,36 @@
 <head th:replace="fragment/header :: head"></head>
 <body>
 
+<table class="body-wrap">
+    <tr>
+        <td></td>
+        <td class="container" bgcolor="#FFFFFF">
+            <div class="content">
+                <table>
+                    <tr>
+                        <td>
+
+                            <div class="mail_header_as_cover">
+                                <!-- A Real Hero (and a real human being) -->
+                                <img src="../images/sppoti_bg.png" th:src="|cid:${headerResourceName}|"/>
+                            </div>
+
+                            <p class="lead">Hi <span th:text="${sentToUsername}">wail</span>,
+                                <span th:utext="${content}">message</span>
+                            </p>
+
+                            <br/>
+                            <p th:replace="fragment/footer :: footer"></p>
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </td>
+        <td></td>
+    </tr>
+</table>
+
 </body>
 </html>

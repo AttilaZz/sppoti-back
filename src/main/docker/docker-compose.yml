@@ -3,25 +3,23 @@ version: '3.1'
 services:
 
   nginx:
-      image: wdjenane/sppoti-web:latest
+      image: wdjenane/sppoti-web:dev
       depends_on:
           - sppoti
-#      build:
-#        context: <path_to_front>
-      container_name: sppoti-front
+  #      build:
+  #        context: <path_to_front>
       ports:
           - 80:80
-          - 443:443
-#      volumes:
-#        - nginx_data:/var/log/nginx
+  #        - 443:443
+  #      volumes:
+  #        - nginx_data:/var/log/nginx
 
   db:
       image: mysql:5.7
-      container_name: mysql
       ports:
           - 3306:3306
-#      volumes:
-#            - db_data:/var/lib/mysql
+  #      volumes:
+  #            - db_data:/var/lib/mysql
       environment:
         MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
         MYSQL_PASSWORD_FILE: /run/secrets/db_password
@@ -33,13 +31,17 @@ services:
 
   redis:
       image: redis
-#    volumes:
+#     volumes:
 #        - redis_data:/data
-      environment:
-        AWS_S3_BUCKET: aws-uploads-dev
 
   aws-getway:
-    image: wdjenane/aws-getway:latest
+      image: wdjenane/aws-getway:latest
+      environment:
+          AWS_S3_BUCKET: aws-uploads-04
+          AWS_ACCESS_KEY_ID: AKIAIRMATQAJK5XMU6L
+          AWS_SECRET_ACCESS_KEY: /run/secrets/aws_access_key
+      secrets:
+          - aws_access_key
 
   sppoti:
       image: wdjenane/sppoti:latest
@@ -61,7 +63,9 @@ services:
             - db_password
 
 secrets:
-   db_password:
-     file: ./secrets/db_password.txt
-   db_root_password:
-     file: ./secrets/db_root_password.txt
+     db_password:
+       file: ./secrets/db_password.txt
+     db_root_password:
+       file: ./secrets/db_root_password.txt
+     aws_access_key:
+       file: ./secrets/access_key.txt

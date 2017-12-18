@@ -25,7 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -102,21 +105,16 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 		final CommentEntity commentEntity = this.commentRepository.saveAndFlush(commentEntityToSave);
 		final CommentDTO commentDTO = this.commentTransformer.modelToDto(commentEntity);
 		
-		final String targetUser = commentEntity.getPost().getTargetUserProfile().getUuid();
-		if (StringUtils.hasText(targetUser) && !Objects.equals(targetUser, getConnectedUser().getUuid())) {
+		final String postOwnerUuid = commentEntity.getPost().getUser().getUuid();
+		if (StringUtils.hasText(postOwnerUuid) && !getConnectedUser().getUuid().equals(postOwnerUuid)) {
 			
-			//like on other posts not mine
-			if (!Objects.equals(commentEntity.getUser().getUuid(),
-					commentEntity.getPost().getTargetUserProfile().getUuid())) {
-				
-				this.notificationService.saveAndSendNotificationToUsers(getConnectedUser(),
-						commentEntity.getPost().getTargetUserProfile(), COMMENT, X_COMMENTED_ON_YOUR_POST,
-						commentEntity.getPost(), commentEntity);
-				
-				this.commentMailerService
-						.sendEmailToPostContributors(this.postTransformer.modelToDto(optional.get()), commentDTO,
-								buildContributorsList(optional.get()));
-			}
+			this.notificationService
+					.saveAndSendNotificationToUsers(getConnectedUser(), commentEntity.getPost().getTargetUserProfile(),
+							COMMENT, X_COMMENTED_ON_YOUR_POST, commentEntity.getPost(), commentEntity);
+			
+			this.commentMailerService
+					.sendEmailToPostContributors(this.postTransformer.modelToDto(optional.get()), commentDTO,
+							buildContributorsList(optional.get()));
 			
 			if (checkForTags) {
 				this.notificationService.checkForTagNotification(null, commentEntity);

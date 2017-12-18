@@ -4,17 +4,17 @@ spring:
     url: jdbc:mysql://localhost:3306/sppoti
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
-    port:     ${MYSQL_PORT}
+    passwordFile: ${MYSQL_PASSWORD_FILE}
+    dbName:   ${MYSQL_DATABASE}
     platform: mysql
     driverClassName: com.mysql.jdbc.Driver
     poolSize: 10
     host: localhost
-    dbName: sppoti
     initialize: false
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
   redis:
-    host: localhost
+    host: ${REDIS_HOST_SERVICE}
     password: secret
     port: 6379
 

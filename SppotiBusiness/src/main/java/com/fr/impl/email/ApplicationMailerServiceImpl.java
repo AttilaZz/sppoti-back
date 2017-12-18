@@ -19,6 +19,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by wdjenane on 09/02/2017.
@@ -103,10 +104,12 @@ abstract class ApplicationMailerServiceImpl implements ApplicationMailerService
 				helper.setText(content, true);
 				
 				//add image resource
-				for (final MailResourceContent r : resourceContent) {
-					// Add the inline image, referenced from the HTML code as "cid:${imageResourceName}"
-					final InputStreamSource imageSource = getImageResource(r);
-					helper.addInline(r.getResourceName(), imageSource, IMAGE_PNG);
+				if (Objects.nonNull(resourceContent)) {
+					for (final MailResourceContent r : resourceContent) {
+						// Add the inline image, referenced from the HTML code as "cid:${imageResourceName}"
+						final InputStreamSource imageSource = getImageResource(r);
+						helper.addInline(r.getResourceName(), imageSource, IMAGE_PNG);
+					}
 				}
 				
 				this.sender.send(mail);

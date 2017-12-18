@@ -6,10 +6,10 @@ import com.fr.commons.dto.MailResourceContent;
 import com.fr.commons.dto.post.PostDTO;
 import com.fr.service.UserParamService;
 import com.fr.service.email.CommentMailerService;
-import com.google.api.client.util.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -44,29 +44,36 @@ public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl imple
 	public void sendEmailToPostContributors(final PostDTO postDTO, final CommentDTO comment,
 											final List<EmailUserDTO> contributors)
 	{
-		this.LOGGER.info("Sending email to all POST contributors, postId: <{}>, contributors: {}", contributors);
+		this.LOGGER.info("Sending email to all POST contributors, postId: <{}>, contributors: {}", postDTO.getId(),
+				contributors);
 		
-		contributors.stream().filter(c -> this.userParamService.canReceiveEmail(c.getEmail()))
+		contributors.stream().filter(c -> this.userParamService.canReceiveEmail(c.getId()))
 				.forEach(c -> prepareAndSendEmail(postDTO, comment, c));
 		
 	}
 	
 	private void prepareAndSendEmail(final PostDTO postDTO, final CommentDTO comment, final EmailUserDTO receiver) {
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
-		final MailResourceContent resourceContent = new MailResourceContent();
-		resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
-		resourceContent.setResourceName(logoResourceName);
-		resourceContents.add(resourceContent);
+		final MailResourceContent coverResourceContent = new MailResourceContent();
+		
+		coverResourceContent.setPath(IMAGES_DIRECTORY + sppotiCoverResourceName);
+		coverResourceContent.setResourceName(sppotiCoverResourceName);
+		resourceContents.add(coverResourceContent);
 		
 		final Context context = new Context();
 		
 		if (postDTO.getId().equals(receiver.getId())) {
-			context.setVariable("receiverName", postDTO.getSender());
+			context.setVariable("sentToUsername", postDTO.getSender());
 		}
-		context.setVariable("receiverName", receiver.getFirstName());
+		context.setVariable("sentToUsername", receiver.getFirstName());
+		context.setVariable("sentToUsername", receiver.getFirstName());
+		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
 		
-		this.commentEmailContent = this.commentEmailContent.replaceAll("%USER_ID%", this.commentEmailContent);
+		
+		this.commentEmailContent = this.commentEmailContent.replaceAll("%USER_ID%", comment.getAuthorUsername());
+		
 		context.setVariable("content", this.commentEmailContent);
+		context.setVariable("commentText", comment.getText());
 		
 		
 		final String text = this.templateEngine.process(PATH_TO_COMMENT_TEMPLATE, context);
