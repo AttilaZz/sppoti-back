@@ -62,10 +62,6 @@ public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl imple
 		
 		final Context context = new Context();
 		
-		if (postDTO.getId().equals(receiver.getId())) {
-			context.setVariable("sentToUsername", postDTO.getSender());
-		}
-		context.setVariable("sentToUsername", receiver.getFirstName());
 		context.setVariable("sentToUsername", receiver.getFirstName());
 		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
 		

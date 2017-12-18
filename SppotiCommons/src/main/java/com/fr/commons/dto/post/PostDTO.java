@@ -225,7 +225,7 @@ public class PostDTO extends AbstractCommonDTO
 				user.getAvatar(), user.getCover());
 	}
 	
-	class UserInside
+	public class UserInside
 	{
 		private String id;
 		private String firstName;

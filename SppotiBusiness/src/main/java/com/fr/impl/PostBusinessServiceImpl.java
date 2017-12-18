@@ -90,6 +90,8 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 		targetProfile.ifPresent(entity::setTargetUserProfile);
 		
 		final PostEntity savedPost = this.postRepository.saveAndFlush(entity);
+		savedPost.setConnectedUserId(connectedUser.getId());
+		final PostDTO postDTO = this.postTransformer.modelToDto(savedPost);
 		
 		targetProfile.ifPresent(t -> {
 			//Send notification
@@ -99,7 +101,7 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 						.saveAndSendNotificationToUsers(getConnectedUser(), savedPost.getTargetUserProfile(), POST,
 								X_POSTED_ON_YOUR_PROFILE, savedPost);
 				
-				this.postMailerService.sendEmailToTargetProfileOwner(this.userTransformer.modelToDto(t));
+				this.postMailerService.sendEmailToTargetProfileOwner(this.userTransformer.modelToDto(t), postDTO);
 			}
 		});
 		
@@ -107,8 +109,7 @@ class PostBusinessServiceImpl extends CommonControllerServiceImpl implements Pos
 			this.notificationService.checkForTagNotification(savedPost, null);
 		}
 		
-		savedPost.setConnectedUserId(connectedUser.getId());
-		return this.postTransformer.modelToDto(savedPost);
+		return postDTO;
 	}
 
     /*
