@@ -40,7 +40,9 @@ public class PostMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 		
 		LOGGER.info("Sending email to profile owner <{}> on which the post has been added", target.getUserId());
 		
-		prepareAndSendEmail(post, target);
+		if (this.userParamService.canReceiveEmail(target.getId())) {
+			prepareAndSendEmail(post, target);
+		}
 	}
 	
 	private void prepareAndSendEmail(final PostDTO postDTO, final UserDTO target) {
