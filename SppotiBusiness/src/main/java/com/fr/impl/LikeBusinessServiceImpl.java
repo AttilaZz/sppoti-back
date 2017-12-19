@@ -7,6 +7,7 @@ import com.fr.entities.PostEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.LikeBusinessService;
 import com.fr.service.NotificationBusinessService;
+import com.fr.service.email.LikeMailerService;
 import com.fr.transformers.CommentTransformer;
 import com.fr.transformers.PostTransformer;
 import com.fr.transformers.UserTransformer;
@@ -45,6 +46,8 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	private CommentTransformer commentTransformer;
 	@Autowired
 	private NotificationBusinessService notificationService;
+	@Autowired
+	private LikeMailerService likeMailerService;
 	
 	@Value("${key.likesPerPage}")
 	private int likeSize;
@@ -177,27 +180,35 @@ class LikeBusinessServiceImpl extends CommonControllerServiceImpl implements Lik
 	private LikeContentEntity likeContent(final LikeContentEntity likeContent)
 	{
 		
-		if (likeContent != null) {
+		if (Objects.isNull(likeContent)) {
+			return null;
+		}
+		
+		if (likeContent.getComment() != null &&
+				!likeContent.getComment().getUser().getId().equals(getConnectedUser().getId())) {
+			//like comment
+			final UserEntity commentOwner = likeContent.getComment().getUser();
+			final CommentEntity comment = likeContent.getComment();
+			this.notificationService
+					.saveAndSendNotificationToUsers(likeContent.getUser(), commentOwner, LIKE, X_LIKED_YOUR_COMMENT,
+							likeContent.getComment().getPost(), comment);
 			
-			if (likeContent.getComment() != null &&
-					!likeContent.getComment().getUser().getId().equals(getConnectedUser().getId())) {
-				//like comment
-				this.notificationService
-						.saveAndSendNotificationToUsers(likeContent.getUser(), likeContent.getComment().getUser(), LIKE,
-								X_LIKED_YOUR_COMMENT, likeContent.getComment().getPost(), likeContent.getComment());
-				
-			} else if (likeContent.getPost() != null &&
-					!likeContent.getPost().getUser().getId().equals(getConnectedUser().getId())) {
-				//like post
-				this.notificationService
-						.saveAndSendNotificationToUsers(likeContent.getUser(), likeContent.getPost().getUser(), LIKE,
-								X_LIKED_YOUR_POST, likeContent.getPost());
-			}
+			this.likeMailerService.sendEmailToCommentOwner(this.userTransformer.modelToDto(commentOwner),
+					this.commentTransformer.modelToDto(comment));
 			
+		} else if (likeContent.getPost() != null &&
+				!likeContent.getPost().getUser().getId().equals(getConnectedUser().getId())) {
+			//like post
+			final UserEntity postOwner = likeContent.getPost().getUser();
+			final PostEntity post = likeContent.getPost();
+			this.notificationService
+					.saveAndSendNotificationToUsers(likeContent.getUser(), postOwner, LIKE, X_LIKED_YOUR_POST, post);
+			
+			this.likeMailerService.sendEmailToPostOwner(this.userTransformer.modelToDto(postOwner),
+					this.postTransformer.modelToDto(post));
 		}
 		
 		return this.likeRepository.save(likeContent);
-		
 	}
 	
 	private List<UserDTO> likersList(final List<LikeContentEntity> likeContentEntityList)

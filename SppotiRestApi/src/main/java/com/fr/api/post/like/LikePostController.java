@@ -35,11 +35,12 @@ class LikePostController
 	@Autowired
 	private LikeBusinessService likeControllerService;
 	
-	@PutMapping(value = "/post/{id}")
-	ResponseEntity<Void> likePost(@PathVariable("id") final String id, final Authentication authentication)
+	@PutMapping(value = "/post/{postId}")
+	ResponseEntity<Void> likePost(@PathVariable final String postId, final Authentication authentication)
 	{
+		this.LOGGER.info("Request sent to like post: {}", postId);
 		
-		final PostEntity postToLike = this.postDataService.findPost(id);
+		final PostEntity postToLike = this.postDataService.findPost(postId);
 		
 		final Long userId = ((AccountUserDetails) authentication.getPrincipal()).getId();
 		
@@ -61,12 +62,12 @@ class LikePostController
 		likeToSave.setPost(postToLike);
 		likeToSave.setUser(user);
 		
-		if (!this.likeControllerService.isPostAlreadyLikedByUser(id, userId)) {
+		if (!this.likeControllerService.isPostAlreadyLikedByUser(postId, userId)) {
 			try {
 				this.likeControllerService.likePost(likeToSave);
 				
-				this.LOGGER.info("LIKE_POST: PostEntity with id:{} has been liked by: {} {}", id, user.getFirstName(),
-						user.getLastName());
+				this.LOGGER.info("LIKE_POST: PostEntity with postId:{} has been liked by: {} {}", postId,
+						user.getFirstName(), user.getLastName());
 				return new ResponseEntity<>(HttpStatus.OK);
 				
 			} catch (final Exception e) {
@@ -74,11 +75,10 @@ class LikePostController
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			
-		} else {
-			this.LOGGER
-					.error("LIKE_POST: PostEntity already liked by: " + user.getFirstName() + " " + user.getLastName());
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+		
+		this.LOGGER.error("LIKE_POST: PostEntity already liked by: " + user.getFirstName() + " " + user.getLastName());
+		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		
 	}
 	
