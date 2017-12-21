@@ -96,11 +96,6 @@ public enum NotificationTypeEnum
 		return this.equals(YOU_HAVE_BEEN_RATED);
 	}
 	
-	public boolean isScoreNotification() {
-		return this.equals(SCORE_SET_AND_WAITING_FOR_APPROVAL) || this.equals(SCORE_HAS_BEEN_APPROVED) ||
-				this.equals(SCORE_HAS_BEEN_REFUSED);
-	}
-	
 	public boolean isChallengeNotification() {
 		return this.equals(SPPOTI_ADMIN_CHALLENGED_YOU) || this.equals(SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE) ||
 				this.equals(SPPOTI_ADMIN_REFUSED_YOUR_CHALLENGE) || this.equals(SPPOTI_ADMIN_CANCELED_HIS_CHALLENGE) ||
@@ -166,5 +161,21 @@ public enum NotificationTypeEnum
 	
 	public boolean isSomeOneTaggedYouOnHisComment() {
 		return this.equals(X_POSTED_ON_YOUR_PROFILE);
+	}
+	
+	/**
+	 * SCORE
+	 */
+	public boolean isScoreNotification() {
+		return this.equals(SCORE_SET_AND_WAITING_FOR_APPROVAL) || this.equals(SCORE_HAS_BEEN_APPROVED) ||
+				this.equals(SCORE_HAS_BEEN_REFUSED);
+	}
+	
+	public boolean isScoreHasBeenApproved() {
+		return this.equals(SCORE_HAS_BEEN_APPROVED);
+	}
+	
+	public boolean isScoreHasBeenRefused() {
+		return this.equals(SCORE_HAS_BEEN_REFUSED);
 	}
 }

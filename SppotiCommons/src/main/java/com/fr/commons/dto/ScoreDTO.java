@@ -3,6 +3,7 @@ package com.fr.commons.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * DTO of the {@link ScoreDTO entity}.
@@ -24,6 +25,8 @@ public class ScoreDTO extends AbstractCommonDTO
 	/** Adverse team score. */
 	@NotNull
 	private Integer visitor;
+	
+	private Date datetimeCreated;
 	
 	private String status;
 	
@@ -66,4 +69,9 @@ public class ScoreDTO extends AbstractCommonDTO
 	{
 		this.status = status;
 	}
+	
+	public Date getDatetimeCreated() {
+		return this.datetimeCreated;
+	}
+	
 }

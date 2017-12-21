@@ -1,18 +1,17 @@
 package com.fr.entities;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * This entity save sppoti scores.
- * <p>
+ *
  * Created by wdjenane on 04/04/2017.
  */
 @Entity
 @Table(name = "SCORE")
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ScoreEntity extends AbstractCommonEntity
 {
 	
@@ -21,6 +20,10 @@ public class ScoreEntity extends AbstractCommonEntity
 	
 	@Column(nullable = false)
 	private Integer visitor;
+	
+	@Column(nullable = false, columnDefinition = "DATETIME(6)", updatable = false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private final Date datetimeCreated = new Date();
 	
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "scoreEntity")
 	@JoinColumn(name = "sppoti_id")
@@ -73,6 +76,10 @@ public class ScoreEntity extends AbstractCommonEntity
 	
 	public void setConnectedUserId(final Long connectedUserId) {
 		this.connectedUserId = connectedUserId;
+	}
+	
+	public Date getDatetimeCreated() {
+		return this.datetimeCreated;
 	}
 	
 	/**

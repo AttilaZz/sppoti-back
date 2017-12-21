@@ -45,6 +45,6 @@ public class ScoreAddController
 	ResponseEntity<ScoreDTO> addScore(@RequestBody @Valid final ScoreDTO scoreDTO)
 	{
 		
-		return new ResponseEntity<>(this.scoreControllerService.addSppotiScore(scoreDTO), HttpStatus.CREATED);
+		return new ResponseEntity<>(this.scoreControllerService.addScoreToSppoti(scoreDTO), HttpStatus.CREATED);
 	}
 }

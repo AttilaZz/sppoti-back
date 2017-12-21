@@ -13,7 +13,8 @@ public interface ScoreBusinessService extends AbstractBusinessService
 	/**
 	 * @param scoreDTO
 	 * 		score to update.
-	 * @param id connected user id.
+	 * @param id
+	 * 		connected user id.
 	 */
 	void updateScore(ScoreDTO scoreDTO, Long id);
 	
@@ -25,5 +26,5 @@ public interface ScoreBusinessService extends AbstractBusinessService
 	 *
 	 * @return added score.
 	 */
-	ScoreDTO addSppotiScore(ScoreDTO scoreDTO);
+	ScoreDTO addScoreToSppoti(ScoreDTO scoreDTO);
 }

@@ -28,5 +28,9 @@ public enum GlobalAppStatusEnum
 	public boolean isNotCancelledAndNotDeletedAndNotRefused() {
 		return !this.equals(CANCELED) && !this.equals(DELETED) && !this.equals(REFUSED);
 	}
+	
+	public boolean isConfirmed() {
+		return this.equals(CONFIRMED);
+	}
 }
 
