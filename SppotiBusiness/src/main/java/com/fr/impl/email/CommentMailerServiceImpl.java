@@ -62,7 +62,7 @@ public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl imple
 		
 		final Context context = new Context();
 		
-		context.setVariable("sentToUsername", receiver.getFirstName());
+		context.setVariable("receiverUsername", receiver.getFirstName());
 		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
 		
 		

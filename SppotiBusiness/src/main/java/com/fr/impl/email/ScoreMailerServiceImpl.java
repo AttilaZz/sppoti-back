@@ -94,10 +94,17 @@ public class ScoreMailerServiceImpl extends ApplicationMailerServiceImpl impleme
 		
 		final Context context = new Context();
 		
-		context.setVariable("sentToUsername", to.getUsername());
+		context.setVariable("receiverUsername", to.getUsername());
 		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
 		
 		context.setVariable("content", formatContent(content, score.getSppotiId(), from.getUsername()));
+		
+		//Template footer.
+		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
+		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
+		context.setVariable("contactUsMessageText", this.contactUsMessage);
+		context.setVariable("contactUsLink", this.contactUsLink);
+		context.setVariable("sentToText", this.sentToTextMessage);
 		
 		final String text = this.templateEngine.process(PATH_TO_SCORE_TEMPLATE, context);
 		

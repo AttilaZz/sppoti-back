@@ -183,7 +183,7 @@ public class SppotiMailerImpl extends ApplicationMailerServiceImpl implements Sp
 		context.setVariable("sentToSppotiName", Sppoti.getName());
 		context.setVariable("sentToFirstName", to.getFirstName());
 		context.setVariable("sentToEmail", to.getEmail());
-		context.setVariable("sentToUsername", to.getUsername());
+		context.setVariable("receiverUsername", to.getUsername());
 		
 		context.setVariable("avatarResourceName", resourceContent.get(0).getResourceName());
 		context.setVariable("coverResourceName", resourceContent.get(1).getResourceName());

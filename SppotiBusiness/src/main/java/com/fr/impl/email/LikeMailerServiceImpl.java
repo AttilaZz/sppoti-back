@@ -77,14 +77,18 @@ public class LikeMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 		
 		final Context context = new Context();
 		
-		context.setVariable("sentToUsername", target.getFirstName());
+		context.setVariable("receiverUsername", target.getFirstName());
 		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
 		
-		
 		mailContent = mailContent.replaceAll("%USER_ID%", senderUsername);
-		
 		context.setVariable("content", mailContent);
 		
+		//Template footer.
+		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
+		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
+		context.setVariable("contactUsMessageText", this.contactUsMessage);
+		context.setVariable("contactUsLink", this.contactUsLink);
+		context.setVariable("sentToText", this.sentToTextMessage);
 		
 		final String text = this.templateEngine.process(PATH_TO_LIKE_TEMPLATE, context);
 		
