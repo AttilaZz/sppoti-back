@@ -27,7 +27,7 @@
 
                             <!-- Show this block only for recover password -->
                             <p th:class="${isRecoverPassword} ? 'callout' : 'hide'">
-                                <span th:text="${recoverAccountConcatUsMessage}">
+                                <span th:text="#{mail.accountRecoverInformation}">
                                 If you ignore this message, your password will not be changed. If you didn't request a
                                 password reset</span> <a href="#" class="recover-password-let-us-know"
                                                          th:text="${contactUsMessageText}"

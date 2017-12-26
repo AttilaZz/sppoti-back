@@ -5,8 +5,6 @@ import com.fr.commons.dto.UserDTO;
 import com.fr.commons.enumeration.TypeAccountValidation;
 import com.fr.commons.utils.SppotiUtils;
 import com.fr.service.email.AccountMailerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by wdjenane on 19/01/2017.
@@ -29,29 +28,10 @@ import java.util.List;
 @Component
 public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl implements AccountMailerService
 {
-	private final Logger LOGGER = LoggerFactory.getLogger(AccountMailerImplServiceImpl.class);
-	
-	// Password recover
-	@Value("${spring.app.mail.account.recover.path}")
+	@Value("${mail.accountRecoverPath}")
 	private String pathToRecoverAccount;
-	@Value("${spring.app.mail.account.recover.message}")
-	private String recoverAccountMessage;
-	@Value("${spring.app.mail.account.recover.subject}")
-	private String recoverAccountSubject;
-	@Value("${spring.app.mail.account.recover.button}")
-	private String recoverAccountButtonText;
-	@Value("${spring.app.mail.account.recover.information}")
-	private String recoverAccountConcatUsMessage;
-	
-	// path to activate account and validate new email address
-	@Value("${spring.app.mail.account.confirmation.path}")
+	@Value("${mail.accountConfirmationPath}")
 	private String pathToValidateAccount;
-	@Value("${spring.app.mail.account.confirmation.message}")
-	private String confirmationAccountMessage;
-	@Value("${spring.app.mail.account.confirmation.subject}")
-	private String confirmationAccountSubject;
-	@Value("${spring.app.mail.account.confirmation.button}")
-	private String confirmationAccountButtonText;
 	
 	private final TemplateEngine templateEngine;
 	
@@ -66,8 +46,12 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 	{
 		final String activateLink = this.frontRootPath + this.pathToValidateAccount + confirmationCode + "/" + type;
 		
-		this.prepareAndSendEmail(to, this.confirmationAccountSubject, this.confirmationAccountMessage,
-				this.confirmationAccountButtonText, activateLink, 1);
+		final Locale language = Locale.forLanguageTag(to.getLanguage());
+		final String subject = this.messageSource.getMessage("mail.accountConfirmationSubject", null, language);
+		final String content = this.messageSource.getMessage("mail.accountConfirmationMessage", null, language);
+		final String buttonText = this.messageSource.getMessage("mail.accountConfirmationButton", null, language);
+		
+		this.prepareAndSendEmail(to, subject, content, buttonText, activateLink, 1);
 	}
 	
 	@Override
@@ -79,14 +63,18 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 		final String recoverLink = this.frontRootPath + this.pathToRecoverAccount + confirmationCode + "/" +
 				SppotiUtils.encodeTo64(dateToEncode);
 		
-		this.prepareAndSendEmail(to, this.recoverAccountSubject, this.recoverAccountMessage,
-				this.recoverAccountButtonText, recoverLink, 2);
+		final Locale language = Locale.forLanguageTag(to.getLanguage());
+		final String subject = this.messageSource.getMessage("mail.accountRecoverSubject", null, language);
+		final String content = this.messageSource.getMessage("mail.accountRecoverMessage", null, language);
+		final String buttonText = this.messageSource.getMessage("mail.accountRecoverButton", null, language);
+		
+		this.prepareAndSendEmail(to, subject, content, buttonText, recoverLink, 2);
 	}
 	
 	@Override
 	public void sendEmailUpdateConfirmation(final String to, final String confirmationCode)
 	{
-	
+		
 	}
 	
 	private void prepareAndSendEmail(final UserDTO to, final String subject, final String message,
@@ -99,7 +87,7 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 		resourceContent.setResourceName(logoResourceName);
 		resourceContents.add(resourceContent);
 		
-		final Context context = new Context();
+		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));
 		context.setVariable("firstName", to.getFirstName());
 		context.setVariable("body", message);
 		context.setVariable("buttonLink", activateLinkTag);
@@ -108,14 +96,8 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 		context.setVariable("receiverUsername", to.getUsername());
 		context.setVariable("imageResourceName", resourceContent.getResourceName());
 		
-		context.setVariable("recoverAccountConcatUsMessage", this.recoverAccountConcatUsMessage);
-		
 		//Template footer.
-		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
-		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
-		context.setVariable("contactUsMessageText", this.contactUsMessage);
 		context.setVariable("contactUsLink", this.contactUsLink);
-		context.setVariable("sentToText", this.sentToTextMessage);
 		
 		switch (op) {
 			case 1:

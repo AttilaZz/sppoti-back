@@ -28,9 +28,7 @@ import javax.servlet.ServletException;
 				encoding = "UTF-8"),
 		@PropertySource(value = "classpath:properties/headerConfig.properties", ignoreResourceNotFound = true,
 				encoding = "UTF-8"),
-		@PropertySource(value = "classpath:email/email_fr.properties", ignoreResourceNotFound = true,
-				encoding = "UTF-8"),
-		@PropertySource(value = "classpath:email/email_en.properties", ignoreResourceNotFound = true,
+		@PropertySource(value = "classpath:properties/emailRedirectionPath.properties", ignoreResourceNotFound = true,
 				encoding = "UTF-8")
 })
 public class SppotiApplication extends WebMvcConfigurationSupport implements ServletContextInitializer

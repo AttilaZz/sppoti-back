@@ -8,15 +8,18 @@ public class EmailUserDTO extends AbstractCommonDTO
 	private String firstName;
 	private String lastName;
 	private String email;
+	private final String username;
+	private final String language;
 	
-	public EmailUserDTO() {
-	}
-	
-	public EmailUserDTO(final String firstName, final String lastName, final String email, final String id) {
+	public EmailUserDTO(final String language, final String username, final String firstName, final String lastName,
+						final String email, final String id)
+	{
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
 		this.id = id;
+		this.username = username;
+		this.language = language;
 	}
 	
 	public String getFirstName() {
@@ -41,5 +44,13 @@ public class EmailUserDTO extends AbstractCommonDTO
 	
 	public void setEmail(final String email) {
 		this.email = email;
+	}
+	
+	public String getUsername() {
+		return this.username;
+	}
+	
+	public String getLanguage() {
+		return this.language;
 	}
 }

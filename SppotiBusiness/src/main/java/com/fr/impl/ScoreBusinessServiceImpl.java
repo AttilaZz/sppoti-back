@@ -72,10 +72,10 @@ public class ScoreBusinessServiceImpl extends CommonControllerServiceImpl implem
 			
 			if (notificationType.isScoreHasBeenApproved()) {
 				this.scoreMailerService.sendAcceptScoreEmail(scoreDTO, teamAdverseAdmin.getUser(),
-						buildSppotiMemberMailingList(score.getSppotiEntity()));
+						buildSppotiMemberMailingList(score.getSppotiEntity()), score.getSppotiEntity());
 			} else if (notificationType.isScoreHasBeenRefused()) {
 				this.scoreMailerService.sendRefuseScoreEmail(scoreDTO, teamAdverseAdmin.getUser(),
-						buildSppotiMemberMailingList(score.getSppotiEntity()));
+						buildSppotiMemberMailingList(score.getSppotiEntity()), score.getSppotiEntity());
 			}
 			
 		});
@@ -113,7 +113,8 @@ public class ScoreBusinessServiceImpl extends CommonControllerServiceImpl implem
 				scoreEntity.getSppotiEntity().getTeamHostEntity(), scoreEntity.getSppotiEntity(), scoreEntity);
 		
 		this.scoreMailerService
-				.sendAddScoreEmail(scoreDTO, teamAdverseAdmin.getUser(), scoreEntity.getSppotiEntity().getUserSppoti());
+				.sendAddScoreEmail(scoreDTO, teamAdverseAdmin.getUser(), scoreEntity.getSppotiEntity().getUserSppoti(),
+						scoreEntity.getSppotiEntity());
 		
 		return this.scoreTransformer.modelToDto(this.scoreRepository.save(scoreEntity));
 	}

@@ -7,13 +7,13 @@ import com.fr.commons.dto.post.PostDTO;
 import com.fr.service.UserParamService;
 import com.fr.service.email.LikeMailerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by djenanewail on 11/10/17.
@@ -23,49 +23,45 @@ public class LikeMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 {
 	private static final String PATH_TO_LIKE_TEMPLATE = "like/like";
 	
-	@Value("${spring.app.mail.like.post.subject}")
-	private String postLikeEmailSubject;
-	@Value("${spring.app.mail.like.post.content}")
-	private String postLikeEmailContent;
-	
-	@Value("${spring.app.mail.like.comment.subject}")
-	private String commentLikeEmailSubject;
-	@Value("${spring.app.mail.like.comment.content}")
-	private String commentLikeEmailContent;
-	
-	private final TemplateEngine templateEngine;
-	
-	private final UserParamService userParamService;
+	@Autowired
+	private TemplateEngine templateEngine;
 	
 	@Autowired
-	public LikeMailerServiceImpl(final TemplateEngine templateEngine, final UserParamService userParamService) {
-		this.templateEngine = templateEngine;
-		this.userParamService = userParamService;
+	private UserParamService userParamService;
+	
+	@Override
+	public void sendEmailToPostOwner(final UserDTO to, final PostDTO post) {
+		LOGGER.info("Sending email to notify to about a post on his profile");
+		if (!this.userParamService.canReceiveEmail(to.getId())) {
+			LOGGER.info("User <{}> has deactivated receiving emails", to.getEmail());
+		}
+		final Locale language = Locale.forLanguageTag(to.getLanguage());
+		
+		final String subject = this.messageSource.getMessage("mail.likePostSubject", null, language);
+		
+		final String[] params = {post.getSender().getUsername()};
+		final String content = this.messageSource.getMessage("mail.likePostContent", params, language);
+		
+		prepareAndSendEmail(to, content, subject);
 	}
 	
 	@Override
-	public void sendEmailToPostOwner(final UserDTO user, final PostDTO post) {
-		LOGGER.info("Sending email to notify user about a post on his profile");
-		if (!this.userParamService.canReceiveEmail(user.getId())) {
-			LOGGER.info("User <{}> has deactivated receiving emails", user.getEmail());
+	public void sendEmailToCommentOwner(final UserDTO to, final CommentDTO comment) {
+		LOGGER.info("Sending email to notify to about a post on his profile");
+		if (!this.userParamService.canReceiveEmail(to.getId())) {
+			LOGGER.info("User <{}> has deactivated receiving emails", to.getEmail());
 		}
+		final Locale language = Locale.forLanguageTag(to.getLanguage());
 		
-		prepareAndSendEmail(user, this.postLikeEmailContent, this.postLikeEmailSubject, post.getSender().getUsername());
+		final String subject = this.messageSource.getMessage("mail.likeCommentSubject", null, language);
+		
+		final String[] params = {comment.getAuthorUsername()};
+		final String content = this.messageSource.getMessage("mail.likePostContent", params, language);
+		
+		prepareAndSendEmail(to, content, subject);
 	}
 	
-	@Override
-	public void sendEmailToCommentOwner(final UserDTO user, final CommentDTO comment) {
-		LOGGER.info("Sending email to notify user about a post on his profile");
-		if (!this.userParamService.canReceiveEmail(user.getId())) {
-			LOGGER.info("User <{}> has deactivated receiving emails", user.getEmail());
-		}
-		
-		prepareAndSendEmail(user, this.commentLikeEmailContent, this.commentLikeEmailSubject,
-				comment.getAuthorUsername());
-	}
-	
-	private void prepareAndSendEmail(final UserDTO target, String mailContent, final String mailSubject,
-									 final String senderUsername)
+	private void prepareAndSendEmail(final UserDTO to, final String content, final String mailSubject)
 	{
 		
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
@@ -75,24 +71,20 @@ public class LikeMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 		coverResourceContent.setResourceName(sppotiCoverResourceName);
 		resourceContents.add(coverResourceContent);
 		
-		final Context context = new Context();
+		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));
 		
-		context.setVariable("receiverUsername", target.getFirstName());
+		context.setVariable("receiverUsername", to.getFirstName());
+		context.setVariable("receiverEmail", to.getEmail());
 		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
 		
-		mailContent = mailContent.replaceAll("%USER_ID%", senderUsername);
-		context.setVariable("content", mailContent);
+		context.setVariable("content", content);
 		
 		//Template footer.
-		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
-		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
-		context.setVariable("contactUsMessageText", this.contactUsMessage);
 		context.setVariable("contactUsLink", this.contactUsLink);
-		context.setVariable("sentToText", this.sentToTextMessage);
 		
 		final String text = this.templateEngine.process(PATH_TO_LIKE_TEMPLATE, context);
 		
 		
-		super.prepareAndSendEmail(target.getEmail(), mailSubject, text, resourceContents);
+		super.prepareAndSendEmail(to.getEmail(), mailSubject, text, resourceContents);
 	}
 }

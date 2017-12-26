@@ -6,13 +6,13 @@ import com.fr.commons.dto.post.PostDTO;
 import com.fr.service.UserParamService;
 import com.fr.service.email.PostMailerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by djenanewail on 11/13/17.
@@ -21,19 +21,10 @@ import java.util.List;
 public class PostMailerServiceImpl extends ApplicationMailerServiceImpl implements PostMailerService
 {
 	private static final String PATH_TO_POST_TEMPLATE = "post/post";
-	private final TemplateEngine templateEngine;
-	private final UserParamService userParamService;
-	
-	@Value("${spring.app.mail.post.subject}")
-	private String postEmailSubject;
-	@Value("${spring.app.mail.post.content}")
-	private String postEmailContent;
-	
 	@Autowired
-	public PostMailerServiceImpl(final TemplateEngine templateEngine, final UserParamService userParamService) {
-		this.templateEngine = templateEngine;
-		this.userParamService = userParamService;
-	}
+	private TemplateEngine templateEngine;
+	@Autowired
+	private UserParamService userParamService;
 	
 	@Override
 	public void sendEmailToTargetProfileOwner(final UserDTO target, final PostDTO post) {
@@ -45,7 +36,7 @@ public class PostMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 		}
 	}
 	
-	private void prepareAndSendEmail(final PostDTO postDTO, final UserDTO target) {
+	private void prepareAndSendEmail(final PostDTO postDTO, final UserDTO to) {
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent coverResourceContent = new MailResourceContent();
 		
@@ -53,21 +44,27 @@ public class PostMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 		coverResourceContent.setResourceName(sppotiCoverResourceName);
 		resourceContents.add(coverResourceContent);
 		
-		final Context context = new Context();
+		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));
 		
-		context.setVariable("sentToUsername", target.getFirstName());
+		context.setVariable("sentToUsername", to.getFirstName());
 		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
+		context.setVariable("receiverEmail", to.getEmail());
 		
+		final Locale language = Locale.forLanguageTag(to.getLanguage());
+		final String[] params = {postDTO.getSender().getUsername()};
+		final String content = this.messageSource.getMessage("mail.postContent", params, language);
 		
-		this.postEmailContent = this.postEmailContent.replaceAll("%USER_ID%", postDTO.getSender().getUsername());
-		
-		context.setVariable("content", this.postEmailContent);
+		context.setVariable("content", content);
 		context.setVariable("postText", postDTO.getContent());
 		
+		//Template footer & header
+		context.setVariable("contactUsLink", this.contactUsLink);
 		
 		final String text = this.templateEngine.process(PATH_TO_POST_TEMPLATE, context);
 		
+		final String subject = this.messageSource
+				.getMessage("mail.postSubject", null, Locale.forLanguageTag(to.getLanguage()));
 		
-		super.prepareAndSendEmail(target.getEmail(), this.postEmailSubject, text, resourceContents);
+		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContents);
 	}
 }

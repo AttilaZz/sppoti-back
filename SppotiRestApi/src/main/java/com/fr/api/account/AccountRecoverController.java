@@ -62,7 +62,7 @@ public class AccountRecoverController
 	 * @param userDTO
 	 * 		user data.
 	 *
-	 * @return 200 if email found and email sent.
+	 * @return 200 if email found and messages sent.
 	 */
 	@PutMapping("/recover")
 	ResponseEntity<Void> recoverAccount(@RequestBody final SignUpDTO userDTO)

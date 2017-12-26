@@ -61,20 +61,19 @@
                                               th:text="${sentToSppotiName}">Sppoti Name, </a>
                             </h3>
                             <p class="lead">Hi <span th:text="${receiverUsername}">wail</span>,
-                                <span th:utext="${messageBody}">message</span>
+                                <span th:utext="#{messageBody}">message</span>
                             </p>
 
                             <!-- Callout Panel -->
-                            <p class="callout" th:text="${globalInformationAboutSppoti}">
+                            <p class="callout" th:text="#{mail.sppotiDescription}">
                                 SPPOTI is a sport event, where two teams will be challenged around a sport.
-                                <a href="#" th:text="learnMoreMessage"
-                                   style="margin: 0;padding: 0;color: #30d3c2;cursor: pointer;font-weight: bold;">Learn
-                                    more!</a>
+                                <a href="#" th:text="#{mailLearnMore}"
+                                   style="margin: 0;padding: 0;color: #30d3c2;cursor: pointer;font-weight: bold;">Learnmore!</a>
                             </p><!-- /Callout Panel -->
 
                             <div style="margin: 0;padding: 0;" th:if="${requestFromSppotiAdmin}">
                                 <a class="btn" th:href="${sentToValidationLink}"
-                                   th:text="${sentToValidationLinkMessage}"
+                                   th:text="#{mailJoin}"
                                    style="padding: 10px 16px;color: #FFF;cursor: pointer;text-decoration: none;background-color: #30d3c2;font-weight: bold;margin: 0 10px 0 0;text-align: center;display: inline-block;width: 92%;">Join!</a>
                             </div>
                             <br/>

@@ -9,13 +9,13 @@ import com.fr.service.email.CommentMailerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by djenanewail on 11/13/17.
@@ -25,11 +25,6 @@ public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl imple
 {
 	private static final String PATH_TO_COMMENT_TEMPLATE = "comment/comment";
 	private final Logger LOGGER = LoggerFactory.getLogger(CommentMailerServiceImpl.class);
-	
-	@Value("${spring.app.mail.comment.subject}")
-	private String commentEmailSubject;
-	@Value("${spring.app.mail.comment.content}")
-	private String commentEmailContent;
 	
 	private final TemplateEngine templateEngine;
 	private final UserParamService userParamService;
@@ -47,12 +42,13 @@ public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl imple
 		this.LOGGER.info("Sending email to all POST contributors, postId: <{}>, contributors: {}", postDTO.getId(),
 				contributors);
 		
-		contributors.stream().filter(c -> this.userParamService.canReceiveEmail(c.getId()))
+		contributors.stream().filter(c -> !c.getEmail().equals(comment.getAuthorEmail()) &&
+				this.userParamService.canReceiveEmail(c.getId()))
 				.forEach(c -> prepareAndSendEmail(postDTO, comment, c));
 		
 	}
 	
-	private void prepareAndSendEmail(final PostDTO postDTO, final CommentDTO comment, final EmailUserDTO receiver) {
+	private void prepareAndSendEmail(final PostDTO postDTO, final CommentDTO comment, final EmailUserDTO to) {
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent coverResourceContent = new MailResourceContent();
 		
@@ -60,22 +56,24 @@ public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl imple
 		coverResourceContent.setResourceName(sppotiCoverResourceName);
 		resourceContents.add(coverResourceContent);
 		
-		final Context context = new Context();
+		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));
 		
-		context.setVariable("receiverUsername", receiver.getFirstName());
+		context.setVariable("receiverUsername", to.getUsername());
+		context.setVariable("receiverEmail", to.getEmail());
 		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
 		
-		
-		this.commentEmailContent = this.commentEmailContent.replaceAll("%USER_ID%", comment.getAuthorUsername());
-		
-		context.setVariable("content", this.commentEmailContent);
+		context.setVariable("commentAuthor", comment.getAuthorUsername());
 		context.setVariable("commentText", comment.getText());
 		
+		//Template footer & header
+		context.setVariable("contactUsLink", this.contactUsLink);
+		
+		final String subject = this.messageSource
+				.getMessage("mail.commentSubject", null, Locale.forLanguageTag(to.getLanguage()));
 		
 		final String text = this.templateEngine.process(PATH_TO_COMMENT_TEMPLATE, context);
 		
-		
-		super.prepareAndSendEmail(receiver.getEmail(), this.commentEmailSubject, text, resourceContents);
+		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContents);
 	}
 	
 	

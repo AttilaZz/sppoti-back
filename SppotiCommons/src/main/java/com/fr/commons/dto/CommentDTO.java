@@ -23,6 +23,7 @@ public class CommentDTO extends AbstractCommonDTO
 	private String authorUsername;
 	private String authorAvatar;
 	private String authorCover;
+	private String authorEmail;
 	
 	@JsonSerialize(using = JsonDateSerializer.class)
 	private Date creationDate;
@@ -204,5 +205,13 @@ public class CommentDTO extends AbstractCommonDTO
 	
 	public void setAuthorId(final String authorId) {
 		this.authorId = authorId;
+	}
+	
+	public String getAuthorEmail() {
+		return this.authorEmail;
+	}
+	
+	public void setAuthorEmail(final String authorEmail) {
+		this.authorEmail = authorEmail;
 	}
 }

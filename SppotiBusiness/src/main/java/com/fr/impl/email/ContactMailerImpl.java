@@ -60,6 +60,10 @@ public class ContactMailerImpl extends ApplicationMailerServiceImpl implements C
 		context.setVariable("object", contactDTO.getObject());
 		context.setVariable("body", contactDTO.getMessage());
 		context.setVariable("imageResourceName", content.getResourceName());
+		context.setVariable("receiverEmail", contactDTO.getEmail());
+		
+		//Template footer.
+		context.setVariable("contactUsLink", this.contactUsLink);
 		
 		final String text = this.templateEngine.process(PATH_TO_CONTACT_TEMPLATE, context);
 		

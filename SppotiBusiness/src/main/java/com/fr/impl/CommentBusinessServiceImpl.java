@@ -112,6 +112,7 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 					.saveAndSendNotificationToUsers(getConnectedUser(), commentEntity.getPost().getTargetUserProfile(),
 							COMMENT, X_COMMENTED_ON_YOUR_POST, commentEntity.getPost(), commentEntity);
 			
+			commentDTO.setAuthorEmail(getConnectedUser().getEmail());
 			this.commentMailerService
 					.sendEmailToPostContributors(this.postTransformer.modelToDto(optional.get()), commentDTO,
 							buildContributorsList(optional.get()));
@@ -133,8 +134,9 @@ class CommentBusinessServiceImpl extends CommonControllerServiceImpl implements 
 		postEntity.getCommentEntities().forEach(c -> contributorsList.add(c.getUser()));
 		
 		return this.userTransformer.modelToDto(contributorsList).stream()
-				.map(u -> new EmailUserDTO(u.getFirstName(), u.getLastName(), u.getEmail(), u.getId()))
-				.filter(distinctByKey(EmailUserDTO::getEmail)).collect(Collectors.toList());
+				.map(u -> new EmailUserDTO(u.getLanguage(), u.getUsername(), u.getFirstName(), u.getLastName(),
+						u.getEmail(), u.getId())).filter(distinctByKey(EmailUserDTO::getEmail))
+				.collect(Collectors.toList());
 	}
 	
 	public static <T> Predicate<T> distinctByKey(final Function<? super T, ?> keyExtractor) {

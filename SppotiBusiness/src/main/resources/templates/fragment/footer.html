@@ -8,12 +8,12 @@
 <p class="ftr" th:fragment="footer">
     <span>© sppoti, 2017</span>
     <span class="remove-your-email">
-        <span th:text="${sentToText}">This message was sent to </span>
+        <span th:text="#{mail.sentTo}">This message was sent to </span>
         <span th:text="${receiverEmail}">xxx.xxx@xxx.xx</span>
-        <span th:text="${emailIntendedForMessageText}">and intended for</span>
+        <span th:text="#{mail.intendedFor}">and intended for</span>
         <span th:text="${receiverUsername}">xsxsxsxxsx</span>.
-        <span th:text="${notYourAccountText}">Not your account?</span>
-        <a th:href="'mailto:' + ${contactUsLink}" th:text="${contactUsMessageText}">contact us</a>.
+        <span th:text="#{mail.notYourAccount}">Not your account?</span>
+        <a th:href="'mailto:' + ${contactUsLink}" th:text="#{mail.contactUs}">contact us</a>.
     </span>
 </p>
 </body>

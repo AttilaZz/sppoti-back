@@ -15,6 +15,7 @@ import org.thymeleaf.context.Context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -24,26 +25,10 @@ import java.util.stream.Collectors;
 public class TeamMailerImpl extends ApplicationMailerServiceImpl implements TeamMailerService
 {
 	
-	@Value("${spring.app.mail.team.add.subject}")
-	private String addTeamSubject;
-	
-	@Value("${spring.app.mail.team.join.subject}")
-	private String joinTeamSubject;
-	
-	@Value("${spring.app.mail.team.confirm.subject}")
-	private String confirmJoinTeamSubject;
-	
-	@Value("${spring.app.mail.team.join.link}")
+	@Value("${mail.teamJoinLink}")
 	private String joinTeamLink;
 	
-	@Value("${spring.app.mail.team.description}")
-	private String sppotiTeamConcept;
-	
-	@Value("${spring.app.mail.team.invited.by.join.team}")
-	private String toJoinTeamMessage;
-	
-	/** Sppoti email templates */
-	private final static String PATH_TO_JOIN_TEAM_TEMPLATE = "team/join_team";
+	private final static String PATH_TO_JOIN_TEAM_TEMPLATE = "team/team";
 	
 	@Autowired
 	private TemplateEngine templateEngine;
@@ -62,7 +47,10 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 		if (this.userParamService.canReceiveEmail(to.getEmail())) {
 			final String joinTeamLinkParsed = this.frontRootPath +
 					this.joinTeamLink.replace("%teamId%", team.getId() + "");
-			prepareAndSendEmail(to, from, team, this.joinTeamSubject, joinTeamLinkParsed, buildTeamMailResources());
+			
+			final String subject = this.messageSource
+					.getMessage("mail.teamJoinSubject", null, Locale.forLanguageTag(to.getLanguage()));
+			prepareAndSendEmail(to, from, team, subject, joinTeamLinkParsed, buildTeamMailResources());
 		}
 	}
 	
@@ -79,6 +67,7 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 	@Override
 	public void sendConfirmJoinTeamEmail(final TeamDTO team, final TeamMemberEntity member)
 	{
+	
 	}
 	
 	/**
@@ -91,7 +80,7 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 		final List<UserDTO> teamMembers = team.getMembers().stream().limit(2).collect(Collectors.toList());
 		final int memberCountToDisplay = memberCount - teamMembers.size();
 		
-		final Context context = new Context();
+		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));
 		context.setVariable("title", to.getFirstName());
 		
 		context.setVariable("sentFromName", from.getFirstName() + " " + from.getLastName());
@@ -112,20 +101,8 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 		//Team avatar
 		context.setVariable("imageResourceName", resourceContent.get(0).getResourceName());
 		
-		context.setVariable("globalInformationAboutTeams", this.sppotiTeamConcept);
-		context.setVariable("learnMoreMessage", this.learnMoreMessage);
-		context.setVariable("joinMessage", this.joinMessage);
-		context.setVariable("invitedByMessage", this.invitedByMessage);
-		context.setVariable("toJoinTeamMessage", this.toJoinTeamMessage);
-		context.setVariable("andPrepositionMessage", this.andPrepositionMessage);
-		context.setVariable("otherPrepositionMessage", this.otherPrepositionMessage);
-		
-		//Template footer.
-		context.setVariable("emailIntendedForMessageText", this.emailIntendedForMessage);
-		context.setVariable("notYourAccountMessageText", this.notYourAccountMessage);
-		context.setVariable("contactUsMessageText", this.contactUsMessage);
+		//Template footer & header
 		context.setVariable("contactUsLink", this.contactUsLink);
-		context.setVariable("sentToText", this.sentToTextMessage);
 		
 		final String text = this.templateEngine.process(PATH_TO_JOIN_TEAM_TEMPLATE, context);
 		

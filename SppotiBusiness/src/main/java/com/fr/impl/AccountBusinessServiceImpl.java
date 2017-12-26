@@ -272,7 +272,7 @@ class AccountBusinessServiceImpl extends CommonControllerServiceImpl implements 
 			connectedUser.getPasswordHistories().add(p);
 		}
 		/*
-			email -- User must confirm new email address to login next time.
+			email -- User must confirm new messages address to login next time.
          */
 		else if (StringUtils.hasText(userDTO.getEmail()) && StringUtils.hasText(userDTO.getPassword())) {
 			
