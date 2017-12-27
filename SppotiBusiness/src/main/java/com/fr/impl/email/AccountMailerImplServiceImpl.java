@@ -28,6 +28,8 @@ import java.util.Locale;
 @Component
 public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl implements AccountMailerService
 {
+	private static final String PATH_TO_ACCOUNT_TEMPLATE = "account/account";
+	
 	@Value("${mail.accountRecoverPath}")
 	private String pathToRecoverAccount;
 	@Value("${mail.accountConfirmationPath}")
@@ -83,8 +85,8 @@ public class AccountMailerImplServiceImpl extends ApplicationMailerServiceImpl i
 		
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent resourceContent = new MailResourceContent();
-		resourceContent.setPath(IMAGES_DIRECTORY + logoResourceName);
-		resourceContent.setResourceName(logoResourceName);
+		resourceContent.setPath(IMAGES_DIRECTORY + SPPOTI_LOGO_RESOURCE_NAME);
+		resourceContent.setResourceName(SPPOTI_LOGO_RESOURCE_NAME);
 		resourceContents.add(resourceContent);
 		
 		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));

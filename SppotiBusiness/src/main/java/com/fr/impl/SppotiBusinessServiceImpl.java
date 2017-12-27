@@ -158,7 +158,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			if (!m.getUser().getId().equals(sppoti.getUserSppoti().getId())) {
 				//Email
 				this.sppotiMailerService
-						.sendJoinSppotiEmailToSppoters(sppotiDTO, this.userTransformer.modelToDto(m.getUser()),
+						.sendJoinSppotiEmailToSppoter(sppotiDTO, this.userTransformer.modelToDto(m.getUser()),
 								this.userTransformer.modelToDto(sppoti.getUserSppoti()));
 				//Notification
 				this.notificationService
@@ -904,7 +904,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			final TeamMemberEntity savedMember = this.teamMembersRepository.save(teamMembers);
 			
 			//Email sppoter
-			this.sppotiMailerService.sendJoinSppotiEmailToSppoters(this.sppotiTransformer.modelToDto(sppoti),
+			this.sppotiMailerService.sendJoinSppotiEmailToSppoter(this.sppotiTransformer.modelToDto(sppoti),
 					this.userTransformer.modelToDto(userSppoter),
 					this.userTransformer.modelToDto(sppoti.getUserSppoti()));
 			

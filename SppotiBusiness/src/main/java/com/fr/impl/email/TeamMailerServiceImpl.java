@@ -7,6 +7,8 @@ import com.fr.entities.TeamMemberEntity;
 import com.fr.service.UserParamService;
 import com.fr.service.email.TeamMailerService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,8 +24,9 @@ import java.util.stream.Collectors;
  * Created by djenanewail on 3/23/17.
  */
 @Component
-public class TeamMailerImpl extends ApplicationMailerServiceImpl implements TeamMailerService
+public class TeamMailerServiceImpl extends ApplicationMailerServiceImpl implements TeamMailerService
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(TeamMailerServiceImpl.class);
 	
 	@Value("${mail.teamJoinLink}")
 	private String joinTeamLink;
@@ -44,21 +47,23 @@ public class TeamMailerImpl extends ApplicationMailerServiceImpl implements Team
 	@Override
 	public void sendJoinTeamEmail(final TeamDTO team, final UserDTO to, final UserDTO from)
 	{
-		if (this.userParamService.canReceiveEmail(to.getEmail())) {
-			final String joinTeamLinkParsed = this.frontRootPath +
-					this.joinTeamLink.replace("%teamId%", team.getId() + "");
-			
-			final String subject = this.messageSource
-					.getMessage("mail.teamJoinSubject", null, Locale.forLanguageTag(to.getLanguage()));
-			prepareAndSendEmail(to, from, team, subject, joinTeamLinkParsed, buildTeamMailResources());
+		this.LOGGER.info("Sending join team email email to {} ", to.getUsername());
+		if (!this.userParamService.canReceiveEmail(to.getEmail())) {
+			this.LOGGER.info("{} has deactivated emails", to.getUsername());
+			return;
 		}
+		final String joinTeamLinkParsed = this.frontRootPath + this.joinTeamLink.replace("%teamId%", team.getId() + "");
+		
+		final String subject = this.messageSource
+				.getMessage("mail.teamJoinSubject", null, Locale.forLanguageTag(to.getLanguage()));
+		prepareAndSendEmail(to, from, team, subject, joinTeamLinkParsed, buildTeamMailResources());
 	}
 	
 	private List<MailResourceContent> buildTeamMailResources() {
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent resourceContent = new MailResourceContent();
-		resourceContent.setPath(IMAGES_DIRECTORY + teamDefaultAvatarResourceName);
-		resourceContent.setResourceName(teamDefaultAvatarResourceName);
+		resourceContent.setPath(IMAGES_DIRECTORY + TEAM_AVATAR_RESOURCE_NAME);
+		resourceContent.setResourceName(TEAM_AVATAR_RESOURCE_NAME);
 		resourceContents.add(resourceContent);
 		return resourceContents;
 	}

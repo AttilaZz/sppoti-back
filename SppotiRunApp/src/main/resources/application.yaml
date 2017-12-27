@@ -38,7 +38,7 @@ spring:
 
 ---
 spring:
-  profiles: container
+  profiles: test
   datasource:
     username:     ${MYSQL_USER}
     passwordFile: ${MYSQL_PASSWORD_FILE}

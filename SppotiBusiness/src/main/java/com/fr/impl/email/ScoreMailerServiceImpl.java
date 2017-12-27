@@ -74,7 +74,6 @@ public class ScoreMailerServiceImpl extends ApplicationMailerServiceImpl impleme
 	public void sendRefuseScoreEmail(final ScoreDTO score, final UserEntity from, final List<UserEntity> receivers,
 									 final SppotiEntity sppoti)
 	{
-		
 		this.LOGGER
 				.info("Sending email to sppoti members <{}> after refusing the score of SPPOTI <{}> by the team adverse",
 						score.getSppotiId(), receivers);
@@ -98,8 +97,8 @@ public class ScoreMailerServiceImpl extends ApplicationMailerServiceImpl impleme
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent coverResourceContent = new MailResourceContent();
 		
-		coverResourceContent.setPath(IMAGES_DIRECTORY + sppotiCoverResourceName);
-		coverResourceContent.setResourceName(sppotiCoverResourceName);
+		coverResourceContent.setPath(IMAGES_DIRECTORY + SPPOTI_COVER_RESOURCE_NAME);
+		coverResourceContent.setResourceName(SPPOTI_COVER_RESOURCE_NAME);
 		resourceContents.add(coverResourceContent);
 		
 		final Context context = new Context(Locale.forLanguageTag(to.getLanguageEnum().name()));

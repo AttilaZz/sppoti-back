@@ -30,15 +30,11 @@ import java.util.Objects;
 @Component
 abstract class ApplicationMailerServiceImpl implements ApplicationMailerService
 {
-	
-	static final String PATH_TO_ACCOUNT_TEMPLATE = "account/account";
-	static final String PATH_TO_CONTACT_TEMPLATE = "contact/contact";
-	
 	static final String IMAGES_DIRECTORY = "templates/images/";
 	
-	static final String logoResourceName = "sppoti_logo.png";
-	static final String teamDefaultAvatarResourceName = "team_avatar.png";
-	static final String sppotiCoverResourceName = "sppoti_bg_ps.png";
+	static final String SPPOTI_LOGO_RESOURCE_NAME = "sppoti_logo.png";
+	static final String TEAM_AVATAR_RESOURCE_NAME = "team_avatar.png";
+	static final String SPPOTI_COVER_RESOURCE_NAME = "sppoti_bg_ps.png";
 	
 	private static final String CHARSET_NAME = "UTF-8";
 	
@@ -62,7 +58,7 @@ abstract class ApplicationMailerServiceImpl implements ApplicationMailerService
 	protected String frontRootPath;
 	
 	@Value("${sppoti.app.mail.contact.us.link}")
-	String contactUsLink;
+	protected String contactUsLink;
 	
 	/**
 	 * @param to

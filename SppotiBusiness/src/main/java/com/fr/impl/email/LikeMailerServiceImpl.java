@@ -34,6 +34,7 @@ public class LikeMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 		LOGGER.info("Sending email to notify to about a post on his profile");
 		if (!this.userParamService.canReceiveEmail(to.getId())) {
 			LOGGER.info("User <{}> has deactivated receiving emails", to.getEmail());
+			return;
 		}
 		final Locale language = Locale.forLanguageTag(to.getLanguage());
 		
@@ -50,6 +51,7 @@ public class LikeMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 		LOGGER.info("Sending email to notify to about a post on his profile");
 		if (!this.userParamService.canReceiveEmail(to.getId())) {
 			LOGGER.info("User <{}> has deactivated receiving emails", to.getEmail());
+			return;
 		}
 		final Locale language = Locale.forLanguageTag(to.getLanguage());
 		
@@ -67,8 +69,8 @@ public class LikeMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent coverResourceContent = new MailResourceContent();
 		
-		coverResourceContent.setPath(IMAGES_DIRECTORY + sppotiCoverResourceName);
-		coverResourceContent.setResourceName(sppotiCoverResourceName);
+		coverResourceContent.setPath(IMAGES_DIRECTORY + SPPOTI_COVER_RESOURCE_NAME);
+		coverResourceContent.setResourceName(SPPOTI_COVER_RESOURCE_NAME);
 		resourceContents.add(coverResourceContent);
 		
 		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));

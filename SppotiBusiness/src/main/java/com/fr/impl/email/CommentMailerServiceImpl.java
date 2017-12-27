@@ -52,8 +52,8 @@ public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl imple
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent coverResourceContent = new MailResourceContent();
 		
-		coverResourceContent.setPath(IMAGES_DIRECTORY + sppotiCoverResourceName);
-		coverResourceContent.setResourceName(sppotiCoverResourceName);
+		coverResourceContent.setPath(IMAGES_DIRECTORY + SPPOTI_COVER_RESOURCE_NAME);
+		coverResourceContent.setResourceName(SPPOTI_COVER_RESOURCE_NAME);
 		resourceContents.add(coverResourceContent);
 		
 		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));

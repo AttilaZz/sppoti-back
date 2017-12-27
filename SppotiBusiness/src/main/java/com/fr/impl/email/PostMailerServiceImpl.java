@@ -31,17 +31,19 @@ public class PostMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 		
 		LOGGER.info("Sending email to profile owner <{}> on which the post has been added", target.getUserId());
 		
-		if (this.userParamService.canReceiveEmail(target.getId())) {
-			prepareAndSendEmail(post, target);
+		if (!this.userParamService.canReceiveEmail(target.getId())) {
+			LOGGER.info("{} has deactivated emails", target.getUsername());
+			return;
 		}
+		prepareAndSendEmail(post, target);
 	}
 	
 	private void prepareAndSendEmail(final PostDTO postDTO, final UserDTO to) {
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent coverResourceContent = new MailResourceContent();
 		
-		coverResourceContent.setPath(IMAGES_DIRECTORY + sppotiCoverResourceName);
-		coverResourceContent.setResourceName(sppotiCoverResourceName);
+		coverResourceContent.setPath(IMAGES_DIRECTORY + SPPOTI_COVER_RESOURCE_NAME);
+		coverResourceContent.setResourceName(SPPOTI_COVER_RESOURCE_NAME);
 		resourceContents.add(coverResourceContent);
 		
 		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));

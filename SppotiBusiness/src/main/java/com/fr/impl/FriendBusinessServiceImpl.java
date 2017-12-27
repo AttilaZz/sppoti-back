@@ -10,6 +10,7 @@ import com.fr.entities.FriendShipEntity;
 import com.fr.entities.UserEntity;
 import com.fr.service.FriendBusinessService;
 import com.fr.service.NotificationBusinessService;
+import com.fr.service.email.FriendMailerService;
 import com.fr.transformers.UserTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,8 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 	private UserTransformer userTransformer;
 	@Autowired
 	private NotificationBusinessService notificationService;
+	@Autowired
+	private FriendMailerService friendMailerService;
 	
 	@Value("${key.friendShipPerPage}")
 	private int friendListSize;
@@ -93,6 +96,8 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 			this.notificationService
 					.saveAndSendNotificationToUsers(friendShip.getUser(), friendShip.getFriend(), FRIENDSHIP,
 							NotificationTypeEnum.FRIEND_REQUEST_SENT);
+			
+			this.friendMailerService.onSendFriendRequest(friendShip.getUser(), friendShip.getFriend());
 		}
 		
 	}
@@ -136,10 +141,16 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 				this.notificationService
 						.saveAndSendNotificationToUsers(friendShip.getFriend(), friendShip.getUser(), FRIENDSHIP,
 								NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED);
+				
+				this.friendMailerService.onSendFriendRequest(friendShip.getFriend(), friendShip.getUser());
+				
 			} else if (friendShip.getStatus().equals(REFUSED)) {
 				this.notificationService
 						.saveAndSendNotificationToUsers(friendShip.getFriend(), friendShip.getUser(), FRIENDSHIP,
 								NotificationTypeEnum.FRIEND_REQUEST_REFUSED);
+				
+				this.friendMailerService.onSendFriendRequest(friendShip.getFriend(), friendShip.getUser());
+				
 			}
 		}
 		

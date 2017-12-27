@@ -18,9 +18,10 @@ import java.util.List;
  * Created by djenanewail on 4/8/17.
  */
 @Component
-public class ContactMailerImpl extends ApplicationMailerServiceImpl implements ContactMailerService
+public class ContactMailerServiceImpl extends ApplicationMailerServiceImpl implements ContactMailerService
 {
-	private final Logger LOGGER = LoggerFactory.getLogger(ContactMailerImpl.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(ContactMailerServiceImpl.class);
+	private static final String PATH_TO_CONTACT_TEMPLATE = "contact/contact";
 	
 	@Value("${spring.app.contact.email}")
 	private String emailContact;
@@ -31,7 +32,7 @@ public class ContactMailerImpl extends ApplicationMailerServiceImpl implements C
 	private final TemplateEngine templateEngine;
 	
 	@Autowired
-	public ContactMailerImpl(final TemplateEngine templateEngine) {
+	public ContactMailerServiceImpl(final TemplateEngine templateEngine) {
 		this.templateEngine = templateEngine;
 	}
 	
@@ -50,8 +51,8 @@ public class ContactMailerImpl extends ApplicationMailerServiceImpl implements C
 		this.LOGGER.info("Preparing and sending the contact email ...");
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent content = new MailResourceContent();
-		content.setPath(IMAGES_DIRECTORY + logoResourceName);
-		content.setResourceName(logoResourceName);
+		content.setPath(IMAGES_DIRECTORY + SPPOTI_LOGO_RESOURCE_NAME);
+		content.setResourceName(SPPOTI_LOGO_RESOURCE_NAME);
 		resourceContents.add(content);
 		
 		final Context context = new Context();
