@@ -23,7 +23,7 @@ import java.util.Locale;
 @Component
 public class ScoreMailerServiceImpl extends ApplicationMailerServiceImpl implements ScoreMailerService
 {
-	private static final String PATH_TO_SCORE_TEMPLATE = "score/score";
+	private static final String PATH_TO_SCORE_TEMPLATE = "sppoti/score";
 	private final Logger LOGGER = LoggerFactory.getLogger(ScoreMailerServiceImpl.class);
 	
 	@Autowired

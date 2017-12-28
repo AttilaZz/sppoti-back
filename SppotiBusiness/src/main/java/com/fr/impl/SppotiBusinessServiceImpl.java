@@ -16,6 +16,7 @@ import com.fr.enums.SppotiResponse;
 import com.fr.repositories.SppotiRequestRepository;
 import com.fr.service.NotificationBusinessService;
 import com.fr.service.SppotiBusinessService;
+import com.fr.service.email.RatingMailerService;
 import com.fr.service.email.SppotiMailerService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.UserTransformer;
@@ -63,6 +64,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	private SppotiMailerService sppotiMailerService;
 	@Autowired
 	private NotificationBusinessService notificationService;
+	@Autowired
+	private RatingMailerService ratingMailerService;
 	
 	@Value("${key.sppotiesPerPage}")
 	private int sppotiSize;
@@ -642,6 +645,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 					this.notificationService
 							.saveAndSendNotificationToUsers(connectUser, ratedSppoter.getTeamMember().getUser(), RATING,
 									YOU_HAVE_BEEN_RATED, ratedSppoter.getSppoti(), ratingEntity);
+					
+					this.ratingMailerService.onRatingUser(connectUser, ratedSppoter.getTeamMember().getUser(),
+							ratedSppoter.getSppoti());
 				}
 				
 				//Get RATED SPPOTER.

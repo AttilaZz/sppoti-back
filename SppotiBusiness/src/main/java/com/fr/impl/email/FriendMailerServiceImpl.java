@@ -86,7 +86,6 @@ public class FriendMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	
 	private void prepareAndSendEmail(final UserEntity to, final String content, final String subject)
 	{
-		
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent coverResourceContent = new MailResourceContent();
 		
@@ -101,7 +100,6 @@ public class FriendMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		context.setVariable("content", content);
 		
 		final String text = this.templateEngine.process(PATH_TO_FRIEND_TEMPLATE, context);
-		
 		
 		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContents);
 	}
