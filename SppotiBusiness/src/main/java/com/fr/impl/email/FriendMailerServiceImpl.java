@@ -96,7 +96,9 @@ public class FriendMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		
 		final Context context = new Context(Locale.forLanguageTag(to.getLanguageEnum().name()));
 		
+		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
 		context.setVariable("receiverUsername", to.getFirstName());
+		context.setVariable("content", content);
 		
 		final String text = this.templateEngine.process(PATH_TO_FRIEND_TEMPLATE, context);
 		
