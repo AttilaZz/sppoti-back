@@ -25,33 +25,16 @@ import java.util.stream.Collectors;
 public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, SppotiEntity> implements SppotiTransformer
 {
 	
-	/** Score transformer. */
-	private final ScoreTransformer scoreTransformer;
-	
-	/** Sport repository. */
-	private final SportRepository sportRepository;
-	
-	/** Team repository. */
-	private final TeamTransformerImpl teamTransformer;
-	
-	/** Sport transformer. */
-	private final SportTransformer sportTransformer;
-	
-	/** Team members repository. */
-	private final UserRepository userRepository;
-	
-	/** Init dependencies. */
 	@Autowired
-	public SppotiTransformerImpl(final ScoreTransformer scoreTransformer, final SportRepository sportRepository,
-								 final TeamTransformerImpl teamTransformer, final SportTransformer sportTransformer,
-								 final UserRepository userRepository)
-	{
-		this.scoreTransformer = scoreTransformer;
-		this.sportRepository = sportRepository;
-		this.teamTransformer = teamTransformer;
-		this.sportTransformer = sportTransformer;
-		this.userRepository = userRepository;
-	}
+	private ScoreTransformer scoreTransformer;
+	@Autowired
+	private SportRepository sportRepository;
+	@Autowired
+	private TeamTransformerImpl teamTransformer;
+	@Autowired
+	private SportTransformer sportTransformer;
+	@Autowired
+	private UserRepository userRepository;
 	
 	/**
 	 * {@inheritDoc}

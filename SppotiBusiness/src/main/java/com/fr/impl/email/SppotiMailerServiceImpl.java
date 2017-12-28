@@ -3,6 +3,7 @@ package com.fr.impl.email;
 import com.fr.commons.dto.MailResourceContent;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.enums.SppotiResponse;
 import com.fr.service.UserParamService;
 import com.fr.service.email.SppotiMailerService;
@@ -18,6 +19,11 @@ import org.thymeleaf.context.Context;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.fr.commons.enumeration.GlobalAppStatusEnum.CONFIRMED;
 
 /**
  * Created by djenanewail on 3/23/17.
@@ -54,7 +60,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	public void sendJoinSppotiEmailToSppoter(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
 		this.LOGGER.info("Sending join sppoti email to {}", to.getUsername());
-		if (!this.userParamService.canReceiveEmail(to.getEmail())) {
+		if (!this.userParamService.canReceiveEmail(to.getUserId())) {
 			this.LOGGER.info("{} has deactivated emails", to.getUsername());
 			return;
 		}
@@ -81,7 +87,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	public void sendJoinSppotiEmailToSppotiAdmin(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
 		this.LOGGER.info("Sending join sppoti email to sppoti admin: {}", to.getUsername());
-		if (!this.userParamService.canReceiveEmail(to.getEmail())) {
+		if (!this.userParamService.canReceiveEmail(to.getUserId())) {
 			this.LOGGER.info("{} has deactivated emails", to.getUsername());
 			return;
 		}
@@ -109,7 +115,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 											final SppotiResponse sppotiResponse)
 	{
 		this.LOGGER.info("Sending join sppoti response email to: {}", to.getUsername());
-		if (!this.userParamService.canReceiveEmail(to.getEmail())) {
+		if (!this.userParamService.canReceiveEmail(to.getUserId())) {
 			this.LOGGER.info("{} has deactivated emails", to.getUsername());
 			return;
 		}
@@ -129,6 +135,63 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		
 		prepareAndSendEmail(this.context, to, from, sppoti, subject, null, PATH_TO_JOIN_SPPOTI_TEMPLATE,
 				buildSppotiMailResources());
+	}
+	
+	@Override
+	public void onSppotiEdit(final SppotiDTO sppoti, final UserDTO from)
+	{
+		this.LOGGER.info("Sending email on sppoti edit ...");
+		
+		final List<UserDTO> sppotiMembersMailingList = getSppotiMailingList(sppoti);
+		
+		final Stream<UserDTO> mailingList = sppotiMembersMailingList.stream()
+				.filter(m -> this.userParamService.canReceiveEmail(m.getUserId()));
+		
+		if (mailingList.count() == 0) {
+			this.LOGGER.info("All sppoti users have deactivated emails");
+		}
+		
+		mailingList.forEach(m -> {
+			//send email
+		});
+	}
+	
+	@Override
+	public void onSppotiDeleted(final SppotiDTO sppoti, final UserDTO from)
+	{
+		this.LOGGER.info("Sending email on sppoti deleted ...");
+		
+		final List<UserDTO> sppotiMembersMailingList = getSppotiMailingList(sppoti);
+		
+		final Stream<UserDTO> mailingList = sppotiMembersMailingList.stream()
+				.filter(m -> this.userParamService.canReceiveEmail(m.getUserId()));
+		
+		if (mailingList.count() == 0) {
+			this.LOGGER.info("All sppoti users have deactivated emails");
+		}
+		
+		mailingList.forEach(m -> {
+			//send email
+		});
+	}
+	
+	private List<UserDTO> getSppotiMailingList(final SppotiDTO sppoti) {
+		final List<UserDTO> sppotiMembersMailingList = new ArrayList<>();
+		
+		final Optional<TeamDTO> adverseTeam = sppoti.getTeamAdverse().stream()
+				.filter(t -> t.getTeamAdverseStatus().equals(CONFIRMED.name())).findFirst();
+		
+		adverseTeam.ifPresent(a -> {
+			final List<UserDTO> teamAdverseMailingList = a.getMembers().stream()
+					.filter(m -> m.getSppotiStatus().equals(CONFIRMED)).collect(Collectors.toList());
+			
+			sppotiMembersMailingList.addAll(teamAdverseMailingList);
+		});
+		
+		final List<UserDTO> teamHostMailingList = sppoti.getTeamHost().getMembers().stream()
+				.filter(m -> m.getSppotiStatus().equals(CONFIRMED)).collect(Collectors.toList());
+		sppotiMembersMailingList.addAll(teamHostMailingList);
+		return sppotiMembersMailingList;
 	}
 	
 	private List<MailResourceContent> buildSppotiMailResources() {

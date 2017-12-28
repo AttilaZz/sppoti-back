@@ -16,4 +16,8 @@ public interface SppotiMailerService extends ApplicationMailerService
 	void sendJoinSppotiEmailToSppotiAdmin(SppotiDTO sppoti, UserDTO to, UserDTO from);
 	
 	void sendSppotiJoinResponseEmail(SppotiDTO sppoti, UserDTO to, UserDTO from, SppotiResponse sppotiResponse);
+	
+	void onSppotiEdit(SppotiDTO sppoti, UserDTO from);
+	
+	void onSppotiDeleted(SppotiDTO sppoti, UserDTO from);
 }
