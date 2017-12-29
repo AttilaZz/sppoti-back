@@ -33,7 +33,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 {
 	private final Logger LOGGER = LoggerFactory.getLogger(SppotiMailerServiceImpl.class);
 	
-	private final static String PATH_TO_JOIN_SPPOTI_TEMPLATE = "sppoti/sppoti";
+	private final static String PATH_TO_SPPOTI_TEMPLATE = "sppoti/sppoti";
 	
 	@Value("${mail.sppotiJoinLink}")
 	private String joinSppotiLink;
@@ -79,8 +79,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		
 		final String subject = this.messageSource.getMessage("mail.sppotiJoinSubject", null, language);
 		
-		prepareAndSendEmail(this.context, to, from, sppoti, subject, joinSppotiLinkParsed, PATH_TO_JOIN_SPPOTI_TEMPLATE,
-				buildSppotiMailResources());
+		prepareAndSendEmail(this.context, to, from, sppoti, subject, joinSppotiLinkParsed, PATH_TO_SPPOTI_TEMPLATE);
 	}
 	
 	@Override
@@ -106,8 +105,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		
 		final String subject = this.messageSource.getMessage("mail.sppotiJoinSubject", null, language);
 		
-		prepareAndSendEmail(this.context, to, from, sppoti, subject, joinSppotiLinkParsed, PATH_TO_JOIN_SPPOTI_TEMPLATE,
-				buildSppotiMailResources());
+		prepareAndSendEmail(this.context, to, from, sppoti, subject, joinSppotiLinkParsed, PATH_TO_SPPOTI_TEMPLATE);
 	}
 	
 	@Override
@@ -130,11 +128,9 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		final String content = this.messageSource.getMessage("mail.sppotiMessageResponseJoin", params, language);
 		this.context.setVariable("messageBody", content);
 		
-		final String subject = this.messageSource
-				.getMessage("mail.sppotiJoinSubject", null, Locale.forLanguageTag(to.getLanguage()));
+		final String subject = this.messageSource.getMessage("mail.sppotiJoinSubject", null, language);
 		
-		prepareAndSendEmail(this.context, to, from, sppoti, subject, null, PATH_TO_JOIN_SPPOTI_TEMPLATE,
-				buildSppotiMailResources());
+		prepareAndSendEmail(this.context, to, from, sppoti, subject, null, PATH_TO_SPPOTI_TEMPLATE);
 	}
 	
 	@Override
@@ -152,7 +148,15 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		}
 		
 		mailingList.forEach(m -> {
-			//send email
+			final Locale language = Locale.forLanguageTag(m.getLanguage());
+			
+			final String[] params = {from.getUsername()};
+			final String content = this.messageSource.getMessage("mail.sppotiEditedContent", params, language);
+			this.context.setVariable("messageBody", content);
+			
+			final String subject = this.messageSource.getMessage("mail.sppotiEditedSubject", null, language);
+			
+			prepareAndSendEmail(this.context, m, from, sppoti, subject, null, PATH_TO_SPPOTI_TEMPLATE);
 		});
 	}
 	
@@ -171,7 +175,15 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		}
 		
 		mailingList.forEach(m -> {
-			//send email
+			final Locale language = Locale.forLanguageTag(m.getLanguage());
+			
+			final String[] params = {from.getUsername()};
+			final String content = this.messageSource.getMessage("mail.sppotiDeletedContent", params, language);
+			this.context.setVariable("messageBody", content);
+			
+			final String subject = this.messageSource.getMessage("mail.sppotiDeletedSubject", null, language);
+			
+			prepareAndSendEmail(this.context, m, from, sppoti, subject, null, PATH_TO_SPPOTI_TEMPLATE);
 		});
 	}
 	
@@ -214,7 +226,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	 */
 	private void prepareAndSendEmail(final Context context, final UserDTO to, final UserDTO from,
 									 final SppotiDTO Sppoti, final String subject, final String joinSppotiLink,
-									 final String templatePath, final List<MailResourceContent> resourceContent)
+									 final String templatePath)
 	{
 		context.setVariable("title", to.getFirstName());
 		
@@ -230,15 +242,16 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		context.setVariable("receiverUsername", to.getUsername());
 		context.setVariable("receiverEmail", to.getEmail());
 		
-		context.setVariable("avatarResourceName", resourceContent.get(0).getResourceName());
-		context.setVariable("coverResourceName", resourceContent.get(1).getResourceName());
+		final List<MailResourceContent> mailResourceContents = buildSppotiMailResources();
+		context.setVariable("avatarResourceName", mailResourceContents.get(0).getResourceName());
+		context.setVariable("coverResourceName", mailResourceContents.get(1).getResourceName());
 		
 		//Template footer & header
 		context.setVariable("contactUsLink", this.contactUsLink);
 		
 		final String text = this.templateEngine.process(templatePath, context);
 		
-		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContent);
+		super.prepareAndSendEmail(to.getEmail(), subject, text, mailResourceContents);
 	}
 	
 }
