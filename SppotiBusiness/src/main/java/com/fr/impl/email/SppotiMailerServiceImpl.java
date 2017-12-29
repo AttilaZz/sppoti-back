@@ -44,7 +44,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	public void onCreateSppoti(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
 		this.LOGGER.info("Sending join sppoti email to {}", to.getUsername());
-		if (!this.userParamService.canReceiveEmail(to.getUserId())) {
+		if (!this.userParamService.canReceiveEmail(to.getId())) {
 			this.LOGGER.info("{} has deactivated emails", to.getUsername());
 			return;
 		}
@@ -70,7 +70,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	public void onSendingJoinRequestToSppoti(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
 		this.LOGGER.info("Sending join sppoti email to sppoti admin: {}", to.getUsername());
-		if (!this.userParamService.canReceiveEmail(to.getUserId())) {
+		if (!this.userParamService.canReceiveEmail(to.getId())) {
 			this.LOGGER.info("{} has deactivated emails", to.getUsername());
 			return;
 		}
@@ -98,7 +98,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 												final SppotiResponse sppotiResponse)
 	{
 		this.LOGGER.info("Sending join sppoti response email to: {}", to.getUsername());
-		if (!this.userParamService.canReceiveEmail(to.getUserId())) {
+		if (!this.userParamService.canReceiveEmail(to.getId())) {
 			this.LOGGER.info("{} has deactivated emails", to.getUsername());
 			return;
 		}
@@ -111,9 +111,9 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		
 		final String acceptanceStatus;
 		if (sppotiResponse.equals(SppotiResponse.ACCEPTED)) {
-			acceptanceStatus = this.messageSource.getMessage("mail.accepted", null, language);
+			acceptanceStatus = this.messageSource.getMessage("mail.hasBeenAccepted", null, language);
 		} else {
-			acceptanceStatus = this.messageSource.getMessage("mail.refused", null, language);
+			acceptanceStatus = this.messageSource.getMessage("mail.hasBeenRefused", null, language);
 		}
 		
 		final String[] params = {sppoti.getName(), acceptanceStatus};

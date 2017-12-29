@@ -10,7 +10,6 @@ import com.fr.commons.enumeration.SppotiStatus;
 import com.fr.commons.enumeration.notification.NotificationTypeEnum;
 import com.fr.commons.exception.BusinessGlobalException;
 import com.fr.commons.exception.NotAdminException;
-import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.enums.SppotiResponse;
 import com.fr.repositories.SppotiRequestRepository;
@@ -40,6 +39,7 @@ import java.util.stream.Collectors;
 
 import static com.fr.commons.enumeration.notification.NotificationObjectType.*;
 import static com.fr.commons.enumeration.notification.NotificationTypeEnum.*;
+import static com.fr.commons.utils.SppotiUtils.statusToFilter;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -149,26 +149,28 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				if (!m.getAdmin().equals(Boolean.TRUE)) {
 					sendJoinTeamEmail(team, getUserById(m.getUser().getId()), this.teamMembersRepository
 							.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(team.getUuid(),
-									SppotiUtils.statusToFilter()));
+									statusToFilter()));
 				}
 			});
 		}
 		
 		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(savedSppoti);
 		//send email and notification to sppoters.
-		sppoti.getTeamHostEntity().getTeamMembers().forEach(m -> {
-			//exclude sppoti admin from the email.
-			if (!m.getUser().getId().equals(sppoti.getUserSppoti().getId())) {
-				//Email
-				this.sppotiMailerService.onCreateSppoti(sppotiDTO, this.userTransformer.modelToDto(m.getUser()),
-						this.userTransformer.modelToDto(sppoti.getUserSppoti()));
-				//Notification
-				this.notificationService
-						.saveAndSendNotificationToUsers(savedSppoti.getUserSppoti(), m.getUser(), SPPOTI,
-								X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, savedSppoti);
-				
-			}
-		});
+		sppoti.getTeamHostEntity().getTeamMembers().stream().filter(m -> statusToFilter().contains(m.getStatus()))
+				.forEach(m -> {
+					//exclude sppoti admin from the email.
+					if (!m.getUser().getId().equals(sppoti.getUserSppoti().getId())) {
+						//Email
+						this.sppotiMailerService.onCreateSppoti(sppotiDTO, this.userTransformer.modelToDto(m.getUser()),
+								this.userTransformer.modelToDto(sppoti.getUserSppoti()));
+						
+						//Notification
+						this.notificationService
+								.saveAndSendNotificationToUsers(savedSppoti.getUserSppoti(), m.getUser(), SPPOTI,
+										X_INVITED_YOU_TO_JOIN_HIS_SPPOTI, savedSppoti);
+						
+					}
+				});
 		
 		this.LOGGER.info("Sppoti has been saved: {}", sppotiDTO);
 		return sppotiDTO;
@@ -346,7 +348,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		final Optional<SppoterEntity> optional = Optional.ofNullable(this.sppoterRepository
 				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(userId, sppotiId,
-						SppotiUtils.statusToFilter()));
+						statusToFilter()));
 		
 		optional.ifPresent(sm -> {
 			//update sppoter status.
@@ -361,7 +363,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			//Send notification to team admin.
 			final UserEntity teamAdmin = this.teamMembersRepository
 					.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(teamMembers.getTeam().getUuid(),
-							SppotiUtils.statusToFilter()).getUser();
+							statusToFilter()).getUser();
 			
 			this.notificationService.saveAndSendNotificationToUsers(sm.getTeamMember().getUser(), teamAdmin, SPPOTI,
 					X_ACCEPTED_THE_SPPOTI_INVITATION, sm.getSppoti());
@@ -383,7 +385,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		final SppoterEntity sppoter = this.sppoterRepository
 				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(sppotiId, userId,
-						SppotiUtils.statusToFilter());
+						statusToFilter());
 		
 		if (sppoter == null) {
 			throw new EntityNotFoundException("Sppoter not found");
@@ -436,8 +438,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		//check if user has rights to send challenge. (team adverse admin)
 		if (!getConnectedUserId().equals(this.teamMembersRepository
-				.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(teamId, SppotiUtils.statusToFilter())
-				.getUser().getId())) {
+				.findByTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(teamId, statusToFilter()).getUser()
+				.getId())) {
 			throw new NotAdminException("You have to be the admin of the team to send challenge");
 		}
 		
@@ -621,7 +623,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				
 				Optional<SppoterEntity> optional = Optional.ofNullable(this.sppoterRepository
 						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(
-								rating.getSppoterRatedId(), sppotiEntity.getUuid(), SppotiUtils.statusToFilter()));
+								rating.getSppoterRatedId(), sppotiEntity.getUuid(), statusToFilter()));
 				optional.orElseThrow(
 						() -> new EntityNotFoundException("Sppoter (" + rating.getSppoterRatedId() + ") not found"));
 				
@@ -648,7 +650,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				//This means that sppoti admin has rate this rating
 				SppoterEntity sppoterRaterEntity = this.sppoterRepository
 						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(connectUser.getUuid(),
-								sppotiId, SppotiUtils.statusToFilter());
+								sppotiId, statusToFilter());
 				sppoterRaterEntity.setHasRateOtherSppoter(Boolean.TRUE);
 				this.sppoterRepository.save(sppoterRaterEntity);
 				
@@ -664,7 +666,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				//Get RATED SPPOTER.
 				SppoterEntity sppoterRatedEntity = this.sppoterRepository
 						.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(
-								rating.getSppoterRatedId(), sppotiId, SppotiUtils.statusToFilter());
+								rating.getSppoterRatedId(), sppotiId, statusToFilter());
 				return this.teamMemberTransformer.modelToDto(sppoterRatedEntity.getTeamMember(), sppotiEntity);
 				
 			}).collect(Collectors.toList());
@@ -685,8 +687,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		final List<SppoterEntity> sppotiMembers = this.sppoterRepository
-				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, SppotiUtils.statusToFilter(),
-						pageable);
+				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, statusToFilter(), pageable);
 		
 		return sppotiMembers.stream().filter(s -> !Objects.equals(s.getSppoti().getUserSppoti().getUuid(), userId))
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
@@ -705,8 +706,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		return this.sppoterRepository
-				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, SppotiUtils.statusToFilter(),
-						pageable).stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
+				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, statusToFilter(), pageable)
+				.stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
 	
@@ -723,8 +724,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		return this.sppoterRepository
-				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, SppotiUtils.statusToFilter(),
-						pageable).stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.REFUSED))
+				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, statusToFilter(), pageable)
+				.stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.REFUSED))
 				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
 	}
 	
@@ -759,8 +760,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		//Get all user teams.
 		final List<TeamMemberEntity> teamMemberEntities = this.teamMembersRepository
-				.findByUserUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(userId, SppotiUtils.statusToFilter(),
-						pageable);
+				.findByUserUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(userId, statusToFilter(), pageable);
 		
 		//Check if one of this teams has received a challenge request.
 		teamMemberEntities.stream().map(t -> this.sppotiAdverseRepository.findByTeamUuid(t.getTeam().getUuid()))
@@ -950,7 +950,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		//Find sppoter and delete it.
 		final Optional<SppoterEntity> sppoter = Optional.ofNullable(this.sppoterRepository
 				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(userId, sppotiId,
-						SppotiUtils.statusToFilter()));
+						statusToFilter()));
 		
 		sppoter.ifPresent(s -> {
 			if (!s.getTeamMember().getAdmin()) {
@@ -1066,7 +1066,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	public void leaveSppoti(final String sppotiId) {
 		final Optional<SppoterEntity> optional = Optional.ofNullable(this.sppoterRepository
 				.findByTeamMemberUserUuidAndSppotiUuidAndStatusNotInAndSppotiDeletedFalse(getConnectedUserUuid(),
-						sppotiId, SppotiUtils.statusToFilter()));
+						sppotiId, statusToFilter()));
 		
 		optional.ifPresent(s -> {
 			s.setStatus(GlobalAppStatusEnum.LEFT);
@@ -1104,7 +1104,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		final List<SppoterEntity> sppotiMembers = this.sppoterRepository
 				.findByTeamMemberUserUuidAndSppotiSportIdAndStatusNotInAndSppotiDeletedFalse(
-						sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId(), SppotiUtils.statusToFilter());
+						sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId(), statusToFilter());
 		
 		sppotiDTO.setSppotiCounter(sppotiMembers.size());
 		sppotiDTO.setMySppoti(Objects.equals(getConnectedUser().getUuid(), sppoti.getUserSppoti().getUuid()));
@@ -1112,8 +1112,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		//if user is member of a team, get admin of the tem and other informations.
 		final TeamMemberEntity teamAdmin = this.teamMembersRepository
 				.findByUserUuidAndTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(
-						sppoti.getUserSppoti().getUuid(), sppoti.getTeamHostEntity().getUuid(),
-						SppotiUtils.statusToFilter());
+						sppoti.getUserSppoti().getUuid(), sppoti.getTeamHostEntity().getUuid(), statusToFilter());
 		if (teamAdmin != null) {
 			sppotiDTO.setAdminTeamId(teamAdmin.getUuid());
 			sppotiDTO.setAdminUserId(sppoti.getUserSppoti().getUuid());

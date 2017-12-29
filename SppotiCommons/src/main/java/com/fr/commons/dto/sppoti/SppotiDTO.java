@@ -14,10 +14,7 @@ import com.fr.commons.utils.JsonDateSerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.fr.commons.enumeration.GlobalAppStatusEnum.CONFIRMED;
@@ -342,13 +339,15 @@ public class SppotiDTO extends AbstractCommonDTO
 		
 		adverseTeam.ifPresent(a -> {
 			final List<UserDTO> teamAdverseMailingList = a.getMembers().stream()
-					.filter(m -> m.getSppotiStatus().equals(CONFIRMED)).collect(Collectors.toList());
+					.filter(m -> Objects.nonNull(m.getSppotiStatus()) && m.getSppotiStatus().equals(CONFIRMED))
+					.collect(Collectors.toList());
 			
 			sppotiMembersMailingList.addAll(teamAdverseMailingList);
 		});
 		
 		final List<UserDTO> teamHostMailingList = getTeamHost().getMembers().stream()
-				.filter(m -> m.getSppotiStatus().equals(CONFIRMED)).collect(Collectors.toList());
+				.filter(m -> Objects.nonNull(m.getSppotiStatus()) && m.getSppotiStatus().equals(CONFIRMED))
+				.collect(Collectors.toList());
 		sppotiMembersMailingList.addAll(teamHostMailingList);
 		return sppotiMembersMailingList;
 	}
