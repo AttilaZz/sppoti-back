@@ -113,7 +113,14 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		
 		final Locale language = Locale.forLanguageTag(to.getLanguage());
 		
-		final String[] params = {from.getUsername()};
+		final String acceptanceStatus;
+		if (sppotiResponse.equals(SppotiResponse.ACCEPTED)) {
+			acceptanceStatus = this.messageSource.getMessage("mail.accepted", null, language);
+		} else {
+			acceptanceStatus = this.messageSource.getMessage("mail.refused", null, language);
+		}
+		
+		final String[] params = {sppoti.getName(), acceptanceStatus};
 		final String content = this.messageSource.getMessage("mail.sppotiMessageResponseJoinContent", params, language);
 		this.context.setVariable("messageBody", content);
 		
