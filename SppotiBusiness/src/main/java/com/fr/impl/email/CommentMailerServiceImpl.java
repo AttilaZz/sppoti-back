@@ -26,14 +26,10 @@ public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl imple
 	private static final String PATH_TO_COMMENT_TEMPLATE = "comment/comment";
 	private final Logger LOGGER = LoggerFactory.getLogger(CommentMailerServiceImpl.class);
 	
-	private final TemplateEngine templateEngine;
-	private final UserParamService userParamService;
-	
 	@Autowired
-	public CommentMailerServiceImpl(final TemplateEngine templateEngine, final UserParamService userParamService) {
-		this.templateEngine = templateEngine;
-		this.userParamService = userParamService;
-	}
+	private TemplateEngine templateEngine;
+	@Autowired
+	private UserParamService userParamService;
 	
 	@Override
 	public void sendEmailToPostContributors(final PostDTO postDTO, final CommentDTO comment,
@@ -65,7 +61,7 @@ public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl imple
 		context.setVariable("commentAuthor", comment.getAuthorUsername());
 		context.setVariable("commentText", comment.getText());
 		
-		//Template footer & header
+		//Template footer
 		context.setVariable("contactUsLink", this.contactUsLink);
 		
 		final String subject = this.messageSource

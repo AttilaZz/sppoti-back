@@ -97,6 +97,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		prepareAndSendEmail(this.context, to, from, sppoti, subject, joinSppotiLinkParsed, PATH_TO_SPPOTI_TEMPLATE);
 	}
 	
+	//TODO: adapt this method to mailing plan
 	@Override
 	public void onRespondingToSppotiJoinRequest(final SppotiDTO sppoti, final UserDTO to, final UserDTO from,
 												final SppotiResponse sppotiResponse)

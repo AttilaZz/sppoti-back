@@ -75,9 +75,6 @@ public class TeamMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 	
 	}
 	
-	/**
-	 * Send email.
-	 */
 	private void prepareAndSendEmail(final UserDTO to, final UserDTO from, final TeamDTO team, final String subject,
 									 final String joinTeamLink, final List<MailResourceContent> resourceContent)
 	{
