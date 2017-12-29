@@ -160,9 +160,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			//exclude sppoti admin from the email.
 			if (!m.getUser().getId().equals(sppoti.getUserSppoti().getId())) {
 				//Email
-				this.sppotiMailerService
-						.sendJoinSppotiEmailToSppoter(sppotiDTO, this.userTransformer.modelToDto(m.getUser()),
-								this.userTransformer.modelToDto(sppoti.getUserSppoti()));
+				this.sppotiMailerService.onCreateSppoti(sppotiDTO, this.userTransformer.modelToDto(m.getUser()),
+						this.userTransformer.modelToDto(sppoti.getUserSppoti()));
 				//Notification
 				this.notificationService
 						.saveAndSendNotificationToUsers(savedSppoti.getUserSppoti(), m.getUser(), SPPOTI,
@@ -403,7 +402,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		final UserDTO emailTo = this.userTransformer.modelToDto(sppoti.getUserSppoti());
 		final UserDTO emailFrom = this.userTransformer.modelToDto(getConnectedUser());
 		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sppoti);
-		this.sppotiMailerService.sendSppotiJoinResponseEmail(sppotiDTO, emailTo, emailFrom, response);
+		this.sppotiMailerService.onRespondingToSppotiJoinRequest(sppotiDTO, emailTo, emailFrom, response);
 	}
 	
 	/**
@@ -910,7 +909,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			final TeamMemberEntity savedMember = this.teamMembersRepository.save(teamMembers);
 			
 			//Email sppoter
-			this.sppotiMailerService.sendJoinSppotiEmailToSppoter(this.sppotiTransformer.modelToDto(sppoti),
+			this.sppotiMailerService.onCreateSppoti(this.sppotiTransformer.modelToDto(sppoti),
 					this.userTransformer.modelToDto(userSppoter),
 					this.userTransformer.modelToDto(sppoti.getUserSppoti()));
 			
@@ -1002,9 +1001,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			
 			final SppotiDTO dto = this.sppotiTransformer.modelToDto(this.sppotiRepository.save(entity.get()));
 			
-			this.sppotiMailerService.sendJoinSppotiEmailToSppotiAdmin(dto,
-					this.userTransformer.modelToDto(entity.get().getUserSppoti()),
-					this.userTransformer.modelToDto(user));
+			this.sppotiMailerService
+					.onSendingJoinRequestToSppoti(dto, this.userTransformer.modelToDto(entity.get().getUserSppoti()),
+							this.userTransformer.modelToDto(user));
 			
 			return dto;
 		}

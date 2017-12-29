@@ -9,13 +9,11 @@ import com.fr.enums.SppotiResponse;
  */
 public interface SppotiMailerService extends ApplicationMailerService
 {
-	void sendAddSppotiEmail(SppotiDTO Sppoti);
+	void onCreateSppoti(SppotiDTO sppoti, UserDTO to, UserDTO from);
 	
-	void sendJoinSppotiEmailToSppoter(SppotiDTO sppoti, UserDTO to, UserDTO from);
+	void onSendingJoinRequestToSppoti(SppotiDTO sppoti, UserDTO to, UserDTO from);
 	
-	void sendJoinSppotiEmailToSppotiAdmin(SppotiDTO sppoti, UserDTO to, UserDTO from);
-	
-	void sendSppotiJoinResponseEmail(SppotiDTO sppoti, UserDTO to, UserDTO from, SppotiResponse sppotiResponse);
+	void onRespondingToSppotiJoinRequest(SppotiDTO sppoti, UserDTO to, UserDTO from, SppotiResponse sppotiResponse);
 	
 	void onSppotiEdit(SppotiDTO sppoti, UserDTO from);
 	

@@ -45,19 +45,8 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	
 	private Context context;
 	
-	/**
-	 * Send email to confirm Sppoti creation.
-	 *
-	 * @param Sppoti
-	 * 		ceated Sppoti.
-	 */
 	@Override
-	public void sendAddSppotiEmail(final SppotiDTO Sppoti)
-	{
-	}
-	
-	@Override
-	public void sendJoinSppotiEmailToSppoter(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
+	public void onCreateSppoti(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
 		this.LOGGER.info("Sending join sppoti email to {}", to.getUsername());
 		if (!this.userParamService.canReceiveEmail(to.getUserId())) {
@@ -83,7 +72,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	}
 	
 	@Override
-	public void sendJoinSppotiEmailToSppotiAdmin(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
+	public void onSendingJoinRequestToSppoti(final SppotiDTO sppoti, final UserDTO to, final UserDTO from)
 	{
 		this.LOGGER.info("Sending join sppoti email to sppoti admin: {}", to.getUsername());
 		if (!this.userParamService.canReceiveEmail(to.getUserId())) {
@@ -109,8 +98,8 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	}
 	
 	@Override
-	public void sendSppotiJoinResponseEmail(final SppotiDTO sppoti, final UserDTO to, final UserDTO from,
-											final SppotiResponse sppotiResponse)
+	public void onRespondingToSppotiJoinRequest(final SppotiDTO sppoti, final UserDTO to, final UserDTO from,
+												final SppotiResponse sppotiResponse)
 	{
 		this.LOGGER.info("Sending join sppoti response email to: {}", to.getUsername());
 		if (!this.userParamService.canReceiveEmail(to.getUserId())) {
@@ -125,7 +114,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		final Locale language = Locale.forLanguageTag(to.getLanguage());
 		
 		final String[] params = {from.getUsername()};
-		final String content = this.messageSource.getMessage("mail.sppotiMessageResponseJoin", params, language);
+		final String content = this.messageSource.getMessage("mail.sppotiMessageResponseJoinContent", params, language);
 		this.context.setVariable("messageBody", content);
 		
 		final String subject = this.messageSource.getMessage("mail.sppotiJoinSubject", null, language);
