@@ -71,7 +71,7 @@ public interface SppotiBusinessService extends AbstractBusinessService
 	 * @param userId
 	 * 		sppoter id.
 	 */
-	void acceptSppoti(String sppotiId, String userId);
+	void acceptSppotiInvitation(String sppotiId, String userId);
 	
 	/**
 	 * REFUSE sppoti and add notification.
@@ -83,7 +83,7 @@ public interface SppotiBusinessService extends AbstractBusinessService
 	 * @param userId
 	 * 		sppoter id.
 	 */
-	void refuseSppoti(String sppotiId, String userId);
+	void rejectSppotiInvitation(String sppotiId, String userId);
 	
 	/**
 	 * Get all sppoties that user asked to join, even those he rejects.

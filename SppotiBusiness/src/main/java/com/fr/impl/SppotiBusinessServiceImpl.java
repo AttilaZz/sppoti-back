@@ -343,7 +343,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	 */
 	@Transactional
 	@Override
-	public void acceptSppoti(final String sppotiId, final String userId)
+	public void acceptSppotiInvitation(final String sppotiId, final String userId)
 	{
 		
 		final Optional<SppoterEntity> optional = Optional.ofNullable(this.sppoterRepository
@@ -368,7 +368,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			this.notificationService.saveAndSendNotificationToUsers(sm.getTeamMember().getUser(), teamAdmin, SPPOTI,
 					X_ACCEPTED_THE_SPPOTI_INVITATION, sm.getSppoti());
 			
-			sendSppotiJoinResponseEmail(sm.getSppoti(), SppotiResponse.ACCEPTED);
+			sendSppotiJoinResponseEmail(sm.getSppoti(), SppotiResponse.ACCEPTED, false);
 			
 		});
 		
@@ -380,7 +380,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	 */
 	@Transactional
 	@Override
-	public void refuseSppoti(final String sppotiId, final String userId)
+	public void rejectSppotiInvitation(final String sppotiId, final String userId)
 	{
 		
 		final SppoterEntity sppoter = this.sppoterRepository
@@ -398,14 +398,23 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				.saveAndSendNotificationToUsers(sppoter.getTeamMember().getUser(), sppoter.getSppoti().getUserSppoti(),
 						SPPOTI, X_REFUSED_YOUR_SPPOTI_INVITATION, updatedSppoter.getSppoti());
 		
-		sendSppotiJoinResponseEmail(sppoter.getSppoti(), SppotiResponse.REJECTED);
+		sendSppotiJoinResponseEmail(sppoter.getSppoti(), SppotiResponse.REJECTED, false);
 	}
 	
-	private void sendSppotiJoinResponseEmail(final SppotiEntity sppoti, final SppotiResponse response) {
+	private void sendSppotiJoinResponseEmail(final SppotiEntity sppoti, final SppotiResponse response,
+											 final boolean fromSppotiAdmin)
+	{
 		final UserDTO emailTo = this.userTransformer.modelToDto(sppoti.getUserSppoti());
 		final UserDTO emailFrom = this.userTransformer.modelToDto(getConnectedUser());
 		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sppoti);
-		this.sppotiMailerService.onRespondingToSppotiJoinRequest(sppotiDTO, emailTo, emailFrom, response);
+		
+		if (!fromSppotiAdmin) {
+			this.sppotiMailerService
+					.onRespondingToSppotiJoinRequestFromSppoter(sppotiDTO, emailTo, emailFrom, response);
+			return;
+		}
+		this.sppotiMailerService
+				.onRespondingToSppotiJoinRequestFromSppotiAdmin(sppotiDTO, emailTo, emailFrom, response);
 	}
 	
 	/**

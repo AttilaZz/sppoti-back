@@ -94,10 +94,10 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	
 	//TODO: adapt this method to mailing plan
 	@Override
-	public void onRespondingToSppotiJoinRequest(final SppotiDTO sppoti, final UserDTO to, final UserDTO from,
-												final SppotiResponse sppotiResponse)
+	public void onRespondingToSppotiJoinRequestFromSppoter(final SppotiDTO sppoti, final UserDTO to, final UserDTO from,
+														   final SppotiResponse sppotiResponse)
 	{
-		this.LOGGER.info("Sending join sppoti response email to: {}", to.getUsername());
+		this.LOGGER.info("Sending join sppoti response email to sppoti admin from {}", from.getUsername());
 		if (!this.userParamService.canReceiveEmail(to.getId())) {
 			this.LOGGER.info("{} has deactivated emails", to.getUsername());
 			return;
@@ -110,20 +110,31 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		final Locale language = Locale.forLanguageTag(to.getLanguage());
 		
 		final String acceptanceStatus;
+		
 		if (sppotiResponse.equals(SppotiResponse.ACCEPTED)) {
 			acceptanceStatus = this.messageSource.getMessage("mail.hasBeenAccepted", null, language);
 		} else {
 			acceptanceStatus = this.messageSource.getMessage("mail.hasBeenRefused", null, language);
 		}
+		final String[] params = {sppoti.getName(), acceptanceStatus, from.getUsername()};
 		
-		final String[] params = {sppoti.getName(), acceptanceStatus};
-		final String content = this.messageSource.getMessage("mail.sppotiMessageResponseJoinContent", params, language);
+		final String content = this.messageSource
+				.getMessage("mail.sppotiMessageResponseJoinBySppoterContent", params, language);
 		this.context.setVariable("messageBody", content);
 		
 		final String subject = this.messageSource.getMessage("mail.sppotiJoinSubject", null, language);
 		
 		prepareAndSendEmail(this.context, to, from, sppoti, subject, null, PATH_TO_SPPOTI_TEMPLATE);
 	}
+	
+	@Override
+	public void onRespondingToSppotiJoinRequestFromSppotiAdmin(final SppotiDTO sppoti, final UserDTO to,
+															   final UserDTO from, final SppotiResponse sppotiResponse)
+	{
+		this.LOGGER.info("Sending join sppoti response email from sppoti admin to: {}", to.getUsername());
+		
+	}
+	
 	
 	@Override
 	public void onSppotiEdit(final SppotiDTO sppoti, final UserDTO from)

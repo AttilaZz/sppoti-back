@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 class SppotersUpdateController
 {
 	
-	/** Sppoti service. */
 	private SppotiBusinessService sppotiControllerService;
 	
-	/** Init service. */
 	@Autowired
 	void setSppotiControllerService(final SppotiBusinessService sppotiControllerService)
 	{
@@ -33,7 +31,7 @@ class SppotersUpdateController
 	@PutMapping("/accept/{userId}")
 	ResponseEntity<String> acceptSppoti(@PathVariable final String sppotiId, @PathVariable final String userId)
 	{
-		this.sppotiControllerService.acceptSppoti(sppotiId, userId);
+		this.sppotiControllerService.acceptSppotiInvitation(sppotiId, userId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
@@ -41,7 +39,7 @@ class SppotersUpdateController
 	@PutMapping("/refuse/{userId}")
 	ResponseEntity<Void> refuseSppoti(@PathVariable final String sppotiId, @PathVariable final String userId)
 	{
-		this.sppotiControllerService.refuseSppoti(userId, sppotiId);
+		this.sppotiControllerService.rejectSppotiInvitation(userId, sppotiId);
 		
 		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
