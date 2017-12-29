@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fr.commons.dto.AbstractCommonDTO;
 import com.fr.commons.dto.ScoreDTO;
 import com.fr.commons.dto.SportDTO;
+import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.SppotiStatus;
 import com.fr.commons.utils.JsonDateDeserializer;
@@ -13,8 +14,13 @@ import com.fr.commons.utils.JsonDateSerializer;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.fr.commons.enumeration.GlobalAppStatusEnum.CONFIRMED;
 
 /**
  * Created by: Wail DJENANE on Jul 11, 2016
@@ -137,31 +143,31 @@ public class SppotiDTO extends AbstractCommonDTO
 	{
 		this.mySppoti = mySppoti;
 	}
-
+	
 	public String getAdminUserId() {
 		return this.adminUserId;
 	}
-
+	
 	public void setAdminUserId(final String adminUserId) {
 		this.adminUserId = adminUserId;
 	}
-
+	
 	public String getAdminTeamId() {
 		return this.adminTeamId;
 	}
-
+	
 	public void setAdminTeamId(final String adminTeamId) {
 		this.adminTeamId = adminTeamId;
 	}
-
+	
 	public String getConnectedUserId() {
 		return this.connectedUserId;
 	}
-
+	
 	public void setConnectedUserId(final String connectedUserId) {
 		this.connectedUserId = connectedUserId;
 	}
-
+	
 	public Long getSppotiDuration()
 	{
 		return this.sppotiDuration;
@@ -319,12 +325,31 @@ public class SppotiDTO extends AbstractCommonDTO
 	public void setTimeZone(final String timeZone) {
 		this.timeZone = timeZone;
 	}
-
+	
 	public SppotiStatus getType() {
 		return this.type;
 	}
-
+	
 	public void setType(final SppotiStatus type) {
 		this.type = type;
+	}
+	
+	public List<UserDTO> getSppotiMailingList() {
+		final List<UserDTO> sppotiMembersMailingList = new ArrayList<>();
+		
+		final Optional<TeamDTO> adverseTeam = getTeamAdverse().stream()
+				.filter(t -> t.getTeamAdverseStatus().equals(CONFIRMED.name())).findFirst();
+		
+		adverseTeam.ifPresent(a -> {
+			final List<UserDTO> teamAdverseMailingList = a.getMembers().stream()
+					.filter(m -> m.getSppotiStatus().equals(CONFIRMED)).collect(Collectors.toList());
+			
+			sppotiMembersMailingList.addAll(teamAdverseMailingList);
+		});
+		
+		final List<UserDTO> teamHostMailingList = getTeamHost().getMembers().stream()
+				.filter(m -> m.getSppotiStatus().equals(CONFIRMED)).collect(Collectors.toList());
+		sppotiMembersMailingList.addAll(teamHostMailingList);
+		return sppotiMembersMailingList;
 	}
 }

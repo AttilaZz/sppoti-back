@@ -4,6 +4,7 @@ import com.fr.commons.dto.CommentDTO;
 import com.fr.commons.dto.ContentEditedResponseDTO;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.security.AccountUserDetails;
+import com.fr.commons.dto.sppoti.SppotiDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.FriendShipStatus;
 import com.fr.commons.enumeration.GlobalAppStatusEnum;
@@ -13,10 +14,14 @@ import com.fr.commons.utils.SppotiUtils;
 import com.fr.entities.*;
 import com.fr.repositories.*;
 import com.fr.service.AbstractBusinessService;
+import com.fr.service.email.ChallengeMailerService;
 import com.fr.service.email.TeamMailerService;
+import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
@@ -32,7 +37,8 @@ import java.util.stream.Collectors;
 @Component("abstractService")
 abstract class CommonControllerServiceImpl implements AbstractBusinessService
 {
-	/** Spring security anonymous user. */
+	private final Logger LOGGER = LoggerFactory.getLogger(CommonControllerServiceImpl.class);
+	
 	private static final String ANONYMOUS_USER = "anonymousUser";
 	
 	@Autowired
@@ -67,6 +73,9 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 	RatingRepository ratingRepository;
 	
 	@Autowired
+	private ChallengeMailerService challengeMailerService;
+	
+	@Autowired
 	SppotiAdverseRepository sppotiAdverseRepository;
 	
 	@Autowired
@@ -83,6 +92,9 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 	
 	@Autowired
 	private TeamTransformer teamTransformer;
+	
+	@Autowired
+	private SppotiTransformer sppotiTransformer;
 	
 	/**
 	 * {@inheritDoc}
@@ -434,9 +446,6 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 		return accountUserDetails.getTimeZone();
 	}
 	
-	/**
-	 * {@inheritDoc}
-	 */
 	public FriendShipStatus getFriendShipStatus(final String friendUuid) {
 		final FriendShipEntity friendShipEntity = this.friendShipRepository
 				.findTopByFriendUuidAndUserUuidAndStatusNotInOrderByDatetimeCreatedDesc(getConnectedUserUuid(),
@@ -447,5 +456,38 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 		}
 		
 		return null;
+	}
+	
+	void sendEmailOnChallengeAction(final TeamEntity teamFrom, final TeamEntity teamTo, final SppotiEntity sp,
+									final int operation)
+	{
+		this.LOGGER.info("Launching challenge email process ...");
+		
+		final TeamDTO from = this.teamTransformer.modelToDto(teamFrom);
+		final TeamDTO to = this.teamTransformer.modelToDto(teamTo);
+		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sp);
+		
+		switch (operation) {
+			case 1:
+				//On sent
+				this.LOGGER.info("Send email on challenge sent ...");
+				this.challengeMailerService.onSendChallenge(from, to, sppotiDTO);
+				break;
+			case 2:
+				//On refuse
+				this.LOGGER.info("Send email on challenge refused ...");
+				this.challengeMailerService.onRefuseChallenge(from, to, sppotiDTO);
+				break;
+			case 3:
+				this.LOGGER.info("Send email on challenge accepted ...");
+				this.challengeMailerService.onAcceptChallenge(from, sppotiDTO);
+				break;
+			case 4:
+				this.LOGGER.info("Send email on challenge cancelled ...");
+				this.challengeMailerService.onCancelChallenge(from, to, sppotiDTO);
+				break;
+			default:
+				this.LOGGER.info("Opertaion {} not supported to send challenge email");
+		}
 	}
 }

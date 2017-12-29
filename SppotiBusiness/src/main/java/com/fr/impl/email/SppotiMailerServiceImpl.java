@@ -3,7 +3,6 @@ package com.fr.impl.email;
 import com.fr.commons.dto.MailResourceContent;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.sppoti.SppotiDTO;
-import com.fr.commons.dto.team.TeamDTO;
 import com.fr.enums.SppotiResponse;
 import com.fr.service.UserParamService;
 import com.fr.service.email.SppotiMailerService;
@@ -19,11 +18,7 @@ import org.thymeleaf.context.Context;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.fr.commons.enumeration.GlobalAppStatusEnum.CONFIRMED;
 
 /**
  * Created by djenanewail on 3/23/17.
@@ -135,7 +130,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	{
 		this.LOGGER.info("Sending email on sppoti edit ...");
 		
-		final List<UserDTO> sppotiMembersMailingList = getSppotiMailingList(sppoti);
+		final List<UserDTO> sppotiMembersMailingList = sppoti.getSppotiMailingList();
 		
 		final Stream<UserDTO> mailingList = sppotiMembersMailingList.stream()
 				.filter(m -> this.userParamService.canReceiveEmail(m.getUserId()));
@@ -162,7 +157,7 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 	{
 		this.LOGGER.info("Sending email on sppoti deleted ...");
 		
-		final List<UserDTO> sppotiMembersMailingList = getSppotiMailingList(sppoti);
+		final List<UserDTO> sppotiMembersMailingList = sppoti.getSppotiMailingList();
 		
 		final Stream<UserDTO> mailingList = sppotiMembersMailingList.stream()
 				.filter(m -> this.userParamService.canReceiveEmail(m.getUserId()));
@@ -182,25 +177,6 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 			
 			prepareAndSendEmail(this.context, m, from, sppoti, subject, null, PATH_TO_SPPOTI_TEMPLATE);
 		});
-	}
-	
-	private List<UserDTO> getSppotiMailingList(final SppotiDTO sppoti) {
-		final List<UserDTO> sppotiMembersMailingList = new ArrayList<>();
-		
-		final Optional<TeamDTO> adverseTeam = sppoti.getTeamAdverse().stream()
-				.filter(t -> t.getTeamAdverseStatus().equals(CONFIRMED.name())).findFirst();
-		
-		adverseTeam.ifPresent(a -> {
-			final List<UserDTO> teamAdverseMailingList = a.getMembers().stream()
-					.filter(m -> m.getSppotiStatus().equals(CONFIRMED)).collect(Collectors.toList());
-			
-			sppotiMembersMailingList.addAll(teamAdverseMailingList);
-		});
-		
-		final List<UserDTO> teamHostMailingList = sppoti.getTeamHost().getMembers().stream()
-				.filter(m -> m.getSppotiStatus().equals(CONFIRMED)).collect(Collectors.toList());
-		sppotiMembersMailingList.addAll(teamHostMailingList);
-		return sppotiMembersMailingList;
 	}
 	
 	private List<MailResourceContent> buildSppotiMailResources() {

@@ -310,6 +310,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				}
 			});
 			
+			sendEmailOnChallengeAction(sppoti.getTeamHostEntity(), adverse.getTeam(), sppoti, 1);
 		}
 		
 		final SppotiEntity updatedSppoti = this.sppotiRepository.save(sppoti);
@@ -488,6 +489,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				.saveAndSendNotificationToUsers(getConnectedUser(), sppotiEntity.getUserSppoti(), CHALLENGE,
 						TEAM_ADMIN_SENT_YOU_A_CHALLENGE, adverse.getTeam(), sppotiEntity);
 		
+		sendEmailOnChallengeAction(adverse.getTeam(), sppotiEntity.getTeamHostEntity(), sppotiEntity, 1);
+		
 		return getSppotiResponse(savedSppoti);
 	}
 	
@@ -537,6 +540,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 													.saveAndSendNotificationToUsers(sp.getUserSppoti(), m.getUser(),
 															CHALLENGE, SPPOTI_ADMIN_REFUSED_YOUR_CHALLENGE,
 															teamAdverse.getTeam(), sp);
+											
+											sendEmailOnChallengeAction(sp.getTeamHostEntity(), teamAdverse.getTeam(),
+													sp, 2);
 										}
 									});
 								} else {
@@ -547,6 +553,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 													.saveAndSendNotificationToUsers(sp.getUserSppoti(), m.getUser(),
 															CHALLENGE, SPPOTI_ADMIN_CANCELED_HIS_CHALLENGE,
 															teamAdverse.getTeam(), sp);
+											
+											sendEmailOnChallengeAction(sp.getTeamHostEntity(), teamAdverse.getTeam(),
+													sp, 4);
 										}
 									});
 								}
@@ -583,6 +592,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 												.saveAndSendNotificationToUsers(sp.getUserSppoti(), m.getUser(),
 														CHALLENGE, SPPOTI_ADMIN_ACCEPTED_THE_CHALLENGE,
 														teamAdverse.getTeam(), sp);
+										
+										sendEmailOnChallengeAction(sp.getTeamHostEntity(), teamAdverse.getTeam(), sp,
+												3);
 									}
 								});
 							}

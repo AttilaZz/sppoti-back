@@ -17,6 +17,8 @@ import com.fr.service.TeamBusinessService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.impl.TeamTransformerImpl;
 import com.fr.transformers.impl.UserTransformerImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -41,27 +43,19 @@ import static com.fr.commons.enumeration.notification.NotificationObjectType.TEA
 @Component
 class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements TeamBusinessService
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(TeamBusinessServiceImpl.class);
 	
-	private final UserTransformerImpl userTransformer;
-	private final TeamTransformerImpl teamTransformer;
-	private final SppotiTransformer sppotiTransformer;
-	private final NotificationBusinessService notificationService;
+	@Autowired
+	private UserTransformerImpl userTransformer;
+	@Autowired
+	private TeamTransformerImpl teamTransformer;
+	@Autowired
+	private SppotiTransformer sppotiTransformer;
+	@Autowired
+	private NotificationBusinessService notificationService;
 	
-	/** Team list size. */
 	@Value("${key.teamsPerPage}")
 	private int teamPageSize;
-	
-	/** Init dependencies. */
-	@Autowired
-	public TeamBusinessServiceImpl(final UserTransformerImpl userTransformer, final TeamTransformerImpl teamTransformer,
-								   final SppotiTransformer sppotiTransformer,
-								   final NotificationBusinessService notificationService)
-	{
-		this.userTransformer = userTransformer;
-		this.teamTransformer = teamTransformer;
-		this.sppotiTransformer = sppotiTransformer;
-		this.notificationService = notificationService;
-	}
 	
 	/**
 	 * {@inheritDoc}
@@ -477,22 +471,22 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 		
 		if (optional.isPresent()) {
 			final SppotiEntity sp = optional.get();
-			//Check if sppoti has already a CONFIRMED adverse team in the adverse team list.
+			//Check if sppoti has already a CONFIRMED adverse adverseTeam in the adverse adverseTeam list.
 			if (sp.getAdverseTeams() != null &&
 					sp.getAdverseTeams().stream().anyMatch(t -> t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))) {
-				throw new BusinessGlobalException("This sppoti has already an adverse team");
+				throw new BusinessGlobalException("This sppoti has already an adverse adverseTeam");
 			}
 			
-			//Check if team exists.
-			final TeamEntity team = checkIfTeamExists(teamId);
+			//Check if adverseTeam exists.
+			final TeamEntity adverseTeam = getTeamIfExists(teamId);
 			
-			//Check if team is not already accepted as challenger of this sppoti.
+			//Check if adverseTeam is not already accepted as challenger of this sppoti.
 			final Optional<SppotiAdverseEntity> sppotiAdverseEntityOptional = sp.getAdverseTeams().stream()
-					.filter(t -> t.getTeam().getId().equals(team.getId())).findAny();
+					.filter(t -> t.getTeam().getId().equals(adverseTeam.getId())).findAny();
 			
-			//Team not found in sppoti adverse team list.
+			//Team not found in sppoti adverse adverseTeam list.
 			sppotiAdverseEntityOptional
-					.orElseThrow(() -> new BusinessGlobalException("This team has no challenge to respond."));
+					.orElseThrow(() -> new BusinessGlobalException("This adverseTeam has no challenge to respond."));
 			
 			//Team found in awaiting list.
 			if (sppotiAdverseEntityOptional.isPresent()) {
@@ -501,17 +495,19 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 				if (t.getFromSppotiAdmin().equals(Boolean.TRUE)) {
 					//Team already CONFIRMED.
 					if (t.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)) {
-						throw new BusinessGlobalException("This team is already selected to challenge the host team");
+						throw new BusinessGlobalException(
+								"This adverseTeam is already selected to challenge the host adverseTeam");
 					}
 					//Team already REFUSED.
 					else if (t.getStatus().equals(GlobalAppStatusEnum.REFUSED)) {
-						throw new BusinessGlobalException("This team was already refused to challenge the host team");
+						throw new BusinessGlobalException(
+								"This adverseTeam was already refused to challenge the host adverseTeam");
 					} else {
-						//Team exist in adverse team list in PENDING mode.
+						//Team exist in adverse adverseTeam list in PENDING mode.
 						if (dto.getTeamAdverseStatus().equals(GlobalAppStatusEnum.CONFIRMED.name())) {
 							t.setStatus(GlobalAppStatusEnum.valueOf(dto.getTeamAdverseStatus()));
 							
-							//Convert team members to sppoters if status equals to confirmed
+							//Convert adverseTeam members to sppoters if status equals to confirmed
 							final Set<SppoterEntity> sppotiMembers = convertAdverseTeamMembersToSppoters(t.getTeam(),
 									sp);
 							sp.setSppotiMembers(sppotiMembers);
@@ -529,7 +525,9 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 							this.notificationService.saveAndSendNotificationToUsers(null, sp.getUserSppoti(), TEAM,
 									NotificationTypeEnum.TEAM_ADMIN_ACCEPTED_YOUR_CHALLENGE, t.getTeam(), sp);
 							
-							//save changes and return team.
+							sendEmailOnChallengeAction(adverseTeam, sp.getTeamHostEntity(), sp, 3);
+							
+							//save changes and return adverseTeam.
 							return this.teamTransformer.modelToDto(this.sppotiAdverseRepository.save(t).getTeam());
 						} else {
 							//Challenge refused -> Delete row from database.
@@ -539,6 +537,8 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 							//send notification to sppoti admin.
 							this.notificationService.saveAndSendNotificationToUsers(null, sp.getUserSppoti(), TEAM,
 									NotificationTypeEnum.TEAM_ADMIN_REFUSED_YOUR_CHALLENGE, t.getTeam(), sp);
+							
+							sendEmailOnChallengeAction(adverseTeam, sp.getTeamHostEntity(), sp, 2);
 							
 							return new TeamDTO();
 						}
@@ -554,6 +554,8 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 						//send notification to sppoti admin.
 						this.notificationService.saveAndSendNotificationToUsers(null, sp.getUserSppoti(), TEAM,
 								NotificationTypeEnum.TEAM_ADMIN_CANCELED_HIS_CHALLENGE, t.getTeam(), sp);
+						
+						sendEmailOnChallengeAction(adverseTeam, sp.getTeamHostEntity(), sp, 4);
 						
 						return new TeamDTO();
 					} else {
@@ -577,7 +579,7 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 		checkTeamAdminAccess(teamId);
 		
 		//Check if team exists.
-		checkIfTeamExists(teamId);
+		getTeamIfExists(teamId);
 		
 		final List<SppotiAdverseEntity> sppotiAdverseEntities = this.sppotiAdverseRepository
 				.findByTeamUuidAndFromSppotiAdminTrue(teamId);
@@ -735,7 +737,7 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 	@Transactional
 	public TeamDTO updateTeamType(final String teamId, final TeamStatus type) {
 		
-		final TeamEntity teamEntity = checkIfTeamExists(teamId);
+		final TeamEntity teamEntity = getTeamIfExists(teamId);
 		
 		checkTeamAdminAccess(teamId);
 		
@@ -751,7 +753,7 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 	@Transactional
 	public TeamDTO sendRequestToJoinTeam(final String teamId) {
 		
-		final TeamEntity teamEntity = checkIfTeamExists(teamId);
+		final TeamEntity teamEntity = getTeamIfExists(teamId);
 		
 		final UserEntity entity = getConnectedUser();
 		
@@ -781,7 +783,7 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 		
 		checkTeamAdminAccess(teamId);
 		
-		checkIfTeamExists(teamId);
+		getTeamIfExists(teamId);
 		
 		final Optional<TeamMemberEntity> memberEntity = this.teamMembersRepository
 				.findByTeamUuidAndUserUuidAndStatusAndRequestSentFromUserTrueAndTeamDeletedFalse(teamId, dto.getId(),
@@ -804,7 +806,7 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 		
 		checkTeamAdminAccess(teamId);
 		
-		checkIfTeamExists(teamId);
+		getTeamIfExists(teamId);
 		
 		final Optional<TeamMemberEntity> memberEntity = this.teamMembersRepository
 				.findByTeamUuidAndUserUuidAndStatusAndRequestSentFromUserTrueAndTeamDeletedFalse(teamId, dto.getId(),
@@ -826,7 +828,7 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 	@Transactional
 	public void leaveTeam(final String teamId) {
 		
-		checkIfTeamExists(teamId);
+		getTeamIfExists(teamId);
 		
 		final Optional<TeamMemberEntity> optional = this.teamMembersRepository
 				.findByTeamUuidAndUserUuidAndStatusAndTeamDeletedFalse(teamId, getConnectedUserUuid(),
@@ -851,7 +853,7 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 	@Transactional
 	public void cancelJoinTeamRequest(final String teamId) {
 		
-		checkIfTeamExists(teamId);
+		getTeamIfExists(teamId);
 		
 		final Optional<TeamMemberEntity> memberEntity = this.teamMembersRepository
 				.findByTeamUuidAndUserUuidAndStatusAndRequestSentFromUserTrueAndTeamDeletedFalse(teamId,
@@ -888,7 +890,7 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 	 *
 	 * @return the team.
 	 */
-	private TeamEntity checkIfTeamExists(final String teamId) {
+	private TeamEntity getTeamIfExists(final String teamId) {
 		final List<TeamEntity> entity = this.teamRepository.findByUuidAndDeletedFalse(teamId);
 		
 		if (entity.isEmpty()) {

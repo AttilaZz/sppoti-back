@@ -1,12 +1,9 @@
 package com.fr.impl.email;
 
 import com.fr.commons.dto.MailResourceContent;
-import com.fr.entities.SppotiEntity;
-import com.fr.entities.TeamEntity;
-import com.fr.entities.TeamMemberEntity;
-import com.fr.entities.UserEntity;
-import com.fr.repositories.TeamRepository;
-import com.fr.service.UserParamService;
+import com.fr.commons.dto.UserDTO;
+import com.fr.commons.dto.sppoti.SppotiDTO;
+import com.fr.commons.dto.team.TeamDTO;
 import com.fr.service.email.ChallengeMailerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,17 +30,12 @@ public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl imp
 	
 	@Autowired
 	private TemplateEngine templateEngine;
-	@Autowired
-	private TeamRepository teamRepository;
-	@Autowired
-	private UserParamService userParamService;
 	
 	@Override
-	public void onSendChallenge(final TeamEntity from, final TeamEntity to, final SppotiEntity sppoti) {
+	public void onSendChallenge(final TeamDTO from, final TeamDTO to, final SppotiDTO sppoti) {
 		this.LOGGER.info("Sending email on creating a challenge ..");
-		final List<TeamMemberEntity> teamToAdmin = to.getTeamMembers().stream()
-				.filter(m -> m.getAdmin() && this.userParamService.canReceiveEmail(m.getUser().getUuid()))
-				.collect(Collectors.toList());
+		final List<UserDTO> teamToAdmin = to.getMembers().stream()
+				.filter(m -> m.getTeamAdmin() && m.getCanReceiveEmails()).collect(Collectors.toList());
 		
 		if (CollectionUtils.isEmpty(teamToAdmin)) {
 			this.LOGGER.info("All team admin have deactivated mailing");
@@ -52,21 +44,41 @@ public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl imp
 		
 		teamToAdmin.forEach(m -> {
 			//send mail
+			final Locale language = Locale.forLanguageTag(m.getLanguage());
+			
+			final String[] params = {from.getName(), sppoti.getName()};
+			final String subject = this.messageSource.getMessage("mail.challengeSentSubject", null, language);
+			final String content = this.messageSource.getMessage("mail.challengeSentContent", params, language);
+			
+			prepareAndSendEmail(subject, content, m, from.getTeamAdmin());
 		});
 	}
 	
 	@Override
-	public void onAcceptChallenge(final TeamEntity from, final TeamEntity to, final SppotiEntity sppoti) {
+	public void onAcceptChallenge(final TeamDTO from, final SppotiDTO sppoti) {
 		this.LOGGER.info("Sending email on accepting a challenge ..");
 		
+		sppoti.getSppotiMailingList().stream()
+				.filter(m -> m.getCanReceiveEmails() && !m.getUserId().equals(from.getTeamAdmin().getUserId()))
+				.forEach(m -> {
+					//send email
+					final Locale language = Locale.forLanguageTag(m.getLanguage());
+					
+					final String[] params = {from.getName(), sppoti.getName()};
+					final String subject = this.messageSource
+							.getMessage("mail.challengeAcceptedSubject", null, language);
+					final String content = this.messageSource
+							.getMessage("mail.challengeAcceptedContent", params, language);
+					
+					prepareAndSendEmail(subject, content, m, from.getTeamAdmin());
+				});
 	}
 	
 	@Override
-	public void onRefuseChallenge(final TeamEntity from, final TeamEntity to, final SppotiEntity sppoti) {
-		this.LOGGER.info("Sending email on refusing a challenge ..");
-		final List<TeamMemberEntity> teamToAdmin = to.getTeamMembers().stream()
-				.filter(m -> m.getAdmin() && this.userParamService.canReceiveEmail(m.getUser().getUuid()))
-				.collect(Collectors.toList());
+	public void onRefuseChallenge(final TeamDTO from, final TeamDTO to, final SppotiDTO sppoti) {
+		this.LOGGER.info("Sending email to all sppoti members (Challenge refused) ..");
+		final List<UserDTO> teamToAdmin = to.getMembers().stream()
+				.filter(m -> m.getTeamAdmin() && m.getCanReceiveEmails()).collect(Collectors.toList());
 		
 		if (CollectionUtils.isEmpty(teamToAdmin)) {
 			this.LOGGER.info("All team admin have deactivated mailing");
@@ -75,11 +87,17 @@ public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl imp
 		
 		teamToAdmin.forEach(m -> {
 			//send mail
+			final Locale language = Locale.forLanguageTag(m.getLanguage());
+			
+			final String[] params = {from.getName(), sppoti.getName()};
+			final String subject = this.messageSource.getMessage("mail.challengeRefusedSubject", null, language);
+			final String content = this.messageSource.getMessage("mail.challengeRefusedContent", params, language);
+			
+			prepareAndSendEmail(subject, content, m, from.getTeamAdmin());
 		});
 	}
 	
-	private void prepareAndSendEmail(final String subject, final String content, final UserEntity to,
-									 final UserEntity from)
+	private void prepareAndSendEmail(final String subject, final String content, final UserDTO to, final UserDTO from)
 	{
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent coverResourceContent = new MailResourceContent();
@@ -88,7 +106,7 @@ public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl imp
 		coverResourceContent.setResourceName(SPPOTI_COVER_RESOURCE_NAME);
 		resourceContents.add(coverResourceContent);
 		
-		final Context context = new Context(Locale.forLanguageTag(to.getLanguageEnum().name()));
+		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));
 		
 		context.setVariable("receiverUsername", to.getUsername());
 		

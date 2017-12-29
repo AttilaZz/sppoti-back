@@ -1,16 +1,18 @@
 package com.fr.service.email;
 
-import com.fr.entities.SppotiEntity;
-import com.fr.entities.TeamEntity;
+import com.fr.commons.dto.sppoti.SppotiDTO;
+import com.fr.commons.dto.team.TeamDTO;
 
 /**
  * Created by djenanewail on 12/29/17.
  */
 public interface ChallengeMailerService
 {
-	void onSendChallenge(TeamEntity from, TeamEntity to, SppotiEntity sppoti);
+	void onSendChallenge(TeamDTO from, TeamDTO to, SppotiDTO sppoti);
 	
-	void onAcceptChallenge(TeamEntity from, TeamEntity to, SppotiEntity sppoti);
+	void onAcceptChallenge(TeamDTO from, SppotiDTO sppoti);
 	
-	void onRefuseChallenge(TeamEntity from, TeamEntity to, SppotiEntity sppoti);
+	void onRefuseChallenge(TeamDTO from, TeamDTO to, SppotiDTO sppoti);
+	
+	void onCancelChallenge(TeamDTO from, TeamDTO to, SppotiDTO sppotiDTO);
 }
