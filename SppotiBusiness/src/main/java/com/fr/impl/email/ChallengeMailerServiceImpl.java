@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Component
 public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl implements ChallengeMailerService
 {
-	private static final String PATH_TO_CHALLENGE_TEMPLATE = "challenge/challenge";
+	private static final String PATH_TO_CHALLENGE_TEMPLATE = "sppoti/challenge";
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(ChallengeMailerServiceImpl.class);
 	
@@ -50,13 +50,13 @@ public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl imp
 			final String subject = this.messageSource.getMessage("mail.challengeSentSubject", null, language);
 			final String content = this.messageSource.getMessage("mail.challengeSentContent", params, language);
 			
-			prepareAndSendEmail(subject, content, m, from.getTeamAdmin());
+			prepareAndSendEmail(subject, content, m);
 		});
 	}
 	
 	@Override
 	public void onAcceptChallenge(final TeamDTO from, final SppotiDTO sppoti) {
-		this.LOGGER.info("Sending email on accepting a challenge ..");
+		this.LOGGER.info("Sending email to all sppoti members (Challenge refused) ...");
 		
 		sppoti.getSppotiMailingList().stream()
 				.filter(m -> m.getCanReceiveEmails() && !m.getUserId().equals(from.getTeamAdmin().getUserId()))
@@ -70,13 +70,14 @@ public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl imp
 					final String content = this.messageSource
 							.getMessage("mail.challengeAcceptedContent", params, language);
 					
-					prepareAndSendEmail(subject, content, m, from.getTeamAdmin());
+					prepareAndSendEmail(subject, content, m);
 				});
 	}
 	
 	@Override
 	public void onRefuseChallenge(final TeamDTO from, final TeamDTO to, final SppotiDTO sppoti) {
-		this.LOGGER.info("Sending email to all sppoti members (Challenge refused) ..");
+		this.LOGGER.info("Sending email on refusing a challenge ...");
+		
 		final List<UserDTO> teamToAdmin = to.getMembers().stream()
 				.filter(m -> m.getTeamAdmin() && m.getCanReceiveEmails()).collect(Collectors.toList());
 		
@@ -93,11 +94,34 @@ public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl imp
 			final String subject = this.messageSource.getMessage("mail.challengeRefusedSubject", null, language);
 			final String content = this.messageSource.getMessage("mail.challengeRefusedContent", params, language);
 			
-			prepareAndSendEmail(subject, content, m, from.getTeamAdmin());
+			prepareAndSendEmail(subject, content, m);
 		});
 	}
 	
-	private void prepareAndSendEmail(final String subject, final String content, final UserDTO to, final UserDTO from)
+	@Override
+	public void onCancelChallenge(final TeamDTO from, final TeamDTO to, final SppotiDTO sppoti) {
+		this.LOGGER.info("Sending email to all sppoti members (Challenge refused) ..");
+		final List<UserDTO> teamToAdmin = to.getMembers().stream()
+				.filter(m -> m.getTeamAdmin() && m.getCanReceiveEmails()).collect(Collectors.toList());
+		
+		if (CollectionUtils.isEmpty(teamToAdmin)) {
+			this.LOGGER.info("All team admin have deactivated mailing");
+			return;
+		}
+		
+		teamToAdmin.forEach(m -> {
+			//send mail
+			final Locale language = Locale.forLanguageTag(m.getLanguage());
+			
+			final String[] params = {from.getName(), sppoti.getName()};
+			final String subject = this.messageSource.getMessage("mail.challengeCancelledSubject", null, language);
+			final String content = this.messageSource.getMessage("mail.challengeCancelledContent", params, language);
+			
+			prepareAndSendEmail(subject, content, m);
+		});
+	}
+	
+	private void prepareAndSendEmail(final String subject, final String content, final UserDTO to)
 	{
 		final List<MailResourceContent> resourceContents = new ArrayList<>();
 		final MailResourceContent coverResourceContent = new MailResourceContent();
@@ -109,6 +133,7 @@ public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl imp
 		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));
 		
 		context.setVariable("receiverUsername", to.getUsername());
+		context.setVariable("content", content);
 		
 		//Template footer
 		context.setVariable("contactUsLink", this.contactUsLink);

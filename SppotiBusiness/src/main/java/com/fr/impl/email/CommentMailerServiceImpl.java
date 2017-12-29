@@ -23,7 +23,7 @@ import java.util.Locale;
 @Component
 public class CommentMailerServiceImpl extends ApplicationMailerServiceImpl implements CommentMailerService
 {
-	private static final String PATH_TO_COMMENT_TEMPLATE = "comment/comment";
+	private static final String PATH_TO_COMMENT_TEMPLATE = "post/comment";
 	private final Logger LOGGER = LoggerFactory.getLogger(CommentMailerServiceImpl.class);
 	
 	@Autowired
