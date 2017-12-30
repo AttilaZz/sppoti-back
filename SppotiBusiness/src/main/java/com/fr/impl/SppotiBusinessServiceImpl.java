@@ -1095,43 +1095,6 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		optional.orElseThrow(() -> new EntityNotFoundException("User not member of this sppoti"));
 	}
 	
-	//	private SppotiDTO getSppotiResponse(final SppotiEntity sppoti)
-	//	{
-	//		if (sppoti == null) {
-	//			throw new EntityNotFoundException("SppotiEntity not found");
-	//		}
-	//
-	//		sppoti.setConnectedUserId(getConnectedUser().getId());
-	//		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sppoti);
-	//
-	//
-	//		final TeamDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHostEntity(), sppoti);
-	//
-	//		sppotiDTO.setTeamHost(teamHostResponse);
-	//		sppotiDTO.setId(sppoti.getUuid());
-	//		sppotiDTO.setRelatedSport(this.sportTransformer.modelToDto(sppoti.getSport()));
-	//
-	//		final List<SppoterEntity> sppotiMembers = this.sppoterRepository
-	//				.findByTeamMemberUserUuidAndSppotiSportIdAndStatusNotInAndSppotiDeletedFalse(
-	//						sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId(), statusToFilter());
-	//
-	//		sppotiDTO.setSppotiCounter(sppotiMembers.size());
-	//		sppotiDTO.setMySppoti(Objects.equals(getConnectedUser().getUuid(), sppoti.getUserSppoti().getUuid()));
-	//
-	//		//if user is member of a team, get admin of the tem and other informations.
-	//		final TeamMemberEntity teamAdmin = this.teamMembersRepository
-	//				.findByUserUuidAndTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(
-	//						sppoti.getUserSppoti().getUuid(), sppoti.getTeamHostEntity().getUuid(), statusToFilter());
-	//
-	//		if (teamAdmin != null) {
-	//			sppotiDTO.setAdminTeamId(teamAdmin.getUuid());
-	//			sppotiDTO.setAdminUserId(sppoti.getUserSppoti().getUuid());
-	//			sppotiDTO.setConnectedUserId(getConnectedUser().getUuid());
-	//		}
-	//
-	//		return sppotiDTO;
-	//	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
