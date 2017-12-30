@@ -127,7 +127,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 						model.getUserSppoti().getUuid(), model.getSport().getId(), statusToFilter());
 		
 		dto.setSppotiCounter(sppotiMembers.size());
-		dto.setMySppoti(Objects.equals(dto.getConnectedUserId(), model.getUserSppoti().getUuid()));
+		dto.setMySppoti(Objects.equals(model.getConnectedUserId(), model.getUserSppoti().getId()));
 		
 		//if user is member of a team, get admin of the tem and other informations.
 		final TeamMemberEntity teamAdmin = this.teamMembersRepository
