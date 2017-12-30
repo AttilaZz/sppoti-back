@@ -1,11 +1,11 @@
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://localhost:3306/sppoti
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     passwordFile: ${MYSQL_PASSWORD_FILE}
     dbName:   ${MYSQL_DATABASE}
+    port:     ${MYSQL_PORT}
     platform: mysql
     driverClassName: com.mysql.jdbc.Driver
     poolSize: 10
