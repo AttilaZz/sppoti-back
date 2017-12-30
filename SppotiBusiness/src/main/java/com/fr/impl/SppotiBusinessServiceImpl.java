@@ -19,7 +19,6 @@ import com.fr.service.email.RatingMailerService;
 import com.fr.service.email.SppotiMailerService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.UserTransformer;
-import com.fr.transformers.impl.SportTransformer;
 import com.fr.transformers.impl.TeamMemberTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,8 +49,6 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 {
 	private final Logger LOGGER = LoggerFactory.getLogger(SppotiBusinessServiceImpl.class);
 	
-	@Autowired
-	private SportTransformer sportTransformer;
 	@Autowired
 	private SppotiTransformer sppotiTransformer;
 	@Autowired
