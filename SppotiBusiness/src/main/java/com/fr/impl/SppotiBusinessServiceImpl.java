@@ -180,17 +180,17 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SppotiDTO getSppotiByUuid(final String uuid)
+	public SppotiDTO getSppotiByUuid(final String sppotiId)
 	{
-		final SppotiEntity sppoti = this.sppotiRepository.findByUuid(uuid);
+		final SppotiEntity sppoti = this.sppotiRepository.findByUuid(sppotiId);
 		
-		if (sppoti != null && sppoti.isDeleted()) {
-			this.LOGGER.info("This sppoti {}, is deleted");
+		if (Objects.nonNull(sppoti) && sppoti.isDeleted()) {
+			this.LOGGER.info("This sppoti {}, is deleted", sppotiId);
 			throw new BusinessGlobalException("Trying to get a deleted sppoti");
 		}
 		
 		final SppotiDTO dto = this.sppotiTransformer.modelToDto(sppoti);
-		;
+		
 		this.LOGGER.info("Sppoti data has been returned: {}", dto);
 		return dto;
 	}
