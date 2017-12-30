@@ -12,6 +12,7 @@ import com.fr.commons.enumeration.SppotiStatus;
 import com.fr.commons.utils.JsonDateDeserializer;
 import com.fr.commons.utils.JsonDateSerializer;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -41,7 +42,7 @@ public class SppotiDTO extends AbstractCommonDTO
 	private Long sppotiDuration;
 	private ScoreDTO score;
 	
-	private List<TeamDTO> teamAdverse;
+	private List<TeamDTO> teamAdverse = new ArrayList<>();
 	
 	@NotEmpty
 	@JsonProperty("titre")
@@ -334,8 +335,9 @@ public class SppotiDTO extends AbstractCommonDTO
 	public List<UserDTO> getSppotiMailingList() {
 		final List<UserDTO> sppotiMembersMailingList = new ArrayList<>();
 		
-		final Optional<TeamDTO> adverseTeam = getTeamAdverse().stream()
-				.filter(t -> t.getTeamAdverseStatus().equals(CONFIRMED.name())).findFirst();
+		final Optional<TeamDTO> adverseTeam = !CollectionUtils.isEmpty(getTeamAdverse()) ? getTeamAdverse().stream()
+				.filter(t -> Objects.nonNull(t.getTeamAdverseStatus()) &&
+						t.getTeamAdverseStatus().equals(CONFIRMED.name())).findFirst() : Optional.empty();
 		
 		adverseTeam.ifPresent(a -> {
 			final List<UserDTO> teamAdverseMailingList = a.getMembers().stream()

@@ -131,7 +131,6 @@ public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl imp
 		resourceContents.add(coverResourceContent);
 		
 		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));
-		
 		context.setVariable("receiverUsername", to.getUsername());
 		context.setVariable("content", content);
 		

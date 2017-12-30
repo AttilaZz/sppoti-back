@@ -18,7 +18,6 @@ import org.thymeleaf.context.Context;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Stream;
 
 /**
  * Created by djenanewail on 3/23/17.
@@ -143,24 +142,18 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		
 		final List<UserDTO> sppotiMembersMailingList = sppoti.getSppotiMailingList();
 		
-		final Stream<UserDTO> mailingList = sppotiMembersMailingList.stream()
-				.filter(m -> this.userParamService.canReceiveEmail(m.getUserId()));
-		
-		if (mailingList.count() == 0) {
-			this.LOGGER.info("All sppoti users have deactivated emails");
-		}
-		
-		mailingList.forEach(m -> {
-			final Locale language = Locale.forLanguageTag(m.getLanguage());
-			
-			final String[] params = {from.getUsername()};
-			final String content = this.messageSource.getMessage("mail.sppotiEditedContent", params, language);
-			this.context.setVariable("messageBody", content);
-			
-			final String subject = this.messageSource.getMessage("mail.sppotiEditedSubject", null, language);
-			
-			prepareAndSendEmail(this.context, m, from, sppoti, subject, null, PATH_TO_SPPOTI_TEMPLATE);
-		});
+		sppotiMembersMailingList.stream().filter(m -> !m.getId().equals(from.getId()) && m.getCanReceiveEmails())
+				.forEach(m -> {
+					final Locale language = Locale.forLanguageTag(m.getLanguage());
+					
+					final String[] params = {from.getUsername()};
+					final String content = this.messageSource.getMessage("mail.sppotiEditedContent", params, language);
+					this.context.setVariable("messageBody", content);
+					
+					final String subject = this.messageSource.getMessage("mail.sppotiEditedSubject", null, language);
+					
+					prepareAndSendEmail(this.context, m, from, sppoti, subject, null, PATH_TO_SPPOTI_TEMPLATE);
+				});
 	}
 	
 	@Override
@@ -170,24 +163,18 @@ public class SppotiMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		
 		final List<UserDTO> sppotiMembersMailingList = sppoti.getSppotiMailingList();
 		
-		final Stream<UserDTO> mailingList = sppotiMembersMailingList.stream()
-				.filter(m -> this.userParamService.canReceiveEmail(m.getUserId()));
-		
-		if (mailingList.count() == 0) {
-			this.LOGGER.info("All sppoti users have deactivated emails");
-		}
-		
-		mailingList.forEach(m -> {
-			final Locale language = Locale.forLanguageTag(m.getLanguage());
-			
-			final String[] params = {from.getUsername()};
-			final String content = this.messageSource.getMessage("mail.sppotiDeletedContent", params, language);
-			this.context.setVariable("messageBody", content);
-			
-			final String subject = this.messageSource.getMessage("mail.sppotiDeletedSubject", null, language);
-			
-			prepareAndSendEmail(this.context, m, from, sppoti, subject, null, PATH_TO_SPPOTI_TEMPLATE);
-		});
+		sppotiMembersMailingList.stream().filter(m -> !m.getId().equals(from.getId()) && m.getCanReceiveEmails())
+				.forEach(m -> {
+					final Locale language = Locale.forLanguageTag(m.getLanguage());
+					
+					final String[] params = {from.getUsername()};
+					final String content = this.messageSource.getMessage("mail.sppotiDeletedContent", params, language);
+					this.context.setVariable("messageBody", content);
+					
+					final String subject = this.messageSource.getMessage("mail.sppotiDeletedSubject", null, language);
+					
+					prepareAndSendEmail(this.context, m, from, sppoti, subject, null, PATH_TO_SPPOTI_TEMPLATE);
+				});
 	}
 	
 	private List<MailResourceContent> buildSppotiMailResources() {

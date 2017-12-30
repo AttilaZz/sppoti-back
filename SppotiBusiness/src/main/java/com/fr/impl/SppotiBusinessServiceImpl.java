@@ -189,7 +189,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			throw new BusinessGlobalException("Trying to get a deleted sppoti");
 		}
 		
-		final SppotiDTO dto = getSppotiResponse(sppoti);
+		final SppotiDTO dto = this.sppotiTransformer.modelToDto(sppoti);
+		;
 		this.LOGGER.info("Sppoti data has been returned: {}", dto);
 		return dto;
 	}
@@ -207,9 +208,14 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		sppoti.ifPresent(s -> {
 			s.setDeleted(true);
 			this.sppotiRepository.save(s);
+			
+			//TODO: send notification to host team
+			
+			final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(s);
+			final UserDTO userDTO = this.userTransformer.modelToDto(getConnectedUser());
+			this.sppotiMailerService.onSppotiDeleted(sppotiDTO, userDTO);
 		});
 		
-		//TODO: send notification to host team
 		
 		sppoti.orElseThrow(() -> new EntityNotFoundException("Trying to delete non existing sppoti"));
 	}
@@ -329,12 +335,18 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		}
 		
 		if (editNotification) {
+			//send notif
 			usersToNotify.stream().filter(m -> !m.getAdmin()).forEach(m -> this.notificationService
 					.saveAndSendNotificationToUsers(updatedSppoti.getUserSppoti(), m.getUser(), SPPOTI,
 							NotificationTypeEnum.SPPOTI_HAS_BEEN_EDITED, updatedSppoti));
+			
+			//send email
+			final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(updatedSppoti);
+			final UserDTO userDTO = this.userTransformer.modelToDto(getConnectedUser());
+			this.sppotiMailerService.onSppotiEdit(sppotiDTO, userDTO);
 		}
 		
-		return getSppotiResponse(updatedSppoti);
+		return this.sppotiTransformer.modelToDto(updatedSppoti);
 		
 	}
 	
@@ -428,7 +440,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		return sppoties.stream()
 				//.filter(s -> !s.getTeamAdverseStatusEnum().equals(GlobalAppStatusEnum.REFUSED))
-				.map(this::getSppotiResponse).collect(Collectors.toList());
+				.map(m -> this.sppotiTransformer.modelToDto(m)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -502,7 +514,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		sendEmailOnChallengeAction(adverse.getTeam(), sppotiEntity.getTeamHostEntity(), sppotiEntity, 1);
 		
-		return getSppotiResponse(savedSppoti);
+		return this.sppotiTransformer.modelToDto(savedSppoti);
 	}
 	
 	/**
@@ -699,7 +711,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, statusToFilter(), pageable);
 		
 		return sppotiMembers.stream().filter(s -> !Objects.equals(s.getSppoti().getUserSppoti().getUuid(), userId))
-				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
+				.map(s -> this.sppotiTransformer.modelToDto(s.getSppoti())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -717,7 +729,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		return this.sppoterRepository
 				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, statusToFilter(), pageable)
 				.stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
-				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
+				.map(s -> this.sppotiTransformer.modelToDto(s.getSppoti())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -735,7 +747,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		return this.sppoterRepository
 				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, statusToFilter(), pageable)
 				.stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.REFUSED))
-				.map(s -> getSppotiResponse(s.getSppoti())).collect(Collectors.toList());
+				.map(s -> this.sppotiTransformer.modelToDto(s.getSppoti())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -744,7 +756,6 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	@Override
 	public List<SppotiDTO> getAllUpcomingSppoties(final String userId, final int page)
 	{
-		
 		//		CheckConnectedUserAccessPrivileges(userId);
 		
 		final Pageable pageable = new PageRequest(page, this.sppotiSize);
@@ -1087,49 +1098,42 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		optional.orElseThrow(() -> new EntityNotFoundException("User not member of this sppoti"));
 	}
 	
-	/**
-	 * Map sppoti entity to DTO.
-	 *
-	 * @param sppoti
-	 * 		sppoti to return.
-	 *
-	 * @return sppoti DTO.
-	 */
-	private SppotiDTO getSppotiResponse(final SppotiEntity sppoti)
-	{
-		if (sppoti == null) {
-			throw new EntityNotFoundException("SppotiEntity not found");
-		}
-		
-		sppoti.setConnectedUserId(getConnectedUser().getId());
-		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sppoti);
-		
-		
-		final TeamDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHostEntity(), sppoti);
-		
-		sppotiDTO.setTeamHost(teamHostResponse);
-		sppotiDTO.setId(sppoti.getUuid());
-		sppotiDTO.setRelatedSport(this.sportTransformer.modelToDto(sppoti.getSport()));
-		
-		final List<SppoterEntity> sppotiMembers = this.sppoterRepository
-				.findByTeamMemberUserUuidAndSppotiSportIdAndStatusNotInAndSppotiDeletedFalse(
-						sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId(), statusToFilter());
-		
-		sppotiDTO.setSppotiCounter(sppotiMembers.size());
-		sppotiDTO.setMySppoti(Objects.equals(getConnectedUser().getUuid(), sppoti.getUserSppoti().getUuid()));
-		
-		//if user is member of a team, get admin of the tem and other informations.
-		final TeamMemberEntity teamAdmin = this.teamMembersRepository
-				.findByUserUuidAndTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(
-						sppoti.getUserSppoti().getUuid(), sppoti.getTeamHostEntity().getUuid(), statusToFilter());
-		if (teamAdmin != null) {
-			sppotiDTO.setAdminTeamId(teamAdmin.getUuid());
-			sppotiDTO.setAdminUserId(sppoti.getUserSppoti().getUuid());
-			sppotiDTO.setConnectedUserId(getConnectedUser().getUuid());
-		}
-		
-		return sppotiDTO;
-	}
+	//	private SppotiDTO getSppotiResponse(final SppotiEntity sppoti)
+	//	{
+	//		if (sppoti == null) {
+	//			throw new EntityNotFoundException("SppotiEntity not found");
+	//		}
+	//
+	//		sppoti.setConnectedUserId(getConnectedUser().getId());
+	//		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sppoti);
+	//
+	//
+	//		final TeamDTO teamHostResponse = fillTeamResponse(sppoti.getTeamHostEntity(), sppoti);
+	//
+	//		sppotiDTO.setTeamHost(teamHostResponse);
+	//		sppotiDTO.setId(sppoti.getUuid());
+	//		sppotiDTO.setRelatedSport(this.sportTransformer.modelToDto(sppoti.getSport()));
+	//
+	//		final List<SppoterEntity> sppotiMembers = this.sppoterRepository
+	//				.findByTeamMemberUserUuidAndSppotiSportIdAndStatusNotInAndSppotiDeletedFalse(
+	//						sppoti.getUserSppoti().getUuid(), sppoti.getSport().getId(), statusToFilter());
+	//
+	//		sppotiDTO.setSppotiCounter(sppotiMembers.size());
+	//		sppotiDTO.setMySppoti(Objects.equals(getConnectedUser().getUuid(), sppoti.getUserSppoti().getUuid()));
+	//
+	//		//if user is member of a team, get admin of the tem and other informations.
+	//		final TeamMemberEntity teamAdmin = this.teamMembersRepository
+	//				.findByUserUuidAndTeamUuidAndStatusNotInAndAdminTrueAndTeamDeletedFalse(
+	//						sppoti.getUserSppoti().getUuid(), sppoti.getTeamHostEntity().getUuid(), statusToFilter());
+	//
+	//		if (teamAdmin != null) {
+	//			sppotiDTO.setAdminTeamId(teamAdmin.getUuid());
+	//			sppotiDTO.setAdminUserId(sppoti.getUserSppoti().getUuid());
+	//			sppotiDTO.setConnectedUserId(getConnectedUser().getUuid());
+	//		}
+	//
+	//		return sppotiDTO;
+	//	}
 	
 	/**
 	 * {@inheritDoc}

@@ -3,7 +3,6 @@ package com.fr.transformers.impl;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.commons.enumeration.TeamStatus;
 import com.fr.commons.utils.SppotiUtils;
-import com.fr.entities.SportEntity;
 import com.fr.entities.SppotiEntity;
 import com.fr.entities.TeamEntity;
 import com.fr.repositories.SportRepository;
@@ -23,46 +22,16 @@ import java.util.stream.Collectors;
 public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEntity> implements TeamTransformer
 {
 	
-	/**
-	 * {@link SportEntity} transformer.
-	 */
-	private final SportTransformer sportTransformer;
-	
-	/**
-	 * {@link com.fr.entities.TeamMemberEntity} transformer.
-	 */
-	private final TeamMemberTransformer teamMemberTransformer;
-	
-	/**
-	 * {@link com.fr.entities.TeamMemberEntity} repository.
-	 */
-	private final TeamMembersRepository teamMembersRepository;
-	
-	/**
-	 * {@link com.fr.entities.SppotiEntity} repository.
-	 */
-	private final SppotiRepository sppotiRepository;
-	
-	/**
-	 * {@link SportEntity} repository.
-	 */
-	private final SportRepository sportRepository;
-	
-	/**
-	 * Init dependencies.
-	 */
 	@Autowired
-	public TeamTransformerImpl(final SportTransformer sportTransformer,
-							   final TeamMemberTransformer teamMemberTransformer,
-							   final TeamMembersRepository teamMembersRepository,
-							   final SppotiRepository sppotiRepository, final SportRepository sportRepository)
-	{
-		this.sportTransformer = sportTransformer;
-		this.teamMemberTransformer = teamMemberTransformer;
-		this.teamMembersRepository = teamMembersRepository;
-		this.sppotiRepository = sppotiRepository;
-		this.sportRepository = sportRepository;
-	}
+	private SportTransformer sportTransformer;
+	@Autowired
+	private TeamMemberTransformer teamMemberTransformer;
+	@Autowired
+	private TeamMembersRepository teamMembersRepository;
+	@Autowired
+	private SppotiRepository sppotiRepository;
+	@Autowired
+	private SportRepository sportRepository;
 	
 	/**
 	 * {@inheritDoc}
