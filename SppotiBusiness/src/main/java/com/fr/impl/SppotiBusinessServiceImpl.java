@@ -186,6 +186,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			throw new BusinessGlobalException("Trying to get a deleted sppoti");
 		}
 		
+		sppoti.setConnectedUserId(getConnectedUserId());
 		final SppotiDTO dto = this.sppotiTransformer.modelToDto(sppoti);
 		
 		this.LOGGER.info("Sppoti data has been returned: {}", dto);
@@ -343,6 +344,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			this.sppotiMailerService.onSppotiEdit(sppotiDTO, userDTO);
 		}
 		
+		updatedSppoti.setConnectedUserId(getConnectedUserId());
 		return this.sppotiTransformer.modelToDto(updatedSppoti);
 		
 	}
@@ -437,7 +439,10 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		return sppoties.stream()
 				//.filter(s -> !s.getTeamAdverseStatusEnum().equals(GlobalAppStatusEnum.REFUSED))
-				.map(m -> this.sppotiTransformer.modelToDto(m)).collect(Collectors.toList());
+				.map(m -> {
+					m.setConnectedUserId(getConnectedUserId());
+					return this.sppotiTransformer.modelToDto(m);
+				}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -511,6 +516,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		sendEmailOnChallengeAction(adverse.getTeam(), sppotiEntity.getTeamHostEntity(), sppotiEntity, 1);
 		
+		savedSppoti.setConnectedUserId(getConnectedUserId());
 		return this.sppotiTransformer.modelToDto(savedSppoti);
 	}
 	
@@ -708,7 +714,10 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, statusToFilter(), pageable);
 		
 		return sppotiMembers.stream().filter(s -> !Objects.equals(s.getSppoti().getUserSppoti().getUuid(), userId))
-				.map(s -> this.sppotiTransformer.modelToDto(s.getSppoti())).collect(Collectors.toList());
+				.map(s -> {
+					s.getSppoti().setConnectedUserId(getConnectedUserId());
+					return this.sppotiTransformer.modelToDto(s.getSppoti());
+				}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -718,15 +727,16 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	@Override
 	public List<SppotiDTO> getAllConfirmedSppoties(final String userId, final int page)
 	{
-		
 		CheckConnectedUserAccessPrivileges(userId);
 		
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		return this.sppoterRepository
 				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, statusToFilter(), pageable)
-				.stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED))
-				.map(s -> this.sppotiTransformer.modelToDto(s.getSppoti())).collect(Collectors.toList());
+				.stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.CONFIRMED)).map(s -> {
+					s.getSppoti().setConnectedUserId(getConnectedUserId());
+					return this.sppotiTransformer.modelToDto(s.getSppoti());
+				}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -736,15 +746,16 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	@Override
 	public List<SppotiDTO> getAllRefusedSppoties(final String userId, final int page)
 	{
-		
 		CheckConnectedUserAccessPrivileges(userId);
 		
 		final Pageable pageable = new PageRequest(page, this.sppotiSize, Sort.Direction.DESC, "invitationDate");
 		
 		return this.sppoterRepository
 				.findByTeamMemberUserUuidAndStatusNotInAndSppotiDeletedFalse(userId, statusToFilter(), pageable)
-				.stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.REFUSED))
-				.map(s -> this.sppotiTransformer.modelToDto(s.getSppoti())).collect(Collectors.toList());
+				.stream().filter(m -> m.getStatus().equals(GlobalAppStatusEnum.REFUSED)).map(s -> {
+					s.getSppoti().setConnectedUserId(getConnectedUserId());
+					return this.sppotiTransformer.modelToDto(s.getSppoti());
+				}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -761,7 +772,6 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 				.map(SppoterEntity::getSppoti).map(s -> {
 					s.setConnectedUserId(getConnectedUser().getId());
 					return this.sppotiTransformer.modelToDto(s);
-					
 				}).collect(Collectors.toList());
 	}
 	
@@ -785,8 +795,8 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 					if (GlobalAppStatusEnum.PENDING.equals(a.getStatus())) {
 						final SppotiEntity sp = a.getSppoti();
 						final UserEntity connectedUser = getConnectedUser();
-						sp.setConnectedUserId(connectedUser.getId());
 						
+						sp.setConnectedUserId(connectedUser.getId());
 						final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sp);
 						
 						sppotiDTO.setTeamAdverse(
@@ -999,7 +1009,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 		
 		if (entity.isPresent()) {
 			entity.get().setType(type);
-			return this.sppotiTransformer.modelToDto(this.sppotiRepository.save(entity.get()));
+			final SppotiEntity savedEntity = this.sppotiRepository.save(entity.get());
+			savedEntity.setConnectedUserId(getConnectedUserId());
+			return this.sppotiTransformer.modelToDto(savedEntity);
 		}
 		
 		//TODO: send notification to host team
@@ -1028,7 +1040,9 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 			r.setUser(user);
 			entity.get().getSppotiRequests().add(r);
 			
-			final SppotiDTO dto = this.sppotiTransformer.modelToDto(this.sppotiRepository.save(entity.get()));
+			final SppotiEntity savedSppoti = this.sppotiRepository.save(entity.get());
+			savedSppoti.setConnectedUserId(getConnectedUserId());
+			final SppotiDTO dto = this.sppotiTransformer.modelToDto(savedSppoti);
 			
 			this.sppotiMailerService
 					.onSendingJoinRequestToSppoti(dto, this.userTransformer.modelToDto(entity.get().getUserSppoti()),

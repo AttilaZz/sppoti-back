@@ -584,8 +584,10 @@ class TeamBusinessServiceImpl extends CommonControllerServiceImpl implements Tea
 		final List<SppotiAdverseEntity> sppotiAdverseEntities = this.sppotiAdverseRepository
 				.findByTeamUuidAndFromSppotiAdminTrue(teamId);
 		
-		return sppotiAdverseEntities.stream().filter(v -> v.getStatus().equals(GlobalAppStatusEnum.PENDING))
-				.map(ad -> this.sppotiTransformer.modelToDto(ad.getSppoti())).collect(Collectors.toList());
+		return sppotiAdverseEntities.stream().filter(v -> v.getStatus().equals(GlobalAppStatusEnum.PENDING)).map(ad -> {
+			ad.getSppoti().setConnectedUserId(getConnectedUserId());
+			return this.sppotiTransformer.modelToDto(ad.getSppoti());
+		}).collect(Collectors.toList());
 		
 	}
 	

@@ -465,6 +465,8 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 		
 		final TeamDTO from = this.teamTransformer.modelToDto(teamFrom);
 		final TeamDTO to = this.teamTransformer.modelToDto(teamTo);
+		
+		sp.setConnectedUserId(getConnectedUserId());
 		final SppotiDTO sppotiDTO = this.sppotiTransformer.modelToDto(sp);
 		
 		switch (operation) {

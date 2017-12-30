@@ -1,5 +1,6 @@
 package com.fr.commons.dto.sppoti;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -332,6 +333,7 @@ public class SppotiDTO extends AbstractCommonDTO
 		this.type = type;
 	}
 	
+	@JsonIgnore
 	public List<UserDTO> getSppotiMailingList() {
 		final List<UserDTO> sppotiMembersMailingList = new ArrayList<>();
 		
