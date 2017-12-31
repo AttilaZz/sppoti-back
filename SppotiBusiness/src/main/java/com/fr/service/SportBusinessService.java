@@ -1,6 +1,6 @@
 package com.fr.service;
 
-import com.fr.entities.SportEntity;
+import com.fr.commons.dto.SportDTO;
 
 import java.util.List;
 
@@ -11,6 +11,6 @@ import java.util.List;
 public interface SportBusinessService extends AbstractBusinessService
 {
 	
-	List<SportEntity> getAllSports();
+	List<SportDTO> getAllSports();
 	
 }

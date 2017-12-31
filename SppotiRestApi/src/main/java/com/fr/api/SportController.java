@@ -1,6 +1,6 @@
 package com.fr.api;
 
-import com.fr.entities.SportEntity;
+import com.fr.commons.dto.SportDTO;
 import com.fr.service.SportBusinessService;
 import com.fr.transformers.impl.SportTransformer;
 import com.fr.versionning.ApiVersion;
@@ -37,14 +37,14 @@ class SportController
 	{
 		this.LOGGER.info("Request sent to retrieve sport list");
 		
-		final List<SportEntity> allSports = this.sportService.getAllSports();
+		final List<SportDTO> allSports = this.sportService.getAllSports();
 		
 		if (allSports.isEmpty()) {
 			this.LOGGER.info("Sport list is empty in database");
 			return new ResponseEntity<>(allSports, HttpStatus.NO_CONTENT);
 		}
 		
-		this.LOGGER.info("Sport list has been returned: {}", this.sportTransformer.modelToDto(allSports));
+		this.LOGGER.info("Sport list has been returned: {}", allSports);
 		return new ResponseEntity<>(allSports, HttpStatus.OK);
 		
 	}
