@@ -20,10 +20,8 @@ import java.util.Optional;
 @Component
 public class ScoreTransformerImpl extends AbstractTransformerImpl<ScoreDTO, ScoreEntity> implements ScoreTransformer
 {
-	/** Sppoti repository. */
 	private final SppotiRepository sppotiRepository;
 	
-	/** Init sppoti repository. */
 	@Autowired
 	public ScoreTransformerImpl(final SppotiRepository sppotiRepository)
 	{

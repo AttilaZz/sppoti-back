@@ -9,15 +9,14 @@ import com.fr.entities.SppotiEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.repositories.RatingRepository;
 import com.fr.repositories.SppoterRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by djenanewail on 2/25/17.
@@ -26,35 +25,21 @@ import java.util.Set;
 @Component
 public class TeamMemberTransformer
 {
+	private final Logger LOGGER = LoggerFactory.getLogger(TeamMemberTransformer.class);
 	
-	/** Rating Repository. */
-	private final RatingRepository ratingRepository;
-	
-	/** Sppoti member repository. */
-	private final SppoterRepository sppoterRepository;
-	
-	/** User transformer. */
-	private final UserTransformerImpl userTransformer;
-	
-	/** Init dependencies. */
 	@Autowired
-	public TeamMemberTransformer(final RatingRepository ratingRepository, final SppoterRepository sppoterRepository,
-								 final UserTransformerImpl userTransformer)
-	{
-		this.ratingRepository = ratingRepository;
-		this.sppoterRepository = sppoterRepository;
-		this.userTransformer = userTransformer;
-	}
+	private RatingRepository ratingRepository;
+	@Autowired
+	private SppoterRepository sppoterRepository;
+	@Autowired
+	private UserTransformerImpl userTransformer;
 	
-	/**
-	 * Transform a team member entity to userDTO.
-	 * <p>
-	 * Used to create sppoter or only team member.
-	 *
-	 * @return all team member information inside a DTO.
-	 */
 	public UserDTO modelToDto(final TeamMemberEntity memberEntity, final SppotiEntity sppoti)
 	{
+		if (Objects.isNull(memberEntity.getUser())) {
+			this.LOGGER.info("Missing link to user table from team member {}", memberEntity.getId());
+			return null;
+		}
 		
 		final UserDTO userCoverAndAvatar = this.userTransformer.getUserCoverAndAvatar(memberEntity.getUser());
 		

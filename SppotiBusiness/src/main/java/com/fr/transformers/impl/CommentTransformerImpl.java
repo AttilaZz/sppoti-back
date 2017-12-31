@@ -17,10 +17,8 @@ public class CommentTransformerImpl extends AbstractTransformerImpl<CommentDTO, 
 		CommentTransformer
 {
 	
-	/** User transformer. */
 	private final UserTransformerImpl userTransformer;
 	
-	/** Init user transformer. */
 	@Autowired
 	public CommentTransformerImpl(final UserTransformerImpl userTransformer)
 	{
