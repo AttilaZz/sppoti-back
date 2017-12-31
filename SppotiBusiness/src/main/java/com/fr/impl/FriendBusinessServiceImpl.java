@@ -142,15 +142,13 @@ class FriendBusinessServiceImpl extends CommonControllerServiceImpl implements F
 						.saveAndSendNotificationToUsers(friendShip.getFriend(), friendShip.getUser(), FRIENDSHIP,
 								NotificationTypeEnum.FRIEND_REQUEST_ACCEPTED);
 				
-				this.friendMailerService.onSendFriendRequest(friendShip.getFriend(), friendShip.getUser());
-				
+				this.friendMailerService.onAcceptFriendRequest(friendShip.getFriend(), friendShip.getUser());
 			} else if (friendShip.getStatus().equals(REFUSED)) {
 				this.notificationService
 						.saveAndSendNotificationToUsers(friendShip.getFriend(), friendShip.getUser(), FRIENDSHIP,
 								NotificationTypeEnum.FRIEND_REQUEST_REFUSED);
 				
-				this.friendMailerService.onSendFriendRequest(friendShip.getFriend(), friendShip.getUser());
-				
+				this.friendMailerService.onRefuseFriendRequest(friendShip.getFriend(), friendShip.getUser());
 			}
 		}
 		
