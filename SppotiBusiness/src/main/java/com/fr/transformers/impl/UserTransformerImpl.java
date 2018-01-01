@@ -16,9 +16,11 @@ import com.fr.transformers.UserTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -83,25 +85,25 @@ public class UserTransformerImpl extends AbstractTransformerImpl<UserDTO, UserEn
 			return roleDTO;
 		}).collect(Collectors.toList()));
 		
-		if (entity.getResources() != null) {
+		if (Objects.nonNull(entity.getResources())) {
 			final UserDTO userResources = getUserCoverAndAvatar(entity);
 			dto.setAvatar(userResources.getAvatar());
 			dto.setCover(userResources.getCover());
 			dto.setCoverType(userResources.getCoverType());
 		}
 		
-		if (entity.getRelatedSports() != null && !entity.getRelatedSports().isEmpty()) {
+		if (Objects.nonNull(entity.getRelatedSports()) && !CollectionUtils.isEmpty(entity.getRelatedSports())) {
 			final List<SportDTO> sportDTOs = entity.getRelatedSports().stream().map(this.sportTransformer::modelToDto)
 					.collect(Collectors.toList());
 			dto.setSportDTOs(sportDTOs);
 		}
 		
-		if (entity.getConnectedUserId() != null && entity.getId() != null) {
+		if (Objects.nonNull(entity.getConnectedUserId()) && Objects.nonNull(entity.getId())) {
 			dto.setMyProfile(entity.getId().equals(entity.getConnectedUserId()));
 			dto.setFriendStatus(this.getFriendShipStatus(entity.getUuid(), entity.getConnectedUserId()));
 		}
 		
-		if (entity.getParamEntity() != null) {
+		if (Objects.nonNull(entity.getParamEntity())) {
 			dto.setCanReceiveEmails(entity.getParamEntity().isCanReceiveEmail());
 			dto.setCanReceiveNotifications(entity.getParamEntity().isCanReceiveNotification());
 		}

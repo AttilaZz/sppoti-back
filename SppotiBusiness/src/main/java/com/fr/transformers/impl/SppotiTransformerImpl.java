@@ -42,7 +42,7 @@ public class SppotiTransformerImpl extends AbstractTransformerImpl<SppotiDTO, Sp
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	private TeamMemberTransformer teamMemberTransformer;
+	private TeamMemberTransformerImpl teamMemberTransformer;
 	@Autowired
 	private TeamMembersRepository teamMembersRepository;
 	@Autowired

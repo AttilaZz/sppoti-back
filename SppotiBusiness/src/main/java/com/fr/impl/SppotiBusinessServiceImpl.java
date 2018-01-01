@@ -19,7 +19,7 @@ import com.fr.service.email.RatingMailerService;
 import com.fr.service.email.SppotiMailerService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.UserTransformer;
-import com.fr.transformers.impl.TeamMemberTransformer;
+import com.fr.transformers.impl.TeamMemberTransformerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ class SppotiBusinessServiceImpl extends CommonControllerServiceImpl implements S
 	@Autowired
 	private SppotiTransformer sppotiTransformer;
 	@Autowired
-	private TeamMemberTransformer teamMemberTransformer;
+	private TeamMemberTransformerImpl teamMemberTransformer;
 	@Autowired
 	private UserTransformer userTransformer;
 	@Autowired

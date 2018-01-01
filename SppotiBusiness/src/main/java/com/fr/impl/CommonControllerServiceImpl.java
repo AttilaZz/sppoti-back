@@ -19,7 +19,7 @@ import com.fr.service.email.TeamMailerService;
 import com.fr.transformers.SppotiTransformer;
 import com.fr.transformers.TeamTransformer;
 import com.fr.transformers.UserTransformer;
-import com.fr.transformers.impl.TeamMemberTransformer;
+import com.fr.transformers.impl.TeamMemberTransformerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +85,7 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 	private Environment environment;
 	
 	@Autowired
-	private TeamMemberTransformer teamMemberTransformer;
+	private TeamMemberTransformerImpl teamMemberTransformer;
 	
 	@Autowired
 	private UserTransformer userTransformer;

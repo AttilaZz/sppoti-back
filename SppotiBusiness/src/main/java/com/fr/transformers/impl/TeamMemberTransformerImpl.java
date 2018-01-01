@@ -9,6 +9,7 @@ import com.fr.entities.SppotiEntity;
 import com.fr.entities.TeamMemberEntity;
 import com.fr.repositories.RatingRepository;
 import com.fr.repositories.SppoterRepository;
+import com.fr.transformers.TeamMemberTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by djenanewail on 2/25/17.
  */
 @Transactional(readOnly = true)
 @Component
-public class TeamMemberTransformer
+public class TeamMemberTransformerImpl implements TeamMemberTransformer
 {
-	private final Logger LOGGER = LoggerFactory.getLogger(TeamMemberTransformer.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(TeamMemberTransformerImpl.class);
 	
 	@Autowired
 	private RatingRepository ratingRepository;
@@ -34,6 +36,13 @@ public class TeamMemberTransformer
 	@Autowired
 	private UserTransformerImpl userTransformer;
 	
+	@Override
+	public List<UserDTO> modelToDto(final Set<TeamMemberEntity> memberEntity, final SppotiEntity sppoti)
+	{
+		return memberEntity.stream().map(m -> this.modelToDto(m, sppoti)).collect(Collectors.toList());
+	}
+	
+	@Override
 	public UserDTO modelToDto(final TeamMemberEntity memberEntity, final SppotiEntity sppoti)
 	{
 		if (Objects.isNull(memberEntity.getUser())) {
@@ -50,6 +59,7 @@ public class TeamMemberTransformer
 		dto.setFirstName(memberEntity.getUser().getFirstName());
 		dto.setLastName(memberEntity.getUser().getLastName());
 		dto.setUsername(memberEntity.getUser().getUsername());
+		dto.setEmail(memberEntity.getUser().getEmail());
 		dto.setAvatar(userCoverAndAvatar.getAvatar());
 		dto.setCover(userCoverAndAvatar.getCover());
 		dto.setCoverType(userCoverAndAvatar.getCoverType());
@@ -61,8 +71,14 @@ public class TeamMemberTransformer
 		dto.setTeamCaptain(memberEntity.getTeamCaptain());
 		dto.setxPosition(memberEntity.getxPosition());
 		dto.setyPosition(memberEntity.getyPosition());
+		dto.setLanguage(memberEntity.getUser().getLanguageEnum().name());
 		
 		dto.setSportDTOs(null);
+		
+		if (Objects.nonNull(memberEntity.getUser().getParamEntity())) {
+			dto.setCanReceiveEmails(memberEntity.getUser().getParamEntity().isCanReceiveEmail());
+			dto.setCanReceiveNotifications(memberEntity.getUser().getParamEntity().isCanReceiveNotification());
+		}
 		
 		if (sppoti != null) {
 			//get status for the selected sppoti

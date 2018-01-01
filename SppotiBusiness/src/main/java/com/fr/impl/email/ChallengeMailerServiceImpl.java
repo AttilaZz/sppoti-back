@@ -133,6 +133,7 @@ public class ChallengeMailerServiceImpl extends ApplicationMailerServiceImpl imp
 		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));
 		context.setVariable("receiverUsername", to.getUsername());
 		context.setVariable("content", content);
+		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
 		
 		//Template footer
 		context.setVariable("contactUsLink", this.contactUsLink);

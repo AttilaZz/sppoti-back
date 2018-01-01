@@ -8,12 +8,11 @@ import com.fr.entities.TeamEntity;
 import com.fr.repositories.SportRepository;
 import com.fr.repositories.SppotiRepository;
 import com.fr.repositories.TeamMembersRepository;
+import com.fr.transformers.TeamMemberTransformer;
 import com.fr.transformers.TeamTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
-import java.util.stream.Collectors;
 
 /**
  * Created by djenanewail on 3/5/17.
@@ -61,9 +60,7 @@ public class TeamTransformerImpl extends AbstractTransformerImpl<TeamDTO, TeamEn
 						SppotiUtils.statusToFilter()), sppotiEntity));
 		
 		final SppotiEntity finalSppotiEntity = sppotiEntity;
-		teamDTO.setMembers(
-				model.getTeamMembers().stream().map(m -> this.teamMemberTransformer.modelToDto(m, finalSppotiEntity))
-						.collect(Collectors.toList()));
+		teamDTO.setMembers(this.teamMemberTransformer.modelToDto(model.getTeamMembers(), finalSppotiEntity));
 		
 		return teamDTO;
 	}
