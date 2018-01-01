@@ -21,7 +21,7 @@ import java.util.Locale;
 @Component
 public class LikeMailerServiceImpl extends ApplicationMailerServiceImpl implements LikeMailerService
 {
-	private static final String PATH_TO_LIKE_TEMPLATE = "like/like";
+	private static final String PATH_TO_LIKE_TEMPLATE = "post/like";
 	
 	@Autowired
 	private TemplateEngine templateEngine;
