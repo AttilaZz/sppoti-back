@@ -36,7 +36,7 @@ public class SportDTO
 	public String toString() {
 		final ObjectMapper mapper = new ObjectMapper();
 		try {
-			return mapper.writeValueAsString(this);
+			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
 		} catch (final JsonProcessingException e) {
 			return null;
 		}
