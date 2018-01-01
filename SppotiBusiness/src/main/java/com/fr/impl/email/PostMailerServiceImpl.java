@@ -48,7 +48,7 @@ public class PostMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 		
 		final Context context = new Context(Locale.forLanguageTag(to.getLanguage()));
 		
-		context.setVariable("sentToUsername", to.getFirstName());
+		context.setVariable("receiverUsername", to.getFirstName());
 		context.setVariable("headerResourceName", resourceContents.get(0).getResourceName());
 		context.setVariable("receiverEmail", to.getEmail());
 		

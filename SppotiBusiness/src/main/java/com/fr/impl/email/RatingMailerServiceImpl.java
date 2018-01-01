@@ -68,6 +68,9 @@ public class RatingMailerServiceImpl extends ApplicationMailerServiceImpl implem
 		context.setVariable("receiverUsername", to.getFirstName());
 		context.setVariable("content", content);
 		
+		//Template footer & header
+		context.setVariable("contactUsLink", this.contactUsLink);
+		
 		final String text = this.templateEngine.process(PATH_TO_RATING_TEMPLATE, context);
 		
 		super.prepareAndSendEmail(to.getEmail(), subject, text, resourceContents);

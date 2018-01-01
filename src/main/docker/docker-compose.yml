@@ -44,7 +44,7 @@ services:
           - aws_access_key
 
   sppoti:
-      image: wdjenane/sppoti:latest
+      image: wdjenane/sppoti-back:latest
 #      ports:
 #        - 8080:8080
       depends_on:

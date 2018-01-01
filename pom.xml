@@ -17,7 +17,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <sppoti.project.version>R02.02</sppoti.project.version>
+        <sppoti.project.version>R02.08</sppoti.project.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <org.apache.commons.version>3.5</org.apache.commons.version>
@@ -34,7 +34,7 @@
         <redis.lettuce.version>sppoti-image</redis.lettuce.version>
         <redis.lettuce.version>4.4.1.Final</redis.lettuce.version>
         <spring.social.facebook.version>2.0.3.RELEASE</spring.social.facebook.version>
-        <docker.image.prefix>wdjenane/sppoti</docker.image.prefix>
+        <docker.image.prefix>wdjenane/sppoti-back</docker.image.prefix>
         <docker.maven.plugin.version>1.0.0</docker.maven.plugin.version>
         <com.google.firebase.version>5.5.0</com.google.firebase.version>
         <org.apache.maven.plugin.version>2.5.3</org.apache.maven.plugin.version>
