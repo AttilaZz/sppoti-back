@@ -4,7 +4,6 @@ import com.fr.commons.dto.MailResourceContent;
 import com.fr.commons.dto.UserDTO;
 import com.fr.commons.dto.team.TeamDTO;
 import com.fr.entities.TeamMemberEntity;
-import com.fr.service.UserParamService;
 import com.fr.service.email.TeamMailerService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -36,26 +35,20 @@ public class TeamMailerServiceImpl extends ApplicationMailerServiceImpl implemen
 	@Autowired
 	private TemplateEngine templateEngine;
 	
-	@Autowired
-	private UserParamService userParamService;
-	
-	@Override
-	public void sendAddTeamEmail(final TeamDTO team)
-	{
-	}
-	
 	@Override
 	public void sendJoinTeamEmail(final TeamDTO team, final UserDTO to, final UserDTO from)
 	{
-		this.LOGGER.info("Sending join team email email to {} ", to.getUsername());
-		if (!this.userParamService.canReceiveEmail(to.getEmail())) {
+		this.LOGGER.info("Sending join team email email to: {} ", to.getUsername());
+		if (!to.getCanReceiveEmails()) {
 			this.LOGGER.info("{} has deactivated emails", to.getUsername());
 			return;
 		}
+		
 		final String joinTeamLinkParsed = this.frontRootPath + this.joinTeamLink.replace("%teamId%", team.getId() + "");
 		
-		final String subject = this.messageSource
-				.getMessage("mail.teamJoinSubject", null, Locale.forLanguageTag(to.getLanguage()));
+		final Locale language = Locale.forLanguageTag(to.getLanguage());
+		final String subject = this.messageSource.getMessage("mail.teamJoinSubject", null, language);
+		
 		prepareAndSendEmail(to, from, team, subject, joinTeamLinkParsed, buildTeamMailResources());
 	}
 	

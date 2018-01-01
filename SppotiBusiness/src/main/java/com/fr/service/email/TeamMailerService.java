@@ -9,8 +9,6 @@ import com.fr.entities.TeamMemberEntity;
  */
 public interface TeamMailerService extends ApplicationMailerService
 {
-	void sendAddTeamEmail(TeamDTO team);
-	
 	void sendJoinTeamEmail(TeamDTO team, UserDTO to, UserDTO from);
 	
 	void sendConfirmJoinTeamEmail(TeamDTO team, TeamMemberEntity member);

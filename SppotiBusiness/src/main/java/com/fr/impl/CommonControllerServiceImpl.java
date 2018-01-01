@@ -420,8 +420,7 @@ abstract class CommonControllerServiceImpl implements AbstractBusinessService
 		final UserDTO admin = this.teamMemberTransformer.modelToDto(from, null);
 		final TeamDTO teamDto = this.teamTransformer.modelToDto(team);
 		
-		final Thread thread = new Thread(() -> this.teamMailerService.sendJoinTeamEmail(teamDto, member, admin));
-		thread.start();
+		this.teamMailerService.sendJoinTeamEmail(teamDto, member, admin);
 	}
 	
 	Set<SppoterEntity> convertAdverseTeamMembersToSppoters(final TeamEntity challengeTeam, final SppotiEntity sppoti)
